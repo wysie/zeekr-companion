@@ -58,3 +58,8 @@ camera stream and supports pinch resizing. A rejected side output yields before 
 mirror and recording. Both side cameras share one saved popup location; drag it to position
 and pinch to resize. The owner reports labels and mirror replacement working on the 009;
 the shared placement and drag changes still need an on-car check.
+
+Corrected side views automatically narrow the requested FOV when high rear/up
+aiming would cross the camera image edge. Aim and saved settings are retained.
+At 80° rear / 15° up, a requested 90° square view fits at approximately 20.5°;
+this avoids collapsed black tiles but greatly reduces visible coverage.

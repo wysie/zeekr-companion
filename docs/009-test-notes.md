@@ -40,3 +40,21 @@ is temporary and returns the normal geometry on dismissal. Native buttons use
 48 dp targets. Side-camera labels sit at the bottom to keep the corner controls
 clear. No Android device was connected during development, so the final native
 rendering and touch behavior await the owner's on-car check.
+
+The owner reported stepped black patches in the separate left-camera popup at
+Aim back 80°, appearing above roughly 50°, and confirmed they disappear with
+Straighten picture off. At 90° FOV / 80° rear / 15° up, the original projection
+collapses 19 of its 100 tiles onto an image edge. Why it previously appeared
+clear at 80° is unresolved; the exact other settings and window geometry then
+were not supplied.
+
+2.11.10-personal-alpha fits the corrected viewport inside the camera image before
+sampling, retaining the selected rear/up aim and window aspect ratio. It narrows
+FOV when needed rather than clamping individual corners, skipping tiles or
+stretching edge pixels. The example above fits at about 20.5° horizontal FOV,
+a substantial reduction in coverage, explained in the View width setting.
+The saved FOV is retained and used again when the aim allows it. Both popup
+and mirror replacement use the fix; ordinary Super mirror correction is unchanged.
+Regression tests cover the reported collapse, both camera directions, extreme
+aiming, different mirror shapes, and recalculation after configuration changes.
+The APK still needs an on-car check at the reported angle.
