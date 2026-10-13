@@ -52,7 +52,8 @@ configured close delay. With Super mirror off, the separate pop-up is used. No n
 is added when the existing mirror hosts the side view. Car testing of this interaction remains
 necessary; unit tests and APK compilation do not exercise the head unit's window manager.
 
-The camera-label branch adds one focused commit on top of the side-view contribution branch.
-Once the side-view dependency is upstream, the label commit can be cherry-picked onto upstream
+The camera-label branch adds the label implementation and a Malay wording correction on top
+of the side-view contribution branch. Once the side-view dependency is upstream, these commits
+can be cherry-picked onto upstream
 for a separate PR. The blind-spot research stays independent; see
 [the investigation](docs/blind-spot-side-view.md) for the missing 009 signal information.
