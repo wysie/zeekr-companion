@@ -17,3 +17,13 @@ measured. Shared placement and dragging await testing on the 009.
 
 This feedback does not establish exhaustive factory-camera takeover, long-drive
 recording continuity or all simultaneous-output cases.
+
+Owner supplied two photos showing opposite left/right scene tilt inside upright
+side windows with Straighten picture enabled. The APK version and exact aiming
+values for the captures were not supplied. The image alone does not isolate lens
+mounting orientation from the virtual camera projection.
+
+2.11.8-personal-alpha adds independent left/right image rotation (default 0°),
+applied in either window and correction mode, plus reset actions for side-view
+and Super mirror tuning/layout. Resets retain the current feature on/off state.
+An uncorrected-camera comparison remains pending to identify the tilt's cause.
