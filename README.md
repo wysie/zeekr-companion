@@ -1,5 +1,19 @@
 # Zeekr Shortcut (Car Version)
 
+This fork includes [FerixzTanz's turn-signal side view (upstream PR #4)](https://github.com/dts88/zeekr-shortcut-car/pull/4),
+adapted to the current camera scheduler. The owner already uses the original app on a ZEEKR 009.
+
+Enable **Settings → Super mirror → Turn-signal side view** and grant the overlay permission.
+It is off by default. The initial speed threshold is 30 km/h; set it to 0 to show the view at any
+speed. Field of view, aim back/up, window size, position, close delay and instant pop-up are adjustable.
+Factory camera views and Super mirror take precedence. This feature responds to turn signals;
+it does not yet respond to blind-spot obstacle alerts. Upstream discusses that future trigger in
+[issue #6](https://github.com/dts88/zeekr-shortcut-car/issues/6#issuecomment-6050799572).
+
+The fork retains the original application ID and test signing key so its APK can update the
+existing installation. In-app update checks point to this fork. Code and APK builds are checked
+in GitHub Actions; the new side-view integration still needs a test on the owner's 009.
+
 A surround-view dash cam for the ZEEKR 7X head unit.
 
 [中文说明](README.zh-CN.md) · [Changelog](CHANGELOG.md) · [Credits](NOTICE.md) · [Platform notes](docs/zeekr-platform-notes.md)
