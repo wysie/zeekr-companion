@@ -8,6 +8,8 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `side-view` | Installable fork containing PR #4, our improvements, personal version numbers, update source and build configuration |
 | `upstream-main` | Unmodified upstream `main`; update by fast-forward only |
 | `feature/turn-signal-side-view` | Contribution branch based directly on upstream, containing the PR #4 port and temporary Super mirror side view |
+| `feature/camera-labels` | Camera-label toggle and floating direction labels, based on the side-view contribution branch |
+| `research/blind-spot-alerts` | Read-only investigation and implementation plan; no active blind-spot trigger |
 
 Submit upstream PRs from a clean `feature/...` branch. The existing contribution branch deliberately
 excludes the fork's version number, update owner, workflow changes and this document. Those stay on `side-view`. The original
@@ -49,3 +51,8 @@ shows the corresponding side camera in the same window, then restores the normal
 configured close delay. With Super mirror off, the separate pop-up is used. No new camera output
 is added when the existing mirror hosts the side view. Car testing of this interaction remains
 necessary; unit tests and APK compilation do not exercise the head unit's window manager.
+
+The camera-label branch adds one focused commit on top of the side-view contribution branch.
+Once the side-view dependency is upstream, the label commit can be cherry-picked onto upstream
+for a separate PR. The blind-spot research stays independent; see
+[the investigation](docs/blind-spot-side-view.md) for the missing 009 signal information.
