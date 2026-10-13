@@ -27,3 +27,16 @@ mounting orientation from the virtual camera projection.
 applied in either window and correction mode, plus reset actions for side-view
 and Super mirror tuning/layout. Resets retain the current feature on/off state.
 An uncorrected-camera comparison remains pending to identify the tilt's cause.
+
+Owner supplied a factory popup reference showing an expand control at top-left,
+a close control at top-right and rounded video corners. They specified that
+closing is temporary, with a new indicator activation showing the view again,
+without disabling Super mirror or the side-view feature.
+
+2.11.9-personal-alpha adds these controls to the independent side popup and to
+the mirror while it temporarily shows a side camera. Close dismisses the current
+activation; off-then-on or a change to the other indicator rearms it. Expand/restore
+is temporary and returns the normal geometry on dismissal. Native buttons use
+48 dp targets. Side-camera labels sit at the bottom to keep the corner controls
+clear. No Android device was connected during development, so the final native
+rendering and touch behavior await the owner's on-car check.
