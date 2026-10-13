@@ -18,7 +18,8 @@ it does not yet respond to blind-spot obstacle alerts. Upstream discusses that f
 
 The fork retains the original application ID and test signing key so its APK can update the
 existing installation. In-app update checks point to this fork. Code and APK builds are checked
-in GitHub Actions; the new side-view integration still needs a test on the owner's 009.
+in GitHub Actions. The owner has confirmed camera labels and Super mirror replacement work
+on the 009; see [test notes](docs/009-test-notes.md) for the scope of that feedback.
 
 A surround-view dash cam for the ZEEKR 7X head unit.
 

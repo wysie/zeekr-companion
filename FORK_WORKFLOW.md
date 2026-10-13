@@ -55,4 +55,6 @@ installable release. The existing signing key preserves update compatibility.
 Side view is off by default. Replace Super mirror is on by default and temporarily
 uses the existing mirror canvas. With it off, an independent side popup shares the
 camera stream and supports pinch resizing. A rejected side output yields before the
-mirror and recording. Concurrent windows and gestures still need verification on the 009.
+mirror and recording. Both side cameras share one saved popup location; drag it to position
+and pinch to resize. The owner reports labels and mirror replacement working on the 009;
+the shared placement and drag changes still need an on-car check.
