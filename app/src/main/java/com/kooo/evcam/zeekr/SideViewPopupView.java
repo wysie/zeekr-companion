@@ -48,6 +48,8 @@ public class SideViewPopupView extends ViewGroup {
     private final AutoFitTextureView textureView;
     private final ScaleGestureDetector resizeGesture;
     private final CameraLabel cameraLabel;
+    private final SideViewControls controls;
+    private final SideViewExpansion expansion = new SideViewExpansion();
     private final Matrix drawMatrix = new Matrix();
     private final RectF sourceRect = new RectF();
     private final RectF destRect = new RectF();
@@ -84,7 +86,7 @@ public class SideViewPopupView extends ViewGroup {
 
                     @Override
                     public boolean onScaleBegin(ScaleGestureDetector detector) {
-                        if (!attached || !visible || params == null) {
+                        if (!attached || !visible || params == null || expansion.expanded()) {
                             return false;
                         }
                         startSpan = detector.getCurrentSpan();
@@ -112,6 +114,17 @@ public class SideViewPopupView extends ViewGroup {
         setBackgroundColor(0xFF000000);
         textureView = new AutoFitTextureView(context);
         addView(textureView);
+        controls = new SideViewControls(context, SideViewPopupService::dismissCurrentSideView,
+                this::toggleExpanded);
+        addView(controls);
+        setClipToOutline(true);
+        setOutlineProvider(new android.view.ViewOutlineProvider() {
+            @Override
+            public void getOutline(android.view.View view, android.graphics.Outline outline) {
+                outline.setRoundRect(0, 0, view.getWidth(), view.getHeight(),
+                        getResources().getDimension(com.kooo.evcam.R.dimen.side_control_radius));
+            }
+        });
         readConfig();
     }
 
@@ -171,6 +184,7 @@ public class SideViewPopupView extends ViewGroup {
             return;
         }
         visible = false;
+        restoreExpanded();
         applyVisibility(false);
         update();
     }
@@ -191,6 +205,7 @@ public class SideViewPopupView extends ViewGroup {
 
     /** 设置页改了大小 / 位置 / 拉直：套用到挂着的窗口上。 */
     public void applyConfig() {
+        restoreExpanded();
         readConfig();
         if (attached) {
             place();
@@ -267,6 +282,9 @@ public class SideViewPopupView extends ViewGroup {
         if (!attached || !visible || params == null) {
             return true;
         }
+        if (expansion.expanded()) {
+            return true;
+        }
         resizeGesture.onTouchEvent(event);
         switch (event.getActionMasked()) {
             case MotionEvent.ACTION_DOWN:
@@ -323,9 +341,13 @@ public class SideViewPopupView extends ViewGroup {
      * its location, and resizing keeps that location within the screen.
      */
     private void place() {
+        if (expansion.expanded()) {
+            return;
+        }
         int w = getResources().getDisplayMetrics().widthPixels;
         int h = getResources().getDisplayMetrics().heightPixels;
-        int size = SidePopupSizing.size(appConfig.getSidePopupSizePercent(), w, h);
+        int size = Math.min(Math.min(w, h), Math.max(controls.minimumWindowSize(),
+                SidePopupSizing.size(appConfig.getSidePopupSizePercent(), w, h)));
         params.width = size;
         params.height = size;
         int savedX = appConfig.getSidePopupX();
@@ -337,11 +359,45 @@ public class SideViewPopupView extends ViewGroup {
         params.y = SidePopupSizing.clampPosition(y, h, size);
     }
 
+    private void toggleExpanded() {
+        if (!attached || !visible || params == null) {
+            return;
+        }
+        if (!expansion.expanded()) {
+            savePosition();
+        }
+        SideViewExpansion.Geometry next = expansion.toggle(
+                new SideViewExpansion.Geometry(params.x, params.y, params.width, params.height),
+                getResources().getDisplayMetrics().widthPixels,
+                getResources().getDisplayMetrics().heightPixels,
+                getResources().getDimensionPixelSize(com.kooo.evcam.R.dimen.side_control_margin));
+        applyGeometry(next);
+        controls.setExpanded(expansion.expanded());
+        update();
+        invalidate();
+    }
+
+    private void restoreExpanded() {
+        SideViewExpansion.Geometry normal = expansion.restore();
+        if (normal != null && params != null) {
+            applyGeometry(normal);
+            controls.setExpanded(false);
+        }
+    }
+
+    private void applyGeometry(SideViewExpansion.Geometry geometry) {
+        params.x = geometry.x;
+        params.y = geometry.y;
+        params.width = geometry.width;
+        params.height = geometry.height;
+    }
+
     // ------------------------------------------------------------------ 布局与绘制
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
         textureView.layout(0, 0, getWidth(), getHeight());
+        controls.layoutIn(getWidth());
     }
 
     @Override
@@ -360,8 +416,9 @@ public class SideViewPopupView extends ViewGroup {
         if (!hasGeometry()) {
             // 还不知道几何：子视图照画（TextureView 不画就不取帧，onSurfaceTextureUpdated 也不来，
             // 服务就没机会补上尺寸 —— 窗口会一直黑），再盖成黑的，不露出四路挤在一起的整条合成流
-            super.dispatchDraw(canvas);
+            drawTextureOnce(canvas);
             canvas.drawColor(0xFF000000);
+            drawChild(canvas, controls, getDrawingTime());
             return;
         }
         int save = SideViewRotation.begin(canvas, appConfig.getSidePopupRotation(lane), width, height);
@@ -395,6 +452,7 @@ public class SideViewPopupView extends ViewGroup {
         if (appConfig.isRearViewCameraLabelEnabled()) {
             cameraLabel.draw(canvas, lane, width, height);
         }
+        drawChild(canvas, controls, getDrawingTime());
     }
 
     private void drawTextureOnce(Canvas canvas) {
