@@ -58,3 +58,8 @@ and mirror replacement use the fix; ordinary Super mirror correction is unchange
 Regression tests cover the reported collapse, both camera directions, extreme
 aiming, different mirror shapes, and recalculation after configuration changes.
 The APK still needs an on-car check at the reported angle.
+
+2.11.11-personal-alpha adds a read-only “High angles zoom in” note below the
+side-view aiming sliders, with the 80° rear / 15° up / 90° square-window example,
+reduced-coverage explanation and guidance to lower the aiming angles. Aim back
+also points to the note. This is a settings-text change; rendering is unchanged.
