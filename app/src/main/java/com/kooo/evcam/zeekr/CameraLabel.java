@@ -26,6 +26,14 @@ final class CameraLabel {
     }
 
     void draw(Canvas canvas, int lane, int width, int height) {
+        draw(canvas, lane, width, height, false);
+    }
+
+    void drawBottom(Canvas canvas, int lane, int width, int height) {
+        draw(canvas, lane, width, height, true);
+    }
+
+    private void draw(Canvas canvas, int lane, int width, int height, boolean bottom) {
         if (lane < 0 || lane >= names.length || width <= 0 || height <= 0) {
             return;
         }
@@ -47,8 +55,9 @@ final class CameraLabel {
         float top = text.ascent();
         float badgeWidth = text.measureText(names[lane]) + 2f * paddingX;
         float badgeHeight = text.descent() - top + 2f * paddingY;
-        canvas.drawRoundRect(margin, margin, margin + badgeWidth, margin + badgeHeight,
+        float y = bottom ? Math.max(margin, height - margin - badgeHeight) : margin;
+        canvas.drawRoundRect(margin, y, margin + badgeWidth, y + badgeHeight,
                 paddingY, paddingY, background);
-        canvas.drawText(names[lane], margin + paddingX, margin + paddingY - top, text);
+        canvas.drawText(names[lane], margin + paddingX, y + paddingY - top, text);
     }
 }

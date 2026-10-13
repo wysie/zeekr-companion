@@ -450,7 +450,7 @@ public class SideViewPopupView extends ViewGroup {
         }
         canvas.restoreToCount(save);
         if (appConfig.isRearViewCameraLabelEnabled()) {
-            cameraLabel.draw(canvas, lane, width, height);
+            cameraLabel.drawBottom(canvas, lane, width, height);
         }
         drawChild(canvas, controls, getDrawingTime());
     }
