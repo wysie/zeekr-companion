@@ -74,3 +74,15 @@ factory-view priority.
 explicitly explains that reverse, parking assist and factory views still hide
 our side view, including the factory low-speed indicator-triggered 360 popup.
 Behavior is unchanged.
+
+The owner reported that the zoom and speed notes were not visible after
+installation. The downloaded public 2.11.12 APK was independently inspected:
+versionCode 295, matching release checksum, both note strings present, and both
+settings entries wired in the compiled preference XML. The version actually
+installed on the head unit remains unconfirmed, so the display report is not
+yet explained.
+
+2.11.13-personal-alpha puts the black-patch / reduced-coverage explanation first
+in the Aim back summary and moves the full example note directly below that
+slider, before Aim up. The speed explanation remains on Minimum opening speed.
+These are help-text and placement changes, not rendering changes.
