@@ -570,7 +570,7 @@ public class RearViewMirrorView extends ViewGroup {
         if (sideView.active()) {
             drawSideView(canvas, width, height);
             if (!frozen && appConfig.isRearViewCameraLabelEnabled()) {
-                cameraLabel.draw(canvas, sideView.lane(), width, height);
+                cameraLabel.drawBottom(canvas, sideView.lane(), width, height);
             }
             if (frozen) {
                 drawFrozenHint(canvas, width, height);
