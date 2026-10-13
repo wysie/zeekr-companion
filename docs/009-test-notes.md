@@ -63,3 +63,14 @@ The APK still needs an on-car check at the reported angle.
 side-view aiming sliders, with the 80° rear / 15° up / 90° square-window example,
 reduced-coverage explanation and guidance to lower the aiming angles. Aim back
 also points to the note. This is a settings-text change; rendering is unchanged.
+
+The owner confirmed that the side view remains hidden below 30 km/h with the
+minimum speed set to 0 when an indicator triggers the factory 360-degree popup.
+This matches the existing factory-view priority check, which runs before the
+minimum-speed rule. 0 removes only our speed restriction; it does not bypass
+factory-view priority.
+
+2.11.12-personal-alpha renames the setting to “Minimum opening speed” and
+explicitly explains that reverse, parking assist and factory views still hide
+our side view, including the factory low-speed indicator-triggered 360 popup.
+Behavior is unchanged.
