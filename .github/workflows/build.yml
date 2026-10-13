@@ -2,7 +2,7 @@ name: Build APK
 
 on:
   push:
-    branches: [main, side-view, 'feature/**']
+    branches: [main, personal-build, 'feature/**']
     tags: ['v*']
   pull_request:
     branches: [main]

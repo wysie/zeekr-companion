@@ -89,4 +89,4 @@ timing still need observations from the 009.
 The eventual `feature/blind-spot-side-view` can start from
 `feature/turn-signal-side-view`, carrying only the signal and trigger work.
 `feature/camera-labels` stays independently reviewable. Merge verified feature
-branches into the installable `side-view` branch; keep `main` aligned with upstream.
+branches into the installable `personal-build` branch; keep `main` aligned with upstream.

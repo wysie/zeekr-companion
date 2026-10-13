@@ -1,6 +1,6 @@
 # Zeekr Shortcut (Car Version)
 
-This `side-view` branch contains the installable fork. `main` tracks upstream without personal
+This `personal-build` branch combines the implemented features into the installable fork. `main` tracks upstream without personal
 features. See [Fork workflow](FORK_WORKFLOW.md) for contribution branches.
 
 This fork includes [FerixzTanz's turn-signal side view (upstream PR #4)](https://github.com/dts88/zeekr-shortcut-car/pull/4),
