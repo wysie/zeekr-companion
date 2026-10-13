@@ -6,7 +6,8 @@ adapted to the current camera scheduler. The owner already uses the original app
 Enable **Settings → Super mirror → Turn-signal side view** and grant the overlay permission.
 It is off by default. The initial speed threshold is 30 km/h; set it to 0 to show the view at any
 speed. Field of view, aim back/up, window size, position, close delay and instant pop-up are adjustable.
-Factory camera views and Super mirror take precedence. This feature responds to turn signals;
+Factory camera views take precedence. When Super mirror is on, its existing window temporarily
+shows the side camera and restores the previous view afterwards. This feature responds to turn signals;
 it does not yet respond to blind-spot obstacle alerts. Upstream discusses that future trigger in
 [issue #6](https://github.com/dts88/zeekr-shortcut-car/issues/6#issuecomment-6050799572).
 
@@ -62,6 +63,19 @@ lower the framing. Or turn on *Button mode* and tap the top, bottom, left or rig
 switch camera. Push it half off-screen to hide it at the edge, and tap to bring it back. The
 rear camera is mirrored, like a real mirror. Fisheye correction with an adjustable field of view is
 optional.
+
+### Turn-signal side view
+
+Enable **Settings → Super mirror → Turn-signal side view** (off by default). Above the configured
+speed threshold (default 30 km/h), signalling shows the camera on that side. When Super mirror is
+on, it temporarily shows the side camera in the same window and restores the previous camera,
+framing and position after the signal ends and the configured close delay. A docked mirror is
+brought into view temporarily and docks again afterwards. With Super mirror off, a separate
+pop-up is used. Reverse, factory 360, factory side view and park assist take precedence.
+
+Side-camera correction and aim apply to either window. The pop-up size and placement settings
+apply only to the separate pop-up; Super mirror keeps its own size and position. This feature
+uses the turn signals; blind-spot obstacle alerts are not yet a trigger.
 
 ### Playback
 
