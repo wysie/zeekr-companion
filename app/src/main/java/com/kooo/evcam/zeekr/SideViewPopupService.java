@@ -123,6 +123,13 @@ public class SideViewPopupService extends Service {
         }
     }
 
+    public static void refreshCameraLabel() {
+        SideViewPopupService svc = instance;
+        if (svc != null && svc.popup != null) {
+            svc.popup.invalidate();
+        }
+    }
+
     private final Telemetry.Listener readingsListener = readings -> evaluate();
 
     private final ScreenState.Listener screenListener = new ScreenState.Listener() {

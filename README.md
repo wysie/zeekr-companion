@@ -49,6 +49,11 @@ switch camera. Push it half off-screen to hide it at the edge, and tap to bring 
 rear camera is mirrored, like a real mirror. Fisheye correction with an adjustable field of view is
 optional.
 
+Enable **Settings → Super mirror → Show camera label** (on by default) to identify the
+displayed camera as Front, Rear, Left or Right. The label follows camera switching and temporary
+side views, and also appears in the independent side-view pop-up. Turn it off to hide the label.
+This setting does not alter recordings.
+
 ### Turn-signal side view
 
 Enable **Settings → Super mirror → Turn-signal side view** (off by default). Above the configured

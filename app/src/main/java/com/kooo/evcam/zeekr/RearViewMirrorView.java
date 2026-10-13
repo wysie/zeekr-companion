@@ -89,6 +89,7 @@ public class RearViewMirrorView extends ViewGroup {
     private final WindowManager windowManager;
     private final AppConfig appConfig;
     private final AutoFitTextureView textureView;
+    private final CameraLabel cameraLabel;
 
     private WindowManager.LayoutParams params;
     private boolean attached;
@@ -191,6 +192,7 @@ public class RearViewMirrorView extends ViewGroup {
     public RearViewMirrorView(Context context, AppConfig appConfig) {
         super(context);
         this.appConfig = appConfig;
+        this.cameraLabel = new CameraLabel(context);
         this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         this.pan = appConfig.getRearViewPan();
         this.laneIndex = appConfig.getRearViewLane();
@@ -567,6 +569,9 @@ public class RearViewMirrorView extends ViewGroup {
 
         if (sideView.active()) {
             drawSideView(canvas, width, height);
+            if (!frozen && appConfig.isRearViewCameraLabelEnabled()) {
+                cameraLabel.draw(canvas, sideView.lane(), width, height);
+            }
             if (frozen) {
                 drawFrozenHint(canvas, width, height);
             }
@@ -614,6 +619,9 @@ public class RearViewMirrorView extends ViewGroup {
         }
         if (flashLane >= 0 && flashLevel > 0f) {
             drawTapFlash(canvas, width, height);
+        }
+        if (!frozen && appConfig.isRearViewCameraLabelEnabled()) {
+            cameraLabel.draw(canvas, laneIndex, width, height);
         }
     }
 
