@@ -1087,6 +1087,7 @@ public class AppConfig {
                 .remove(KEY_REARVIEW_PAN)
                 .remove(KEY_REARVIEW_LANE)
                 .remove(KEY_REARVIEW_FRONT_REAR)
+                .remove(KEY_REARVIEW_CAMERA_LABEL)
                 .apply();
         AppLog.i(TAG, "超级后视镜布局已恢复默认");
     }
