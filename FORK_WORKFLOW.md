@@ -13,10 +13,12 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `research/factory-360-view` | Investigation of access to the factory stitched view |
 
 All behavior belonging to turn-signal side view lives on one feature branch. Camera
-labels remain a separate feature. The label branch starts from the original side-view
-contribution base because it labels both floating views; its additional commits contain
-only label changes. Merge finished features into `personal-build` and build that branch
-when an APK containing all of them is wanted. Research notes do not activate features.
+labels remain a separate feature. The label branch is based directly on upstream main
+and contributes configurable Super mirror labels through [upstream PR #17](https://github.com/dts88/zeekr-shortcut-car/pull/17).
+The personal integration also retains side-view labels from the earlier label work;
+that hookup can follow when upstream has the side-view feature. Merge finished
+features into `personal-build` and build that branch when an APK containing all of
+them is wanted. Research notes do not activate features.
 
 The former combined `side-view` branch and separate `feature/side-view-display-mode`
 branch have been consolidated into this layout. Their history is retained in
