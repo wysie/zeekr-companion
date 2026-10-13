@@ -9,6 +9,7 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `upstream-main` | Unmodified upstream `main`; update by fast-forward only |
 | `feature/turn-signal-side-view` | Contribution branch based directly on upstream, containing the PR #4 port and temporary Super mirror side view |
 | `feature/camera-labels` | Camera-label toggle and floating direction labels, based on the side-view contribution branch |
+| `feature/side-view-display-mode` | Replace-or-separate display choice, independent side output and pinch resizing; based on camera-labels |
 | `research/blind-spot-alerts` | Read-only investigation and implementation plan; no active blind-spot trigger |
 
 Submit upstream PRs from a clean `feature/...` branch. The existing contribution branch deliberately
@@ -46,10 +47,13 @@ source ~/.config/android-dev/env.sh
 bash ./gradlew :app:testDebugUnitTest assembleRelease
 ```
 
-The side-view feature remains off by default. When enabled alongside Super mirror, it temporarily
+The side-view feature remains off by default. With Replace Super mirror enabled (default), it temporarily
 shows the corresponding side camera in the same window, then restores the normal mirror after the
 configured close delay. With Super mirror off, the separate pop-up is used. No new camera output
-is added when the existing mirror hosts the side view. Car testing of this interaction remains
+is added when the existing mirror hosts the side view. With Replace Super mirror off, a separate
+side output shares the camera stream with the mirror and main preview; the independent window
+supports pinch resizing. If its output is rejected, the side window closes and the session retries
+without it. Concurrent windows and resize gestures still need validation on the 009. Car testing of this interaction remains
 necessary; unit tests and APK compilation do not exercise the head unit's window manager.
 
 The camera-label branch adds the label implementation and a Malay wording correction on top

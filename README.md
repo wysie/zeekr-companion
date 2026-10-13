@@ -9,8 +9,10 @@ adapted to the current camera scheduler. The owner already uses the original app
 Enable **Settings → Super mirror → Turn-signal side view** and grant the overlay permission.
 It is off by default. The initial speed threshold is 30 km/h; set it to 0 to show the view at any
 speed. Field of view, aim back/up, window size, position, close delay and instant pop-up are adjustable.
-Factory camera views take precedence. When Super mirror is on, its existing window temporarily
-shows the side camera and restores the previous view afterwards. This feature responds to turn signals;
+Factory camera views take precedence. **Replace Super mirror** is on by default: when the mirror
+is on, its window temporarily shows the side camera and then restores the previous view. Turn
+this option off to show the side camera in a separate window alongside the mirror. Pinch the
+separate window to resize it. This feature responds to turn signals;
 it does not yet respond to blind-spot obstacle alerts. Upstream discusses that future trigger in
 [issue #6](https://github.com/dts88/zeekr-shortcut-car/issues/6#issuecomment-6050799572).
 
