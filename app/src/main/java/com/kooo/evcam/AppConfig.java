@@ -789,6 +789,16 @@ public class AppConfig {
      */
     public static final int REARVIEW_MIN_SIZE = 120;
     private static final String KEY_REARVIEW_BUTTON_MODE = "rearview_button_mode";
+    private static final String KEY_REARVIEW_CAMERA_LABEL = "rearview_camera_label";
+
+    /** Shared by Super mirror and the independent side-view pop-up. */
+    public boolean isRearViewCameraLabelEnabled() {
+        return prefs.getBoolean(KEY_REARVIEW_CAMERA_LABEL, true);
+    }
+
+    public void setRearViewCameraLabelEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_REARVIEW_CAMERA_LABEL, enabled).apply();
+    }
 
     public boolean isRearViewEnabled() {
         return prefs.getBoolean(KEY_REARVIEW_ENABLED, false);

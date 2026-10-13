@@ -43,6 +43,7 @@ public class SideViewPopupView extends ViewGroup {
     private final WindowManager windowManager;
     private final AppConfig appConfig;
     private final AutoFitTextureView textureView;
+    private final CameraLabel cameraLabel;
     private final Matrix drawMatrix = new Matrix();
     private final RectF sourceRect = new RectF();
     private final RectF destRect = new RectF();
@@ -64,6 +65,7 @@ public class SideViewPopupView extends ViewGroup {
     public SideViewPopupView(Context context, AppConfig appConfig) {
         super(context);
         this.appConfig = appConfig;
+        this.cameraLabel = new CameraLabel(context);
         windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         setBackgroundColor(0xFF000000);
         textureView = new AutoFitTextureView(context);
@@ -302,6 +304,9 @@ public class SideViewPopupView extends ViewGroup {
             drawChild(canvas, textureView, getDrawingTime());
         }
         canvas.restoreToCount(save);
+        if (appConfig.isRearViewCameraLabelEnabled()) {
+            cameraLabel.draw(canvas, lane, width, height);
+        }
     }
 
     private void drawTextureOnce(Canvas canvas) {
