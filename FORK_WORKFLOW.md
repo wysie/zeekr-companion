@@ -4,12 +4,13 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 
 | Branch | Purpose |
 | --- | --- |
-| `main` | Installable fork, with personal version numbers, update source and build configuration |
+| `main` | Unmodified upstream `main`; update by fast-forward only |
+| `side-view` | Installable fork containing PR #4, our improvements, personal version numbers, update source and build configuration |
 | `upstream-main` | Unmodified upstream `main`; update by fast-forward only |
 | `feature/turn-signal-side-view` | Contribution branch based directly on upstream, containing the PR #4 port and temporary Super mirror side view |
 
 Submit upstream PRs from a clean `feature/...` branch. The existing contribution branch deliberately
-excludes the fork's version number, update owner, workflow changes and this document. The original
+excludes the fork's version number, update owner, workflow changes and this document. Those stay on `side-view`. The original
 PR #4 contributor is credited in `NOTICE.md`. The branch contains two focused commits: the port to
 the current scheduler, followed by temporary side viewing in the existing mirror window.
 
@@ -32,8 +33,9 @@ git push -u origin feature/my-change
 ```
 
 A feature that depends on the side-view work can start from `feature/turn-signal-side-view` instead.
-Keep personal version and update settings on `main`, then merge completed feature branches into it.
-Do not reset or force-push `main` to upstream; it contains the installable fork's history.
+Keep personal version and update settings on `side-view`, then merge completed feature branches into it.
+Keep `main` free of personal features. The previous integrated `main` history is retained on `side-view`;
+future upstream syncs should fast-forward `main` rather than merge personal feature branches into it.
 
 Local Java and Android environment:
 
