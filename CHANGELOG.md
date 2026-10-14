@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.18-personal-alpha] - 2026-10-14
+
 - Fix silent 360 copy failures reusing old images; add parked-only calibration, factory/screen suppression, distinct camera assignments and a slow-readback pause.
 - Add a stale-frame cover to the side popup and require advancing timestamps for popup/HUD/Super mirror; reduce Super mirror stale cover from up to roughly 3.5 seconds to a 500 ms threshold checked every 100 ms.
 
