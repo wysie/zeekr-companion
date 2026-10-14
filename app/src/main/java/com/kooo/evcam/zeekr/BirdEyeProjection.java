@@ -68,6 +68,19 @@ public final class BirdEyeProjection {
         public boolean insideCar(double x, double y) {
             return Math.abs(x) <= width / 2 && Math.abs(y) <= length / 2;
         }
+        public String describe() {
+            StringBuilder result = new StringBuilder("length=").append(length).append(" width=")
+                    .append(width).append(" margin=").append(margin).append(" (metres)\n");
+            for (int i = 0; i < cameras.length; i++) {
+                Camera c = cameras[i];
+                result.append("camera ").append(i).append(": lane=").append(c.lane)
+                        .append(" mount=").append(c.x).append(',').append(c.y).append(',').append(c.height)
+                        .append(" yaw/pitch/roll=").append(c.yaw).append('/').append(c.pitch).append('/').append(c.roll)
+                        .append(" fov=").append(c.fov).append(" centre=").append(c.cx).append(',').append(c.cy)
+                        .append(" mirror=").append(c.mirror).append('\n');
+            }
+            return result.toString();
+        }
     }
 
     /** Precomputed source pixel addresses and normalized blend for each output pixel.

@@ -288,3 +288,4 @@ limited to one snapshot at a time, and does not modify the camera or recordings.
 Three new interpolation/sentinel tests and existing lane-boundary tests pass:
 1,261 JVM tests, zero failures/errors/skips. Native UI/export and interpolation
 cost still need on-car checks. The geometry mismatch remains unresolved.
+Packaged as 2.11.23-personal-alpha, versionCode 306, retaining the existing signer.

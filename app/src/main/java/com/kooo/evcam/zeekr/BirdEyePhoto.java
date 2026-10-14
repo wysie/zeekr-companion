@@ -27,12 +27,19 @@ public final class BirdEyePhoto {
             Toast.makeText(app, R.string.msg_photo_no_picture, Toast.LENGTH_LONG).show();
             return;
         }
+        final String calibration;
+        try { calibration = new BirdEyeConfig(app).read().describe(); }
+        catch (Exception error) {
+            image.recycle();
+            AppLog.e("BirdEyePhoto", "Cannot read photo calibration", error);
+            Toast.makeText(app, R.string.msg_photo_not_saved, Toast.LENGTH_LONG).show();
+            return;
+        }
         if (!SAVING.compareAndSet(false, true)) {
             image.recycle();
             Toast.makeText(app, R.string.msg_photo_waiting, Toast.LENGTH_SHORT).show();
             return;
         }
-        final String calibration = new BirdEyeConfig(app).preferences.getAll().toString();
         new Thread(() -> {
             File photo = null, note = null;
             boolean saved = false;
@@ -56,6 +63,7 @@ public final class BirdEyePhoto {
                 note = notes;
                 try (FileOutputStream out = new FileOutputStream(note)) {
                     out.write(("Experimental DIY 360 preview; estimates, not factory calibration.\n"
+                            + "App version: " + version(app) + "\n"
                             + "Preview: " + previewState + "\nCalibration: " + calibration + "\n")
                             .getBytes(StandardCharsets.UTF_8));
                     out.flush(); out.getFD().sync();
@@ -74,5 +82,10 @@ public final class BirdEyePhoto {
                     ok ? R.string.bird_eye_photo_saved : R.string.msg_photo_not_saved,
                     Toast.LENGTH_LONG).show());
         }, "save-diy360").start();
+    }
+
+    private static String version(Context context) {
+        try { return context.getPackageManager().getPackageInfo(context.getPackageName(), 0).versionName; }
+        catch (Exception error) { return "unknown"; }
     }
 }
