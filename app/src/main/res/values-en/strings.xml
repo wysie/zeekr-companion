@@ -364,8 +364,8 @@
     <string name="dlg_footage_lock_off_ok">Turn off</string>
     <string name="set_footage_lock_flash_title">Lock footage on flash-to-pass</string>
     <string name="set_footage_lock_flash_summary">While recording, flash the high beams to lock the clips covering 10 seconds before and after, on every camera. If locked footage fills the space, recording stops.</string>
-    <string name="set_footage_lock_horn_title">Lock footage on horn</string>
-    <string name="set_footage_lock_horn_summary">The head unit can\'t read the horn signal yet, so this is unavailable</string>
+    
+    
     <string name="msg_flash_locked">Flash-to-pass: locked the clips covering 10 seconds before and after</string>
     <string name="msg_storage_locked_stopped">Locked footage has filled the space, so recording stopped. Unlock some in playback</string>
     <string name="msg_storage_locked_refuse">Locked footage has filled the space, so recording can\'t start. Unlock some in playback</string>
@@ -986,4 +986,7 @@
     <string name="share_status_waiting">Waiting for your phone… Put it on the same Wi-Fi as the head unit (head unit: %1$s)</string>
     <string name="dev_signal_scan_title">Record all vehicle signals</string>
     <string name="dev_signal_scan_summary">While on, listens to every signal the head unit offers and logs each change (time, speed, code, value, name), to find signals not mapped yet, such as the blind-spot warning. Read only. Results are in Diagnostics under \"Signal scan\". Runs up to 3 hours, then switches itself off.</string>
+    <string name="set_footage_lock_brake_title">Lock footage on hard braking</string>
+    <string name="set_footage_lock_brake_summary" formatted="false">While recording, a hard stop (including the car\'s automatic emergency braking) locks the clips covering 10 seconds before and after. Automatic locks use at most 10% of the recording space; the oldest is released first.</string>
+    <string name="msg_brake_locked">Hard braking: locked the clips covering 10 seconds before and after</string>
 </resources>

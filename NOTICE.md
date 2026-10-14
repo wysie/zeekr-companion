@@ -89,3 +89,8 @@ Original source authorship is retained in the port commit. Source commits: [1539
 
 Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
 Original source authorship is retained in the port commit. Source commits: [85bc7a3](https://github.com/FerixzTanz/CAMCORDER/commit/85bc7a3427f1e35262a97583b44a6f2f577d7ecb), [7bdde73](https://github.com/FerixzTanz/CAMCORDER/commit/7bdde73df5a11810f906f7f599bda9f02722472d), [ade63cf](https://github.com/FerixzTanz/CAMCORDER/commit/ade63cf563e324f3d0419225a7d19b098085582c).
+
+## Hard-braking footage lock
+
+Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
+Original source authorship is retained in the port commit. Source commits: [75d8b85](https://github.com/FerixzTanz/CAMCORDER/commit/75d8b854cc5929dd8f67a4a06984189db1604e9c), [a2c7143](https://github.com/FerixzTanz/CAMCORDER/commit/a2c7143cb8d85db325ed2e17c053291a0cfd9f98), [978ba15](https://github.com/FerixzTanz/CAMCORDER/commit/978ba15c5b8c08e15113bb29ae4246c08f2ddd6c).

@@ -371,8 +371,8 @@
     <string name="dlg_footage_lock_off_ok">关闭</string>
     <string name="set_footage_lock_flash_title">闪远光时自动锁定当前录像</string>
     <string name="set_footage_lock_flash_summary">录制时闪远光，自动锁定此刻前后 10 秒所在的录像片段（每一路画面）。锁定的录像占满空间时停止录制。</string>
-    <string name="set_footage_lock_horn_title">鸣笛时自动锁定当前录像</string>
-    <string name="set_footage_lock_horn_summary">车机暂无法读取喇叭信号，此项暂不可用</string>
+    
+    
     <string name="msg_flash_locked">闪远光：已锁定前后 10 秒所在的录像片段</string>
     <string name="msg_storage_locked_stopped">锁定的影像占满了空间，录制已停止。请在回放里解锁一些</string>
     <string name="msg_storage_locked_refuse">锁定的影像占满了空间，无法开始录制。请在回放里解锁一些</string>
@@ -973,4 +973,7 @@
     <string name="share_status_waiting">等待手机连接… 请让手机和车机连同一个 Wi-Fi（车机地址 %1$s）</string>
     <string name="dev_signal_scan_title">记录全部车辆信号</string>
     <string name="dev_signal_scan_summary">开着时车机给的全部功能号都听着，哪个变了就记一行（时刻、车速、号、值、常量名），用来找盲区报警这类还没对上的信号。只读。诊断信息「信号普查」一节里看结果；最多记 3 小时，到点自己关。</string>
+    <string name="set_footage_lock_brake_title">急刹车时自动锁定当前录像</string>
+    <string name="set_footage_lock_brake_summary" formatted="false">录制时急刹车（包括车辆自动紧急制动），自动锁定此刻前后 10 秒所在的录像片段。自动锁定最多占录像空间的 10%，超出时先放开最早的。</string>
+    <string name="msg_brake_locked">急刹车：已锁定前后 10 秒所在的录像片段</string>
 </resources>
