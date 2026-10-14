@@ -88,6 +88,8 @@ public class RearViewMirrorView extends ViewGroup {
 
     private final WindowManager windowManager;
     private final AppConfig appConfig;
+    private final SideTurnArrow sideArrow;
+    private Integer indicatorDisplay;
     private final AutoFitTextureView textureView;
     private final SideViewControls sideControls;
     private final SideViewExpansion sideExpansion = new SideViewExpansion();
@@ -192,6 +194,7 @@ public class RearViewMirrorView extends ViewGroup {
     public RearViewMirrorView(Context context, AppConfig appConfig) {
         super(context);
         this.appConfig = appConfig;
+        this.sideArrow = new SideTurnArrow(context);
         this.windowManager = (WindowManager) context.getSystemService(Context.WINDOW_SERVICE);
         this.pan = appConfig.getRearViewPan();
         this.laneIndex = appConfig.getRearViewLane();
@@ -607,6 +610,12 @@ public class RearViewMirrorView extends ViewGroup {
         measureChildren(widthSpec, heightSpec);
     }
 
+    public void setIndicatorDisplay(Integer display) {
+        if (java.util.Objects.equals(indicatorDisplay, display)) return;
+        indicatorDisplay = display;
+        invalidate();
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         int width = getWidth();
@@ -636,6 +645,7 @@ public class RearViewMirrorView extends ViewGroup {
                     appConfig.getSidePopupRotation(sideView.lane()), width, height);
             drawSideView(canvas, width, height);
             canvas.restoreToCount(sideSave);
+            if (!frozen) sideArrow.draw(canvas, sideView.lane(), indicatorDisplay, width, height);
             if (frozen) {
                 drawFrozenHint(canvas, width, height);
             }

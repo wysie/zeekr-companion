@@ -178,3 +178,7 @@ every change since then is visible as a diff.
 Splitting App Lab's composite stream into a grid and rendering it is implemented here from scratch.
 
 Origins, third-party licences and boundaries: [NOTICE.md](NOTICE.md).
+
+## Turn arrows on side cameras
+
+The side camera displays an upright left/right arrow between the top corner controls, including during Super mirror replacement. It follows the indicator display in green/grey; if blink telemetry is unavailable it stays green. It does not indicate an obstacle detection. Camera labels remain independently configurable.

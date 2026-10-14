@@ -79,3 +79,8 @@ GPL-3.0 是传染性（copyleft）许可证。因此**本项目整体以 GPL-3.0
 The turn-signal side-view feature and projection tests were contributed by
 [FerixzTanz in PR #4](https://github.com/dts88/zeekr-shortcut-car/pull/4), then adapted
 to the current camera scheduler. They remain covered by the repository's GPL-3.0 license.
+
+## Turn arrows on side cameras
+
+Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
+Original source authorship is retained in the port commit. Source commits: [45e07ae](https://github.com/FerixzTanz/CAMCORDER/commit/45e07ae7da636dea4fe11e9a193217d66410bc33), [2415bac](https://github.com/FerixzTanz/CAMCORDER/commit/2415bac9437b5304ef805da28e08fb237e096ddf).

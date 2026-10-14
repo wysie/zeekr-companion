@@ -135,6 +135,11 @@ public class RearViewMirrorService extends Service {
         }
     }
 
+    public static void setSideIndicatorDisplay(Integer display) {
+        RearViewMirrorService svc = instance;
+        if (svc != null && svc.mirrorView != null) svc.mirrorView.setIndicatorDisplay(display);
+    }
+
     public static void refreshSideViewConfig() {
         RearViewMirrorService svc = instance;
         if (svc != null && svc.mirrorView != null) {
