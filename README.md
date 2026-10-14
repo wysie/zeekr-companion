@@ -17,9 +17,18 @@ in [NOTICE.md](NOTICE.md).
 
 For the original project and its maintainer's builds, use
 [dts88's repository and releases](https://github.com/dts88/zeekr-shortcut-car/releases).
-This fork is an experimental alternative for trying the additions below. Neither
-project is an official ZEEKR product. I do not claim that this fork has the same
-testing coverage or device compatibility as upstream.
+dts88’s original version is the more thoroughly tested option. This custom fork
+by wysie is primarily for personal use and adds experimental features; its vehicle
+testing is more limited. Neither project is an official ZEEKR product.
+
+The in-app About page identifies wysie’s fork and links separately to this fork,
+dts88’s original project and Ferix’s CAMCORDER contributions. Its optional PayNow
+tip, **9271 6786**, goes to **dts88, the original author**.
+
+The combined fork includes upstream **2.11.4-alpha** (`e4d0e0d`), including cabin
+camera recovery, serialized camera actions, scheduler-managed photos/exit and
+camera step diagnostics. `upstream-main` tracks that unmodified source; personal
+release numbers remain independent of upstream.
 
 ## Additions in this fork
 

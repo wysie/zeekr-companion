@@ -120,3 +120,13 @@ Original source authorship is retained in the port commit. Source commits: [c917
 The screen mirroring preference follows [FerixzTanz/CAMCORDER PR #14](https://github.com/FerixzTanz/CAMCORDER/pull/14), adapted to our independent popup and temporary Super mirror view. Original HUD source: [becbfe1](https://github.com/FerixzTanz/CAMCORDER/commit/becbfe10c6c9c1ebd1840245d68791c051c96c6a).
 
 HUD Presentation, layout and lifecycle are ported from that PR with original source authorship retained. Adaptations use our current scheduler and stricter display selection for the unverified 009; diagnostic correction [426c5fa](https://github.com/FerixzTanz/CAMCORDER/commit/426c5fa3e97bc588d8bee8674c812fadc29a76b8) is included.
+
+## In-app fork identification — 2026-10-14
+
+The combined fork is maintained by **wysie**, primarily for personal use on a ZEEKR
+009. Its About page identifies dts88’s original application and more thoroughly
+tested upstream releases, preserves EVCam/GPL attribution, and acknowledges
+FerixzTanz (Felix Tan)/CAMCORDER feature contributions. The retained optional
+PayNow number **9271 6786** is explicitly attributed to **dts88**, not the fork
+maintainer. Upstream 2.11.4-alpha (`e4d0e0d`) is merged without rewriting upstream
+or existing contribution history.

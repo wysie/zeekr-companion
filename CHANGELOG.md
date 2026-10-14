@@ -11,6 +11,12 @@ commit message, not here.
 
 Nothing yet.
 
+## [2.11.20-personal-alpha] - 2026-10-14
+
+- Merge upstream 2.11.4-alpha cabin-camera recovery, serialized camera actions, scheduler-managed photos/exit and step diagnostics.
+- Identify wysie’s personal custom fork in About; link to dts88’s original, more thoroughly tested version and credit Ferix’s feature contributions.
+- Clarify that optional PayNow tips to 9271 6786 go to the original author, dts88.
+
 ## [2.11.19-personal-alpha] - 2026-10-14
 
 - Preserve relay footage in private files, verify USB/archive copies and retain existing recordings on filename collisions.

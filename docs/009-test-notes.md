@@ -176,3 +176,31 @@ full disk, filename collision and process-death relay recovery; repair backups; 
 seat/gear/Sentry behavior; Android phone sharing; installer integrity errors; screen-off
 lease expiry and parked 12-V behavior. Current signing identity remains the public test
 key. No new 009 or emulator validation was performed.
+
+## Upstream 2.11.4 and About attribution — 2026-10-14
+
+Merged dts88’s upstream e4d0e0d0ddfef81a7fdb729ad57810fecc95d52c into the
+combined fork. upstream-main is fast-forwarded to that exact, unmodified source.
+The merge preserves popup/HUD output declarations and rejection priority, camera
+freshness guards, relay/repair fixes and all other personal features. Existing
+PR #17/#19 branch heads remain unchanged.
+
+Upstream adds no-frame camera reopening, global camera-close serialization,
+scheduler-managed photos/exit, camera step/session statistics and signal-change
+age diagnostics. Signal-change age is diagnostic metadata, not an expiry policy
+for cached readings or a measure of camera exposure latency.
+
+About identifies wysie’s personal custom fork, recommends dts88’s original and
+more thoroughly tested version, and links to both repositories. EVCam/GPL credit,
+original acknowledgements and Ferix/CAMCORDER credit are retained. PayNow
+9271 6786 is explicitly a voluntary tip to the original author, dts88. English and
+Chinese About strings were checked in the packaged APK, along with resource XML
+and translation parity; the page was not rendered on a head unit or emulator.
+
+Local validation: 1,245 JVM tests passed, zero failures/errors/skips; signed
+assembleRelease and vital lint passed. Full lint has 18 MissingTranslation
+findings for the intentional English About fallback in Malay and no other error
+category. Version 2.11.20-personal-alpha, code 303, retains the established
+certificate SHA-256 a40da80a59d170caa950cf15c18c454d47a39b26989d8b640ecd745ba71bf5dc.
+New camera scheduler behavior and the About page still need an on-car check;
+no additional vehicle compatibility or safety validation is claimed.

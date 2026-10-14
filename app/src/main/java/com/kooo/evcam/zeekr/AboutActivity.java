@@ -29,7 +29,9 @@ public class AboutActivity extends AppCompatActivity {
 
     public static final String EVCAM_URL = "https://github.com/suyunkai/EVCam";
     public static final String GPL_URL = "https://www.gnu.org/licenses/gpl-3.0.html";
-    public static final String PROJECT_URL = "https://github.com/dts88/zeekr-shortcut-car";
+    public static final String PROJECT_URL = "https://github.com/wysie/zeekr-shortcut-car";
+    public static final String UPSTREAM_URL = "https://github.com/dts88/zeekr-shortcut-car";
+    public static final String FERIX_URL = "https://github.com/FerixzTanz/CAMCORDER";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -47,6 +49,8 @@ public class AboutActivity extends AppCompatActivity {
         }
 
         bindLink(R.id.about_link_project, PROJECT_URL);
+        bindLink(R.id.about_link_upstream, UPSTREAM_URL);
+        bindLink(R.id.about_link_ferix, FERIX_URL);
         bindLink(R.id.about_link_evcam, EVCAM_URL);
         bindLink(R.id.about_link_gpl, GPL_URL);
 

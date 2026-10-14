@@ -128,6 +128,28 @@
                 android:textAppearance="@style/TextAppearance.Cam.Body" />
 
             <TextView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
+                android:lineSpacingMultiplier="1.3"
+                android:text="@string/about_credits_ferix"
+                android:textColor="@color/text_secondary"
+                android:textAppearance="@style/TextAppearance.Cam.Body" />
+
+            <TextView
+                android:id="@+id/about_link_ferix"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+                android:focusable="true"
+                android:text="github.com/FerixzTanz/CAMCORDER"
+                android:textColor="@color/energy_text"
+                android:textAppearance="@style/TextAppearance.Cam.Body" />
+
+            <TextView
                 android:id="@+id/about_link_gpl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -161,7 +183,23 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="8dp"
                 android:padding="4dp"
-                android:text="github.com/dts88/zeekr-shortcut-car"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:focusable="true"
+                android:text="@string/about_link_fork_label"
+                android:textColor="@color/energy_text"
+                android:textAppearance="@style/TextAppearance.Cam.Body" />
+
+            <TextView
+                android:id="@+id/about_link_upstream"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="4dp"
+                android:minHeight="48dp"
+                android:gravity="center_vertical"
+                android:padding="4dp"
+                android:focusable="true"
+                android:text="@string/about_link_upstream_label"
                 android:textColor="@color/energy_text"
                 android:textAppearance="@style/TextAppearance.Cam.Body" />
 
