@@ -45,6 +45,8 @@ public class SideViewPopupView extends ViewGroup {
 
     private final WindowManager windowManager;
     private final AppConfig appConfig;
+    private final SideTurnArrow sideArrow;
+    private Integer indicatorDisplay;
     private final AutoFitTextureView textureView;
     private final ScaleGestureDetector resizeGesture;
     private final CameraLabel cameraLabel;
@@ -78,6 +80,7 @@ public class SideViewPopupView extends ViewGroup {
         super(context);
         this.appConfig = appConfig;
         this.cameraLabel = new CameraLabel(context);
+        this.sideArrow = new SideTurnArrow(context);
         dragSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         resizeGesture = new ScaleGestureDetector(context,
                 new ScaleGestureDetector.SimpleOnScaleGestureListener() {
@@ -406,6 +409,12 @@ public class SideViewPopupView extends ViewGroup {
         measureChildren(widthSpec, heightSpec);
     }
 
+    public void setIndicatorDisplay(Integer display) {
+        if (java.util.Objects.equals(indicatorDisplay, display)) return;
+        indicatorDisplay = display;
+        invalidate();
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         int width = getWidth();
@@ -453,6 +462,7 @@ public class SideViewPopupView extends ViewGroup {
         if (appConfig.isRearViewCameraLabelEnabled()) {
             cameraLabel.drawBottom(canvas, lane, width, height);
         }
+        sideArrow.draw(canvas, lane, indicatorDisplay, width, height);
         drawChild(canvas, controls, getDrawingTime());
     }
 

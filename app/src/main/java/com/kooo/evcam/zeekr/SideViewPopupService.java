@@ -238,6 +238,9 @@ public class SideViewPopupService extends Service {
         }
         Readings r = Telemetry.get().readings();
         VehicleState s = Telemetry.get().latest();
+        Integer indicator = r.code(Signal.INDICATOR_DISPLAY);
+        RearViewMirrorService.setSideIndicatorDisplay(indicator);
+        if (popup != null) popup.setIndicatorDisplay(indicator);
         boolean useMirror = RearViewMirrorService.isRunning() && appConfig.isSidePopupReplaceMirror();
         int previousMirrorLane = RearViewMirrorService.sideViewLane();
         if (!useMirror) {
@@ -281,6 +284,7 @@ public class SideViewPopupService extends Service {
                     && (popup == null || !popup.isShowing() || popup.lane() != want)) {
                 AppLog.i(TAG, "转向灯：弹出「" + LaneCycle.labelOf(want) + "」路");
                 showPopup(want);
+                if (popup != null) popup.setIndicatorDisplay(indicator);
             }
             return;
         }

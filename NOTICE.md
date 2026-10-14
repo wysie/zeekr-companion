@@ -104,3 +104,8 @@ Original source authorship is retained in the port commit. Source commits: [c611
 
 Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
 Original source authorship is retained in the port commit. Source commits: [289d66c](https://github.com/FerixzTanz/CAMCORDER/commit/289d66c35e7ee65b0bda5b5675ff17c33c4075e2), [657dcbd](https://github.com/FerixzTanz/CAMCORDER/commit/657dcbdddf55c9de1187de1db0e749c7596cca24), [f41028c](https://github.com/FerixzTanz/CAMCORDER/commit/f41028c89b1a3467c1352de3ed518d22f7f93396).
+
+## Turn arrows on side cameras
+
+Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
+Original source authorship is retained in the port commit. Source commits: [45e07ae](https://github.com/FerixzTanz/CAMCORDER/commit/45e07ae7da636dea4fe11e9a193217d66410bc33), [2415bac](https://github.com/FerixzTanz/CAMCORDER/commit/2415bac9437b5304ef805da28e08fb237e096ddf).
