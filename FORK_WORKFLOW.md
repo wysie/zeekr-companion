@@ -5,10 +5,10 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | Branch | Purpose |
 | --- | --- |
 | `main` / `upstream-main` | Unmodified upstream code; update by fast-forward only |
-| `feature/turn-signal-side-view` | One complete side-view feature: PR #4 port, temporary mirror view, Replace Super mirror option, independent popup and pinch resizing |
+| `feature/turn-signal-side-view` | One complete side-view feature: PR #4 port, independent Blind spot camera settings, temporary mirror view, Use Super mirror when active option, independent popup and pinch resizing |
 | `feature/camera-labels` | Optional camera labels, developed separately from side-view display modes |
 | `personal-build` | Combined installable fork containing both implemented features, fork version numbers, update source and build configuration |
-| `pr4-followup` | Credited side-view contribution for the existing upstream PR #4, preserving the original author's commit; excludes labels and personal build settings |
+| `pr4-followup` | Credited consolidated blind spot camera contribution, building on upstream PR #4 and preserving the original author's commit; excludes labels and personal build settings |
 | `research/blind-spot-alerts` | Alert-signal investigation; no active obstacle trigger |
 | `research/factory-360-view` | Investigation of access to the factory stitched view |
 
@@ -24,10 +24,11 @@ The former combined `side-view` branch and separate `feature/side-view-display-m
 branch have been consolidated into this layout. Their history is retained in
 `personal-build`; the existing 2.11.5-sideview-alpha APK still contains both features.
 
-For PR #4, use `pr4-followup` rather than creating a competing PR. The original
-FerixzTanz commit and authorship are retained there, with attribution in `NOTICE.md`.
-The author/maintainer can incorporate the follow-up into the existing PR. Other
-independent contributions can use their own feature branches, without fork build settings.
+For the consolidated blind spot camera PR, use `pr4-followup`. It builds on PR #4
+and retains the original FerixzTanz commit and authorship, with attribution in
+`NOTICE.md`. The PR description should link PR #4 so the maintainer can decide
+how to incorporate the contributions. Other independent contributions use their
+own feature branches, without fork build settings.
 
 For new independent work:
 
@@ -54,7 +55,8 @@ The build workflow runs on pushes to `personal-build`; its APK artifact is
 `ZeekrShortcut-apk`. Increment `versionCode` and update `versionName` before each new
 installable release. The existing signing key preserves update compatibility.
 
-Side view is off by default. Replace Super mirror is on by default and temporarily
+Automatic blind spot camera is under Settings → Blind spot camera and is off by
+default. Use Super mirror when active is on by default and temporarily
 uses the existing mirror canvas. With it off, an independent side popup shares the
 camera stream and supports pinch resizing. A rejected side output yields before the
 mirror and recording. Both side cameras share one saved popup location; drag it to position

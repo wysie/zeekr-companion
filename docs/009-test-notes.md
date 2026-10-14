@@ -86,3 +86,13 @@ yet explained.
 in the Aim back summary and moves the full example note directly below that
 slider, before Aim up. The speed explanation remains on Minimum opening speed.
 These are help-text and placement changes, not rendering changes.
+
+2.11.14-personal-alpha moves all side-view controls to a top-level Blind spot
+camera settings section. The main switch is Automatic blind spot camera; the
+display option is Use Super mirror when active. Existing preference keys and
+saved values are retained. The speed-priority explanation and high-angle zoom
+note stay with their controls. The feature still responds to turn signals.
+This build also integrates upstream 2.11.3-alpha (571a2a9), including the 30-second
+cabin camera dark hold and recording startup when the disk becomes usable.
+The independent contribution passes 1,084 tests and release build checks against
+that upstream base. Native layout visibility remains unverified on the head unit.
