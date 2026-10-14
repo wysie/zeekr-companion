@@ -144,4 +144,4 @@ Origins, third-party licences and boundaries: [NOTICE.md](NOTICE.md).
 
 ## Night theme and floating record button
 
-Night mode uses a black page/main panel with darker settings rows and a distinct selected-row shade. Day colors are retained. The floating record button has a smaller, thinner icon and no shadow; its background stays neutral while live recording uses a red ring/stop icon. The current upstream waiting-for-cameras state remains grey.
+Night mode uses a black page/main panel with darker settings rows and a distinct selected-row shade. Day layout and primary colors are retained; setting descriptions have stronger contrast. The floating record button has a smaller, thinner icon and no shadow; its background stays neutral while live recording uses a red ring/stop icon. The current upstream waiting-for-cameras state remains grey.
