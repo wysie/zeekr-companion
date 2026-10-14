@@ -161,13 +161,28 @@
       录像不动。按钮自己管点击和颜色（FisheyeToggleButton），MainActivity 不用接线；
       画面那边由 FourLaneContainer 自己听开关。先放在这里试效果，位置以后再定。
     -->
-    <com.kooo.evcam.ui.FisheyeToggleButton
-        android:id="@+id/btn_fisheye"
-        style="@style/Widget.Cam.RailSmall"
+    <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="@dimen/rail_small_height"
         android:layout_marginTop="@dimen/gutter"
-        android:text="@string/photo_fisheye" />
+        android:orientation="horizontal">
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btn_bird_eye"
+            style="@style/Widget.Cam.RailSmall"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:layout_marginEnd="@dimen/gutter"
+            android:text="@string/bird_eye_button"
+            android:contentDescription="@string/bird_eye_button_description" />
+        <com.kooo.evcam.ui.FisheyeToggleButton
+            android:id="@+id/btn_fisheye"
+            style="@style/Widget.Cam.RailSmall"
+            android:layout_width="0dp"
+            android:layout_weight="1"
+            android:layout_height="match_parent"
+            android:text="@string/photo_fisheye" />
+    </LinearLayout>
 
     <!--
       车辆状态（试验性，设置 → 界面）：用信息条的图标显示哨兵模式、刹车 / 油门、驾驶辅助、喇叭。

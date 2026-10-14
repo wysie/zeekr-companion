@@ -78,6 +78,12 @@ public final class DiagnosticsCollector {
         timings.run("stall watch", () -> appendStallWatch(sb, context));
         timings.run("multi mapping", () -> appendMultiMapping(sb, context));
         timings.run("displays", () -> appendDisplays(sb, context));
+        timings.run("DIY 360", () -> {
+            sb.append("## DIY 360 prototype\n").append(FourLaneContainer.describeAttached()).append('\n');
+            sb.append("Manual calibration (defaults are estimates): ")
+                    .append(new org.json.JSONObject(new BirdEyeConfig(context).preferences.getAll()).toString())
+                    .append("\n\n");
+        });
         timings.run("screen", () -> appendScreen(sb));
         timings.run("black box", () -> appendBlackBox(sb, context));
         timings.run("storage", () -> appendStorage(sb, context));

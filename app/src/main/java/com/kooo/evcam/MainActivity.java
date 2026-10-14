@@ -3221,6 +3221,33 @@ public class MainActivity extends AppCompatActivity {
         expandedCameraKey = null;
         expandedTopMargin = -1;
 
+        com.google.android.material.button.MaterialButton birdEye = findViewById(R.id.btn_bird_eye);
+        if (birdEye != null) {
+            birdEye.setOnClickListener(v -> {
+                if (expandedPreview != null) {
+                    expandAnimator.finishNow();
+                    finishCollapse(false);
+                }
+                boolean wasOn = compositeContainer.getDisplayMode()
+                        == com.kooo.evcam.zeekr.FourLaneContainer.DisplayMode.BIRD_EYE;
+                if (wasOn) compositeContainer.showGrid(false);
+                else if (!compositeContainer.showBirdEye()) {
+                    Toast.makeText(this, R.string.bird_eye_unavailable, Toast.LENGTH_LONG).show();
+                    return;
+                }
+                birdEye.setSelected(!wasOn);
+                birdEye.setText(wasOn ? R.string.bird_eye_button : R.string.bird_eye_back);
+                updateCompositeLabels();
+            });
+            birdEye.setOnLongClickListener(v -> {
+                compositeContainer.calibrateBirdEye();
+                return true;
+            });
+            androidx.core.view.ViewCompat.replaceAccessibilityAction(birdEye,
+                    androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_LONG_CLICK,
+                    getString(R.string.bird_eye_calibrate), null);
+        }
+
         compositeContainer.setOnClickListener(v -> {
             if (expandedPreview != null) {
                 collapsePreview();
@@ -3397,6 +3424,13 @@ public class MainActivity extends AppCompatActivity {
         if (compositeContainer == null) {
             return;
         }
+        com.google.android.material.button.MaterialButton birdEye = findViewById(R.id.btn_bird_eye);
+        if (birdEye != null) {
+            boolean enabled = compositeContainer.getDisplayMode()
+                    == com.kooo.evcam.zeekr.FourLaneContainer.DisplayMode.BIRD_EYE;
+            birdEye.setSelected(enabled);
+            birdEye.setText(enabled ? R.string.bird_eye_back : R.string.bird_eye_button);
+        }
         boolean grid = compositeContainer.getDisplayMode()
                 == com.kooo.evcam.zeekr.FourLaneContainer.DisplayMode.GRID;
         TextView[] labels = {
@@ -3415,8 +3449,9 @@ public class MainActivity extends AppCompatActivity {
             }
             // 三路布局里的「环视」在放大某一格时收起：那时这一块占满画面，
             // 它的右上角正好是录制角标的位置
-            boolean visible = grid
-                    || (order[cell] == focused && findViewById(R.id.cabin_column) == null);
+            boolean visible = compositeContainer.getDisplayMode()
+                    != com.kooo.evcam.zeekr.FourLaneContainer.DisplayMode.BIRD_EYE && (grid
+                    || (order[cell] == focused && findViewById(R.id.cabin_column) == null));
             labels[cell].setVisibility(visible ? View.VISIBLE : View.GONE);
         }
     }

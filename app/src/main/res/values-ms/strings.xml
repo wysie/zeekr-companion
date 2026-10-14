@@ -1007,4 +1007,33 @@
     <string name="set_hud_side_opacity_title">Kelegapan gambar HUD (%)</string>
     <string name="set_hud_side_opacity_summary">Lebih rendah lebih pudar. Warna hitam memang tidak menyala pada HUD</string>
     <string name="set_side_hud_note">HUD masih eksperimen pada 009. Jika tidak tersedia, paparan skrin digunakan. HUD mengabaikan ambang kelajuan; kamera asal dan undur tetap diutamakan.</string>
+
+    <!-- DIY ground-plane 360 prototype -->
+    <string name="bird_eye_button">360°</string>
+    <string name="bird_eye_back">Empat kamera</string>
+    <string name="bird_eye_button_description">Paparan 360 percubaan. Ketik untuk tukar paparan; tekan lama untuk menentukur.</string>
+    <string name="bird_eye_calibrate">Tentukur paparan 360</string>
+    <string name="bird_eye_camera">Kamera untuk ditentukur</string>
+    <string name="bird_eye_calibration_note">Laraskan semasa parkir. Nilai lalai ialah anggaran, bukan penentukuran 009 yang diukur. Arah: 0° depan, 90° kanan, 180° belakang, 270° kiri. Ofset: X positif ke kanan, Y positif ke depan. Kawasan hitam tiada liputan kamera. Perubahan disimpan secara automatik.</string>
+    <string name="bird_eye_reset">Tetapkan semula semua</string>
+    <string name="bird_eye_value">%1$s: %2$d</string>
+    <string name="bird_eye_length">Panjang kenderaan (cm)</string>
+    <string name="bird_eye_width">Lebar kenderaan (cm)</string>
+    <string name="bird_eye_margin">Tanah sekitar kenderaan (cm)</string>
+    <string name="bird_eye_source_lane">Imej kamera sumber</string>
+    <string name="bird_eye_height">Ketinggian kamera dari tanah (cm)</string>
+    <string name="bird_eye_pitch">Kecondongan ke bawah (°)</string>
+    <string name="bird_eye_yaw">Arah kamera (°)</string>
+    <string name="bird_eye_roll">Putaran imej (°)</string>
+    <string name="bird_eye_fov">Medan pandangan lensa (°)</string>
+    <string name="bird_eye_cx">Pusat lensa X (%)</string>
+    <string name="bird_eye_cy">Pusat lensa Y (%)</string>
+    <string name="bird_eye_offset_x">Ofset pemasangan X (cm)</string>
+    <string name="bird_eye_offset_y">Ofset pemasangan Y (cm)</string>
+    <string name="bird_eye_mirror">Balikkan imej sumber secara mendatar</string>
+    <string name="bird_eye_front">Depan</string>
+    <string name="bird_eye_waiting">Menunggu kamera langsung</string>
+    <string name="bird_eye_gpu_blocked">Matikan pelurusan GPU</string>
+    <string name="bird_eye_watermark">360 percubaan · penentukuran anggaran · sehingga 5 fps</string>
+    <string name="bird_eye_unavailable">360 memerlukan pratonton keliling aktif. Jika pelurusan GPU aktif, matikannya dalam Pilihan pembangun dan mulakan semula aplikasi.</string>
 </resources>
