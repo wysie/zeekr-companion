@@ -6,10 +6,10 @@ features. See [Fork workflow](FORK_WORKFLOW.md) for contribution branches.
 This fork includes [FerixzTanz's turn-signal side view (upstream PR #4)](https://github.com/dts88/zeekr-shortcut-car/pull/4),
 adapted to the current camera scheduler. The owner already uses the original app on a ZEEKR 009.
 
-Enable **Settings → Super mirror → Turn-signal side view** and grant the overlay permission.
-It is off by default. The initial speed threshold is 30 km/h; set it to 0 to show the view at any
-speed. Field of view, aim back/up, window size, position, close delay and instant pop-up are adjustable.
-Factory camera views take precedence. **Replace Super mirror** is on by default: when the mirror
+Enable **Settings → Blind spot camera → Automatic blind spot camera** and grant the overlay permission.
+It is off by default. The initial speed threshold is 30 km/h; set it to 0 to remove the app’s
+speed restriction. Field of view, aim back/up, window size, position, close delay and instant pop-up are adjustable.
+Factory camera views take precedence. **Use Super mirror when active** is on by default: when the mirror
 is on, its window temporarily shows the side camera and then restores the previous view. Turn
 this option off to show the side camera in a separate window alongside the mirror. Pinch the
 separate window to resize it. This feature responds to turn signals;
@@ -75,15 +75,15 @@ displayed camera as Front, Rear, Left or Right. The label follows camera switchi
 side views, and also appears in the independent side-view pop-up. Turn it off to hide the label.
 This setting does not alter recordings.
 
-### Turn-signal side view
+### Automatic blind spot camera
 
-Enable **Settings → Super mirror → Turn-signal side view** (off by default). Above the configured
+Enable **Settings → Blind spot camera → Automatic blind spot camera** (off by default). Above the configured
 speed threshold (default 30 km/h), signalling shows the camera on that side. When Super mirror is
-on and **Replace Super mirror** is enabled (default), it temporarily shows the side camera in
+on and **Use Super mirror when active** is enabled (default), it temporarily shows the side camera in
 the same window and restores the previous camera,
 framing and position after the signal ends and the configured close delay. A docked mirror is
 brought into view temporarily and docks again afterwards. With Super mirror off, a separate
-pop-up is used. Turn **Replace Super mirror** off to keep the mirror and show a separate
+pop-up is used. Turn **Use Super mirror when active** off to keep the mirror and show a separate
 side window alongside it. Both windows share the existing surround camera stream; the side
 window has its own output and does not replace the mirror output. Reverse, factory 360, factory
 side view and park assist take precedence.
@@ -93,7 +93,7 @@ apply only to the separate pop-up. Left and right cameras use one shared window 
 Drag the window to place it and pinch to resize; both position and size are saved. It stays
 square and is limited to half the screen width.
 Super mirror keeps its own size and position. If the head unit rejects the additional output,
-the side window is closed and a message suggests using Replace Super mirror. This feature
+the side window is closed and a message suggests using Use Super mirror when active. This feature
 uses the turn signals; blind-spot obstacle alerts are not yet a trigger.
 
 The side-view window has corner buttons matching the factory-style controls: **Expand**
