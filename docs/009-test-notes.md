@@ -319,3 +319,4 @@ exclusion and output-allocation bounds. Full suite: 1,271 tests, zero failures,
 errors or skips. Signed build/vital lint pass. Native copy speed, heap use,
 full-size export and recording continuity await owner testing. Geometric
 misalignment remains unresolved.
+Packaged as 2.11.24-personal-alpha, versionCode 307, retaining the existing signer.
