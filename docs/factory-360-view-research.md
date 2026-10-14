@@ -75,9 +75,81 @@ mapping, overlap blending and live performance would need independent work. The
 existing view correction is an approximate lens model, not a complete 009 surround
 calibration.
 
+## Additional leads checked on 2026-10-14
+
+Ferix's CAMCORDER remains at `c6d8b6335799ca863a186f2530a45748827864b9`.
+Its scanner is a vehicle-signal tool; it does not expose stitched images.
+[OpenAVM's platform notes](https://github.com/Dantenothing/openavm-recorder/blob/main/PLATFORM_NOTES.md)
+also describe the same vertically packed Camera2 feed, not a demonstrated factory
+bird's-eye endpoint. Neither check establishes a usable stitched feed on the 009.
+
+Android's [EVS overview](https://source.android.com/docs/automotive/camera/evs)
+and [Vehicle Camera HAL documentation](https://source.android.com/docs/automotive/camera-hal)
+provide another investigation route. EVS Manager can share camera buffers with
+additional clients, while the underlying hardware HAL has exclusive ownership
+behavior. EVS camera buffers alone do not establish access to the factory's final
+stitched rendering.
+
+A separate AOSP `android.hardware.automotive.sv@1.0` interface includes
+`ISurroundView2dSession`, documented as a top/bird's-eye view. The
+[reference client](https://android.googlesource.com/platform/packages/services/Car/+/26f47c7/surround_view/app/sv_app.cpp)
+starts a 2d session and receives its stream through a callback. This establishes
+that such an Android interface exists; it does **not** establish that ZEEKR ships
+it, uses it for the factory view, or allows an App Lab app to call it. Inspect the
+009's HAL/service inventory and the factory renderer before implementing a client.
+
+Potential inventory names are `android.hardware.automotive.evs`,
+`android.hardware.automotive.sv`, EVS Manager and vendor AVM services. Their presence
+would be a lead, not proof of a permitted or calibrated output. Do not open the
+hardware HAL or run a reference demo as an inventory test: opening a hardware
+camera/display can displace its previous owner according to the AOSP contract.
+
+## Collection tool
+
+`tools/collect_factory_360.py` collects read-only metadata through an already
+connected, authorized ADB device. It records selected build properties, camera
+service state, package candidates, focus/window names, service/HAL inventories,
+framework paths and the vendor manifest. It records command failures separately;
+missing permissions are not evidence that an interface does not exist. It requests
+no video frames, launches no app and changes no vehicle settings.
+
+The script was checked locally with simulated ADB responses. No actual vehicle
+was attached; no factory package name or feed API has been identified on the 009.
+
+1. Export the normal app Diagnostics JSON first, noting the 009's firmware.
+2. With the factory 360 window closed, collect a baseline:
+
+   ```sh
+   python3 tools/collect_factory_360.py --label idle --out /tmp/009-360-idle
+   ```
+
+3. Open the normal factory 360 window manually and collect a second snapshot:
+
+   ```sh
+   python3 tools/collect_factory_360.py --label factory-360 --out /tmp/009-360-open
+   ```
+
+4. Compare window/package/process hints and the service manifests. Once the actual
+   factory package is identified, collect its permissions/components and, optionally,
+   readable APKs:
+
+   ```sh
+   python3 tools/collect_factory_360.py --label factory-package \
+     --package ACTUAL.PACKAGE.NAME --pull-package --out /tmp/009-360-package
+   ```
+
+   Replace the placeholder with a package established by the first snapshots.
+   `--pull-package` copies files to the Mac; it does not modify the installed app.
+
+Each run writes a `.zip` next to its output directory. Existing reports are never
+overwritten. Use `--adb /path/to/adb` if it is not on PATH, and `--serial SERIAL` if
+more than one Android device is attached. The tool does not enable ADB or connect
+to a guessed address. Reports may contain device/package details; collect them for
+private analysis rather than committing them or factory APKs to this repository.
+
 ## Branch
 
-`research/factory-360-view` starts from unmodified upstream `main` and contains only
-this note. Keep it separate from the installable `side-view` work and from
-`research/blind-spot-alerts`. Create a feature branch once an actual usable output
-interface has been established.
+`research/factory-360-view` holds research notes and the collection tool; it is not
+the combined application or a 360 implementation. Installable features live on the
+fork's `main`. `upstream-main` remains an unmodified dts88 mirror. Create a separate
+feature branch only after an actual usable image-output interface is established.
