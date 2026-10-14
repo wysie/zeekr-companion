@@ -96,3 +96,13 @@ This build also integrates upstream 2.11.3-alpha (571a2a9), including the 30-sec
 cabin camera dark hold and recording startup when the disk becomes usable.
 The independent contribution passes 1,084 tests and release build checks against
 that upstream base. Native layout visibility remains unverified on the head unit.
+
+## Ferix feature ports — 2026-10-14
+
+All seven feature groups are integrated into main on focused branches with source
+credit. Current upstream recording/channel logic is retained. No new vehicle test
+has been reported for these ports. Hard-braking locks and both driver recording
+switches default on; signal scanning remains opt-in. Android phone transfer still
+needs verification, including whether a request reaches the head unit.
+
+Final local validation: 1,146 JVM tests passed (0 failures/errors/skips) and assembleRelease passed, including release vital lint. The APK retains application ID io.github.dts88.zeekrshortcut and the existing signing identity. This does not establish on-car behavior for the new ports.

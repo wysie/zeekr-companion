@@ -9,6 +9,19 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.15-personal-alpha] - 2026-10-14
+
+- Port FerixzTanz/CAMCORDER phone sharing address selection, transfer status, request diagnostics and HEAD/compression fixes; Android timeout resolution remains unverified on the owner's phone.
+- Add a read-only vehicle signal scanner under Developer options, with sensor/polling fixes, a three-hour limit and shutdown when developer mode is locked.
+- Add upright green/grey turn arrows to both side-camera display modes, clear of the popup controls.
+- Add hard-braking footage locks with an automatic-lock storage budget; on by default under Storage and dependent on Lock footage.
+- Add custom clip exports up to 10 minutes without re-encoding, playback camera swipes, and file reservations that preserve existing and in-progress exports.
+- Add driver-based recording start/stop settings, both on by default, preserving upstream's current coordinator, screen-off and storage handling.
+- Adopt Ferix's black night palette and flat floating record icon, retaining the upstream waiting-for-cameras state.
+- Build the combined fork from main; keep upstream-main unmodified and existing upstream PR branches unchanged.
+
 - Automatic blind spot camera, adapted from PR #4 to the current channel scheduler. Off by default
   under Settings → Blind spot camera; adjustable speed threshold, field of view, aim and placement.
 - With Super mirror on, signalling temporarily switches its existing window to the side camera;

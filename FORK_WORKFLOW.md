@@ -10,6 +10,13 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/camera-labels` | Optional camera labels, developed separately from side-view display modes |
 | `personal-build` | Historical snapshot before promotion to `main`; no new feature integration or build triggers |
 | `pr4-followup` | Credited consolidated blind spot camera contribution, building on upstream PR #4 and preserving the original author's commit; excludes labels and personal build settings |
+| `feature/phone-sharing-fixes` | Ferix phone sharing fixes and connection diagnostics |
+| `feature/vehicle-signal-scanner` | Read-only scanner, sensor/polling fixes and developer-mode shutdown |
+| `feature/hard-braking-lock` | Hard-braking footage protection with automatic-lock budget |
+| `feature/clip-export` | Range exports, camera swipes and protection against file collisions |
+| `feature/driver-recording` | Driver sessions integrated with current upstream recording/persistence rules |
+| `feature/side-view-arrows` | Turn arrows for both display modes; starts from the existing side-view feature |
+| `feature/night-ui` | Ferix night palette and floating-button styling |
 | `research/blind-spot-alerts` | Alert-signal investigation; no active obstacle trigger |
 | `research/factory-360-view` | Investigation of access to the factory stitched view |
 
@@ -86,3 +93,12 @@ Corrected side views automatically narrow the requested FOV when high rear/up
 aiming would cross the camera image edge. Aim and saved settings are retained.
 At 80° rear / 15° up, a requested 90° square view fits at approximately 20.5°;
 this avoids collapsed black tiles but greatly reduces visible coverage.
+
+## Ferix feature ports
+
+The seven port branches above are integrated into `main`. Independent ports start
+from `upstream/main`; arrows depend on `feature/turn-signal-side-view`. Existing
+PR #17 and #19 branches are unchanged. Source authorship and original commit links
+are recorded in port commits and `NOTICE.md`. See `docs/ferix-feature-ports.md`.
+New combined prereleases use `fork-…` tags pointing to `main`; older release tags
+and APK download URLs remain valid.

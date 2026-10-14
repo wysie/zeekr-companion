@@ -29,12 +29,24 @@ testing coverage or device compatibility as upstream.
 - **Optional camera labels:** identify the displayed camera in Super mirror and
   the side window. Super mirror also has a defaults reset.
 
+The following additions are adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER), with source credit in [NOTICE.md](NOTICE.md):
+
+- **Phone sharing fixes and diagnostics:** reachable network addresses, transfer status and HEAD/compression fixes. Android timeout reports still need device verification.
+- **Read-only vehicle signal scanner:** an opt-in Developer option for finding unmapped signals, including possible blind-spot warnings; automatically stops after three hours or when Developer options are locked.
+- **Turn arrows:** upright green/grey indicator arrows in both side-camera display modes, placed between the popup controls.
+- **Hard-braking footage locks:** automatic protection around hard stops, with a separate storage budget that preserves manual locks.
+- **Custom clip export:** choose a range up to 10 minutes in playback and save without re-encoding; repeated exports preserve existing files.
+- **Recording follows the driver:** configurable start on getting in/leaving P and stop after leaving, integrated with the current upstream recording lifecycle.
+- **Night theme and floating-button styling:** black night backgrounds, darker settings rows and a smaller, flat recording icon with the upstream waiting state preserved.
+
+See the feature sections below and [port notes](docs/ferix-feature-ports.md) for settings, source commits and testing limits.
+
 The blind spot camera currently responds to **turn signals**, not obstacle alerts.
 Setting its minimum opening speed to 0 removes the app's speed threshold; factory
 camera views, including the low-speed 360 window, still take priority. Factory
 stitched 360 access and obstacle-warning signals remain research topics, not
-implemented features. Ferix's newer phone-sharing fixes and scanner are not yet
-included in this build.
+implemented features. The scanner helps research warning signals; it does not
+provide obstacle detection or the factory stitched camera feed.
 
 This fork is mainly for personal use. Automated tests and release builds are
 checked, but vehicle testing is limited. I have confirmed camera labels and Super

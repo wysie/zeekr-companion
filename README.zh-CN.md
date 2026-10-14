@@ -8,6 +8,13 @@
 **请克隆 `main`，并从 `main` 构建 APK。** `main` 包含本分支的完整功能，
 `upstream-main` 保持 dts88 的原始代码。
 
+本分支新增转向侧视窗、超级后视镜临时替换、可选摄像头标签与重置功能，并移植了
+[FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER) 的手机分享修复与诊断、
+只读车辆信号扫描、转向箭头、急刹录像锁定、自选最长 10 分钟片段导出、上下车自动录制，
+以及夜间配色和悬浮录制按钮样式。急刹锁定和上下车自动录制默认开启，可在存储和录像设置中关闭；
+信号扫描需要手动开启开发者选项。新增功能仍需在 009 上验证；扫描并不等于障碍物检测或原厂 360 图像接口。
+具体设置与来源见 [英文说明](README.md) 和 [移植记录](docs/ferix-feature-ports.md)。
+
 [English](README.md) · [更新日志](CHANGELOG.md) · [来源与致谢](NOTICE.md) · [平台笔记](docs/zeekr-platform-notes.md)
 
 > [!IMPORTANT]
