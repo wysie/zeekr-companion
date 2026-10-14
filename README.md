@@ -7,6 +7,14 @@ to dts88 and its contributors; the underlying EVCam project is by
 [suyunkai and contributors](https://github.com/suyunkai/EVCam). Full attribution
 and license details are in [NOTICE.md](NOTICE.md).
 
+Special thanks to [FerixzTanz (Felix Tan)](https://github.com/FerixzTanz) for
+[the original turn-signal side-camera implementation](https://github.com/dts88/zeekr-shortcut-car/pull/4)
+and the features ported from his [CAMCORDER project](https://github.com/FerixzTanz/CAMCORDER).
+Our side-camera work builds on his contribution; phone sharing, signal scanning,
+hard-braking locks, clip export, driver recording, turn arrows and UI refinements
+also include his project's work. Original authorship and source links are retained
+in [NOTICE.md](NOTICE.md).
+
 For the original project and its maintainer's builds, use
 [dts88's repository and releases](https://github.com/dts88/zeekr-shortcut-car/releases).
 This fork is an experimental alternative for trying the additions below. Neither

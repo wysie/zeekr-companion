@@ -5,6 +5,11 @@
 [英文说明](README.md)。原项目及其贡献者、EVCam 作者和 FerixzTanz 的贡献均保留署名，
 详见 [来源与致谢](NOTICE.md)。本分支与原项目均非极氪官方产品。
 
+特别感谢 [FerixzTanz（Felix Tan）](https://github.com/FerixzTanz)：侧视功能基于他的
+[原始 PR #4](https://github.com/dts88/zeekr-shortcut-car/pull/4)，手机分享、信号扫描、
+急刹录像锁定、片段导出、上下车自动录制、转向箭头和界面改进也移植自他的
+[CAMCORDER 项目](https://github.com/FerixzTanz/CAMCORDER)。原作者署名与源提交链接均保留。
+
 **请克隆 `main`，并从 `main` 构建 APK。** `main` 包含本分支的完整功能，
 `upstream-main` 保持 dts88 的原始代码。
 
