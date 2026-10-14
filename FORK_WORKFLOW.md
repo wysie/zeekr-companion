@@ -4,10 +4,11 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 
 | Branch | Purpose |
 | --- | --- |
-| `main` / `upstream-main` | Unmodified upstream code; update by fast-forward only |
+| `main` | Combined installable fork: completed features, fork version numbers, update source and build configuration |
+| `upstream-main` | Unmodified dts88 code; tracks `upstream/main` and updates by fast-forward only |
 | `feature/turn-signal-side-view` | One complete side-view feature: PR #4 port, independent Blind spot camera settings, temporary mirror view, Use Super mirror when active option, independent popup and pinch resizing |
 | `feature/camera-labels` | Optional camera labels, developed separately from side-view display modes |
-| `personal-build` | Combined installable fork containing both implemented features, fork version numbers, update source and build configuration |
+| `personal-build` | Historical snapshot before promotion to `main`; no new feature integration or build triggers |
 | `pr4-followup` | Credited consolidated blind spot camera contribution, building on upstream PR #4 and preserving the original author's commit; excludes labels and personal build settings |
 | `research/blind-spot-alerts` | Alert-signal investigation; no active obstacle trigger |
 | `research/factory-360-view` | Investigation of access to the factory stitched view |
@@ -17,12 +18,12 @@ labels remain a separate feature. The label branch is based directly on upstream
 and contributes configurable Super mirror labels through [upstream PR #17](https://github.com/dts88/zeekr-shortcut-car/pull/17).
 The personal integration also retains side-view labels from the earlier label work;
 that hookup can follow when upstream has the side-view feature. Merge finished
-features into `personal-build` and build that branch when an APK containing all of
+features into `main` and build that branch when an APK containing all of
 them is wanted. Research notes do not activate features.
 
 The former combined `side-view` branch and separate `feature/side-view-display-mode`
 branch have been consolidated into this layout. Their history is retained in
-`personal-build`; the existing 2.11.5-sideview-alpha APK still contains both features.
+`main` and the historical `personal-build` snapshot; the existing 2.11.5-sideview-alpha APK still contains both features.
 
 For the consolidated blind spot camera PR, use `pr4-followup`. It builds on PR #4
 and retains the original FerixzTanz commit and authorship, with attribution in
@@ -30,30 +31,48 @@ and retains the original FerixzTanz commit and authorship, with attribution in
 how to incorporate the contributions. Other independent contributions use their
 own feature branches, without fork build settings.
 
-For new independent work:
+For new independent contributions to dts88, start from the upstream code rather
+than the combined fork:
 
 ```sh
 git fetch upstream
-git switch main
+git switch upstream-main
 git merge --ff-only upstream/main
 git switch -c feature/my-change
 # Implement and test the change, then commit and push the feature branch.
 ```
 
 A dependent feature can start from its prerequisite feature branch. Keep personal
-version numbers and updater configuration on `personal-build`. For a combined build:
+version numbers and updater configuration on `main`. Fork-only work can start from
+`main`; do not use that branch as the base for an independent upstream PR.
+For a combined build:
 
 ```sh
-git switch personal-build
+git switch main
 git merge --no-ff feature/turn-signal-side-view
 git merge --no-ff feature/camera-labels
 source ~/.config/android-dev/env.sh
 bash ./gradlew :app:testDebugUnitTest assembleRelease
 ```
 
-The build workflow runs on pushes to `personal-build`; its APK artifact is
+The build workflow runs on pushes to `main` and `feature/**`, and on pull requests
+targeting `main`; its APK artifact is
 `ZeekrShortcut-apk`. Increment `versionCode` and update `versionName` before each new
 installable release. The existing signing key preserves update compatibility.
+
+Fetch dts88's updates into `upstream/main`, fast-forward `upstream-main`, and then
+merge `upstream-main` into `main`. Resolve conflicts while retaining the fork's
+features and build configuration. Push each branch to `origin` explicitly; never
+push the combined fork to the `upstream` remote. Keep `main` buildable and use
+release tags to identify the exact source of downloadable APKs. Existing
+`personal-build-…` release tags and downloads remain valid.
+
+Whenever a feature is added or changed, update `README.md` in the same change:
+describe the behavior, where to enable/configure it, defaults that matter, and
+known limitations. Keep the additions list accurate, credit imported work in the
+README and `NOTICE.md`, and distinguish implemented features from research.
+Update the changelog and test notes when the change affects them. This policy is
+also recorded in `AGENTS.md` for future development sessions.
 
 Automatic blind spot camera is under Settings → Blind spot camera and is off by
 default. Use Super mirror when active is on by default and temporarily

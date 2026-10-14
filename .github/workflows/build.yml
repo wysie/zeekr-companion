@@ -1,8 +1,9 @@
-name: Build APK
+name: Build fork APK
 
 on:
   push:
-    branches: [main, personal-build, 'feature/**']
+    # main contains the combined fork; feature branches remain independently buildable.
+    branches: [main, 'feature/**']
     tags: ['v*']
   pull_request:
     branches: [main]

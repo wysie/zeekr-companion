@@ -1,27 +1,56 @@
-# Zeekr Shortcut (Car Version)
+# Zeekr Shortcut (Car Version) — personal fork
 
-This `personal-build` branch combines the implemented features into the installable fork. `main` tracks upstream without personal
-features. See [Fork workflow](FORK_WORKFLOW.md) for contribution branches.
+This is [wysie's personal fork](https://github.com/wysie/zeekr-shortcut-car) of
+[Zeekr Shortcut by dts88](https://github.com/dts88/zeekr-shortcut-car), maintained
+primarily for use on my ZEEKR 009. Credit for the original Zeekr application goes
+to dts88 and its contributors; the underlying EVCam project is by
+[suyunkai and contributors](https://github.com/suyunkai/EVCam). Full attribution
+and license details are in [NOTICE.md](NOTICE.md).
 
-This fork includes [FerixzTanz's turn-signal side view (upstream PR #4)](https://github.com/dts88/zeekr-shortcut-car/pull/4),
-adapted to the current camera scheduler. The owner already uses the original app on a ZEEKR 009.
+For the original project and its maintainer's builds, use
+[dts88's repository and releases](https://github.com/dts88/zeekr-shortcut-car/releases).
+This fork is an experimental alternative for trying the additions below. Neither
+project is an official ZEEKR product. I do not claim that this fork has the same
+testing coverage or device compatibility as upstream.
 
-Enable **Settings → Blind spot camera → Automatic blind spot camera** and grant the overlay permission.
-It is off by default. The initial speed threshold is 30 km/h; set it to 0 to remove the app’s
-speed restriction. Field of view, aim back/up, window size, position, close delay and instant pop-up are adjustable.
-Factory camera views take precedence. **Use Super mirror when active** is on by default: when the mirror
-is on, its window temporarily shows the side camera and then restores the previous view. Turn
-this option off to show the side camera in a separate window alongside the mirror. Pinch the
-separate window to resize it. This feature responds to turn signals;
-it does not yet respond to blind-spot obstacle alerts. Upstream discusses that future trigger in
-[issue #6](https://github.com/dts88/zeekr-shortcut-car/issues/6#issuecomment-6050799572).
+## Additions in this fork
 
-The fork retains the original application ID and test signing key so its APK can update the
-existing installation. In-app update checks point to this fork. Code and APK builds are checked
-in GitHub Actions. The owner has confirmed camera labels and Super mirror replacement work
-on the 009; see [test notes](docs/009-test-notes.md) for the scope of that feedback.
+- **Automatic blind spot camera:** adapted from
+  [FerixzTanz's original turn-signal side view, PR #4](https://github.com/dts88/zeekr-shortcut-car/pull/4),
+  with credit and original commit authorship preserved. It works with the current
+  camera scheduler and has its own settings section.
+- **Super mirror integration:** temporarily show the signalling side's camera in
+  the existing mirror, then restore the previous view; alternatively, show a
+  separate side-camera window alongside it.
+- **Side-window controls and tuning:** shared left/right placement, drag and pinch
+  resizing, temporary expand/close controls, per-side image rotation, defaults
+  reset, and automatic framing adjustment to avoid black patches at extreme aim
+  angles. High angles can substantially narrow the visible area.
+- **Optional camera labels:** identify the displayed camera in Super mirror and
+  the side window. Super mirror also has a defaults reset.
 
-A surround-view dash cam for the ZEEKR 7X head unit.
+The blind spot camera currently responds to **turn signals**, not obstacle alerts.
+Setting its minimum opening speed to 0 removes the app's speed threshold; factory
+camera views, including the low-speed 360 window, still take priority. Factory
+stitched 360 access and obstacle-warning signals remain research topics, not
+implemented features. Ferix's newer phone-sharing fixes and scanner are not yet
+included in this build.
+
+This fork is mainly for personal use. Automated tests and release builds are
+checked, but vehicle testing is limited. I have confirmed camera labels and Super
+mirror replacement on my 009; other changes still need on-car verification. See
+[test notes](docs/009-test-notes.md) for the scope of that feedback. Compatibility
+with other models and firmware versions is not established.
+
+`main` contains the combined installable fork; `upstream-main` tracks dts88's
+unmodified code. Individual contribution branches remain separate so useful
+changes can be proposed upstream. `personal-build` is retained as a historical
+snapshot; new combined builds come from `main`. See
+[Fork workflow](FORK_WORKFLOW.md) for the branch layout. Whenever a feature is
+added or changed, update this README with its behavior, settings and limitations.
+
+The original app is a surround-view dash cam for the ZEEKR 7X head unit. The
+remaining sections describe its functionality together with this fork's additions.
 
 [中文说明](README.zh-CN.md) · [Changelog](CHANGELOG.md) · [Credits](NOTICE.md) · [Platform notes](docs/zeekr-platform-notes.md)
 
@@ -38,8 +67,9 @@ A surround-view dash cam for the ZEEKR 7X head unit.
 
 ## What it does
 
-App Lab gives a third-party app the four surround cameras as **one pre-stitched stream**: four
-square views packed into a single frame, which previews as a distorted vertical strip. This app
+App Lab gives a third-party app the four surround cameras as **one packed stream**: four
+square views packed into a single frame, which previews as a distorted vertical strip. This is
+not the factory's stitched bird's-eye 360 image. This app
 splits it back into a 2×2 grid and builds on that. Chinese, English and Malay interface.
 
 ### Dash cam
@@ -133,9 +163,14 @@ to turn on the phone's hotspot and connect the car to it.
 **Before you start:** you need to know how to sideload an app onto the head unit through App Lab.
 This page does not cover that.
 
-- **Recommended — the [latest stable release](../../releases/latest).**
-- **Happy to try things early — the newest `-beta` on the [Releases](../../releases) page.** Or
-  turn on *Include beta releases* under Settings → Check for updates and let the app fetch it.
+- **Original upstream builds:** [dts88's releases](https://github.com/dts88/zeekr-shortcut-car/releases).
+- **This personal fork:** choose the desired `personal-build-…` prerelease from
+  [this fork's releases](https://github.com/wysie/zeekr-shortcut-car/releases).
+  Personal alpha builds are installed manually; they are excluded from the in-app updater.
+
+The fork retains the original application ID and public test signing key so its
+APK can update an existing installation signed with that key. In-app update checks
+point to this fork.
 
 Download the `ZeekrShortcut-*.apk` asset from the release page and sideload it through App Lab.
 When the installer finishes, tap **Back** at the top left, not **Open**. Otherwise the head unit's
@@ -144,8 +179,9 @@ installer gets stuck and later installs or updates fail.
 Building it yourself needs JDK 17+ and the Android SDK (compileSdk 36):
 
 ```bash
-git clone https://github.com/dts88/zeekr-shortcut-car.git
-cd zeekr-shortcut-car && ./gradlew assembleRelease
+git clone --branch main https://github.com/wysie/zeekr-shortcut-car.git
+cd zeekr-shortcut-car
+bash ./gradlew assembleRelease
 ```
 
 The repo ships a public AOSP test signing key (password `android`). Override it with your own
