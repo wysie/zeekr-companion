@@ -244,3 +244,7 @@ Origins, third-party licences and boundaries: [NOTICE.md](NOTICE.md).
 ## Phone sharing improvements
 
 Send to phone offers Wi-Fi, hotspot or tethering addresses instead of internal vehicle links. The dialog shows whether the phone connected and whether sending completed; recent attempts appear in Diagnostics. Both devices must be on the same local network. Includes Ferix’s HEAD/compression fixes; Android timeout reports still need device verification.
+
+## Vehicle signal scanner
+
+Enable Settings → Developer options → Record all vehicle signals for a read-only scan of function changes and unfamiliar sensor events. Blind-spot-like functions are polled when available. It stops after three hours, skips sensors already used by the app, and exports results through Diagnostics. This is a research tool: no obstacle-alert trigger or factory 360 video feed has been identified.

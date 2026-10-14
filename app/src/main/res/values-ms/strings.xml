@@ -961,4 +961,6 @@
     <string name="share_status_stopped">Penghantaran terhenti sebelum selesai. Ketik Download pada telefon sekali lagi</string>
     <string name="share_status_wrong_link">Telefon anda sampai ke unit kepala, tetapi pautannya tidak lengkap. Imbas kod ini sekali lagi</string>
     <string name="share_status_waiting">Menunggu telefon anda… Sambungkan ke Wi-Fi yang sama dengan unit kepala (unit kepala: %1$s)</string>
+    <string name="dev_signal_scan_title">Rakam semua isyarat kenderaan</string>
+    <string name="dev_signal_scan_summary">Apabila dihidupkan, mendengar setiap isyarat yang diberikan unit kepala dan merekod setiap perubahan (masa, kelajuan, kod, nilai, nama), untuk mencari isyarat yang belum dipetakan seperti amaran titik buta. Baca sahaja. Keputusan dalam Diagnostik di bawah \"Signal scan\". Berjalan sehingga 3 jam, kemudian dimatikan sendiri.</string>
 </resources>

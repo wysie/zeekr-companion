@@ -84,3 +84,8 @@ to the current camera scheduler. They remain covered by the repository's GPL-3.0
 
 Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
 Original source authorship is retained in the port commit. Source commits: [1539ead](https://github.com/FerixzTanz/CAMCORDER/commit/1539ead497575565cd1830860af9daa5feea0fb6), [f00788a](https://github.com/FerixzTanz/CAMCORDER/commit/f00788a67d1a84074fb606ea684429e5575bd69b), [78461a2](https://github.com/FerixzTanz/CAMCORDER/commit/78461a20feabf05c131a32967d6f9c0b670d58d9).
+
+## Vehicle signal scanner
+
+Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
+Original source authorship is retained in the port commit. Source commits: [85bc7a3](https://github.com/FerixzTanz/CAMCORDER/commit/85bc7a3427f1e35262a97583b44a6f2f577d7ecb), [7bdde73](https://github.com/FerixzTanz/CAMCORDER/commit/7bdde73df5a11810f906f7f599bda9f02722472d), [ade63cf](https://github.com/FerixzTanz/CAMCORDER/commit/ade63cf563e324f3d0419225a7d19b098085582c).

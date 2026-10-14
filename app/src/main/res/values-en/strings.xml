@@ -984,4 +984,6 @@
     <string name="share_status_stopped">Sending stopped before the end. Tap Download on the phone again</string>
     <string name="share_status_wrong_link">Your phone reached the head unit, but the link was incomplete. Scan this code again</string>
     <string name="share_status_waiting">Waiting for your phone… Put it on the same Wi-Fi as the head unit (head unit: %1$s)</string>
+    <string name="dev_signal_scan_title">Record all vehicle signals</string>
+    <string name="dev_signal_scan_summary">While on, listens to every signal the head unit offers and logs each change (time, speed, code, value, name), to find signals not mapped yet, such as the blind-spot warning. Read only. Results are in Diagnostics under \"Signal scan\". Runs up to 3 hours, then switches itself off.</string>
 </resources>

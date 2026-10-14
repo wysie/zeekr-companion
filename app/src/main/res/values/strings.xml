@@ -971,4 +971,6 @@
     <string name="share_status_stopped">发送中途断开了，请在手机上再点一次「下载」</string>
     <string name="share_status_wrong_link">手机连上了车机，但链接不完整。请重新扫描这个二维码</string>
     <string name="share_status_waiting">等待手机连接… 请让手机和车机连同一个 Wi-Fi（车机地址 %1$s）</string>
+    <string name="dev_signal_scan_title">记录全部车辆信号</string>
+    <string name="dev_signal_scan_summary">开着时车机给的全部功能号都听着，哪个变了就记一行（时刻、车速、号、值、常量名），用来找盲区报警这类还没对上的信号。只读。诊断信息「信号普查」一节里看结果；最多记 3 小时，到点自己关。</string>
 </resources>
