@@ -22,7 +22,8 @@ import java.util.Locale;
  * </ul>
  *
  * <p>所以不能只认一种网卡。这里把所有可用的 IPv4 地址都列出来，
- * 按「哪个更可能是那条直连」排个序 —— 但<b>不隐藏其余的</b>：
+ * 按「哪个更可能是那条直连」排个序。认不出是热点 / 无线 / USB 共享的那些（车机内部的 vlan、veth……）
+ * 在 {@link #usable} 里不给手机 —— 一个认得出的都没有时才全给：
  * 车机固件五花八门，猜错时得让人能自己挑一个试。</p>
  *
  * <p>网卡名的判断和排序都是纯函数，可以单独测。</p>
@@ -66,20 +67,22 @@ public final class LocalNetwork {
      * 按网卡名猜它是哪一类。
      *
      * <p>名字是唯一能拿到的线索 —— Android 没有公开「哪块网卡是热点」的接口。
-     * 猜错不致命：所有地址都会列出来，排序只影响默认选哪个。</p>
+     * 认成 OTHER 的不会出现在二维码里（除非一个认得出的都没有），所以新见到的网卡名要补在这里。</p>
      */
     public static Kind classify(String interfaceName) {
         if (interfaceName == null) {
             return Kind.OTHER;
         }
         String name = interfaceName.toLowerCase(Locale.US);
-        if (name.startsWith("ap") || name.contains("softap") || name.startsWith("p2p")) {
+        if (name.startsWith("ap") || name.contains("softap") || name.startsWith("p2p")
+                || name.startsWith("swlan")) {
             return Kind.HOTSPOT;
         }
         if (name.startsWith("wlan") || name.startsWith("wifi")) {
             return Kind.WIFI;
         }
-        if (name.startsWith("rndis") || name.startsWith("usb")) {
+        if (name.startsWith("rndis") || name.startsWith("usb") || name.startsWith("ncm")
+                || name.startsWith("bt-pan")) {
             return Kind.TETHER;
         }
         return Kind.OTHER;
@@ -112,6 +115,29 @@ public final class LocalNetwork {
             return byKind != 0 ? byKind : a.interfaceName.compareTo(b.interfaceName);
         });
         return copy;
+    }
+
+    /**
+     * 手机可能连得上的那几个：热点、无线、USB 共享。
+     *
+     * <p>车机上还挂着一串内部网卡（{@code vlan*}、{@code veth}、{@code vt*}，10.1.x.x、198.18.x.x 这些），
+     * 是车机和车上别的控制器之间的线，手机永远够不着。以前一并列出来，「切换地址」要按十几下，
+     * 默认那个也可能落在上面（2026-10-11：项目拥有者对着 10.1.4.6 扫了半天）。</p>
+     *
+     * <p>一个能用的都没有时返回空，<b>不</b>退回全部。以前退回全部，可这台车机上内部网卡永远在
+     * （{@code veth} 192.168.55.15、{@code vt3} 192.168.118.1……），车机没连 Wi-Fi、热点也没开时，
+     * 二维码照样给出一个 192.168.x.x，手机永远打不开，「请先连网」的提示也永远弹不出来。
+     * 现在空就是空，由界面说「车机没连网」，并把找到的网卡列出来，万一哪台车机的无线网卡名字
+     * 认不出来，看一眼就知道要补哪个名字。</p>
+     */
+    public static List<Endpoint> usable(List<Endpoint> endpoints) {
+        List<Endpoint> out = new ArrayList<>();
+        for (Endpoint e : sorted(endpoints)) {
+            if (e.kind != Kind.OTHER) {
+                out.add(e);
+            }
+        }
+        return out;
     }
 
     /** 排在最前的那个；一个都没有时返回 null。 */

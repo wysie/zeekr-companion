@@ -961,4 +961,14 @@
     <string name="side_control_expand">放大侧视窗口</string>
     <string name="side_control_restore">恢复窗口大小</string>
     <string name="set_section_blind_spot_camera">盲区摄像头</string>
+    <string name="share_status_connected_media">手机已连上 ✓</string>
+    <string name="share_phone_links_seen">车机上的网络连接，没有一个认得出是 Wi-Fi、热点或 USB：%1$s</string>
+    <string name="share_status_unreachable">手机还没连上车机（%1$s）。请让手机和车机连同一个 Wi-Fi，或打开手机热点、车机连上去；手机连着别的 Wi-Fi（比如车载热点）时请先断开。同一个网里手机的 IP 通常和车机前几段相同。手机开着移动数据时请先关掉再试：Wi-Fi 没有网络时，有些手机会把本地地址发到移动数据上</string>
+    <string name="share_status_done">已发送 ✓</string>
+    <string name="share_status_done_media">已在手机上显示 ✓ 长按保存后再关闭此窗口</string>
+    <string name="share_status_sending">正在发送…</string>
+    <string name="share_status_connected">手机已连上 ✓ 在手机上点击「下载」</string>
+    <string name="share_status_stopped">发送中途断开了，请在手机上再点一次「下载」</string>
+    <string name="share_status_wrong_link">手机连上了车机，但链接不完整。请重新扫描这个二维码</string>
+    <string name="share_status_waiting">等待手机连接… 请让手机和车机连同一个 Wi-Fi（车机地址 %1$s）</string>
 </resources>

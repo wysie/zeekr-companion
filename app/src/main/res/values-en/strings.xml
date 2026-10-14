@@ -974,4 +974,14 @@
     <string name="side_control_expand">Expand side view</string>
     <string name="side_control_restore">Restore window size</string>
     <string name="set_section_blind_spot_camera">Blind spot camera</string>
+    <string name="share_status_connected_media">Phone connected ✓</string>
+    <string name="share_phone_links_seen">Network links on the head unit, none recognised as Wi-Fi, hotspot or USB: %1$s</string>
+    <string name="share_status_unreachable">Your phone hasn\'t reached the head unit (%1$s). Put the phone on the same Wi-Fi as the head unit, or turn on the phone\'s hotspot and connect the head unit to it. If the phone is joined to another Wi-Fi (such as the car\'s hotspot), disconnect it first. On the same network, the phone\'s IP usually starts with the same numbers as the head unit\'s. If the phone\'s mobile data is on, turn it off and try again: some phones send local addresses over mobile data when the Wi-Fi has no internet.</string>
+    <string name="share_status_done">Sent ✓</string>
+    <string name="share_status_done_media">On your phone ✓ Long-press it to save, then close this</string>
+    <string name="share_status_sending">Sending…</string>
+    <string name="share_status_connected">Phone connected ✓ Tap Download on the phone</string>
+    <string name="share_status_stopped">Sending stopped before the end. Tap Download on the phone again</string>
+    <string name="share_status_wrong_link">Your phone reached the head unit, but the link was incomplete. Scan this code again</string>
+    <string name="share_status_waiting">Waiting for your phone… Put it on the same Wi-Fi as the head unit (head unit: %1$s)</string>
 </resources>

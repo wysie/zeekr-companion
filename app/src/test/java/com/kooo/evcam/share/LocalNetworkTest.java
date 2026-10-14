@@ -86,4 +86,46 @@ public class LocalNetworkTest {
     public void noAddressesMeansNoPreferredOne() {
         assertNull(LocalNetwork.preferred(new ArrayList<>()));
     }
+
+    /** 车机内部的网卡（2026-10-11 实车：vlan2..vlan99、veth、vt3）不给手机用。 */
+    @Test
+    public void internalInterfacesAreLeftOutWhenWifiIsThere() {
+        List<LocalNetwork.Endpoint> found = Arrays.asList(
+                at("veth", "192.168.55.15"),
+                at("vlan4", "10.1.4.6"),
+                at("vt3", "192.168.118.1"),
+                at("wlan2", "192.168.5.78"));
+        List<LocalNetwork.Endpoint> usable = LocalNetwork.usable(found);
+        assertEquals(1, usable.size());
+        assertEquals("192.168.5.78", usable.get(0).address);
+    }
+
+    /** 一个认得出的都没有时就什么都不给，由界面说「车机没连网」，不拿内部网卡凑数。 */
+    @Test
+    public void nothingIsOfferedWhenNothingIsRecognised() {
+        List<LocalNetwork.Endpoint> found = Arrays.asList(
+                at("eth0", "10.0.0.5"),
+                at("vlan4", "10.1.4.6"));
+        assertEquals(0, LocalNetwork.usable(found).size());
+    }
+
+    /**
+     * 车机没连 Wi-Fi、热点也没开时的实车网卡（2026-10-11）：以前退回全部，排第一的是 veth 的
+     * 192.168.55.15 —— 一个 192.168.x.x，手机永远打不开，「请先连网」的提示也永远弹不出来。
+     */
+    @Test
+    public void internalLinksAloneNeverBecomeTheQrAddress() {
+        List<LocalNetwork.Endpoint> found = Arrays.asList(
+                at("veth", "192.168.55.15"),
+                at("vlan4", "10.1.4.6"),
+                at("vt3", "192.168.118.1"));
+        assertEquals(0, LocalNetwork.usable(found).size());
+    }
+
+    @Test
+    public void otherHotspotAndTetherNamesAreRecognised() {
+        assertEquals(LocalNetwork.Kind.HOTSPOT, LocalNetwork.classify("swlan0"));
+        assertEquals(LocalNetwork.Kind.TETHER, LocalNetwork.classify("ncm0"));
+        assertEquals(LocalNetwork.Kind.TETHER, LocalNetwork.classify("bt-pan"));
+    }
 }

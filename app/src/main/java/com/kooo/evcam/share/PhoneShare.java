@@ -62,13 +62,22 @@ public final class PhoneShare {
             return;
         }
 
-        List<LocalNetwork.Endpoint> endpoints = LocalNetwork.enumerate();
+        // 只给手机可能连得上的地址（热点、无线、USB 共享），车机内部那一串不列（见 LocalNetwork.usable）
+        List<LocalNetwork.Endpoint> seen = LocalNetwork.enumerate();
+        List<LocalNetwork.Endpoint> endpoints = LocalNetwork.usable(seen);
         if (endpoints.isEmpty()) {
-            // 没有可用地址就不是「失败」，是前提没满足 —— 说清楚该做什么
+            // 没有可用地址就不是「失败」，是前提没满足 —— 说清楚该做什么。
+            // 找到的网卡也列出来：车机内部那几条不会被当成可用的，万一 Wi-Fi 网卡的名字认不出来，
+            // 在车上看一眼就知道，不用再导报告
+            StringBuilder message = new StringBuilder(activity.getString(R.string.share_phone_need_hotspot_msg))
+                    .append("\n\n").append(activity.getString(R.string.share_phone_network_hint));
+            if (!seen.isEmpty()) {
+                message.append("\n\n").append(activity.getString(R.string.share_phone_links_seen, describe(seen)));
+            }
+            ShareLog.add("no hotspot / Wi-Fi / tether address, nothing to offer; network links seen: " + seen);
             com.kooo.evcam.ui.CamDialogs.show(new MaterialAlertDialogBuilder(activity, R.style.Theme_Cam_MaterialAlertDialog)
                     .setTitle(R.string.share_phone_need_hotspot_title)
-                    .setMessage(activity.getString(R.string.share_phone_need_hotspot_msg)
-                            + "\n\n" + activity.getString(R.string.share_phone_network_hint))
+                    .setMessage(message.toString())
                     .setPositiveButton(R.string.action_got_it, null));
             return;
         }
@@ -85,11 +94,30 @@ public final class PhoneShare {
         }
         AppLog.i(TAG, "分享 " + file.getName() + "，端口 " + server.getListeningPort()
                 + "，可用地址 " + endpoints.size() + " 个：" + endpoints);
+        ShareLog.add("sharing " + file.getName() + " (" + FileShareServer.readableSize(file.length())
+                + ") on port " + server.getListeningPort() + ", addresses offered: " + endpoints);
         new Presenter(activity, server, endpoints, file, extraNote).show();
     }
 
     private static void toast(Activity activity, String text) {
         Toast.makeText(activity, text, Toast.LENGTH_LONG).show();
+    }
+
+    /** 「192.168.5.78 · wlan2」：地址后面跟上它在哪块网卡上，在车上一眼看出是 Wi-Fi 还是内部的线。 */
+    private static String label(LocalNetwork.Endpoint endpoint) {
+        return endpoint.address + " · " + endpoint.interfaceName;
+    }
+
+    /** 「veth 192.168.55.15, vlan4 10.1.4.6」：只是网卡名和地址，不是界面文字。 */
+    private static String describe(List<LocalNetwork.Endpoint> endpoints) {
+        StringBuilder sb = new StringBuilder();
+        for (LocalNetwork.Endpoint e : endpoints) {
+            if (sb.length() > 0) {
+                sb.append(", ");
+            }
+            sb.append(e.interfaceName).append(' ').append(e.address);
+        }
+        return sb.toString();
     }
 
     /** 对话框本身。拆出来是因为「切换地址」要改二维码，得留着几个引用。 */
@@ -101,6 +129,13 @@ public final class PhoneShare {
         private final String extraNote;
 
         private int index;
+        /** 手机的请求到过车机没有：到过就不再提示「连不上」。 */
+        private boolean reached;
+        /** 手机打开过正确的链接：之后来的「链接不对」（别的设备、残缺链接）不再盖掉进度。 */
+        private boolean opened;
+        /** 图片、视频已经在手机上显示出来：之后预览、长按另存时的断开不再把提示退回「已连上」。 */
+        private boolean shownOnPhone;
+        private TextView statusText;
         private ImageView qrImage;
         private TextView addressText;
         private TextView qrFailed;
@@ -131,6 +166,11 @@ public final class PhoneShare {
             qrFailed = text(activity.getString(R.string.share_phone_qr_failed), R.dimen.text_caption, false);
             qrFailed.setVisibility(android.view.View.GONE);
             root.addView(qrFailed);
+
+            // 进度：等手机 → 手机连上了 → 发完了；等太久就说连不上、该怎么办（2026-10-11：以前扫了码
+            // 打不开，车上看不出手机的请求到底有没有来，只能猜）
+            statusText = text("", R.dimen.text_body, false);
+            root.addView(statusText);
 
             root.addView(text(activity.getString(FileShareServer.isMedia(file.getName())
                     ? R.string.share_phone_steps : R.string.share_phone_steps_file), R.dimen.text_body, false));
@@ -168,8 +208,66 @@ public final class PhoneShare {
                     });
                 }
             });
+            server.setListener((event, remote) -> closer.post(() -> onEvent(event)));
             dialog.show();
             render();
+        }
+
+        private final android.os.Handler closer = new android.os.Handler(android.os.Looper.getMainLooper());
+
+        /** 等这么久手机还没来，就提示连不上。 */
+        private static final long UNREACHABLE_AFTER_MS = 20_000L;
+
+        // 方法引用：字段初始化时 activity / endpoints 还没赋值，lambda 里直接读它们编不过
+        private final Runnable unreachable = this::onUnreachable;
+
+        private void onUnreachable() {
+            if (!reached) {
+                statusText.setText(activity.getString(R.string.share_status_unreachable,
+                        label(endpoints.get(index))));
+                ShareLog.add("no request from the phone after " + (UNREACHABLE_AFTER_MS / 1000) + " s on "
+                        + endpoints.get(index).address);
+            }
+        }
+
+        /** 主线程上。 */
+        private void onEvent(FileShareServer.Event event) {
+            reached = true;
+            closer.removeCallbacks(unreachable);
+            boolean media = FileShareServer.isMedia(file.getName());
+            switch (event) {
+                case PAGE_OPENED:
+                    opened = true;
+                    statusText.setText(media ? R.string.share_status_connected_media : R.string.share_status_connected);
+                    break;
+                case DOWNLOAD_STARTED:
+                    opened = true;
+                    statusText.setText(R.string.share_status_sending);
+                    break;
+                case DOWNLOAD_DONE:
+                    // 图片、视频是页面里直接显示的：「发完」只是手机上显示出来了，还得长按保存，别急着关
+                    shownOnPhone = media;
+                    statusText.setText(media ? R.string.share_status_done_media : R.string.share_status_done);
+                    break;
+                case DOWNLOAD_STOPPED:
+                    // 视频、图片在手机浏览器里常先要一小段就断开（预览；NanoHTTPD 不认 Range），
+                    // 断了不代表失败：回到「已连上」，不停在「正在发送」
+                    if (!media) {
+                        statusText.setText(R.string.share_status_stopped);
+                    } else {
+                        // 已经显示在手机上之后的断开（长按另存、拖视频进度）：回到「已在手机上」，别停在「正在发送」
+                        statusText.setText(shownOnPhone ? R.string.share_status_done_media
+                                : R.string.share_status_connected_media);
+                    }
+                    break;
+                case WRONG_LINK:
+                    if (!opened) {
+                        statusText.setText(R.string.share_status_wrong_link);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
 
         private void render() {
@@ -183,11 +281,30 @@ public final class PhoneShare {
             addressText.setText(activity.getString(R.string.share_phone_address,
                     url == null ? "" : url, file.getName(),
                     FileShareServer.readableSize(file.length())));
-            AppLog.i(TAG, "二维码地址: " + url + "（网卡 " + endpoint.interfaceName + "）"
+            if (!reached) {
+                statusText.setText(activity.getString(R.string.share_status_waiting, label(endpoint)));
+                closer.removeCallbacks(unreachable);
+                closer.postDelayed(unreachable, UNREACHABLE_AFTER_MS);
+            }
+            ShareLog.add("QR shows " + endpoint.address + ":" + server.getListeningPort() + " ("
+                    + endpoint.interfaceName + ", " + endpoint.kind + ")");
+            // 日志和诊断报告里不写带随机串的完整地址：那就是下载这个文件的钥匙（安全审查 2026-10-08）
+            AppLog.i(TAG, "二维码地址: http://" + endpoint.address + ":" + server.getListeningPort()
+                    + "/…（网卡 " + endpoint.interfaceName + "）"
                     + (qr == null ? "  << 二维码没画出来" : ""));
         }
 
+        private boolean stopped;
+
         private void stop() {
+            if (stopped) {
+                return;   // 关对话框和界面退到后台可能都走到这里
+            }
+            stopped = true;
+            // 先摘掉监听：stop 会断开还连着的手机，那时 Watched 报的「断了」不是真的断，别往已关的界面上写
+            // （ShareLog 里仍会紧跟着「dialog closed」记一行 DOWNLOAD_STOPPED，按顺序看得懂）
+            server.setListener(null);
+            ShareLog.add("dialog closed, sharing stopped" + (reached ? "" : " (the phone never reached the head unit)"));
             try {
                 server.stop();
                 AppLog.d(TAG, "分享服务已停止");
