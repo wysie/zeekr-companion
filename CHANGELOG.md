@@ -9,7 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
-Nothing yet.
+- Add optional horizontal mirroring to both side-camera screen modes; off by default, with labels and recordings unchanged.
 
 ## [2.11.15-personal-alpha] - 2026-10-14
 

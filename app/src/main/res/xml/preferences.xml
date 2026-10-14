@@ -247,6 +247,12 @@
             android:title="@string/set_side_popup_replace_mirror_title"
             android:summary="@string/set_side_popup_replace_mirror_summary" />
 
+        <SwitchPreferenceCompat
+            android:key="pref_side_popup_mirror"
+            android:dependency="pref_side_popup"
+            android:title="@string/set_side_popup_mirror_title"
+            android:summary="@string/set_side_popup_mirror_summary" />
+
         <SeekBarPreference
             android:key="pref_side_popup_min_speed"
             android:dependency="pref_side_popup"

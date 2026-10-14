@@ -114,3 +114,7 @@ Original source authorship is retained in the port commit. Source commits: [45e0
 
 Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
 Original source authorship is retained in the port commit. Source commits: [c91739e](https://github.com/FerixzTanz/CAMCORDER/commit/c91739e1dd317f16971e0a9a9296d80c29e63a3d), [beacea7](https://github.com/FerixzTanz/CAMCORDER/commit/beacea7fbb0407ece159a95fe6b4ccddb4716f24), [f931d11](https://github.com/FerixzTanz/CAMCORDER/commit/f931d11cb179d6584c0e747bc31ffe539bdd9711), [19986ac](https://github.com/FerixzTanz/CAMCORDER/commit/19986ac50ea698de0faf4bc5a92a93a2be2f19f1).
+
+## Side-camera mirroring and HUD
+
+The screen mirroring preference follows [FerixzTanz/CAMCORDER PR #14](https://github.com/FerixzTanz/CAMCORDER/pull/14), adapted to our independent popup and temporary Super mirror view. Original HUD source: [becbfe1](https://github.com/FerixzTanz/CAMCORDER/commit/becbfe10c6).

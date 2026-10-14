@@ -16,6 +16,7 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/clip-export` | Range exports, camera swipes and protection against file collisions |
 | `feature/driver-recording` | Driver sessions integrated with current upstream recording/persistence rules |
 | `feature/side-view-arrows` | Turn arrows for both display modes; starts from the existing side-view feature |
+| `feature/side-view-mirroring` | Fork side-camera horizontal flip, including mirror replacement; existing PR heads preserved |
 | `feature/night-ui` | Ferix night palette and floating-button styling |
 | `research/blind-spot-alerts` | Alert-signal investigation; no active obstacle trigger |
 | `research/factory-360-view` | Investigation of access to the factory stitched view |
