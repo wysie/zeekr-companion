@@ -158,7 +158,7 @@ public final class SignalScan {
                 return;
             }
             running = new SignalScan(context, onAutoStop);
-            running.begin(Math.max(60_000L, Math.min(MAX_RUN_MS, remainingMs)));
+            running.begin(Math.max(1L, Math.min(MAX_RUN_MS, remainingMs)));
         }
     }
 
