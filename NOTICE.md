@@ -117,4 +117,6 @@ Original source authorship is retained in the port commit. Source commits: [c917
 
 ## Side-camera mirroring and HUD
 
-The screen mirroring preference follows [FerixzTanz/CAMCORDER PR #14](https://github.com/FerixzTanz/CAMCORDER/pull/14), adapted to our independent popup and temporary Super mirror view. Original HUD source: [becbfe1](https://github.com/FerixzTanz/CAMCORDER/commit/becbfe10c6).
+The screen mirroring preference follows [FerixzTanz/CAMCORDER PR #14](https://github.com/FerixzTanz/CAMCORDER/pull/14), adapted to our independent popup and temporary Super mirror view. Original HUD source: [becbfe1](https://github.com/FerixzTanz/CAMCORDER/commit/becbfe10c6c9c1ebd1840245d68791c051c96c6a).
+
+HUD Presentation, layout and lifecycle are ported from that PR with original source authorship retained. Adaptations use our current scheduler and stricter display selection for the unverified 009; diagnostic correction [426c5fa](https://github.com/FerixzTanz/CAMCORDER/commit/426c5fa3e97bc588d8bee8674c812fadc29a76b8) is included.

@@ -25,8 +25,14 @@ public final class SideViewRotation {
     }
 
     public static int begin(Canvas canvas, int degrees, int width, int height) {
+        return begin(canvas, degrees, width, height, false);
+    }
+
+    /** Flip the final displayed image horizontally, including when roll is configured. */
+    public static int begin(Canvas canvas, int degrees, int width, int height, boolean mirrored) {
         int save = canvas.save();
         canvas.clipRect(0, 0, width, height);
+        if (mirrored) canvas.scale(-1f, 1f, width / 2f, height / 2f);
         int angle = clamp(degrees);
         if (angle != 0) {
             float scale = coverScale(angle, width, height);

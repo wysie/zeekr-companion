@@ -44,7 +44,7 @@ public class SideViewPopupView extends ViewGroup {
     private static final String TAG = "SideViewPopup";
 
     private final WindowManager windowManager;
-    private final AppConfig appConfig;
+    protected final AppConfig appConfig;
     private final SideTurnArrow sideArrow;
     private Integer indicatorDisplay;
     private final AutoFitTextureView textureView;
@@ -59,8 +59,8 @@ public class SideViewPopupView extends ViewGroup {
     private final FisheyeMesh.Painter paintTexture = this::drawTextureOnce;
 
     private WindowManager.LayoutParams params;
-    private boolean attached;
-    private boolean visible;
+    protected boolean attached;
+    protected boolean visible;
     private float dragStartX;
     private float dragStartY;
     private int windowStartX;
@@ -68,7 +68,7 @@ public class SideViewPopupView extends ViewGroup {
     private boolean multiTouchGesture;
     private final int dragSlop;
     private CompositeStreamGeometry.Plan plan;
-    private int lane = LaneCycle.LEFT;
+    protected int lane = LaneCycle.LEFT;
     private boolean straighten;
     private int viewFov;
     private int yaw;
@@ -120,6 +120,7 @@ public class SideViewPopupView extends ViewGroup {
         controls = new SideViewControls(context, SideViewPopupService::dismissCurrentSideView,
                 this::toggleExpanded);
         addView(controls);
+        if (!showControls()) controls.setVisibility(GONE);
         setClipToOutline(true);
         setOutlineProvider(new android.view.ViewOutlineProvider() {
             @Override
@@ -162,7 +163,7 @@ public class SideViewPopupView extends ViewGroup {
 
     /** 正显示在屏幕上。 */
     public boolean isShowing() {
-        return attached && visible;
+        return isAttached() && visible;
     }
 
     public int lane() {
@@ -217,6 +218,10 @@ public class SideViewPopupView extends ViewGroup {
         invalidate();
     }
 
+    protected boolean readMirrored() { return appConfig.isSidePopupMirrored(); }
+
+    protected boolean showControls() { return true; }
+
     private void readConfig() {
         straighten = appConfig.isSidePopupStraighten();
         viewFov = appConfig.getSidePopupFov();
@@ -224,7 +229,7 @@ public class SideViewPopupView extends ViewGroup {
         pitch = appConfig.getSidePopupPitch();
     }
 
-    private void attachAt(int side, boolean show) {
+    protected void attachAt(int side, boolean show) {
         boolean sideChanged = side != lane;
         lane = side;
         if (attached) {
@@ -331,7 +336,7 @@ public class SideViewPopupView extends ViewGroup {
         }
     }
 
-    private void update() {
+    protected void update() {
         try {
             windowManager.updateViewLayout(this, params);
         } catch (Exception e) {
@@ -343,7 +348,7 @@ public class SideViewPopupView extends ViewGroup {
      * One shared position for both lanes. Default is horizontally centred; dragging saves
      * its location, and resizing keeps that location within the screen.
      */
-    private void place() {
+    protected void place() {
         if (expansion.expanded()) {
             return;
         }
@@ -427,15 +432,12 @@ public class SideViewPopupView extends ViewGroup {
             // 服务就没机会补上尺寸 —— 窗口会一直黑），再盖成黑的，不露出四路挤在一起的整条合成流
             drawTextureOnce(canvas);
             canvas.drawColor(0xFF000000);
-            drawChild(canvas, controls, getDrawingTime());
+            if (showControls()) drawChild(canvas, controls, getDrawingTime());
             return;
         }
-        int save = SideViewRotation.begin(canvas, appConfig.getSidePopupRotation(lane), width, height);
-        if (appConfig.isSidePopupMirrored()) {
-            canvas.scale(-1f, 1f, width / 2f, height / 2f);
-        }
+        int save = SideViewRotation.begin(canvas, appConfig.getSidePopupRotation(lane), width, height, readMirrored());
         if (straighten) {
-            framing.configure(viewFov, yaw, pitch, lane, 1f);
+            framing.configure(viewFov, yaw, pitch, lane, (float) width / height);
             // 虚拟相机转过去（往后、往上）再拉直，见 SideViewProjection
             RearViewGeometry.ShaderRects r = RearViewGeometry.toShaderRects(
                     plan, lane, RearViewGeometry.Viewport.full());
@@ -449,6 +451,9 @@ public class SideViewPopupView extends ViewGroup {
             int backPercent = Math.round(yaw / SideViewProjection.MAX_YAW_DEGREES * 100f);
             int upPercent = Math.round(pitch / SideViewProjection.MAX_PITCH_DEGREES * 100f);
             RearViewGeometry.Viewport viewport = SideViewAim.viewport(lane, zoomPercent, backPercent, upPercent);
+            RearViewGeometry.Viewport crop = RearViewGeometry.Viewport.forWindow(width, height, 0.5f);
+            viewport = new RearViewGeometry.Viewport(viewport.x + crop.x * viewport.width,
+                    viewport.y + crop.y * viewport.height, crop.width * viewport.width, crop.height * viewport.height);
             float[] rect = RearViewGeometry.combinedSourceRect(plan, lane, viewport);
             sourceRect.set(rect[0] * width, rect[1] * height,
                     (rect[0] + rect[2]) * width, (rect[1] + rect[3]) * height);
@@ -463,7 +468,7 @@ public class SideViewPopupView extends ViewGroup {
             cameraLabel.drawBottom(canvas, lane, width, height);
         }
         sideArrow.draw(canvas, lane, indicatorDisplay, width, height);
-        drawChild(canvas, controls, getDrawingTime());
+        if (showControls()) drawChild(canvas, controls, getDrawingTime());
     }
 
     private void drawTextureOnce(Canvas canvas) {

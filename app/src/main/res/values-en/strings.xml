@@ -1010,4 +1010,24 @@
     <string name="set_drive_auto_stop_title">Stop recording when you leave the car</string>
     <string name="set_side_popup_mirror_title">Mirror side-camera image</string>
     <string name="set_side_popup_mirror_summary">Flip left and right in the side popup and Super mirror replacement. Off by default; recordings are unchanged.</string>
+    <string name="side_popup_no_picture">No live picture</string>
+    <string name="set_hud_side_mirror_title">Mirror the HUD picture like the door mirror</string>
+    <string name="set_hud_side_mirror_summary">Flip left and right on the HUD. On by default; independent of screen mirroring and recordings</string>
+    <string name="set_side_output_title">Show side view on</string>
+    <string name="set_side_output_screen">Screen</string>
+    <string name="set_side_output_hud">HUD</string>
+    <string name="set_side_output_both">Screen and HUD</string>
+    <string name="set_sub_hud_title">HUD picture</string>
+    <string name="set_sub_hud_summary">Size, position and opacity on the HUD</string>
+    <string name="set_hud_side_size_title">HUD picture height (% of HUD height)</string>
+    <string name="set_hud_side_size_summary">The width follows from the shape below</string>
+    <string name="set_hud_side_shape_title">HUD picture shape (width ÷ height, %)</string>
+    <string name="set_hud_side_shape_summary">100 is square; higher is wider</string>
+    <string name="set_hud_side_left_title">Position across the HUD (%)</string>
+    <string name="set_hud_side_left_summary">0 is the left, 100 the right</string>
+    <string name="set_hud_side_vertical_title">Height on the HUD (%)</string>
+    <string name="set_hud_side_vertical_summary">0 is the top, 100 the bottom</string>
+    <string name="set_hud_side_opacity_title">HUD picture opacity (%)</string>
+    <string name="set_hud_side_opacity_summary">Lower is fainter. Black does not light up on a HUD anyway</string>
+    <string name="set_side_hud_note">HUD is experimental on the 009. If unavailable, the screen view is used. The HUD ignores the speed threshold; factory cameras and reverse still take priority.</string>
 </resources>

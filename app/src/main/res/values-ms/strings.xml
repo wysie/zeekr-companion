@@ -987,4 +987,24 @@
     <string name="set_drive_auto_stop_title">Henti merakam apabila anda meninggalkan kereta</string>
     <string name="set_side_popup_mirror_title">Cerminkan imej kamera sisi</string>
     <string name="set_side_popup_mirror_summary">Balikkan kiri dan kanan dalam tetingkap sisi dan penggantian Super mirror. Dimatikan secara lalai; rakaman tidak berubah.</string>
+    <string name="side_popup_no_picture">Tiada gambar langsung</string>
+    <string name="set_hud_side_mirror_title">Cerminkan gambar HUD seperti cermin pintu</string>
+    <string name="set_hud_side_mirror_summary">Hidup secara lalai: anda melihat HUD dan cermin pintu pada masa yang sama, jadi ia patut dibaca sama</string>
+    <string name="set_side_output_title">Papar pandangan sisi pada</string>
+    <string name="set_side_output_screen">Skrin</string>
+    <string name="set_side_output_hud">HUD</string>
+    <string name="set_side_output_both">Skrin dan HUD</string>
+    <string name="set_sub_hud_title">Gambar HUD</string>
+    <string name="set_sub_hud_summary">Saiz, kedudukan dan kelegapan pada HUD</string>
+    <string name="set_hud_side_size_title">Ketinggian gambar HUD (% daripada tinggi HUD)</string>
+    <string name="set_hud_side_size_summary">Lebar mengikut bentuk di bawah</string>
+    <string name="set_hud_side_shape_title">Bentuk gambar HUD (lebar ÷ tinggi, %)</string>
+    <string name="set_hud_side_shape_summary">100 ialah segi empat sama; lebih tinggi lebih lebar</string>
+    <string name="set_hud_side_left_title">Kedudukan melintang pada HUD (%)</string>
+    <string name="set_hud_side_left_summary">0 ialah kiri, 100 ialah kanan</string>
+    <string name="set_hud_side_vertical_title">Ketinggian pada HUD (%)</string>
+    <string name="set_hud_side_vertical_summary">0 ialah atas, 100 ialah bawah</string>
+    <string name="set_hud_side_opacity_title">Kelegapan gambar HUD (%)</string>
+    <string name="set_hud_side_opacity_summary">Lebih rendah lebih pudar. Warna hitam memang tidak menyala pada HUD</string>
+    <string name="set_side_hud_note">HUD masih eksperimen pada 009. Jika tidak tersedia, paparan skrin digunakan. HUD mengabaikan ambang kelajuan; kamera asal dan undur tetap diutamakan.</string>
 </resources>
