@@ -187,7 +187,7 @@ public final class RecordingIntent {
         stoppedByUser = false;
         everStarted = false;
         recordingWanted = false;
-        persist();
+        persist(true);
     }
 
     public void reset() {

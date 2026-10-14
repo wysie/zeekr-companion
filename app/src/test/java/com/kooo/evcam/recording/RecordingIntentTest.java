@@ -234,4 +234,23 @@ public class RecordingIntentTest {
         assertTrue(intent.shouldRestore(true));
         assertFalse(intent.stoppedByUser());
     }
+    @Test
+    public void leavingClearsResumeIntentDurablyAndStartsANewDrive() {
+        MemoryStore store = new MemoryStore();
+        intent.attach(store);
+        intent.noteAutoStarted();
+        intent.noteRecordingStarted();
+        intent.noteRecordingWanted(true);
+        intent.noteLeftCar();
+        RecordingIntent restored = new RecordingIntent();
+        restored.attach(store);
+        assertFalse(restored.recordingWanted());
+        assertFalse(restored.shouldRestore(true));
+        assertFalse(restored.shouldAutoStart(true));
+        assertTrue(store.durableWrites > 0);
+        intent.noteUserStopped();
+        intent.noteLeftCar();
+        assertFalse(intent.stoppedByUser());
+    }
+
 }
