@@ -20,7 +20,9 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -52,8 +54,19 @@ public final class FootageLocks {
 
     /** 清单的文件名。 */
     public static final String FILE_NAME = "locked.txt";
+    /** 清单比这大就不读：一行三四十字节，五万个文件也才 2 MB。 */
+    private static final long MAX_LIST_BYTES = 2L * 1024 * 1024;
     private static final String HEADER =
             "# Zeekr Shortcut: locked footage, one file name per line. Never deleted automatically.";
+
+    /**
+     * 车自己锁的（急刹车）那一部分，和 {@link #FILE_NAME} 同一个目录。它们也在 {@link #FILE_NAME} 里，
+     * 这一份只是记下「是自动锁的」：超了 {@link AutoLockBudget} 的上限先放开它们。
+     * 人在回放里锁、解，或者闪远光锁的，都从这一份里拿掉 —— 人要的就不再是「自动的」（2.10.8）。
+     */
+    public static final String AUTO_FILE_NAME = "locked-auto.txt";
+    private static final String AUTO_HEADER =
+            "# Zeekr Shortcut: footage locked automatically (hard braking). Released oldest first when over the cap.";
 
     private static final Object GUARD = new Object();
     private static final ExecutorService IO = Executors.newSingleThreadExecutor(r -> {
@@ -88,7 +101,11 @@ public final class FootageLocks {
 
     /** 文件名 → 清单文本（按名字排序，就是按时间排序）。 */
     static String format(Collection<String> names) {
-        StringBuilder sb = new StringBuilder(HEADER).append('\n');
+        return format(HEADER, names);
+    }
+
+    private static String format(String header, Collection<String> names) {
+        StringBuilder sb = new StringBuilder(header).append('\n');
         for (String name : new TreeSet<>(names)) {
             sb.append(name).append('\n');
         }
@@ -101,9 +118,18 @@ public final class FootageLocks {
      * 清单里的文件名（不看开关）。没有清单是空集合；有清单但读不出来返回 null。
      */
     public static Set<String> read(File dir) {
-        File file = dir == null ? null : new File(dir, FILE_NAME);
+        return readList(dir, FILE_NAME);
+    }
+
+    private static Set<String> readList(File dir, String fileName) {
+        File file = dir == null ? null : new File(dir, fileName);
         if (file == null || !file.isFile()) {
             return new TreeSet<>();
+        }
+        if (file.length() > MAX_LIST_BYTES) {
+            // 不正常的大：当作读不出来（调用方据此这一轮不删、不写），别整个读进内存把进程撑崩（安全审查 2026-10-08）
+            AppLog.w(TAG, "锁定清单太大，不读: " + file + " " + file.length());
+            return null;
         }
         try (BufferedReader reader = new BufferedReader(
                 new InputStreamReader(new FileInputStream(file), StandardCharsets.UTF_8))) {
@@ -162,6 +188,10 @@ public final class FootageLocks {
             boolean ok;
             synchronized (GUARD) {
                 ok = update(dir, copy, locked);
+                if (ok) {
+                    // 人锁的 / 人解的：不再算「自动锁的」
+                    updateList(dir, AUTO_FILE_NAME, AUTO_HEADER, copy, false);
+                }
             }
             com.kooo.evcam.blackbox.BlackBox.noteImportant((locked ? "锁定影像：锁上 " : "锁定影像：解开 ")
                     + copy.size() + " 个文件" + (ok ? "" : "（没写进去）") + " " + copy);
@@ -200,28 +230,97 @@ public final class FootageLocks {
             update(dir, listed, false);
             AppLog.i(TAG, "清单里拿掉已删掉的 " + listed.size() + " 个文件");
         }
+        updateList(dir, AUTO_FILE_NAME, AUTO_HEADER, deletedNames, false);
+    }
+
+    /** 自动锁的那一份（不看开关）；读不出来返回 null。 */
+    public static Set<String> readAuto(File dir) {
+        return readList(dir, AUTO_FILE_NAME);
+    }
+
+    /**
+     * 车自己锁（急刹车）：锁上，记进自动那一份，再按 {@link AutoLockBudget} 的上限从最早的自动锁放开。
+     * 本来就锁着的（人锁的）不记成自动的。后台写，结果回主线程。
+     *
+     * @param protectedNames 这一次事件碰到的全部文件（含已经锁着的），超额时不放开
+     * @param capBytes 自动锁定最多占多少
+     */
+    public static void lockAuto(File dir, Collection<String> names, Collection<String> protectedNames,
+                                long capBytes, Result result) {
+        final List<String> copy = new ArrayList<>(names);
+        // 这一次事件的全部文件都不放：第二遍补锁时，第一遍锁上的（刹车那一刻）不在 names 里，
+        // 不护着的话超了上限会先把它们放开（审查 2026-10-08）
+        final java.util.Set<String> keep = new java.util.TreeSet<>(names);
+        if (protectedNames != null) {
+            keep.addAll(protectedNames);
+        }
+        IO.execute(() -> {
+            boolean ok;
+            List<String> released = new ArrayList<>();
+            synchronized (GUARD) {
+                Set<String> before = read(dir);
+                ok = before != null && update(dir, copy, true);
+                if (ok) {
+                    List<String> fresh = new ArrayList<>(copy);
+                    fresh.removeAll(before);
+                    updateList(dir, AUTO_FILE_NAME, AUTO_HEADER, fresh, true);
+                    Set<String> auto = readAuto(dir);
+                    if (auto != null) {
+                        Map<String, Long> sizes = new HashMap<>();
+                        for (String name : auto) {
+                            File file = new File(dir, name);
+                            if (file.isFile()) {
+                                sizes.put(name, file.length());
+                            }
+                        }
+                        released.addAll(AutoLockBudget.toRelease(auto, sizes, keep, capBytes));
+                        if (!released.isEmpty() && update(dir, released, false)) {
+                            updateList(dir, AUTO_FILE_NAME, AUTO_HEADER, released, false);
+                        }
+                    }
+                }
+            }
+            com.kooo.evcam.blackbox.BlackBox.noteImportant("锁定影像（自动）：锁上 " + copy.size() + " 个文件"
+                    + (ok ? "" : "（没写进去）") + " " + copy
+                    + (released.isEmpty() ? "" : "；自动锁定超了上限，放开最早的 " + released.size() + " 个 " + released));
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (result != null) {
+                    result.done(ok);
+                }
+                if (ok) {
+                    for (Runnable listener : LISTENERS) {
+                        listener.run();
+                    }
+                }
+            });
+        });
     }
 
     private static boolean update(File dir, Collection<String> names, boolean locked) {
+        return updateList(dir, FILE_NAME, HEADER, names, locked);
+    }
+
+    private static boolean updateList(File dir, String fileName, String header,
+                                      Collection<String> names, boolean add) {
         if (dir == null || !dir.isDirectory()) {
             return false;
         }
-        Set<String> current = read(dir);
+        Set<String> current = readList(dir, fileName);
         if (current == null) {
             // 读不出来就别写：写了等于把原来锁的全丢掉
             return false;
         }
-        boolean changed = locked ? current.addAll(names) : current.removeAll(names);
+        boolean changed = add ? current.addAll(names) : current.removeAll(names);
         if (!changed) {
             return true;
         }
-        File file = new File(dir, FILE_NAME);
+        File file = new File(dir, fileName);
         if (current.isEmpty()) {
             return !file.exists() || file.delete();
         }
-        File tmp = new File(dir, FILE_NAME + ".tmp");
+        File tmp = new File(dir, fileName + ".tmp");
         try (Writer writer = new OutputStreamWriter(new FileOutputStream(tmp), StandardCharsets.UTF_8)) {
-            writer.write(format(current));
+            writer.write(format(header, current));
         } catch (IOException e) {
             AppLog.w(TAG, "锁定清单写不进 " + tmp + ": " + e);
             tmp.delete();
