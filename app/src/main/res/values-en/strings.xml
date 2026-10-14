@@ -989,4 +989,18 @@
     <string name="set_footage_lock_brake_title">Lock footage on hard braking</string>
     <string name="set_footage_lock_brake_summary" formatted="false">While recording, a hard stop (including the car\'s automatic emergency braking) locks the clips covering 10 seconds before and after. Automatic locks use at most 10% of the recording space; the oldest is released first.</string>
     <string name="msg_brake_locked">Hard braking: locked the clips covering 10 seconds before and after</string>
+    <string name="action_save_clip">Save clip</string>
+    <string name="clip_share_note_range">The range you chose (%1$s), saved to DCIM/EVCam_Clips. Automatic cleanup doesn\'t delete it.</string>
+    <string name="msg_clip_saved">Clip saved: %1$s</string>
+    <string name="clip_cancel_range">Cancel range</string>
+    <string name="msg_clip_failed">Couldn\'t save the clip</string>
+    <string name="msg_clip_saving_range">Saving the range (%1$s)…</string>
+    <string name="clip_share_note">About 30 seconds around this moment, saved to DCIM/EVCam_Clips. Automatic cleanup doesn\'t delete it.</string>
+    <string name="clip_save_around">15 seconds before and after</string>
+    <string name="msg_deleting">Deleting…</string>
+    <string name="clip_start_marked">Start set at %1$s. Move to the end, then tap \"Save to here\" (up to 10 minutes)</string>
+    <string name="msg_clip_saving">Saving 15 seconds before and after…</string>
+    <string name="clip_mark_start">Choose a range starting here</string>
+    <string name="clip_save_to_here">Save to here</string>
+    <string name="clip_save_range">Save %1$s – %2$s (%3$s)</string>
 </resources>

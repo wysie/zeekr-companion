@@ -976,4 +976,18 @@
     <string name="set_footage_lock_brake_title">急刹车时自动锁定当前录像</string>
     <string name="set_footage_lock_brake_summary" formatted="false">录制时急刹车（包括车辆自动紧急制动），自动锁定此刻前后 10 秒所在的录像片段。自动锁定最多占录像空间的 10%，超出时先放开最早的。</string>
     <string name="msg_brake_locked">急刹车：已锁定前后 10 秒所在的录像片段</string>
+    <string name="action_save_clip">保存片段</string>
+    <string name="clip_share_note_range">自己选的一段（%1$s），已存到 DCIM/EVCam_Clips，不会被自动清理。</string>
+    <string name="msg_clip_saved">片段已保存：%1$s</string>
+    <string name="clip_cancel_range">取消选段</string>
+    <string name="msg_clip_failed">片段没能保存</string>
+    <string name="msg_clip_saving_range">正在保存这一段（%1$s）…</string>
+    <string name="clip_share_note">此刻前后约 30 秒的片段，已存到 DCIM/EVCam_Clips，不会被自动清理。</string>
+    <string name="clip_save_around">此刻前后 15 秒</string>
+    <string name="msg_deleting">正在删除…</string>
+    <string name="clip_start_marked">起点定在 %1$s。拖到终点，再点「保存到此处」（最长 10 分钟）</string>
+    <string name="msg_clip_saving">正在保存此刻前后 15 秒…</string>
+    <string name="clip_mark_start">从此刻开始选一段</string>
+    <string name="clip_save_to_here">保存到此处</string>
+    <string name="clip_save_range">保存 %1$s – %2$s（%3$s）</string>
 </resources>

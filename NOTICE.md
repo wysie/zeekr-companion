@@ -94,3 +94,8 @@ Original source authorship is retained in the port commit. Source commits: [85bc
 
 Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
 Original source authorship is retained in the port commit. Source commits: [75d8b85](https://github.com/FerixzTanz/CAMCORDER/commit/75d8b854cc5929dd8f67a4a06984189db1604e9c), [a2c7143](https://github.com/FerixzTanz/CAMCORDER/commit/a2c7143cb8d85db325ed2e17c053291a0cfd9f98), [978ba15](https://github.com/FerixzTanz/CAMCORDER/commit/978ba15c5b8c08e15113bb29ae4246c08f2ddd6c).
+
+## Custom clip export
+
+Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
+Original source authorship is retained in the port commit. Source commits: [c611deb](https://github.com/FerixzTanz/CAMCORDER/commit/c611deb135acf89bcfde523162ef9eb695475a32), [d7dc998](https://github.com/FerixzTanz/CAMCORDER/commit/d7dc998b19f9377b49050246415b3db03c2c9385), [a2c7143](https://github.com/FerixzTanz/CAMCORDER/commit/a2c7143cb8d85db325ed2e17c053291a0cfd9f98).

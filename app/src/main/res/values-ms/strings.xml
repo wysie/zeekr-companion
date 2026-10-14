@@ -966,4 +966,18 @@
     <string name="set_footage_lock_brake_title">Kunci rakaman semasa brek mengejut</string>
     <string name="set_footage_lock_brake_summary" formatted="false">Semasa merakam, brek mengejut (termasuk brek kecemasan automatik kereta) mengunci klip yang meliputi 10 saat sebelum hingga 10 saat selepas. Kuncian automatik menggunakan paling banyak 10% ruang rakaman; yang paling lama dilepaskan dahulu.</string>
     <string name="msg_brake_locked">Brek mengejut: klip yang meliputi 10 saat sebelum dan selepas telah dikunci</string>
+    <string name="action_save_clip">Simpan klip</string>
+    <string name="clip_share_note_range">Julat yang anda pilih (%1$s), disimpan ke DCIM/EVCam_Clips. Pembersihan automatik tidak memadamnya.</string>
+    <string name="msg_clip_saved">Klip disimpan: %1$s</string>
+    <string name="clip_cancel_range">Batal julat</string>
+    <string name="msg_clip_failed">Klip tidak dapat disimpan</string>
+    <string name="msg_clip_saving_range">Menyimpan julat (%1$s)…</string>
+    <string name="clip_share_note">Kira-kira 30 saat sekitar detik ini, disimpan ke DCIM/EVCam_Clips. Pembersihan automatik tidak memadamnya.</string>
+    <string name="clip_save_around">15 saat sebelum dan selepas</string>
+    <string name="msg_deleting">Memadam…</string>
+    <string name="clip_start_marked">Mula ditetapkan pada %1$s. Pergi ke penghujung, kemudian ketik \"Simpan hingga sini\" (maksimum 10 minit)</string>
+    <string name="msg_clip_saving">Menyimpan 15 saat sebelum dan selepas…</string>
+    <string name="clip_mark_start">Pilih julat bermula di sini</string>
+    <string name="clip_save_to_here">Simpan hingga sini</string>
+    <string name="clip_save_range">Simpan %1$s – %2$s (%3$s)</string>
 </resources>

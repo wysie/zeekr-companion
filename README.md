@@ -252,3 +252,7 @@ Enable Settings → Developer options → Record all vehicle signals for a read-
 ## Hard-braking footage lock
 
 Settings → Storage → Lock footage on hard braking is on by default and depends on Lock footage. It protects every camera’s footage around a detected hard stop (10 seconds before and after), using available speed/brake signals. Automatic locks have a 10% recording-space budget; oldest automatic locks can be released, while manual and flash-to-pass locks are preserved. Signal behavior on the 009 needs verification.
+
+## Custom clip export
+
+In playback, tap Save clip to save 15 seconds before/after the current point, or choose a range starting here, move to the end and tap Save to here. Custom clips are limited to 10 minutes and copied without re-encoding; the start may include preceding keyframe footage. Clips are saved beside the recording directory in EVCam_Clips and can be sent to the phone. A codec change stops concatenation. Swipe left/right to switch cameras when a surround cell is enlarged.
