@@ -73,3 +73,8 @@ GPL-3.0 是传染性（copyleft）许可证。因此**本项目整体以 GPL-3.0
 **没有任何关系。** 本项目是独立的第三方实验性软件，与浙江极氪智能科技有限公司
 及其关联方无隶属、合作或背书关系。「极氪」「ZEEKR」「7X」等名称仅用于说明本应用
 适用于哪种车机环境，相关商标权归其各自所有者所有。
+
+## Vehicle signal scanner
+
+Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
+Original source authorship is retained in the port commit. Source commits: [85bc7a3](https://github.com/FerixzTanz/CAMCORDER/commit/85bc7a3427f1e35262a97583b44a6f2f577d7ecb), [7bdde73](https://github.com/FerixzTanz/CAMCORDER/commit/7bdde73df5a11810f906f7f599bda9f02722472d), [ade63cf](https://github.com/FerixzTanz/CAMCORDER/commit/ade63cf563e324f3d0419225a7d19b098085582c).

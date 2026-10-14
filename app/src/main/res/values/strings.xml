@@ -923,4 +923,6 @@
     <string name="dev_tool_progress">（%1$d/%2$d）%3$s</string>
     <string name="dev_tool_file_result">%1$s：%2$s</string>
     <string name="dev_note">在「设置 → 关于与致谢」中点击「安全须知」可关闭开发者选项，关闭后此分区隐藏</string>
+    <string name="dev_signal_scan_title">记录全部车辆信号</string>
+    <string name="dev_signal_scan_summary">开着时车机给的全部功能号都听着，哪个变了就记一行（时刻、车速、号、值、常量名），用来找盲区报警这类还没对上的信号。只读。诊断信息「信号普查」一节里看结果；最多记 3 小时，到点自己关。</string>
 </resources>

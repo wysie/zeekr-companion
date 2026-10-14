@@ -936,4 +936,6 @@
     <string name="dev_tool_progress">(%1$d/%2$d) %3$s</string>
     <string name="dev_tool_file_result">%1$s: %2$s</string>
     <string name="dev_note">Tap Safety notice in Settings → About &amp; credits to turn off developer options and hide this section</string>
+    <string name="dev_signal_scan_title">Record all vehicle signals</string>
+    <string name="dev_signal_scan_summary">While on, listens to every signal the head unit offers and logs each change (time, speed, code, value, name), to find signals not mapped yet, such as the blind-spot warning. Read only. Results are in Diagnostics under \"Signal scan\". Runs up to 3 hours, then switches itself off.</string>
 </resources>
