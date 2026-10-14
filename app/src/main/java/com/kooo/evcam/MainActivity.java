@@ -2424,6 +2424,10 @@ public class MainActivity extends AppCompatActivity {
                     text = getString(R.string.msg_screen_off_stopped);
                     length = Toast.LENGTH_SHORT;
                     break;
+                case LEFT_CAR:
+                    text = getString(R.string.msg_left_car_stopped);
+                    length = Toast.LENGTH_SHORT;
+                    break;
                 case NO_DATA:
                 case START_FAILED:
                     // 录制器都建不起来、一笔都没写进：录像没开始，不说「中断」（界面文字审查 rec_reason_unknown）

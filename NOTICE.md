@@ -99,3 +99,8 @@ Original source authorship is retained in the port commit. Source commits: [75d8
 
 Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
 Original source authorship is retained in the port commit. Source commits: [c611deb](https://github.com/FerixzTanz/CAMCORDER/commit/c611deb135acf89bcfde523162ef9eb695475a32), [d7dc998](https://github.com/FerixzTanz/CAMCORDER/commit/d7dc998b19f9377b49050246415b3db03c2c9385), [a2c7143](https://github.com/FerixzTanz/CAMCORDER/commit/a2c7143cb8d85db325ed2e17c053291a0cfd9f98).
+
+## Recording follows the driver
+
+Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
+Original source authorship is retained in the port commit. Source commits: [289d66c](https://github.com/FerixzTanz/CAMCORDER/commit/289d66c35e7ee65b0bda5b5675ff17c33c4075e2), [657dcbd](https://github.com/FerixzTanz/CAMCORDER/commit/657dcbdddf55c9de1187de1db0e749c7596cca24), [f41028c](https://github.com/FerixzTanz/CAMCORDER/commit/f41028c89b1a3467c1352de3ed518d22f7f93396).

@@ -990,4 +990,9 @@
     <string name="clip_mark_start">从此刻开始选一段</string>
     <string name="clip_save_to_here">保存到此处</string>
     <string name="clip_save_range">保存 %1$s – %2$s（%3$s）</string>
+    <string name="set_drive_auto_start_title">上车自动开录</string>
+    <string name="set_drive_auto_stop_summary">挂着 P、主驾座位空了 30 秒，或者开着哨兵模式锁了车，就停止录制，把相机让给哨兵模式。人坐在车里不会停。</string>
+    <string name="set_drive_auto_start_summary">坐上主驾座位就开始录制（车在 P 挡），坐着不开走也录；换出 P 挡或应用在开车途中才起来时也会开。不用开着应用界面。这一趟你自己停过的，不会自动再开。</string>
+    <string name="msg_left_car_stopped">已下车，录制已停止</string>
+    <string name="set_drive_auto_stop_title">下车自动停录</string>
 </resources>

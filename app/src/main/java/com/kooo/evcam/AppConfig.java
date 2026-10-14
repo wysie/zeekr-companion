@@ -28,6 +28,8 @@ public class AppConfig {
     // 合并前「开机自启动」自己的键：只在合并时读一次，读完删掉
     private static final String KEY_AUTO_START_ON_BOOT_LEGACY = "auto_start_on_boot";
     private static final String KEY_AUTO_START_RECORDING = "auto_start_recording";  // 启动自动录制
+    private static final String KEY_DRIVE_AUTO_START = "drive_auto_start";  // CAMCORDER：换出 P 挡自动开录
+    private static final String KEY_DRIVE_AUTO_STOP = "drive_auto_stop";  // CAMCORDER：下车自动停录
     private static final String KEY_SCREEN_OFF_RECORDING = "screen_off_recording";  // 息屏录制（锁车录制）
     private static final String KEY_SCREEN_OFF_KEEP_RECORDING = "screen_off_keep_recording";  // 熄屏持续录制
     private static final String KEY_FOOTAGE_LOCK = "footage_lock";  // 锁定影像
@@ -309,6 +311,24 @@ public class AppConfig {
      * 获取启动自动录制设置
      * @return true 表示启用启动自动录制
      */
+    /** 换出 P 挡自动开录（DriveSession），默认开（用户 2026-10-07）。 */
+    public boolean isDriveAutoStart() {
+        return prefs.getBoolean(KEY_DRIVE_AUTO_START, true);
+    }
+
+    public void setDriveAutoStart(boolean on) {
+        prefs.edit().putBoolean(KEY_DRIVE_AUTO_START, on).apply();
+    }
+
+    /** 下车自动停录（DriveSession），默认开（用户 2026-10-07）。 */
+    public boolean isDriveAutoStop() {
+        return prefs.getBoolean(KEY_DRIVE_AUTO_STOP, true);
+    }
+
+    public void setDriveAutoStop(boolean on) {
+        prefs.edit().putBoolean(KEY_DRIVE_AUTO_STOP, on).apply();
+    }
+
     public boolean isAutoStartRecording() {
         // 默认禁用启动自动录制（需要用户主动开启）
         return prefs.getBoolean(KEY_AUTO_START_RECORDING, false);

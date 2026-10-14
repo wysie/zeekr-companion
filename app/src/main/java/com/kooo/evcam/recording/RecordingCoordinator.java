@@ -84,7 +84,7 @@ public final class RecordingCoordinator {
      * （{@link #headUnitWoke}）：和别的黑着时的要录一样照 {@link ScreenOffPlan#startsWhileDark}，只是黑匣子里看得出是它。
      */
     public enum Why {
-        USER, FLOATING, AUTO_START, RESUME, SCREEN_ON, WOKE
+        USER, FLOATING, AUTO_START, RESUME, SCREEN_ON, WOKE, DRIVE
     }
 
     /**
@@ -597,6 +597,11 @@ public final class RecordingCoordinator {
      * <p>黑着不开的那一下只在「这一趟要录」真的变了时记一行（C9：恢复每 5 分钟例行来一次，不然一夜几十行）。</p>
      */
     public void request(Why why) {
+        if ((why == Why.AUTO_START || why == Why.RESUME || why == Why.SCREEN_ON || why == Why.WOKE)
+                && DriveSessionWatcher.driverAway()) {
+            BlackBox.noteImportant("Automatic recording blocked: driver away in P (" + why + ")");
+            return;
+        }
         if (isRecording()) {
             return;
         }
@@ -1284,7 +1289,8 @@ public final class RecordingCoordinator {
             return;
         }
         // 人停的：不再等。熄屏停的：也不再等（照表停了，这一阵不该自己录起来），亮屏、车机黑着醒了时再照表判
-        if (reason == RecordingStops.Reason.USER || reason == RecordingStops.Reason.SCREEN_OFF) {
+        if (reason == RecordingStops.Reason.USER || reason == RecordingStops.Reason.SCREEN_OFF
+                || reason == RecordingStops.Reason.LEFT_CAR) {
             if (!wasRecording) {
                 // 只是在等开录（没登记相机）：「这一趟要录」留不留先定，前台服务跟着收（等着接回时为它留着的）——
                 // 和停录同一个次序（见 end）

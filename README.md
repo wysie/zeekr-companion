@@ -256,3 +256,7 @@ Settings → Storage → Lock footage on hard braking is on by default and depen
 ## Custom clip export
 
 In playback, tap Save clip to save 15 seconds before/after the current point, or choose a range starting here, move to the end and tap Save to here. Custom clips are limited to 10 minutes and copied without re-encoding; the start may include preceding keyframe footage. Clips are saved beside the recording directory in EVCam_Clips and can be sent to the phone. A codec change stops concatenation. Swipe left/right to switch cameras when a surround cell is enlarged.
+
+## Recording follows the driver
+
+Settings → Recording has Start recording when you get in and Stop recording when you leave the car, both on by default. An occupied driver seat in P (or a shift out of P) requests recording through the current upstream coordinator. Leaving in P stops after 30 seconds with an empty seat, or sooner when the screen is physically off or Sentry is armed. A manual stop holds for the drive; leaving clears that hold and the saved resume intent. Unknown signals retain the existing screen-off behavior. The 009’s seat/gear signals need on-car verification; disable either switch if its behavior does not suit your firmware.

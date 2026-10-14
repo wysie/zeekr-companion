@@ -1003,4 +1003,9 @@
     <string name="clip_mark_start">Choose a range starting here</string>
     <string name="clip_save_to_here">Save to here</string>
     <string name="clip_save_range">Save %1$s – %2$s (%3$s)</string>
+    <string name="set_drive_auto_start_title">Start recording when you get in</string>
+    <string name="set_drive_auto_stop_summary">Stops when the car is in P and the driver\'s seat has been empty for 30 seconds, or Sentry Mode arms after you lock. The cameras are then free for Sentry Mode. Sitting in the car never stops it.</string>
+    <string name="set_drive_auto_start_summary">Starts recording when you sit in the driver\'s seat with the car in P, even if you don\'t drive off. Also starts when you shift out of P, or if the app comes up while you\'re already driving. The app doesn\'t need to be open. Not if you stopped recording yourself on this trip.</string>
+    <string name="msg_left_car_stopped">You left the car. Recording stopped.</string>
+    <string name="set_drive_auto_stop_title">Stop recording when you leave the car</string>
 </resources>
