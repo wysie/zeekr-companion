@@ -264,3 +264,7 @@ Settings → Recording has Start recording when you get in and Stop recording wh
 ## Turn arrows on side cameras
 
 The side camera displays an upright left/right arrow between the top corner controls, including during Super mirror replacement. It follows the indicator display in green/grey; if blink telemetry is unavailable it stays green. It does not indicate an obstacle detection. Camera labels remain independently configurable.
+
+## Night theme and floating record button
+
+Night mode uses a black page/main panel with darker settings rows and a distinct selected-row shade. Day colors are retained. The floating record button has a smaller, thinner icon and no shadow; its background stays neutral while live recording uses a red ring/stop icon. The current upstream waiting-for-cameras state remains grey.

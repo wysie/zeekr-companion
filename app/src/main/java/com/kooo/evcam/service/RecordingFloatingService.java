@@ -854,7 +854,6 @@ public class RecordingFloatingService extends Service {
     private static class RecordingButtonView extends View {
         private Paint backgroundPaint;
         private Paint iconPaint;
-        private Paint shadowPaint;
         /** 外面那一圈：待机、等摄像头是灰的空心圈，录制中是浅红的轨道。 */
         private Paint ringPaint;
         /** 录制中沿着轨道走的那一段，和主界面录制键的分段进度环同一个意思。 */
@@ -885,11 +884,6 @@ public class RecordingFloatingService extends Service {
             iconPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             iconPaint.setStyle(Paint.Style.FILL);
             iconPaint.setColor(ContextCompat.getColor(getContext(), R.color.recording));
-
-            // 阴影画笔 - iOS 风格轻微阴影
-            shadowPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
-            shadowPaint.setStyle(Paint.Style.FILL);
-            shadowPaint.setColor(Color.parseColor("#20000000")); // 半透明黑色阴影
 
             ringPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             ringPaint.setStyle(Paint.Style.STROKE);
@@ -935,24 +929,10 @@ public class RecordingFloatingService extends Service {
         protected void onDraw(Canvas canvas) {
             super.onDraw(canvas);
 
-            // 和主界面那个录制键一样：底色只在两档之间走（待机、等摄像头 sunken、
-            // 录制中 recording_quiet），红色始终只出现在中间那个点上。
-            // 整块变红等于把「这个按钮」和「正在录」混为一谈。
+            // Ferix styling: neutral background; only the live recording icon is red.
             boolean live = isRecording && !waiting;
             backgroundPaint.setColor(ContextCompat.getColor(getContext(),
-                    live ? R.color.recording_quiet : R.color.sunken));
-
-            // 绘制阴影（iOS 风格）
-            float shadowOffset = radius * 0.08f;
-            canvas.drawRoundRect(
-                    centerX - radius + shadowOffset,
-                    centerY - radius + shadowOffset,
-                    centerX + radius + shadowOffset,
-                    centerY + radius + shadowOffset,
-                    cornerRadius,
-                    cornerRadius,
-                    shadowPaint
-            );
+                    R.color.sunken));
 
             // 绘制圆角矩形背景（iOS 扁平化风格）
             canvas.drawRoundRect(
@@ -969,12 +949,12 @@ public class RecordingFloatingService extends Service {
             //
             // 待机时是<b>灰的空心圈</b> —— 合并之前那个「打开主界面」的悬浮按钮
             // 就长这样，而这个按钮默认干的也正是那件事。红色留给「正在录」。
-            float stroke = radius * 0.14f;
-            float ringRadius = radius * 0.72f;
+            float stroke = radius * 0.085f;
+            float ringRadius = radius * 0.46f;
             ringPaint.setStrokeWidth(stroke);
             progressPaint.setStrokeWidth(stroke);
             ringPaint.setColor(ContextCompat.getColor(getContext(),
-                    live ? R.color.recording_track : R.color.text_tertiary));
+                    live ? R.color.recording_track : waiting ? R.color.text_tertiary : R.color.text_primary));
             canvas.drawCircle(centerX, centerY, ringRadius, ringPaint);
 
             if (isRecording) {
@@ -988,7 +968,7 @@ public class RecordingFloatingService extends Service {
                 // 停止方块：在录是红的；等摄像头时是灰的 —— 还是方块，按一下照样是停
                 iconPaint.setColor(ContextCompat.getColor(getContext(),
                         live ? R.color.recording : R.color.text_tertiary));
-                float rectSize = radius * 0.42f;
+                float rectSize = radius * 0.32f;
                 float iconCornerRadius = rectSize * 0.2f;
                 canvas.drawRoundRect(
                         centerX - rectSize / 2,
@@ -1004,8 +984,8 @@ public class RecordingFloatingService extends Service {
                 //
                 // 试过中间不画东西，只剩一个空圈 —— 太素，一眼认不出这是个按钮。
                 // 红色仍然只在录制时出现：说明「正在录」的是颜色，不是有没有点。
-                iconPaint.setColor(ContextCompat.getColor(getContext(), R.color.text_tertiary));
-                canvas.drawCircle(centerX, centerY, radius * 0.32f, iconPaint);
+                iconPaint.setColor(ContextCompat.getColor(getContext(), R.color.text_primary));
+                canvas.drawCircle(centerX, centerY, radius * 0.2f, iconPaint);
                 iconPaint.setColor(ContextCompat.getColor(getContext(), R.color.recording));
             }
         }

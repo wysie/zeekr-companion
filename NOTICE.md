@@ -109,3 +109,8 @@ Original source authorship is retained in the port commit. Source commits: [289d
 
 Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
 Original source authorship is retained in the port commit. Source commits: [45e07ae](https://github.com/FerixzTanz/CAMCORDER/commit/45e07ae7da636dea4fe11e9a193217d66410bc33), [2415bac](https://github.com/FerixzTanz/CAMCORDER/commit/2415bac9437b5304ef805da28e08fb237e096ddf).
+
+## Night theme and floating record button
+
+Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
+Original source authorship is retained in the port commit. Source commits: [c91739e](https://github.com/FerixzTanz/CAMCORDER/commit/c91739e1dd317f16971e0a9a9296d80c29e63a3d), [beacea7](https://github.com/FerixzTanz/CAMCORDER/commit/beacea7fbb0407ece159a95fe6b4ccddb4716f24), [f931d11](https://github.com/FerixzTanz/CAMCORDER/commit/f931d11cb179d6584c0e747bc31ffe539bdd9711), [19986ac](https://github.com/FerixzTanz/CAMCORDER/commit/19986ac50ea698de0faf4bc5a92a93a2be2f19f1).
