@@ -141,3 +141,7 @@ every change since then is visible as a diff.
 Splitting App Lab's composite stream into a grid and rendering it is implemented here from scratch.
 
 Origins, third-party licences and boundaries: [NOTICE.md](NOTICE.md).
+
+## Phone sharing improvements
+
+Send to phone offers Wi-Fi, hotspot or tethering addresses instead of internal vehicle links. The dialog shows whether the phone connected and whether sending completed; recent attempts appear in Diagnostics. Both devices must be on the same local network. Includes Ferix’s HEAD/compression fixes; Android timeout reports still need device verification.

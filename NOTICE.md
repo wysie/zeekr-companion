@@ -73,3 +73,8 @@ GPL-3.0 是传染性（copyleft）许可证。因此**本项目整体以 GPL-3.0
 **没有任何关系。** 本项目是独立的第三方实验性软件，与浙江极氪智能科技有限公司
 及其关联方无隶属、合作或背书关系。「极氪」「ZEEKR」「7X」等名称仅用于说明本应用
 适用于哪种车机环境，相关商标权归其各自所有者所有。
+
+## Phone sharing improvements
+
+Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
+Original source authorship is retained in the port commit. Source commits: [1539ead](https://github.com/FerixzTanz/CAMCORDER/commit/1539ead497575565cd1830860af9daa5feea0fb6), [f00788a](https://github.com/FerixzTanz/CAMCORDER/commit/f00788a67d1a84074fb606ea684429e5575bd69b), [78461a2](https://github.com/FerixzTanz/CAMCORDER/commit/78461a20feabf05c131a32967d6f9c0b670d58d9).
