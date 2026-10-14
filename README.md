@@ -141,3 +141,7 @@ every change since then is visible as a diff.
 Splitting App Lab's composite stream into a grid and rendering it is implemented here from scratch.
 
 Origins, third-party licences and boundaries: [NOTICE.md](NOTICE.md).
+
+## Custom clip export
+
+In playback, tap Save clip to save 15 seconds before/after the current point, or choose a range starting here, move to the end and tap Save to here. Custom clips are limited to 10 minutes and copied without re-encoding; the start may include preceding keyframe footage. Clips are saved beside the recording directory in EVCam_Clips and can be sent to the phone. A codec change stops concatenation. Swipe left/right to switch cameras when a surround cell is enlarged.

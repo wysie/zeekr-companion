@@ -30,6 +30,7 @@ import com.kooo.evcam.AppLog;
 import com.kooo.evcam.R;
 import com.kooo.evcam.StorageHelper;
 import com.kooo.evcam.camera.CameraSlots;
+import com.kooo.evcam.playback.ClipExporter;
 import com.kooo.evcam.playback.ManagedVideoPlayer;
 import com.kooo.evcam.profile.RecordSpecs;
 
@@ -112,6 +113,9 @@ public class TimelinePlayerActivity extends AppCompatActivity {
     private Button nextSessionButton;
     /** 锁定此刻 / 解锁（锁定影像开着时才有）。 */
     private Button lockButton;
+    private Button saveClipButton;
+    private boolean savingClip;
+    private long clipStartEpochMs = -1L;
     /** 进度条下面那条：锁定的那几段。 */
     private com.kooo.evcam.ui.LockedRangeStrip lockedStrip;
     /** 「锁定影像」开着没有：扫描时读一次，回到前台时再看一眼。 */
@@ -337,6 +341,10 @@ public class TimelinePlayerActivity extends AppCompatActivity {
         if (lockButton != null) {
             lockButton.setOnClickListener(v -> toggleLockHere());
         }
+        saveClipButton = findViewById(R.id.timeline_save_clip);
+        if (saveClipButton != null) {
+            saveClipButton.setOnClickListener(v -> showClipChoices());
+        }
         View sendButton = findViewById(R.id.timeline_send);
         if (sendButton != null) {
             sendButton.setOnClickListener(v -> sendCurrentSegment());
@@ -395,6 +403,11 @@ public class TimelinePlayerActivity extends AppCompatActivity {
             if (event.getActionMasked() == MotionEvent.ACTION_DOWN) {
                 lastTouchX = event.getX();
                 lastTouchY = event.getY();
+            }
+            // 放大了某一路时左右划：换到下一路 / 上一路（2.10.8）。划了就不当点击（点击是收回网格）
+            if (event.getActionMasked() == MotionEvent.ACTION_UP && swiped(lane, event)) {
+                v.setPressed(false);
+                return true;
             }
             return false;   // 不拦，点击照常走 —— 按压反馈和无障碍都在那条路上
         });
@@ -545,6 +558,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
         playWhenReady = true;
 
         surround.track = LaneTrack.of(session);
+        clearClipStart();
         for (Lane lane : lanes) {
             if (lane != surround) {
                 List<RecordingTimeline.Source> sources = laneSources.get(lane.slot);
@@ -661,6 +675,31 @@ public class TimelinePlayerActivity extends AppCompatActivity {
         zoomedCell = cell;
         applyViewport(lane);
     }
+
+    /**
+     * 放大着环视的某一路时，横着划过 {@link #SWIPE_DP} 以上（而且横向明显多于竖向）：换一路。
+     * 往左划看下一路、往右划看上一路，四路首尾相接。
+     *
+     * @return 算不算一次划动（算的话已经换好了）
+     */
+    private boolean swiped(Lane lane, MotionEvent up) {
+        if (lane != expanded || zoomedCell == PlaybackViewport.NO_CELL || gridColumns(lane) < 2) {
+            return false;
+        }
+        float dx = up.getX() - lastTouchX;
+        float dy = up.getY() - lastTouchY;
+        float threshold = SWIPE_DP * getResources().getDisplayMetrics().density;
+        if (Math.abs(dx) < threshold || Math.abs(dx) < 2 * Math.abs(dy)) {
+            return false;
+        }
+        int cells = gridColumns(lane) * gridColumns(lane);
+        zoomedCell = ((zoomedCell + (dx < 0 ? 1 : -1)) % cells + cells) % cells;
+        applyViewport(lane);
+        return true;
+    }
+
+    /** 划多远才算换一路。 */
+    private static final float SWIPE_DP = 60f;
 
     /** 手指落在这一格画面的哪一路上；落在留出的黑边上、或者画面还没出来，返回 NO_CELL。 */
     private int cellUnderTouch(Lane lane) {
@@ -1152,6 +1191,113 @@ public class TimelinePlayerActivity extends AppCompatActivity {
                 getString(R.string.share_minutes, minutes));
         com.kooo.evcam.share.PhoneShare.show(this,
                 new File(lane.track.clip(lane.openIndex).path), note);
+    }
+
+    /**
+     * 保存片段（2.10.8）：此刻前后各 15 秒，看的是哪一路就抄哪一路（网格或放大某一路时是环视那个文件），
+     * 存到 EVCam_Clips，存好后打开「发送到手机」。不重新编码，几秒钟。
+     */
+    private void showClipChoices() {
+        Lane lane = expanded != null ? expanded : surround;
+        if (sessions.isEmpty() || lane.track.isEmpty()) {
+            Toast.makeText(this, R.string.share_phone_no_file, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final long now = clockEpoch();
+        final List<CharSequence> items = new ArrayList<>();
+        final List<Runnable> actions = new ArrayList<>();
+        if (clipStartEpochMs >= 0) {
+            final long from = Math.min(clipStartEpochMs, now);
+            final long to = Math.max(clipStartEpochMs, now);
+            items.add(getString(R.string.clip_save_range, clockText(from), clockText(to),
+                    TimelineFormat.duration(Math.min(to - from, ClipExporter.MAX_RANGE_MS))));
+            actions.add(() -> saveClip(from, to, false));
+        } else {
+            items.add(getString(R.string.clip_mark_start));
+            actions.add(() -> markClipStart(now));
+        }
+        items.add(getString(R.string.clip_save_around));
+        actions.add(() -> saveClip(now - ClipExporter.HALF_MS, now + ClipExporter.HALF_MS, true));
+        if (clipStartEpochMs >= 0) {
+            items.add(getString(R.string.clip_cancel_range));
+            actions.add(this::clearClipStart);
+        }
+        com.kooo.evcam.ui.CamDialogs.show(new MaterialAlertDialogBuilder(this, R.style.Theme_Cam_MaterialAlertDialog)
+                .setTitle(R.string.action_save_clip)
+                .setItems(items.toArray(new CharSequence[0]), (dialog, which) -> actions.get(which).run())
+                .setNegativeButton(R.string.action_cancel, null));
+    }
+
+    /** 选段的起点定在这一刻；按钮换成「保存到此处」，提醒还在选。 */
+    private void markClipStart(long epochMs) {
+        clipStartEpochMs = epochMs;
+        if (saveClipButton != null) {
+            saveClipButton.setText(R.string.clip_save_to_here);
+        }
+        Toast.makeText(this, getString(R.string.clip_start_marked, clockText(epochMs)), Toast.LENGTH_LONG).show();
+    }
+
+    private void clearClipStart() {
+        clipStartEpochMs = -1L;
+        if (saveClipButton != null) {
+            saveClipButton.setText(R.string.action_save_clip);
+        }
+    }
+
+    private static String clockText(long epochMs) {
+        return new SimpleDateFormat("HH:mm:ss", Locale.getDefault()).format(new Date(epochMs));
+    }
+
+    /**
+     * 把 [fromMs, toMs] 抄成一个 MP4（2.10.8 起；2.11.0 之后可以自己选起止）：看的是哪一路就抄哪一路
+     * （网格或放大某一路时是环视那个文件），存到 EVCam_Clips，存好后打开「发送到手机」。不重新编码，几秒钟。
+     *
+     * @param around 是「此刻前后 15 秒」（文件名、提示按此刻），不是自己选的一段
+     */
+    private void saveClip(long fromMs, long toMs, boolean around) {
+        if (savingClip) {
+            return;   // 上一次还在存：连点不另起一个（审查 2026-10-08）
+        }
+        Lane lane = expanded != null ? expanded : surround;
+        if (sessions.isEmpty() || lane.track.isEmpty()) {
+            Toast.makeText(this, R.string.share_phone_no_file, Toast.LENGTH_SHORT).show();
+            return;
+        }
+        final List<ClipExporter.Part> parts = new ArrayList<>();
+        for (LaneTrack.Clip clip : lane.track.clips()) {
+            parts.add(new ClipExporter.Part(new File(clip.path), clip.startEpochMs, clip.durationMs));
+        }
+        final String label = lane.slot.toLowerCase(Locale.US);
+        final File outDir = ClipExporter.clipsDir(StorageHelper.getVideoDir(getApplicationContext()));
+        Toast.makeText(this, around ? getString(R.string.msg_clip_saving)
+                : getString(R.string.msg_clip_saving_range,
+                        TimelineFormat.duration(Math.min(toMs - fromMs, ClipExporter.MAX_RANGE_MS))),
+                Toast.LENGTH_SHORT).show();
+        if (!around) {
+            clearClipStart();
+        }
+        savingClip = true;
+        new Thread(() -> {
+            File saved = around
+                    ? ClipExporter.export(parts, fromMs + ClipExporter.HALF_MS, outDir, label)
+                    : ClipExporter.exportRange(parts, fromMs, toMs, outDir, label);
+            final long savedMs = saved != null ? ClipDurations.of(saved) : -1L;
+            runOnUiThread(() -> {
+                savingClip = false;
+                if (isFinishing() || isDestroyed()) {
+                    return;
+                }
+                if (saved == null) {
+                    Toast.makeText(this, R.string.msg_clip_failed, Toast.LENGTH_LONG).show();
+                    return;
+                }
+                Toast.makeText(this, getString(R.string.msg_clip_saved, saved.getName()), Toast.LENGTH_SHORT).show();
+                String note = around ? getString(R.string.clip_share_note)
+                        : getString(R.string.clip_share_note_range,
+                                TimelineFormat.duration(Math.max(0L, savedMs)));
+                com.kooo.evcam.share.PhoneShare.show(this, saved, note);
+            });
+        }, "save-clip").start();
     }
 
     private void cycleSpeed() {
