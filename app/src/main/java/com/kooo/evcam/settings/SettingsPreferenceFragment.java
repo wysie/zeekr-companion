@@ -160,6 +160,14 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
 
         bindSwitch("pref_auto_record", appConfig.isAutoStartRecording(),
                 value -> appConfig.setAutoStartRecording(value));
+        bindSwitch("pref_drive_auto_start", appConfig.isDriveAutoStart(), value -> {
+            appConfig.setDriveAutoStart(value);
+            com.kooo.evcam.recording.DriveSessionWatcher.get(requireContext()).apply();
+        });
+        bindSwitch("pref_drive_auto_stop", appConfig.isDriveAutoStop(), value -> {
+            appConfig.setDriveAutoStop(value);
+            com.kooo.evcam.recording.DriveSessionWatcher.get(requireContext()).apply();
+        });
 
         // 拍照使用 JPEG 输出：锁成开，只有开发者选项开着时能改（关着时主界面在后台拍不到画面，见 AppConfig）。
         // 没开时开着、灰着、点不动，下面写「需开启开发者选项」（同「中转写入」）—— 读到的值本来就按开算（DEVELOPER_KEYS）

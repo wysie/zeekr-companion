@@ -55,6 +55,11 @@ public final class RecordingStops {
          * 也算这个（见 {@link #START_FAILED}）。
          */
         UNKNOWN,
+        /**
+         * 人下车了（{@link DriveSession}）：P 挡，主驾座位空了 30 秒或锁车布防。不接回；
+         * 换出 P 挡时由 DriveSession 重新开。
+         */
+        LEFT_CAR,
     }
 
     private RecordingStops() {

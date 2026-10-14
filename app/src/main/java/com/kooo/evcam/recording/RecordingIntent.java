@@ -182,6 +182,14 @@ public final class RecordingIntent {
     }
 
     /** 退出应用时归零 —— 下一次打开是新的一趟。 */
+    /** Finish the drive and clear persisted resume intent after the driver leaves. */
+    public void noteLeftCar() {
+        stoppedByUser = false;
+        everStarted = false;
+        recordingWanted = false;
+        persist();
+    }
+
     public void reset() {
         if (!autoStarted && !stoppedByUser && !everStarted && !recordingWanted) {
             return;

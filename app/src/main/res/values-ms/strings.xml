@@ -913,4 +913,9 @@
     <string name="dev_tool_progress">(%1$d/%2$d) %3$s</string>
     <string name="dev_tool_file_result">%1$s: %2$s</string>
     <string name="dev_note">Ketik Safety notice dalam Tetapan → Perihal &amp; penghargaan untuk mematikan pilihan pembangun dan menyembunyikan bahagian ini</string>
+    <string name="set_drive_auto_start_title">Mula merakam apabila anda masuk</string>
+    <string name="set_drive_auto_stop_summary">Berhenti apabila kereta dalam P dan tempat duduk pemandu kosong selama 30 saat, atau Mod Sentry bersedia selepas anda mengunci. Kamera kemudian bebas untuk Mod Sentry. Duduk di dalam kereta tidak akan menghentikannya.</string>
+    <string name="set_drive_auto_stop_title">Henti merakam apabila anda meninggalkan kereta</string>
+    <string name="msg_left_car_stopped">Anda telah meninggalkan kereta. Rakaman dihentikan.</string>
+    <string name="set_drive_auto_start_summary">Mula merakam apabila anda duduk di tempat duduk pemandu dengan kereta dalam P, walaupun anda tidak memandu pergi. Juga bermula apabila anda menukar keluar dari P, atau jika aplikasi bermula semasa anda sudah memandu. Aplikasi tidak perlu dibuka. Tidak jika anda sendiri menghentikan rakaman dalam perjalanan ini.</string>
 </resources>

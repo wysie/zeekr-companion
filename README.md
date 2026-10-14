@@ -141,3 +141,7 @@ every change since then is visible as a diff.
 Splitting App Lab's composite stream into a grid and rendering it is implemented here from scratch.
 
 Origins, third-party licences and boundaries: [NOTICE.md](NOTICE.md).
+
+## Recording follows the driver
+
+Settings → Recording has Start recording when you get in and Stop recording when you leave the car, both on by default. An occupied driver seat in P (or a shift out of P) requests recording through the current upstream coordinator. Leaving in P stops after 30 seconds with an empty seat, or sooner when the screen is physically off or Sentry is armed. A manual stop holds for the drive; leaving clears that hold and the saved resume intent. Unknown signals retain the existing screen-off behavior. The 009’s seat/gear signals need on-car verification; disable either switch if its behavior does not suit your firmware.
