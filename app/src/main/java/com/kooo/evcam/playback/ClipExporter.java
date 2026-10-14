@@ -85,13 +85,15 @@ public final class ClipExporter {
         }
         String base = "clip_" + new SimpleDateFormat("yyyyMMdd_HHmmss", Locale.US).format(new Date(nameMs))
                 + "_" + label;
-        // 同一刻存两次不覆盖上一次的：加序号（审查 2026-10-08）
-        File out = new File(outDir, base + ".mp4");
-        for (int n = 2; out.exists() && n < 100; n++) {
-            out = new File(outDir, base + "_" + n + ".mp4");
+        ClipExportFiles.Reservation reservation;
+        try {
+            reservation = ClipExportFiles.reserve(outDir, base);
+        } catch (java.io.IOException e) {
+            return null;
         }
-        // 先写到 .part，写完再改名：失败了只删自己的半截，不会碰到已经存好的片段
-        File part = new File(outDir, out.getName() + ".part");
+        if (reservation == null) return null;
+        File out = reservation.output;
+        File part = reservation.partial;
         MediaMuxer muxer = null;
         boolean started = false;
         boolean wrote = false;
@@ -184,7 +186,7 @@ public final class ClipExporter {
                 }
             }
         }
-        if (!wrote || !part.renameTo(out)) {
+        if (!wrote || ClipExportFiles.publish(reservation) == null) {
             if (part.exists()) {
                 part.delete();
             }
