@@ -16,6 +16,82 @@ public class RecordingIntentTest {
 
     private final RecordingIntent intent = new RecordingIntent();
 
+    @Test public void automaticSourcesRequireTheirOwnCurrentSwitch() {
+        assertFalse(intent.allowsStart(RecordingIntent.Source.AUTO_LAUNCH, false, true));
+        assertTrue(intent.allowsStart(RecordingIntent.Source.AUTO_LAUNCH, true, false));
+        assertFalse(intent.allowsStart(RecordingIntent.Source.AUTO_DRIVER, true, false));
+        assertTrue(intent.allowsStart(RecordingIntent.Source.AUTO_DRIVER, false, true));
+    }
+
+    @Test public void disablingDriverRecordingRevokesItsSavedWakeRequest() {
+        MemoryStore store = new MemoryStore();
+        intent.attach(store);
+        intent.noteRecordingWanted(true, RecordingIntent.Source.AUTO_DRIVER);
+        assertTrue(intent.allowsResume(false, true));
+        RecordingIntent afterWake = new RecordingIntent();
+        afterWake.attach(store);
+        assertEquals(RecordingIntent.Source.AUTO_DRIVER, afterWake.wantedSource());
+        assertFalse(afterWake.allowsResume(false, false));
+        assertFalse("Launch setting cannot authorize an old driver request", afterWake.allowsResume(true, false));
+    }
+
+    @Test public void disablingLaunchRecordingRevokesItsQueuedRequest() {
+        intent.noteRecordingWanted(true, RecordingIntent.Source.AUTO_LAUNCH);
+        assertTrue(intent.allowsResume(true, false));
+        assertFalse(intent.allowsResume(false, true));
+        assertFalse(intent.allowsStart(RecordingIntent.Source.AUTO_LAUNCH, false, true));
+    }
+
+    @Test public void manualRecordingCanRecoverWithAutomaticStartsDisabled() {
+        MemoryStore store = new MemoryStore();
+        intent.attach(store);
+        intent.noteUserStarted();
+        intent.noteRecordingWanted(true, RecordingIntent.Source.MANUAL);
+        RecordingIntent afterWake = new RecordingIntent();
+        afterWake.attach(store);
+        assertTrue(afterWake.allowsResume(false, false));
+        afterWake.noteUserStopped();
+        assertFalse(afterWake.allowsResume(true, true));
+    }
+
+    @Test public void legacyWakeIntentCannotStartWithBothAutomaticSwitchesOff() {
+        MemoryStore store = new MemoryStore();
+        store.saved.put("recordingWanted", true);
+        intent.attach(store);
+        assertEquals(RecordingIntent.Source.LEGACY, intent.wantedSource());
+        assertFalse(intent.allowsResume(false, false));
+        assertTrue(intent.allowsResume(true, false));
+    }
+
+    @Test public void explicitManualRequestReplacesAutomaticOriginDurably() {
+        MemoryStore store = new MemoryStore();
+        intent.attach(store);
+        intent.noteRecordingWanted(true, RecordingIntent.Source.AUTO_DRIVER);
+        int writes = store.durableWrites;
+        assertTrue(intent.noteRecordingWanted(true, RecordingIntent.Source.MANUAL));
+        assertEquals(writes + 1, store.durableWrites);
+        assertTrue(intent.allowsResume(false, false));
+        assertFalse(intent.noteRecordingWanted(true, RecordingIntent.Source.MANUAL));
+    }
+
+    @Test public void cancellingAndLeavingClearTheOldRecordingOrigin() {
+        intent.noteRecordingWanted(true, RecordingIntent.Source.AUTO_DRIVER);
+        intent.noteRecordingWanted(false);
+        assertEquals(RecordingIntent.Source.LEGACY, intent.wantedSource());
+        assertFalse(intent.allowsResume(true, true));
+        intent.noteRecordingWanted(true, RecordingIntent.Source.AUTO_LAUNCH);
+        intent.noteLeftCar();
+        assertFalse(intent.allowsResume(true, true));
+        assertEquals(RecordingIntent.Source.LEGACY, intent.wantedSource());
+    }
+
+    @Test public void manualStopBlocksDelayedDriverCommandEvenWhenItsSwitchIsOn() {
+        intent.noteUserStopped();
+        assertFalse(intent.allowsStart(RecordingIntent.Source.AUTO_DRIVER, true, true));
+        assertFalse(intent.allowsStart(RecordingIntent.Source.AUTO_LAUNCH, true, true));
+        assertTrue("An explicit manual start remains available", intent.allowsStart(RecordingIntent.Source.MANUAL, false, false));
+    }
+
     /** 开关关着，什么都不该发生。 */
     @Test
     public void nothingHappensWhenTheSettingIsOff() {

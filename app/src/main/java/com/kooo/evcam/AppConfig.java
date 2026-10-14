@@ -334,9 +334,9 @@ public class AppConfig {
      * 获取启动自动录制设置
      * @return true 表示启用启动自动录制
      */
-    /** 换出 P 挡自动开录（DriveSession），默认开（用户 2026-10-07）。 */
+    /** Driver-triggered recording is opt-in; existing explicit selections are retained. */
     public boolean isDriveAutoStart() {
-        return prefs.getBoolean(KEY_DRIVE_AUTO_START, true);
+        return prefs.getBoolean(KEY_DRIVE_AUTO_START, false);
     }
 
     public void setDriveAutoStart(boolean on) {

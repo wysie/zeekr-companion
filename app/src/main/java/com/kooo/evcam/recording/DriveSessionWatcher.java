@@ -214,6 +214,7 @@ public final class DriveSessionWatcher {
     }
 
     private void start(RecordingCoordinator coordinator) {
+        if (!config.isDriveAutoStart() || RecordingIntent.current().stoppedByUser()) return;
         if (UserExit.blocks(app, "DriveSession")) {
             AppLog.i(TAG, "换出 P 挡，但用户退出了应用：不开录");
             return;
@@ -234,7 +235,7 @@ public final class DriveSessionWatcher {
         AppLog.i(TAG, "相机管线不在，拉起主界面开录");
         Intent intent = new Intent(app, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        intent.putExtra("auto_start_recording", true);
+        intent.putExtra("drive_start_recording", true);
         try {
             app.startActivity(intent);
         } catch (Exception e) {

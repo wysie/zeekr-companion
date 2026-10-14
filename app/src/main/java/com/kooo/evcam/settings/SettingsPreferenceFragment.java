@@ -160,10 +160,13 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         onClick("pref_profile_editor",
                 pref -> openFragment(new ProfileEditorFragment(), R.string.set_profile_editor_title));
 
-        bindSwitch("pref_auto_record", appConfig.isAutoStartRecording(),
-                value -> appConfig.setAutoStartRecording(value));
+        bindSwitch("pref_auto_record", appConfig.isAutoStartRecording(), value -> {
+            appConfig.setAutoStartRecording(value);
+            com.kooo.evcam.recording.RecordingCoordinator.get(requireContext()).onAutomaticSettingsChanged();
+        });
         bindSwitch("pref_drive_auto_start", appConfig.isDriveAutoStart(), value -> {
             appConfig.setDriveAutoStart(value);
+            com.kooo.evcam.recording.RecordingCoordinator.get(requireContext()).onAutomaticSettingsChanged();
             com.kooo.evcam.recording.DriveSessionWatcher.get(requireContext()).apply();
         });
         bindSwitch("pref_drive_auto_stop", appConfig.isDriveAutoStop(), value -> {

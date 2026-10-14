@@ -48,6 +48,8 @@ public final class RecordingIntent {
     private boolean stoppedByUser;
     private boolean everStarted;
     private boolean recordingWanted;
+    public enum Source { MANUAL, AUTO_LAUNCH, AUTO_DRIVER, LEGACY }
+    private Source wantedSource = Source.LEGACY;
 
     /**
      * 落盘（规格 1.2）：进程被杀又拉回来时，「这一趟」的选择要还在 ——
@@ -76,6 +78,9 @@ public final class RecordingIntent {
             stoppedByUser = store.get("stoppedByUser", false);
             everStarted = store.get("everStarted", false);
             recordingWanted = store.get("recordingWanted", false);
+            wantedSource = !store.get("wantedSourceKnown", false) ? Source.LEGACY
+                    : store.get("wantedByLaunch", false) ? Source.AUTO_LAUNCH
+                    : store.get("wantedByDriver", false) ? Source.AUTO_DRIVER : Source.MANUAL;
         }
     }
 
@@ -92,6 +97,9 @@ public final class RecordingIntent {
             values.put("stoppedByUser", stoppedByUser);
             values.put("everStarted", everStarted);
             values.put("recordingWanted", recordingWanted);
+            values.put("wantedSourceKnown", wantedSource != Source.LEGACY);
+            values.put("wantedByLaunch", wantedSource == Source.AUTO_LAUNCH);
+            values.put("wantedByDriver", wantedSource == Source.AUTO_DRIVER);
             store.put(values, durable);
         }
     }
@@ -151,6 +159,7 @@ public final class RecordingIntent {
         }
         stoppedByUser = true;
         recordingWanted = false;
+        wantedSource = Source.LEGACY;
         persist(true);
     }
 
@@ -173,19 +182,42 @@ public final class RecordingIntent {
      * @return 变了没有：变了才落盘，调用方据此记黑匣子
      */
     public boolean noteRecordingWanted(boolean wanted) {
-        if (recordingWanted == wanted) {
+        return noteRecordingWanted(wanted, recordingWanted ? wantedSource : Source.MANUAL);
+    }
+
+    public boolean noteRecordingWanted(boolean wanted, Source source) {
+        Source next = wanted ? source : Source.LEGACY;
+        if (recordingWanted == wanted && wantedSource == next) {
             return false;
         }
         recordingWanted = wanted;
+        wantedSource = next;
         persist(true);
         return true;
     }
+
+    /** Rechecked on requests and after asynchronous waits; manual starts stay available. */
+    public boolean allowsStart(Source source, boolean launchEnabled, boolean driverEnabled) {
+        if (source == Source.MANUAL) return true;
+        if (stoppedByUser) return false;
+        if (source == Source.AUTO_LAUNCH) return launchEnabled;
+        if (source == Source.AUTO_DRIVER) return driverEnabled;
+        return launchEnabled || driverEnabled;
+    }
+
+    public boolean allowsResume(boolean launchEnabled, boolean driverEnabled) {
+        return recordingWanted && !stoppedByUser
+                && allowsStart(wantedSource, launchEnabled, driverEnabled);
+    }
+
+    public Source wantedSource() { return wantedSource; }
 
     /** Finish the drive and clear persisted resume intent after the driver leaves. */
     public void noteLeftCar() {
         stoppedByUser = false;
         everStarted = false;
         recordingWanted = false;
+        wantedSource = Source.LEGACY;
         persist(true);
     }
 
@@ -199,12 +231,14 @@ public final class RecordingIntent {
         stoppedByUser = false;
         everStarted = false;
         recordingWanted = false;
+        wantedSource = Source.LEGACY;
         persist(wantedDropped);
     }
 
     /** 诊断报告里的一行。 */
     public String describe() {
         return "autoStarted=" + autoStarted + " stoppedByUser=" + stoppedByUser
-                + " everStarted=" + everStarted + " recordingWanted=" + recordingWanted;
+                + " everStarted=" + everStarted + " recordingWanted=" + recordingWanted
+                + " wantedSource=" + wantedSource;
     }
 }

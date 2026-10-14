@@ -597,6 +597,10 @@ public final class RecordingCoordinator {
      * <p>黑着不开的那一下只在「这一趟要录」真的变了时记一行（C9：恢复每 5 分钟例行来一次，不然一夜几十行）。</p>
      */
     public void request(Why why) {
+        if (!startAllowed(why)) {
+            BlackBox.noteImportant("Recording request blocked by settings or manual stop: " + why);
+            return;
+        }
         if ((why == Why.AUTO_START || why == Why.RESUME || why == Why.SCREEN_ON || why == Why.WOKE)
                 && DriveSessionWatcher.driverAway()) {
             BlackBox.noteImportant("Automatic recording blocked: driver away in P (" + why + ")");
@@ -606,7 +610,7 @@ public final class RecordingCoordinator {
             return;
         }
         if (ScreenState.dark() && why != Why.RESUME && !startsWhileDarkNow()) {
-            if (RecordingIntent.current().noteRecordingWanted(true)) {
+            if (RecordingIntent.current().noteRecordingWanted(true, sourceFor(why))) {
                 // 车机要睡时被拦下的：表允许黑着录（熄屏持续录制开着、计划里有环视）的，车机醒来就接（headUnitWoke）
                 boolean atWake = ScreenOffPlan.startsWhileDark(ScreenOffPlan.keepsRecording(appConfig), surroundPlanned());
                 BlackBox.noteImportant("要录像（" + why + "）：屏幕黑着（" + (ScreenState.androidOff() ? "车机要睡"
@@ -627,6 +631,37 @@ public final class RecordingCoordinator {
         noteWanted(true, why.name());
         main.removeCallbacks(poll);
         main.post(poll);
+    }
+
+    private RecordingIntent.Source sourceFor(Why why) {
+        switch (why) {
+            case USER:
+            case FLOATING: return RecordingIntent.Source.MANUAL;
+            case AUTO_START: return RecordingIntent.Source.AUTO_LAUNCH;
+            case DRIVE: return RecordingIntent.Source.AUTO_DRIVER;
+            default: return RecordingIntent.current().wantedSource();
+        }
+    }
+
+    private boolean startAllowed(Why why) {
+        RecordingIntent intent = RecordingIntent.current();
+        if (why == Why.RESUME || why == Why.SCREEN_ON || why == Why.WOKE) {
+            return intent.allowsResume(appConfig.isAutoStartRecording(), appConfig.isDriveAutoStart());
+        }
+        return intent.allowsStart(sourceFor(why), appConfig.isAutoStartRecording(), appConfig.isDriveAutoStart());
+    }
+
+    /** Stop waiting for a disabled automatic request, including persisted wake-up intent. */
+    public void onAutomaticSettingsChanged() {
+        if (isRecording()) return; // A start switch does not stop an active clip.
+        if (pending != null && !startAllowed(pending)) {
+            BlackBox.noteImportant("Cancelled disabled automatic recording: " + pending);
+            cancelPending("automatic-setting-off");
+            noteWanted(false, "automatic-setting-off");
+        } else if (pending == null && RecordingIntent.current().recordingWanted()
+                && !RecordingIntent.current().allowsResume(appConfig.isAutoStartRecording(), appConfig.isDriveAutoStart())) {
+            noteWanted(false, "automatic-setting-off");
+        }
     }
 
     /** 不等了：人停了、退出了、熄屏了。判了自动接回时留着的几样一起放（{@link #dropResumeHold}）。 */
@@ -650,6 +685,8 @@ public final class RecordingCoordinator {
             if (pending == null) {
                 return;
             }
+            onAutomaticSettingsChanged();
+            if (pending == null) return;
             if (isRecording()) {
                 pending = null;
                 return;
@@ -1032,6 +1069,7 @@ public final class RecordingCoordinator {
 
     /** {@link #resumeIfWanted} 本身（屏幕已经知道黑没黑）：亮屏、车机黑着醒了直接走这里。 */
     private void resume(String where, Why why) {
+        onAutomaticSettingsChanged();
         if (isRecording() || pending != null || !RecordingIntent.current().recordingWanted()) {
             return;
         }
@@ -1114,8 +1152,9 @@ public final class RecordingCoordinator {
      *                     否则估算的余量稍有变化就会清完又清，一直开不起来
      */
     private void startWith(StorageState.Snapshot storage, Set<String> cameras, Why why, boolean checkStorage) {
+        onAutomaticSettingsChanged();
         // 查盘这段时间里人停了、退出了（不等了）：不开
-        if (pending == null) {
+        if (pending != why || !startAllowed(why)) {
             return;
         }
         MultiCameraManager manager = currentManager();
@@ -1239,7 +1278,8 @@ public final class RecordingCoordinator {
         // 「正在删除最旧的录像」等真要删时才弹：一个都删不掉（全锁着、删光也不够）时不该先说在删
         com.kooo.evcam.camera.StorageGuard.enforceAsync(context, dir,
                 () -> notifyRefused(context.getString(R.string.msg_storage_cleaning)), decision -> {
-            if (pending == null) {
+            onAutomaticSettingsChanged();
+            if (pending != why || !startAllowed(why)) {
                 return;  // 清理的这段时间里人停了、退出了
             }
             if (decision.verdict == com.kooo.evcam.camera.StoragePlan.Verdict.FULL) {
@@ -1405,7 +1445,7 @@ public final class RecordingCoordinator {
         if (!RecordingStops.resumesAutomatically(reason)) {
             return false;
         }
-        if (!RecordingIntent.current().shouldRestore(true)) {
+        if (!RecordingIntent.current().shouldRestore(true) || !startAllowed(Why.RESUME)) {
             BlackBox.noteImportant("录像被打断（" + reason + "），不自动接回");
             return false;
         }
@@ -1473,7 +1513,13 @@ public final class RecordingCoordinator {
 
     /** 立、撤「这一趟要录」（{@link RecordingIntent#recordingWanted}，落盘）：变了才记黑匣子一行。 */
     private void noteWanted(boolean wanted, String why) {
-        if (RecordingIntent.current().noteRecordingWanted(wanted)) {
+        RecordingIntent.Source source = RecordingIntent.current().wantedSource();
+        if (wanted) {
+            if ("USER".equals(why) || "FLOATING".equals(why)) source = RecordingIntent.Source.MANUAL;
+            else if ("AUTO_START".equals(why)) source = RecordingIntent.Source.AUTO_LAUNCH;
+            else if ("DRIVE".equals(why)) source = RecordingIntent.Source.AUTO_DRIVER;
+        }
+        if (RecordingIntent.current().noteRecordingWanted(wanted, source)) {
             BlackBox.noteImportant(wanted ? "记下「这一趟要录」（" + why + "）：进程被结束了，屏幕亮着时也接着录"
                     : "撤掉「这一趟要录」（" + why + "）");
         }

@@ -991,6 +991,10 @@ public final class DiagnosticsCollector {
         for (String item : com.kooo.evcam.blackbox.BlackBox.describeSwitches(context).split(" ")) {
             sb.append("  ").append(item).append('\n');
         }
+        AppConfig recordingConfig = new AppConfig(context);
+        sb.append("  Driver recording start=").append(recordingConfig.isDriveAutoStart())
+                .append("; stop=").append(recordingConfig.isDriveAutoStop()).append('\n');
+        sb.append("  Recording intent: ").append(com.kooo.evcam.recording.RecordingIntent.current().describe()).append('\n');
         sb.append("  开发者选项=").append(com.kooo.evcam.settings.DeveloperMode.isUnlocked()
                 ? "已解锁" : "未解锁").append('\n');
         sb.append("  用户退出后暂停自启动=").append(com.kooo.evcam.UserExit.isExited(context)

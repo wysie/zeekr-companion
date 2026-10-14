@@ -240,3 +240,30 @@ tests cover the supplied display inventory, explicit selection, exact ID/size,
 restricted/known-other-role exclusion and refusal to substitute a different HUD.
 The release is 2.11.21-personal-alpha, versionCode 304. On-car output remains
 pending; the mapping does not establish factory HUD coexistence or permission.
+
+## Recording starts after car wake-up — 2026-10-15
+
+The owner reports recording starting on car power-on/autolaunch with Record on
+launch, driver-start and driver-stop switched off. They clarified that the
+supplied Diagnostics predate switching those options off. The earlier report's
+DRIVE start at 23:48:59 therefore does not prove the later off-state failure:
+driver keys were unset then, and that version defaulted driver-start on.
+
+Code inspection found persisted recordingWanted had no source, wake-up recovery
+did not recheck the originating automatic switch, pending starts did not recheck
+settings after async storage waits, and the driver's activity-launch extra was
+shared with manual floating starts (which clear a manual-stop hold). These gaps
+are corrected with a persisted manual/launch/driver origin, checks before
+requests and async completions, immediate pending cancellation when switches
+change, and a separate driver extra that never marks a start as manual. Existing
+active clips are not stopped by start-switch changes. Known manual requests keep
+their interruption recovery. Legacy unknown-source requests are dropped with
+both auto-start settings off. Unset driver-start now defaults off; explicit
+saved settings remain intact. Diagnostics report effective driver switches and
+recording intent/source. No new on-car trace establishes the exact later trigger.
+
+Eight new tests exercise origin persistence across process restarts, independent
+automatic permissions, switch revocation during waits, legacy requests with all
+automatic starts off, manual recovery/manual stop, durable source changes and
+end-of-drive cancellation. Full suite: 1,258 tests, zero failures/errors/skips;
+signed release build and vital lint pass. Native car wake-up still needs a check.

@@ -18,6 +18,7 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/side-view-arrows` | Turn arrows for both display modes; starts from the existing side-view feature |
 | `feature/side-view-hud` | Ferix PR14 adapted to current scheduler and fork screen behavior, with cautious display selection; based on main after mirroring |
 | `feature/009-hud-display` | Opt-in 009 HUD mapping for display 3 at 1280×640, based on the owner's Diagnostics; physical destination and video output await testing |
+| `fix/automatic-recording-permission` | Recording request origin, current-setting checks and opt-in driver-start defaults; existing PR heads preserved |
 | `feature/side-view-mirroring` | Fork side-camera horizontal flip, including mirror replacement; existing PR heads preserved |
 | `integration/upstream-about` | Upstream 2.11.4 integration and fork-only About attribution; existing PR heads preserved |
 | `review/project-safety` | Whole-project audit and recording, storage, sharing, update, privacy and lifecycle corrections; based on combined main |

@@ -15,8 +15,10 @@ Source credit and commit links are in `NOTICE.md`.
 | Turn arrows | Draw between existing controls in both independent popup and mirror replacement; labels remain separate |
 | Night UI | Port semantic colors/drawables and icon dimensions; retain current waiting/live recording behavior |
 
-Hard-braking locks and the two driver-recording switches default on, matching the
-source feature defaults. Vehicle signal scanning is off until enabled in
+Hard-braking locks and driver-stop default on. Driver-start is now opt-in (off
+when no choice is saved); existing explicit choices are retained. Automatic
+recording recovery rechecks the switch that originated the request, and delayed
+driver commands retain their automatic origin. Vehicle signal scanning is off until enabled in
 Developer options. Unknown driver signals retain the existing screen-off rules.
 Turn arrows use indicator-display telemetry when available and remain green if
 it is unreadable. No obstacle-warning trigger or factory stitched 360 feed has

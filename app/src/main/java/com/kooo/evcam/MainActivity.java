@@ -270,7 +270,8 @@ public class MainActivity extends AppCompatActivity {
         // 我们自己静默拉起来的（恢复录像、亮屏接回）不算，界面重建（savedState 非空）也不算
         if (savedInstanceState == null
                 && !getIntent().getBooleanExtra(com.kooo.evcam.recovery.Recovery.EXTRA_SILENT, false)
-                && !getIntent().getBooleanExtra("restored_by_app", false)) {
+                && !getIntent().getBooleanExtra("restored_by_app", false)
+                && !getIntent().getBooleanExtra("drive_start_recording", false)) {
             RecordingIntent choices = RecordingIntent.current();
             if (choices.recordingWanted()) {
                 // 人自己点开的是新的一趟：之前要录的（被结束的进程留下的、等亮屏接的）不再接；启动自动录制开着的照常自动开
@@ -352,6 +353,7 @@ public class MainActivity extends AppCompatActivity {
         if (getIntent().getBooleanExtra("auto_start_recording", false)) {
             requestRecordingFromFloatingButton(getIntent());
         }
+        requestRecordingFromDriver(getIntent());
 
         // 按设置把该开的悬浮窗恢复出来（画面悬浮窗 / 超级后视镜 /
         // 录制悬浮按钮 / 补盲）。该不该开、能不能开都在协调器里判断。
@@ -382,6 +384,19 @@ public class MainActivity extends AppCompatActivity {
         if (intent.getBooleanExtra("auto_start_recording", false)) {
             requestRecordingFromFloatingButton(intent);
         }
+        requestRecordingFromDriver(intent);
+    }
+
+    /** A delayed vehicle trigger is automatic, never a manual floating-button command. */
+    private void requestRecordingFromDriver(Intent intent) {
+        if (!intent.getBooleanExtra("drive_start_recording", false)) return;
+        intent.removeExtra("drive_start_recording");
+        if (!appConfig.isDriveAutoStart() || RecordingIntent.current().stoppedByUser()) {
+            com.kooo.evcam.blackbox.BlackBox.noteImportant("Delayed driver recording blocked by settings or manual stop");
+            return;
+        }
+        hideMainAfterStart = true;
+        recordingCoordinator.request(RecordingCoordinator.Why.DRIVE);
     }
 
     /**
