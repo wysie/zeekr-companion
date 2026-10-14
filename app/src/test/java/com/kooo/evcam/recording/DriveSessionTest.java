@@ -272,7 +272,7 @@ public class DriveSessionTest {
 
     @Test
     public void leftCarStopNeverResumesBySurround() {
-        assertFalse(RecordingStops.resumesOnSurround(RecordingStops.Reason.LEFT_CAR));
+        assertFalse(RecordingStops.resumesAutomatically(RecordingStops.Reason.LEFT_CAR));
     }
 
     @Test
