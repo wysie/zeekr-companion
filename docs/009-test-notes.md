@@ -233,3 +233,10 @@ and mismatched seams. No calibrated replacement defaults are established by
 these captures. The ordinary photo action still saves the four-camera composite;
 saving a stitched 360 preview remains a separate pending feature. The signal
 scanner had never run in the supplied Diagnostics.
+
+Local validation of the 009 mapping: 1,250 JVM tests passed with zero failures,
+errors or skips, and signed assembleRelease with vital lint passed. Five new
+tests cover the supplied display inventory, explicit selection, exact ID/size,
+restricted/known-other-role exclusion and refusal to substitute a different HUD.
+The release is 2.11.21-personal-alpha, versionCode 304. On-car output remains
+pending; the mapping does not establish factory HUD coexistence or permission.

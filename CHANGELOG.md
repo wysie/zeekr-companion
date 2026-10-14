@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.21-personal-alpha] - 2026-10-15
+
 - Add an opt-in Zeekr 009 HUD mapping for display 3 at 1280×640, with automatic screen fallback and selected-mapping diagnostics.
 
 ## [2.11.20-personal-alpha] - 2026-10-14
