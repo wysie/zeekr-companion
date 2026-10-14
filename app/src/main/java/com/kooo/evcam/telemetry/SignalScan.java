@@ -129,7 +129,8 @@ public final class SignalScan {
     private final Runnable poll = this::pollNow;
     private final Map<Integer, String> known = new HashMap<>();
     private Writer out;
-    private int lines;
+    private volatile int lines;
+    private final java.util.concurrent.Semaphore pendingEvents = new java.util.concurrent.Semaphore(256);
     private volatile boolean stopped;
     private final Runnable flush = this::flushNow;
     private final Runnable autoStop = this::autoStop;
@@ -599,10 +600,7 @@ public final class SignalScan {
                 final int zone = (Integer) args[1];
                 final Number value = (Number) args[2];
                 final long wall = System.currentTimeMillis();
-                Handler h = handler;
-                if (h != null && !stopped) {
-                    h.post(() -> onChange(wall, id, zone, value));
-                }
+                postEvent(() -> onChange(wall, id, zone, value));
                 return null;
             }
             return EcarxSource.proxyDefault(proxy, method, args, "SignalScan.Callback");
@@ -630,10 +628,14 @@ public final class SignalScan {
     }
 
     private void onSensorEvent(long wall, int type, Number value) {
+        postEvent(() -> logLine(wall, "S:" + hex(type), String.valueOf(value), sensorNames.get(type)));
+    }
+
+    private void postEvent(Runnable event) {
         Handler h = handler;
-        if (h != null && !stopped) {
-            h.post(() -> logLine(wall, "S:" + hex(type), String.valueOf(value), sensorNames.get(type)));
-        }
+        if (h == null || stopped || lines >= MAX_LINES || !pendingEvents.tryAcquire()) return;
+        if (!h.post(() -> { try { event.run(); } finally { pendingEvents.release(); } }))
+            pendingEvents.release();
     }
 
     private void onChange(long wall, int id, int zone, Number value) {

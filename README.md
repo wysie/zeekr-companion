@@ -23,7 +23,8 @@ testing coverage or device compatibility as upstream.
 
 ## Additions in this fork
 
-- **Camera freshness guards:** Super mirror, side popup and HUD cover stalled pictures after 500 ms without advancing texture timestamps, checked at 100 ms intervals. Reopened textures require new frame progression; missing geometry stays covered. These software guards still need on-car timing checks. See the [camera safety review](docs/camera-safety-review.md).
+- **Recording and transfer integrity:** verified USB/archive copies preserve both files on collisions; relay buffers use private files instead of disposable Android cache. Failed protection-list replacement keeps the old list; developer repair first retains a verified original backup. See the [whole-project review](docs/project-safety-review.md) for fixes and remaining limits.
+- **Camera freshness guards:** Main surround/cabin previews, Super mirror, side popup and HUD cover stalled pictures after 500 ms without advancing texture timestamps, checked at 100 ms intervals. Reopened textures require new frame progression; missing geometry stays covered. These software guards still need on-car timing checks. See the [camera safety review](docs/camera-safety-review.md).
 - **DIY 360 prototype (parked calibration only):** with the vehicle reporting P, manually switch the live surround preview to a stitched top-down ground view with a central vehicle outline and overlap blending. Tap **360°** on the main camera screen; hold it to calibrate or reset. This uses our four-camera feed, not the factory stitched view. It requires a connected vehicle interface and P; unknown gear or a known contradictory speed blocks it. It starts with estimated geometry and needs calibration for the 009; see [setup and limits](docs/diy-360-view.md).
 - **Automatic blind spot camera:** adapted from
   [FerixzTanz's original turn-signal side view, PR #4](https://github.com/dts88/zeekr-shortcut-car/pull/4),
@@ -204,7 +205,12 @@ This page does not cover that.
 
 The fork retains the original application ID and public test signing key so its
 APK can update an existing installation signed with that key. In-app update checks
-point to this fork.
+point to this fork. The signing **private key** is public, so someone else can create
+Android-accepted updates with the same identity. It does not establish that an APK
+came from this maintainer. A private-key migration needs a separate installation/update
+plan; the existing identity is retained for compatibility. The updater now requires
+GitHub asset size and SHA-256 to match and uses HTTPS through redirects. Old assets
+without a digest are refused by the in-app downloader; manual alpha installs remain unchanged.
 
 Download the `ZeekrShortcut-*.apk` asset from the release page and sideload it through App Lab.
 When the installer finishes, tap **Back** at the top left, not **Open**. Otherwise the head unit's
@@ -277,11 +283,11 @@ Origins, third-party licences and boundaries: [NOTICE.md](NOTICE.md).
 
 ## Phone sharing improvements
 
-Send to phone offers Wi-Fi, hotspot or tethering addresses instead of internal vehicle links. The dialog shows whether the phone connected and whether sending completed; recent attempts appear in Diagnostics. Both devices must be on the same local network. Includes Ferix’s HEAD/compression fixes; Android timeout reports still need device verification.
+Send to phone offers Wi-Fi, hotspot or tethering addresses instead of internal vehicle links. The dialog shows whether the phone connected and whether sending completed; recent attempts appear in Diagnostics. Both devices must be on the same local network. Sharing uses an unencrypted HTTP bearer link with a new 128-bit token for each selection and at most four simultaneous clients. The temporary server stops when the dialog is dismissed. Use a trusted local network; anyone with the active link can download the selected file. Includes Ferix’s HEAD/compression fixes; Android timeout reports still need device verification.
 
 ## Vehicle signal scanner
 
-Enable Settings → Developer options → Record all vehicle signals for a read-only scan of function changes and unfamiliar sensor events. Blind-spot-like functions are polled when available. It stops after three hours or when Developer options are locked, skips sensors already used by the app, and exports results through Diagnostics. This is a research tool: no obstacle-alert trigger or factory 360 video feed has been identified.
+Enable Settings → Developer options → Record all vehicle signals for a read-only scan of function changes and unfamiliar sensor events. Blind-spot-like functions are polled when available. It stops after three hours or when Developer options are locked, skips sensors already used by the app, and exports results through Diagnostics. Pending callbacks are capped at 256 and excess events are dropped under overload; the export is not a complete event history. This is a research tool: no obstacle-alert trigger or factory 360 video feed has been identified.
 
 ## Hard-braking footage lock
 
@@ -293,7 +299,7 @@ In playback, tap Save clip to save 15 seconds before/after the current point, or
 
 ## Recording follows the driver
 
-Settings → Recording has Start recording when you get in and Stop recording when you leave the car, both on by default. An occupied driver seat in P (or a shift out of P) requests recording through the current upstream coordinator. Leaving in P stops after 30 seconds with an empty seat, or sooner when the screen is physically off or Sentry is armed. A manual stop holds for the drive; leaving clears that hold and the saved resume intent. Unknown signals retain the existing screen-off behavior. The 009’s seat/gear signals need on-car verification; disable either switch if its behavior does not suit your firmware.
+Settings → Recording has Start recording when you get in and Stop recording when you leave the car, both on by default. An occupied driver seat in P (or a shift out of P) requests recording through the current upstream coordinator. Leaving in P stops after 30 seconds with an empty seat, or sooner when the screen is physically off or Sentry is armed. A manual stop holds for the drive; leaving clears that hold and the saved resume intent. Unknown seat/gear readings reset the empty-seat countdown. Sentry-based stopping requires a known empty driver seat; known movement contradicting P blocks this automatic stop. Disconnecting the vehicle interface clears the driver-away gate. Other screen-off rules still apply. The 009’s seat/gear signals need on-car verification; disable either switch if its behavior does not suit your firmware.
 
 ## Turn arrows on side cameras
 
@@ -302,3 +308,40 @@ The side camera displays an upright left/right arrow between the top corner cont
 ## Night theme and floating record button
 
 Night mode uses a black page/main panel with darker settings rows and a distinct selected-row shade. Day layout and primary colors are retained; setting descriptions have stronger contrast. The floating record button has a smaller, thinner icon and no shadow; its background stays neutral while live recording uses a red ring/stop icon. The current upstream waiting-for-cameras state remains grey.
+
+## Whole-project review and data handling
+
+The [whole-project review](docs/project-safety-review.md) covers recording/storage,
+vehicle signals, camera scheduling and displays, recovery/sleep, playback/repair,
+sharing, permissions, updates, signing and build configuration. This is a source
+review with local tests; 009 factory takeover, native latency, USB faults and battery
+behavior still need on-car checks. The DIY view remains parked-only and uncalibrated.
+
+Developer Relay write now buffers under the app's private `files/temp_video`, with
+recovery scans also checking the previous `cache/temp_video` location. Nonempty
+clips are not discarded merely for being under 500 KB, and pending footage is not
+expired after an hour. Copies use a synced temporary file, verify SHA-256 and publish
+without knowingly replacing a destination. Both files survive a different-content
+filename collision. This adds USB reads and needs sustained recording/transfer tests.
+Buffers can fill internal storage and recording can then fail; clearing app data or
+uninstalling removes them. Transfer destinations and pending lock retries are not yet
+persisted across process death. Keep the original USB attached for recovery.
+
+Developer MP4 repair keeps the original filename and edits its index after saving a
+verified backup under `EVCam_Video/repair-originals/<filename>.original`. It refuses to
+edit if that backup cannot be made or conflicts with an existing different backup.
+Repair bounds its sample tables (100,000 samples), reference index (8 MiB), decoder description (1 MiB) and validation buffer (8 MiB); oversized files are refused. Backups are retained, consume additional USB space, and require manual recovery or
+cleanup; they are not included in automatic recording rotation.
+
+Footage, diagnostic files and transient recording intent are excluded from Android
+backup/device transfer; ordinary preferences remain eligible. Diagnostics may include
+location, VIN/device identifiers, storage paths, vehicle state and logs. Save/share is
+explicit; review an exported report before giving it to another person. No vehicle
+actuator writes or automatic diagnostic upload were found in the reviewed app paths.
+
+Screen-off recording is a Developer option, off by default. Its wake lease uses the
+selected duration plus the existing bounded camera-close allowance, with an additional
+off-UI timer. This reduces dependence on UI timer delivery; whole-process or vendor
+power-service stalls can still exceed software timing expectations. Automatic UI
+recovery waits while a known reverse/factory-camera/parking-assist view is active;
+unknown vendor flags cannot prove that a factory view is absent.

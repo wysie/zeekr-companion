@@ -150,3 +150,29 @@ Twelve new regression tests cover copy validation, unique feeds, policy and
 timestamp/expiry behavior. Full suite: 1,192 tests, no failures/errors/skips.
 No attached vehicle/emulator: native texture copies, new covers/recovery behavior,
 P gating, factory takeover, HUD and recording continuity still need testing.
+
+## Whole-project review — 2026-10-14
+
+Baseline: main f785483 (2.11.18-personal-alpha). The audit and fixes are on
+review/project-safety for combined main integration, preserving PR #17/#19 heads.
+Full report: [project-safety-review.md](project-safety-review.md).
+
+Local tests: 1,217 JVM tests passed, zero failures/errors/skips; signed release build
+and release vital lint passed. New cases cover equal-size/different-content footage
+collisions, byte-exact copies, short-file retention, failed protection-list replacement,
+repair backup survival, unknown seat/gear, contradictory movement, Sentry with unknown
+seat, updater digest/size/HTTPS rejection and phone-sharing worker saturation/header
+sanitization. JVM Android stubs do not prove native UI or vehicle behavior.
+
+Full Android lint has 15 remaining MissingTranslation findings for the intentional
+English About-page fallback in Malay. The 19 non-translation errors were cleared;
+correct default-locale metadata removed 933 requests for Chinese entries already
+provided by the default Chinese UI strings. No baseline or suppression was added. OSV returned no vulnerability matches for 91 resolved
+runtime Maven coordinates at the review date, excluding proprietary SDK/firmware.
+
+On-car checks remain: simultaneous recording and all camera views; stationary factory
+camera takeover and recovery; frame-loss covers and retained textures; USB disconnect,
+full disk, filename collision and process-death relay recovery; repair backups; driver
+seat/gear/Sentry behavior; Android phone sharing; installer integrity errors; screen-off
+lease expiry and parked 12-V behavior. Current signing identity remains the public test
+key. No new 009 or emulator validation was performed.

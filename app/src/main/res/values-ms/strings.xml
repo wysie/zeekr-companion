@@ -499,6 +499,7 @@
     <string name="upd_err_no_dir">tidak dapat mencipta folder muat turun</string>
     <string name="upd_err_over_limit">terlalu banyak data, dibatalkan</string>
     <string name="upd_err_truncated">hanya menerima %1$d daripada %2$d bait</string>
+    <string name="upd_err_integrity">SHA-256 pemasang tiada atau tidak sepadan; muat turun dibatalkan</string>
     <string name="upd_need_install_title">Kebenaran diperlukan: Pasang apl tidak diketahui</string>
     <string name="upd_need_install_msg">Benarkan apl ini memasang apl tidak diketahui dalam tetapan sistem, kemudian kembali dan ketik Semak kemas kini sekali lagi.</string>
     <string name="upd_go_settings">Buka tetapan</string>
@@ -1041,4 +1042,5 @@
     <string name="bird_eye_invalid_calibration">Pemetaan kamera tidak sah — tetapkan semula</string>
     <string name="bird_eye_slow">360 dijeda: bacaan kamera terlalu perlahan</string>
     <string name="side_view_waiting_live">Menunggu kamera langsung</string>
+    <string name="dev_repair_backup_note">Fail asal yang disahkan disimpan dalam repair-originals di folder video. Fail ini tidak dipadam secara automatik; pembaikan tidak bermula tanpa ruang untuk sandaran.</string>
 </resources>

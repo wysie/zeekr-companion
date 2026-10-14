@@ -143,8 +143,10 @@ public final class ScreenOffRecording {
         cancelTimeout();
         timeout = () -> timedOut(app);
         HANDLER.postDelayed(timeout, remaining);
-        if (!WakeUpHelper.isPersistentWakeLockHeld()) {
-            WakeUpHelper.acquirePersistentWakeLock(context);
+        boolean wasHeld = WakeUpHelper.isPersistentWakeLockHeld();
+        // Absolute screen-off deadline plus the existing bounded camera-close allowance.
+        WakeUpHelper.acquirePersistentWakeLock(context, remaining + CLOSE_WAIT_MAX_MS);
+        if (!wasHeld) {
             heldSinceMs = SystemClock.elapsedRealtime();
             heldForMinutes = minutes;
             BlackBox.noteImportant("熄屏录制：" + (coordinator.isRecording() ? "在录像" : "在等自动接回")

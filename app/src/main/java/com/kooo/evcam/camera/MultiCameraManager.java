@@ -4151,7 +4151,7 @@ public class MultiCameraManager {
                 // 还在开录的那几趟 MediaRecorder 的也除外（它们停的时候自己转存）
                 if (relayTarget != null) {
                     AppLog.d(TAG, "Scheduling relay transfer for remaining files...");
-                    File tempDir = new File(context.getCacheDir(), FileTransferManager.TEMP_VIDEO_DIR);
+                    for (File tempDir : new File[]{FileTransferManager.relayDirectory(context), FileTransferManager.legacyRelayDirectory(context)}) {
                     final File[] filesToTransfer = tempDir.exists()
                             ? tempDir.listFiles((dir, name) -> name.endsWith(".mp4")
                                     && !HELD_BY_STUCK_WRITERS.contains(new File(dir, name).getAbsolutePath())
@@ -4161,6 +4161,7 @@ public class MultiCameraManager {
                         AppLog.w(TAG, "Relay transfer skips files still held by stuck writers: " + HELD_BY_STUCK_WRITERS);
                     }
                     laneHandler.postDelayed(() -> transferSpecificTempFiles(relayTarget, filesToTransfer), 500);
+                    }
                 }
             } catch (Exception e) {
                 AppLog.e(TAG, "Error in stopRecording", e);

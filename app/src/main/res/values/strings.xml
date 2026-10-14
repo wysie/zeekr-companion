@@ -1,4 +1,4 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="zh">
     <!--
       应用名：装在车机上的这一份，本身就是车机版，桌面图标、抽屉标题、通知里不用再重复一遍。
       app_name_full 才带「（车机版）」—— 关于页、诊断报告这种要跟以后的 iOS 版区分开的地方用它。
@@ -508,6 +508,7 @@
     <string name="upd_err_no_dir">无法创建下载目录</string>
     <string name="upd_err_over_limit">内容超出上限，已中止</string>
     <string name="upd_err_truncated">只收到 %1$d / %2$d 字节</string>
+    <string name="upd_err_integrity">安装文件的 SHA-256 缺失或不匹配，已中止</string>
     <string name="upd_need_install_title">需要「安装未知应用」权限</string>
     <string name="upd_need_install_msg">需在系统设置中允许本应用「安装未知应用」，才能打开系统安装界面。\n\n授权后返回此处，再次点击「检查更新」。</string>
     <string name="upd_go_settings">打开设置</string>
@@ -1051,4 +1052,5 @@
     <string name="bird_eye_invalid_calibration">相机映射无效，请重置校准</string>
     <string name="bird_eye_slow">相机读取过慢，360已暂停</string>
     <string name="side_view_waiting_live">等待实时相机画面</string>
+    <string name="dev_repair_backup_note">修复前的原始文件保存在录像目录的 repair-originals 子目录中。不会自动删除；空间不足时不会开始修复。</string>
 </resources>

@@ -193,12 +193,8 @@ public class RecordingFloatingService extends Service {
         };
 
         IntentFilter filter = new IntentFilter(ACTION_UPDATE_SIZE);
-        // Android 14+ 需要指定 RECEIVER_NOT_EXPORTED
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            registerReceiver(sizeUpdateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            registerReceiver(sizeUpdateReceiver, filter);
-        }
+        androidx.core.content.ContextCompat.registerReceiver(this, sizeUpdateReceiver, filter,
+                androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
     }
     
     private void registerRecordingStateReceiver() {
@@ -218,12 +214,8 @@ public class RecordingFloatingService extends Service {
         IntentFilter filter = new IntentFilter();
         filter.addAction("com.kooo.evcam.RECORDING_STATE_CHANGED");
         filter.addAction("com.kooo.evcam.action.RECORDING_STATE_CHANGED");
-        // Android 14+ 需要指定 RECEIVER_NOT_EXPORTED
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
-            registerReceiver(recordingStateReceiver, filter, Context.RECEIVER_NOT_EXPORTED);
-        } else {
-            registerReceiver(recordingStateReceiver, filter);
-        }
+        androidx.core.content.ContextCompat.registerReceiver(this, recordingStateReceiver, filter,
+                androidx.core.content.ContextCompat.RECEIVER_NOT_EXPORTED);
     }
 
     private void updateFloatingSize(int buttonSizeDp, int textSizeSp) {

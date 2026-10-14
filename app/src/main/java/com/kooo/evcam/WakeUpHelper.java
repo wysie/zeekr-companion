@@ -18,8 +18,16 @@ import android.provider.Settings;
 public class WakeUpHelper {
     private static final String TAG = "WakeUpHelper";
 
-    // 持续唤醒锁 - 用于防止休眠（无超时）
+    // System-bounded wake lease for screen-off recording.
     private static PowerManager.WakeLock persistentWakeLock;
+    private static final java.util.concurrent.ScheduledExecutorService LEASE_TIMER =
+            java.util.concurrent.Executors.newSingleThreadScheduledExecutor(task -> {
+                Thread thread = new Thread(task, "RecordingWakeLease");
+                thread.setDaemon(true);
+                return thread;
+            });
+    private static java.util.concurrent.ScheduledFuture<?> leaseTimeout;
+    private static long leaseGeneration;
 
     /**
      * 检查是否有悬浮窗权限（用于后台启动Activity）
@@ -45,7 +53,7 @@ public class WakeUpHelper {
     }
 
     /**
-     * 拿一个不超时的唤醒锁，车机就不会深睡。
+     * 拿一个有系统超时上限的唤醒锁，录像期间保持车机运行。
      *
      * <h3>这是有代价的，而且代价是实测过的</h3>
      *
@@ -59,7 +67,7 @@ public class WakeUpHelper {
      * 熄屏时在录像才拿，录像停了、亮屏了、到了用户设的时长就放。项目所有者 2026-09-27
      * 明确允许熄屏录制不让车机睡。完整数据见 {@code docs/zeekr-platform-notes.md} §3.6。</p>
      */
-    public static void acquirePersistentWakeLock(Context context) {
+    public static synchronized void acquirePersistentWakeLock(Context context, long timeoutMs) {
         AppLog.d(TAG, "Acquiring persistent wake lock (prevent sleep)...");
         com.kooo.evcam.blackbox.BlackBox.note("请求持续唤醒锁");
 
@@ -69,28 +77,34 @@ public class WakeUpHelper {
             return;
         }
 
-        // 如果已经持有，不重复获取
-        if (persistentWakeLock != null && persistentWakeLock.isHeld()) {
-            AppLog.d(TAG, "Persistent WakeLock already held");
-            return;
-        }
-
         // 创建持续唤醒锁
         // PARTIAL_WAKE_LOCK: 只保持CPU运行，不亮屏
-        persistentWakeLock = pm.newWakeLock(
+        if (persistentWakeLock == null) persistentWakeLock = pm.newWakeLock(
                 PowerManager.PARTIAL_WAKE_LOCK,
                 "EVCam:AutoStartAwake"
         );
 
-        // 持有唤醒锁，不设置超时（直到手动释放）
-        persistentWakeLock.acquire();
-        AppLog.d(TAG, "Persistent WakeLock acquired (no timeout) - system will not sleep");
+        // Non-counted lease: renew against the same screen-off deadline, capped by the system.
+        persistentWakeLock.setReferenceCounted(false);
+        persistentWakeLock.acquire(Math.max(1L, timeoutMs));
+        if (leaseTimeout != null) leaseTimeout.cancel(false);
+        long generation = ++leaseGeneration;
+        // AOSP's acquire(timeout) itself uses a Handler. Also expire off the UI thread;
+        // neither mechanism is a guarantee when the whole process/vendor power service stalls.
+        leaseTimeout = LEASE_TIMER.schedule(() -> {
+            synchronized (WakeUpHelper.class) {
+                if (generation == leaseGeneration) releasePersistentWakeLock();
+            }
+        }, Math.max(1L, timeoutMs), java.util.concurrent.TimeUnit.MILLISECONDS);
+        AppLog.d(TAG, "Recording wake lease acquired, timeout=" + timeoutMs + "ms");
     }
     
     /**
      * 释放持续唤醒锁
      */
-    public static void releasePersistentWakeLock() {
+    public static synchronized void releasePersistentWakeLock() {
+        ++leaseGeneration;
+        if (leaseTimeout != null) { leaseTimeout.cancel(false); leaseTimeout = null; }
         if (persistentWakeLock != null && persistentWakeLock.isHeld()) {
             try {
                 persistentWakeLock.release();
@@ -106,7 +120,7 @@ public class WakeUpHelper {
     /**
      * 检查持续唤醒锁是否被持有
      */
-    public static boolean isPersistentWakeLockHeld() {
+    public static synchronized boolean isPersistentWakeLockHeld() {
         return persistentWakeLock != null && persistentWakeLock.isHeld();
     }
     

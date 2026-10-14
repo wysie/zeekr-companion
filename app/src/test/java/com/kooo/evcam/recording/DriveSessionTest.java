@@ -286,4 +286,41 @@ public class DriveSessionTest {
         assertFalse("启动自动录制不再开", intent.shouldAutoStart(true));
         assertFalse("没录起来之前不接回", intent.shouldRestore(true));
     }
+
+    @Test public void unknownSeatCancelsEmptySeatCountdown() {
+        step("P", false, 0, true);
+        now += 60_000;
+        assertEquals(DriveSession.Action.NONE, step("P", null, 0, true));
+        assertEquals(DriveSession.Action.NONE, step("P", false, 0, true));
+        now += DriveSession.LEAVE_AFTER_MS;
+        assertEquals(DriveSession.Action.STOP, step("P", false, 0, true));
+    }
+    @Test public void timeInDriveDoesNotCountTowardsLeavingInPark() {
+        step("D", false, 0, true);
+        now += 60_000;
+        assertEquals(DriveSession.Action.NONE, step("P", false, 0, true));
+        now += DriveSession.LEAVE_AFTER_MS;
+        assertEquals(DriveSession.Action.STOP, step("P", false, 0, true));
+    }
+    @Test public void unknownGearResetsLeaveCountdown() {
+        step("P", false, 0, true);
+        now += 60_000;
+        assertEquals(DriveSession.Action.NONE, step(null, false, 0, true));
+        assertEquals(DriveSession.Action.NONE, step("P", false, 0, true));
+    }
+    @Test public void movementContradictingParkPreventsAutomaticStop() {
+        for (float speed : new float[]{1, -1, Float.NaN, Float.POSITIVE_INFINITY}) {
+            DriveSession.Input in = input("P", false, 0, true);
+            in.speedKmh = speed;
+            in.screenOff = true;
+            now += 60_000;
+            in.nowElapsedMs = now;
+            assertEquals(DriveSession.Action.NONE, session.update(in));
+            assertFalse(session.driverAway());
+        }
+    }
+    @Test public void armedSentryWithUnknownSeatCannotEndTheDrive() {
+        assertEquals(DriveSession.Action.NONE, step("P", null, DriveSession.SENTRY_ARMED, true));
+        assertFalse(session.driverAway());
+    }
 }

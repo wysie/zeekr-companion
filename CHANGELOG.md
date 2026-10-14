@@ -11,6 +11,18 @@ commit message, not here.
 
 Nothing yet.
 
+## [2.11.19-personal-alpha] - 2026-10-14
+
+- Preserve relay footage in private files, verify USB/archive copies and retain existing recordings on filename collisions.
+- Preserve protection lists on failed replacements and report failed event locks.
+- Back up original bytes before developer MP4 repair and bound memory used by corrupt or oversized clips.
+- Reset driver-leaving timers on unknown seat/gear or contradictory movement; require a known empty seat for Sentry-based stopping.
+- Cover stalled surround/cabin previews and block automatic UI recovery over known factory camera views.
+- Bound phone-sharing connections and scanner callback queues; strengthen sharing tokens and sanitize download filenames.
+- Verify updater SHA-256 and asset size; require HTTPS through redirects.
+- Exclude footage/diagnostics from Android backup and add a bounded off-UI recording wake lease.
+- Fix Android receiver flags, Back navigation and compatibility lint errors; correct default-locale metadata; restrict repository-write CI permission to tag publication.
+
 ## [2.11.18-personal-alpha] - 2026-10-14
 
 - Fix silent 360 copy failures reusing old images; add parked-only calibration, factory/screen suppression, distinct camera assignments and a slow-readback pause.

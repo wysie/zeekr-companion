@@ -133,9 +133,11 @@ public final class DriveSessionWatcher {
 
         DriveSession.Input in = new DriveSession.Input();
         in.nowElapsedMs = now;
-        in.gear = r.text(Signal.GEAR);
-        in.driverSeated = r.bool(Signal.SEAT_DRIVER);
-        in.sentry = s.sentry;
+        boolean connected = Telemetry.get().carLinkConnected();
+        in.gear = connected ? r.text(Signal.GEAR) : null;
+        in.driverSeated = connected ? r.bool(Signal.SEAT_DRIVER) : null;
+        in.sentry = connected ? s.sentry : null;
+        in.speedKmh = connected ? r.number(Signal.SPEED) : null;
         in.recording = coordinator.isRecording() || coordinator.isWaiting();
         in.autoStart = config.isDriveAutoStart();
         in.autoStop = config.isDriveAutoStop();
@@ -143,7 +145,7 @@ public final class DriveSessionWatcher {
         in.screenOff = ScreenState.dark();
 
         DriveSession.Action action = session.update(in);
-        away = in.autoStop && session.driverAway();
+        away = connected && in.autoStop && session.driverAway();
         switch (action) {
             case START:
                 start(coordinator);
@@ -228,6 +230,7 @@ public final class DriveSessionWatcher {
             return;
         }
         // 相机管线得是主界面开好的：像悬浮按钮那样把主界面拉起来开录，录起来之后它自己退回后台
+        if (com.kooo.evcam.recovery.Recovery.factoryCameraActive()) return;
         AppLog.i(TAG, "相机管线不在，拉起主界面开录");
         Intent intent = new Intent(app, MainActivity.class);
         intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TOP);

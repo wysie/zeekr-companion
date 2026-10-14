@@ -267,7 +267,7 @@ public class SideViewPopupService extends Service {
                 : popup != null && popup.isShowing() ? popup.lane() : SideViewDecision.NONE;
         boolean suppressed = dismissal.suppress(in.turnSignal, in.hazard);
 
-        boolean blocked = ScreenState.dark();
+        boolean blocked = ScreenState.dark() || !Telemetry.get().carLinkConnected();
         if (blocked || SideViewDecision.factoryViewActive(in)) {
             lastReady = false;
             RearViewMirrorService.clearSideView();

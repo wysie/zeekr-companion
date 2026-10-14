@@ -259,6 +259,9 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override public void handleOnBackPressed() { handleBackNavigation(); }
+        });
         com.kooo.evcam.blackbox.BlackBox.attach(this, "Activity:MainActivity");
         com.kooo.evcam.blackbox.BlackBox.note("主界面 onCreate savedState=" + (savedInstanceState != null));
         // 用户退出之后，所有会自己拉起主界面的路都被拦住了 —— 这时主界面被创建，只能是人点开的
@@ -759,6 +762,7 @@ public class MainActivity extends AppCompatActivity {
         return new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(@NonNull android.graphics.SurfaceTexture surface, int width, int height) {
+                resetPreviewFrames(cameraKey);
                 onPreviewCanvasReady(cameraKey);
             }
 
@@ -775,6 +779,7 @@ public class MainActivity extends AppCompatActivity {
              */
             @Override
             public boolean onSurfaceTextureDestroyed(@NonNull android.graphics.SurfaceTexture surface) {
+                resetPreviewFrames(cameraKey);
                 textureReadyCount--;
                 MultiCameraManager pipeline = cameraManager != null ? cameraManager
                         : com.kooo.evcam.camera.CameraManagerHolder.getInstance().getCameraManager();
@@ -790,8 +795,17 @@ public class MainActivity extends AppCompatActivity {
                 // 这个回调每来一帧就响一次 —— 这就是「不录制时相机的出帧率」，
                 // 也就是这条视频流本身的上限。录制时的帧率再低，也不会比它高。
                 com.kooo.evcam.camera.PreviewFrameRates.onFrame(cameraKey);
+                AutoFitTextureView canvas = canvasFor(cameraKey);
+                if (canvas != null && canvas.getParent() instanceof com.kooo.evcam.zeekr.LivePreview)
+                    ((com.kooo.evcam.zeekr.LivePreview) canvas.getParent()).noteFrame(surface);
             }
         };
+    }
+
+    private void resetPreviewFrames(String key) {
+        AutoFitTextureView canvas = canvasFor(key);
+        if (canvas != null && canvas.getParent() instanceof com.kooo.evcam.zeekr.LivePreview)
+            ((com.kooo.evcam.zeekr.LivePreview) canvas.getParent()).resetFrames();
     }
     
     /**
@@ -2979,8 +2993,7 @@ public class MainActivity extends AppCompatActivity {
         });
     }
 
-    @Override
-    public void onBackPressed() {
+    private void handleBackNavigation() {
         if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
             return;
