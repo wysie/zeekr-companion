@@ -1052,8 +1052,14 @@
     <string name="bird_eye_park_required">请挂P档测试或校准360</string>
     <string name="bird_eye_factory_active">原厂相机已开启，360暂停</string>
     <string name="bird_eye_invalid_calibration">相机映射无效，请重置校准</string>
-    <string name="bird_eye_slow">相机读取过慢，360已暂停</string>
+    <string name="bird_eye_slow">处理过慢或内存不足，360已暂停</string>
     <string name="side_view_waiting_live">等待实时相机画面</string>
     <string name="dev_repair_backup_note">修复前的原始文件保存在录像目录的 repair-originals 子目录中。不会自动删除；空间不足时不会开始修复。</string>
     <string name="bird_eye_photo_saved">360 预览和校准信息已保存到 DCIM/EVCam_Photo/360</string>
+    <string name="bird_eye_quality">360 分辨率</string>
+    <string name="bird_eye_quality_low">低 — 最快</string>
+    <string name="bird_eye_quality_balanced">均衡 — 默认</string>
+    <string name="bird_eye_quality_full">完整 — 原生预览分辨率</string>
+    <string name="bird_eye_quality_note">均衡模式提高预览清晰度。完整模式复制可用的实时画面（最高 800 万像素），最高每秒 3 帧。复制、绘制太慢或内存不足时，本次显示会降低分辨率；低模式仍太慢则暂停。照片使用实际分辨率。提高分辨率不会修正校准。</string>
+    <string name="bird_eye_quality_reduced">360 处理太慢或内存不足，已降低分辨率。详细信息见诊断报告。</string>
 </resources>

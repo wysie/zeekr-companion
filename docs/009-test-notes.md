@@ -289,3 +289,33 @@ Three new interpolation/sentinel tests and existing lane-boundary tests pass:
 1,261 JVM tests, zero failures/errors/skips. Native UI/export and interpolation
 cost still need on-car checks. The geometry mismatch remains unresolved.
 Packaged as 2.11.23-personal-alpha, versionCode 306, retaining the existing signer.
+
+## DIY 360 resolution — 2026-10-15
+
+The owner requested higher detail because the original 256×1024 readback and
+320×480 output look blocky. The calibration dialog now has Low, Balanced and
+Full resolution choices. Balanced is the unset default (512×2056 → 640×960 on
+the supplied 009 stream, at most 5 fps). Full requests the available live preview
+at native dimensions (1280×5140 on this stream) and renders 960×1440 at about
+3 fps. Full source copies are bounded to 8 MP/8192 pixels per dimension; output
+lookups are bounded to 2 MP. Small sources are not enlarged during readback.
+These are preview snapshots, not repeated camera JPEG captures; actual detail
+depends on the producer/preview and remains unverified on the car.
+
+Readback over 40 ms, frame extraction/render over 150 ms, or memory-allocation
+failure steps Full → Balanced → Low for the activation; Low pauses if still too
+slow. The first slow native call cannot be interrupted. Lookup construction is
+timed separately and can be reused after its initial frame expires. Calibration
+edits do not reset an already-required quality fallback. A new activation or
+explicit quality change retries the requested level. Frame-owned buffers and
+revision/texture checks prevent a previous-size result publishing after changes.
+The existing parked/factory/stale guards remain. Saved photos use active output
+dimensions, with the warning sized for the export. Last quality/size/timing
+diagnostics remain available after leaving the preview.
+
+Ten new tests cover source-aspect/native bounds, unset/invalid choices, monotonic
+fallback, timing limits, full-size rendering of four lanes with separator
+exclusion and output-allocation bounds. Full suite: 1,271 tests, zero failures,
+errors or skips. Signed build/vital lint pass. Native copy speed, heap use,
+full-size export and recording continuity await owner testing. Geometric
+misalignment remains unresolved.

@@ -11,6 +11,7 @@ public final class BirdEyeConfig {
     }
     public int get(String key, int fallback) { return preferences.getInt(key, fallback); }
     public void set(String key, int value) { preferences.edit().putInt(key, value).apply(); }
+    public int quality() { return BirdEyeQuality.normalize(get("quality", BirdEyeQuality.BALANCED)); }
     public static String key(int camera, String field) { return "camera_" + camera + "_" + field; }
     public void assignLane(int camera, int lane) {
         int[] previous = new int[4];

@@ -19,7 +19,7 @@ the physical camera to adjust. Calibration controls require reported P and close
 included in Diagnostics exports. Reset does not affect any other feature.
 
 While the 360 view is selected, the main photo action exports the currently
-fresh stitched preview as a native 320×480 PNG, with a companion calibration/state
+fresh stitched preview as a PNG at the active resolution, with a companion calibration/state
 TXT, under **DCIM/EVCam_Photo/360** on the configured storage. It includes the
 vehicle outline and experimental watermark. A blocked, hidden or stale view is
 refused; it never saves an old retained image as a current capture. Compression
@@ -27,6 +27,35 @@ and file writes run off the UI thread, with one save at a time and no queued
 snapshots. The dedicated subfolder is outside the ordinary photo-playback list.
 Return to **Four cameras** for normal photos and raw composite exports. Existing
 recording and camera JPEG capture are unchanged.
+
+### Resolution
+
+Hold the 360 button and use **360 resolution** in the calibration dialog. The
+saved choice applies to live stitching and exported PNGs. Balanced is the new
+default when unset; Reset all restores it. For the owner's 1280×5140 stream:
+
+| Mode | Readback | Stitched output | Maximum rate |
+| --- | --- | --- | --- |
+| Low | 256×1028 | 320×480 | 5 fps |
+| Balanced (default) | 512×2056 | 640×960 | 5 fps |
+| Full | 1280×5140 | 960×1440 | about 3 fps |
+
+The source aspect ratio, including separators, is retained. Full requests the
+available live preview at its native dimensions, bounded to 8 million pixels
+and 8192 pixels per dimension; it does not open another camera output or take
+repeated JPEG photos. Small sources are not enlarged during readback. Actual
+detail depends on the producer/live preview, and a larger bitmap cannot recover
+detail already lost upstream. [TextureView copies/scales the available surface](https://developer.android.com/reference/android/view/TextureView#getBitmap(android.graphics.Bitmap)).
+
+A copy exceeding 40 ms, steady-frame extraction/render exceeding 150 ms, or
+allocation failure reduces Full → Balanced → Low for this activation. Low pauses
+if it is still too slow. A toast reports reductions; Diagnostics and photo TXT
+record requested/active mode, actual sizes, fallback reason and copy/render/lookup
+timings, retained after leaving the preview. Changing calibration alone does not
+retry a resolution that already proved slow; re-entering 360 or changing the
+resolution choice retries it. Initial lookup construction is timed separately.
+The first slow native copy cannot be interrupted; these are measured guards,
+not proof that the first copy cannot stall. Higher modes still require car tests.
 
 An active, recognized surround stream is required. GPU preview straightening
 must be disabled in Developer options, followed by an app restart if it was
@@ -68,20 +97,20 @@ calibration subsequently needs known-size targets at measured ground positions.
 ## Implementation and limits
 
 The main TextureView remains the camera consumer and continues its native draw
-and update path. The prototype reads a 256×1024 snapshot of that entire existing
-frame at most every 200 ms, respecting the detected normalized lane boundaries
+and update path. The prototype reads a snapshot of that entire existing
+frame at the selected resolution/cadence, respecting the detected normalized lane boundaries
 and separators. No new Camera2 surface, session or vehicle control is opened.
 
 A single background-priority worker precomputes a lookup mapping each output ground point through
 the camera pose and equidistant lens. It chooses the two strongest valid views
-and blends their normalized confidence weights. It produces a 320×480 image,
+and blends their normalized confidence weights. It produces the selected output size,
 scaled with uniform metres per pixel, and draws a masked vehicle outline with
 its front indicated. Ground beyond the lens or behind a camera is rejected;
 unobserved areas remain black rather than stretching source edges or inventing
 pixels. Bilinear sampling reduces nearest-neighbour stair steps and validates
 every contributing pixel, without sampling neighbouring lanes or separators.
-Detail remains limited by the 256×1024 readback and 320×480 output; interpolation
-does not recover missing resolution or correct inaccurate calibration.
+Detail remains limited by the actual live source and active resolution;
+interpolation does not recover missing detail or correct inaccurate calibration.
 
 There is one frame in flight and no queue of old frames. New source timestamps
 are required after attaching to a texture; a retained first frame is insufficient
@@ -92,7 +121,7 @@ is hidden, stops when leaving 360 mode, and the worker closes on detachment.
 This assumes a flat ground plane and an approximate lens model, with no measured
 radial distortion coefficients or automatic target calibration yet. Tall objects
 can stretch or ghost at seams. Mounting errors can leave gaps or misalign nearby
-objects. The five-fps cap, readback overhead, actual texture orientation,
+objects. The per-mode frame cap, readback overhead, actual texture orientation,
 performance during recording, native layout and camera takeover/recovery need
 009 testing. This is an experimental calibration preview, not a factory-quality
 parking view or distance measurement.
@@ -119,9 +148,10 @@ TextureView readback was available for this build.
 
 The safety follow-up blanks the view on known factory-camera/reverse/park-assist
 activity, missing texture, hidden/dark screen or invalid calibration. Tick checks
-run every 100 ms; this is not a hard real-time deadline. The prototype also pauses
-if a measured UI-thread camera readback exceeds 40 ms; this prevents subsequent
-copies in that activation, but cannot interrupt the first slow native call.
+run every 100 ms; this is not a hard real-time deadline. A measured UI-thread
+camera readback over 40 ms now reduces resolution, and pauses at Low if still
+too slow. This prevents repeated copies at a resolution that proved slow, but
+cannot interrupt the first slow native call.
 
 The bitmap is cleared to transparent before every copy, since Android may silently
 leave a destination bitmap unchanged on failure. Any transparent sampled pixels

@@ -9,7 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
-Nothing yet.
+- Add Low, Balanced (sharper default) and Full DIY 360 resolution modes, with active-size photo exports.
+- Automatically lower resolution after slow frame copying/rendering or allocation failure; retain requested/active sizes and timings in Diagnostics.
 
 ## [2.11.23-personal-alpha] - 2026-10-15
 

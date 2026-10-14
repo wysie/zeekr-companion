@@ -43,6 +43,25 @@ public final class BirdEyeCalibrationDialog {
         lens.setOrientation(LinearLayout.VERTICAL); content.addView(lens);
         Runnable rebuild = () -> {
             vehicle.removeAllViews(); lens.removeAllViews();
+            TextView qualityTitle = new TextView(context); qualityTitle.setText(R.string.bird_eye_quality);
+            vehicle.addView(qualityTitle);
+            Spinner quality = new Spinner(context);
+            quality.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item,
+                    new String[]{context.getString(R.string.bird_eye_quality_low),
+                            context.getString(R.string.bird_eye_quality_balanced), context.getString(R.string.bird_eye_quality_full)}));
+            quality.setContentDescription(context.getString(R.string.bird_eye_quality));
+            vehicle.addView(quality, new LinearLayout.LayoutParams(-1, dp(context, 56)));
+            quality.setSelection(config.quality());
+            quality.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onNothingSelected(AdapterView<?> parent) {}
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (position != config.quality() && BirdEyePreview.parked()) {
+                        config.set("quality", position); changed.run();
+                    }
+                }
+            });
+            TextView qualityNote = new TextView(context); qualityNote.setText(R.string.bird_eye_quality_note);
+            vehicle.addView(qualityNote);
             slider(context, vehicle, config, "length", R.string.bird_eye_length, 520, 300, 650, changed);
             slider(context, vehicle, config, "width", R.string.bird_eye_width, 200, 140, 260, changed);
             slider(context, vehicle, config, "margin", R.string.bird_eye_margin, 200, 50, 400, changed);

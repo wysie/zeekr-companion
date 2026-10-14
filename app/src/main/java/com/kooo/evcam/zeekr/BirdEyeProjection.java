@@ -94,7 +94,7 @@ public final class BirdEyeProjection {
         public Map(Calibration calibration, CompositeStreamGeometry.Plan plan, int sourceWidth,
                    int sourceHeight, int width, int height) {
             if (plan == null || !plan.isComposite() || sourceWidth <= 0 || sourceHeight <= 0
-                    || width <= 0 || height <= 0 || (long) width * height > 1_000_000) {
+                    || width <= 0 || height <= 0 || (long) width * height > 2_000_000) {
                 throw new IllegalArgumentException("Invalid surround frame");
             }
             this.width = width; this.height = height;

@@ -1042,8 +1042,14 @@
     <string name="bird_eye_park_required">Pilih P untuk menguji atau menentukur 360</string>
     <string name="bird_eye_factory_active">Kamera kilang aktif — 360 dijeda</string>
     <string name="bird_eye_invalid_calibration">Pemetaan kamera tidak sah — tetapkan semula</string>
-    <string name="bird_eye_slow">360 dijeda: bacaan kamera terlalu perlahan</string>
+    <string name="bird_eye_slow">360 dijeda: pemprosesan terlalu perlahan atau memori terhad</string>
     <string name="side_view_waiting_live">Menunggu kamera langsung</string>
     <string name="dev_repair_backup_note">Fail asal yang disahkan disimpan dalam repair-originals di folder video. Fail ini tidak dipadam secara automatik; pembaikan tidak bermula tanpa ruang untuk sandaran.</string>
     <string name="bird_eye_photo_saved">Pratonton 360 dan penentukuran disimpan ke DCIM/EVCam_Photo/360</string>
+    <string name="bird_eye_quality">Resolusi 360</string>
+    <string name="bird_eye_quality_low">Rendah — paling pantas</string>
+    <string name="bird_eye_quality_balanced">Seimbang — lalai</string>
+    <string name="bird_eye_quality_full">Penuh — resolusi pratonton asal</string>
+    <string name="bird_eye_quality_note">Seimbang menghasilkan pratonton lebih jelas. Penuh menyalin bingkai langsung yang tersedia (hingga 8 MP), sehingga 3 fps. Penyalinan atau rendering perlahan, atau kekurangan memori, menurunkan resolusi untuk sesi ini; Rendah berhenti jika masih terlalu perlahan. Foto menggunakan resolusi aktif. Resolusi tidak membetulkan penentukuran.</string>
+    <string name="bird_eye_quality_reduced">Resolusi 360 diturunkan kerana pemprosesan perlahan atau memori terhad. Butiran terdapat dalam Diagnostics.</string>
 </resources>

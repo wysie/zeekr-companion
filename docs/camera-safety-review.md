@@ -1,5 +1,13 @@
 # Camera display safety review — 2026-10-14
 
+Resolution follow-up (2026-10-15): the newer prototype has Low/Balanced/Full
+choices instead of the original fixed 320×480 output discussed below. Slow
+readback/render or allocation failure now reduces resolution, pausing at Low if
+necessary. The first native copy remains uninterruptible. Higher-resolution
+memory/copy speed and recording continuity remain untested on the 009; see
+[current bounds and behavior](diy-360-view.md#resolution). Parked-only and
+factory/stale guards remain in force; increased detail does not establish calibration.
+
 Reviewed baseline: `3900b51e3b41216800042ab4209c5a9883d22564`
 (2.11.17-personal-alpha). Corrections are on `feature/diy-360-safety` for
 integration into `main`. Existing upstream PR heads remain unchanged.

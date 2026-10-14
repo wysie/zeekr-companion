@@ -1065,8 +1065,14 @@
     <string name="bird_eye_park_required">Select P to test or calibrate 360</string>
     <string name="bird_eye_factory_active">Factory camera active — 360 paused</string>
     <string name="bird_eye_invalid_calibration">Invalid camera mapping — reset calibration</string>
-    <string name="bird_eye_slow">360 paused: camera readback too slow</string>
+    <string name="bird_eye_slow">360 paused: processing too slow or memory limited</string>
     <string name="side_view_waiting_live">Waiting for live camera</string>
     <string name="dev_repair_backup_note">Verified originals are kept in repair-originals inside the video folder. They are not automatically removed; repair will not start without space for the backup.</string>
     <string name="bird_eye_photo_saved">360 preview and calibration saved to DCIM/EVCam_Photo/360</string>
+    <string name="bird_eye_quality">360 resolution</string>
+    <string name="bird_eye_quality_low">Low — fastest</string>
+    <string name="bird_eye_quality_balanced">Balanced — default</string>
+    <string name="bird_eye_quality_full">Full — native preview resolution</string>
+    <string name="bird_eye_quality_note">Balanced uses a sharper preview. Full copies the available live frame (up to 8 MP) at up to 3 fps. Slow copying, rendering or memory pressure lowers resolution for this activation; Low pauses if still too slow. Saved photos use the active resolution. Resolution does not fix calibration.</string>
+    <string name="bird_eye_quality_reduced">360 resolution reduced because processing was too slow or memory was limited. Details are in Diagnostics.</string>
 </resources>

@@ -21,6 +21,30 @@ public class BirdEyeProjectionTest {
         assertEquals(0xff808000, BirdEyeProjection.sample(pixels, 0, 128 | (128 << 8), 2));
         assertEquals(0xff800000, BirdEyeProjection.sample(pixels, 0, 128, 2));
     }
+    @Test public void fullResolutionRendersFourLanesWithoutSeparatorLeakage() {
+        BirdEyeQuality.Size size = BirdEyeQuality.resolve(BirdEyeQuality.FULL, 1280, 5140);
+        CompositeStreamGeometry.Plan plan = CompositeStreamGeometry.analyse("surround-test", 1280, 5140);
+        int[] source = new int[size.sourceWidth * size.sourceHeight];
+        java.util.Arrays.fill(source, 0xffff00ff);
+        int[] colours = {0xffff0000, 0xff00ff00, 0xff0000ff, 0xffffff00};
+        for (int i = 0; i < 4; i++) {
+            CompositeStreamGeometry.Lane lane = plan.lane(i);
+            for (int y = lane.y; y < lane.y + lane.height; y++)
+                java.util.Arrays.fill(source, y * 1280, (y + 1) * 1280, colours[i]);
+        }
+        int[] output = new int[size.outputWidth * size.outputHeight];
+        new BirdEyeProjection.Map(defaults(), plan, 1280, 5140, size.outputWidth, size.outputHeight).render(source, output);
+        assertEquals(colours[0], output[100 * 960 + 480]);
+        assertEquals(colours[1], output[1340 * 960 + 480]);
+        assertEquals(colours[2], output[720 * 960 + 60]);
+        assertEquals(colours[3], output[720 * 960 + 900]);
+        assertEquals(0xff000000, output[720 * 960 + 480]);
+        for (int pixel : output) assertNotEquals("Separator colour must not leak", 0xffff00ff, pixel);
+    }
+    @Test(expected=IllegalArgumentException.class) public void outputBudgetIsCheckedBeforeAllocation() {
+        new BirdEyeProjection.Map(defaults(), CompositeStreamGeometry.analyse("surround-test", 1280, 5140),
+                1280, 5140, 2001, 1000);
+    }
     @Test public void zeroFractionDoesNotReadBeyondALaneOrBuffer() {
         assertEquals(0xffabcdef, BirdEyeProjection.sample(new int[]{0xffabcdef}, 0, 0, 1));
         assertEquals(0xff123456, BirdEyeProjection.sample(new int[]{0xff123456, 0}, 0, 0, 2));
