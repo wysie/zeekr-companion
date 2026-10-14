@@ -204,3 +204,32 @@ category. Version 2.11.20-personal-alpha, code 303, retains the established
 certificate SHA-256 a40da80a59d170caa950cf15c18c454d47a39b26989d8b640ecd745ba71bf5dc.
 New camera scheduler behavior and the About page still need an on-car check;
 no additional vehicle compatibility or safety validation is claimed.
+
+## Owner Diagnostics and 009 HUD mapping — 2026-10-15
+
+The owner reports that HUD output falls back to the screen popup and that the DIY
+360 view opens but is misaligned. Diagnostics from 2.11.20 show public,
+presentation-capable, ON displays 0 (2560×1600), 2 (1920×720) and 3 (1280×640).
+The two secondary displays both have the anonymous name HDMI Screen. HUD output
+was selected, but the automatic detector found no candidate; window state was
+never. This is a selection failure, not evidence of a rejected HUD window.
+The owner authorized trying display 3 directly, without an identification marker.
+
+An opt-in Zeekr 009 HUD switch under Blind spot camera → HUD picture now selects
+only display 3 with the exact 1280×640 dimensions. It defaults off; automatic
+selection remains unchanged. Existing public/presentation, powered-on and named
+cluster exclusions apply; the explicit mapping additionally rejects named
+rear/passenger displays. Missing/rejected output uses the existing screen
+fallback. Changing the mapping detaches the old window, and reset restores auto.
+Diagnostics identify the selected mapping. Physical destination, simultaneous
+factory HUD content and native camera rendering remain unverified.
+
+The owner also supplied two original 1280×5140 surround frames and geometry
+notes. Four 1280×1280 lanes and five 4-pixel separator bands match the splitter.
+Side-camera scenes show tilt; the DIY calibration is still using estimated
+defaults, independent of the owner's +30°/-30° side-popup image rotations.
+An offline rendering with the existing projection reproduces stretched ground
+and mismatched seams. No calibrated replacement defaults are established by
+these captures. The ordinary photo action still saves the four-camera composite;
+saving a stitched 360 preview remains a separate pending feature. The signal
+scanner had never run in the supplied Diagnostics.

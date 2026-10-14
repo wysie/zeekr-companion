@@ -1006,7 +1006,9 @@
     <string name="set_side_output_hud">HUD</string>
     <string name="set_side_output_both">主屏和 HUD</string>
     <string name="set_sub_hud_title">HUD 画面</string>
-    <string name="set_sub_hud_summary">HUD 上画面的大小、位置和不透明度</string>
+    <string name="set_sub_hud_summary">HUD 屏幕选择、画面大小、位置和不透明度</string>
+    <string name="set_hud_zeekr_009_title">极氪 009 HUD</string>
+    <string name="set_hud_zeekr_009_summary">使用 009 的 3 号显示屏（1280×640）。实验功能：停车时确认画面在挡风玻璃上；若出现在其他屏幕，请关闭此项。不可用时回退到主屏。</string>
     <string name="set_hud_side_size_title">HUD 画面高度（占 HUD 高度 %）</string>
     <string name="set_hud_side_size_summary">宽度由下面的形状决定</string>
     <string name="set_hud_side_shape_title">HUD 画面形状（宽 ÷ 高，%）</string>

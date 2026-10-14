@@ -355,6 +355,11 @@
             android:title="@string/set_sub_hud_title"
             android:summary="@string/set_sub_hud_summary">
 
+            <androidx.preference.SwitchPreferenceCompat
+                android:key="pref_hud_zeekr_009"
+                android:title="@string/set_hud_zeekr_009_title"
+                android:summary="@string/set_hud_zeekr_009_summary" />
+
             <SwitchPreferenceCompat
                 android:key="pref_hud_side_mirror"
                 android:title="@string/set_hud_side_mirror_title"

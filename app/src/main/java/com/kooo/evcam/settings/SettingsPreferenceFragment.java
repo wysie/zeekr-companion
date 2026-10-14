@@ -763,6 +763,10 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                     com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
                 });
         bindSideOutput();
+        bindSwitch("pref_hud_zeekr_009", appConfig.isZeekr009HudEnabled(), value -> {
+            appConfig.setZeekr009HudEnabled(value);
+            com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+        });
         bindSwitch("pref_hud_side_mirror", appConfig.isHudSideMirrored(), value -> {
             appConfig.setHudSideMirrored(value);
             com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();

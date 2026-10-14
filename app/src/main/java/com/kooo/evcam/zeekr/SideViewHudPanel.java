@@ -75,7 +75,7 @@ public class SideViewHudPanel extends SideViewPopupView {
             }
             candidates.add(new HudDisplayLocator.Candidate(d.getDisplayId(), size.x, size.y, d.getName(), d.getFlags()));
         }
-        int id = HudDisplayLocator.find(candidates);
+        int id = HudDisplayLocator.find(candidates, new AppConfig(context).isZeekr009HudEnabled());
         if (id == HudDisplayLocator.NONE) {
             return null;
         }

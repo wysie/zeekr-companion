@@ -32,13 +32,25 @@ public final class HudDisplayLocator {
     }
 
     public static int find(List<Candidate> displays) {
+        return find(displays, false);
+    }
+
+    /** Explicit owner-selected 009 mapping; do not infer a vehicle from an anonymous display. */
+    public static int find(List<Candidate> displays, boolean zeekr009) {
         int chosen = NONE;
         for (Candidate c : displays) {
-            if (!eligible(c) || !(knownSize(c) || namedHud(c))) continue;
+            if (!eligible(c) || !(zeekr009 ? matches009(c) : knownSize(c) || namedHud(c))) continue;
             if (chosen != NONE && chosen != c.id) return NONE; // Ambiguous: use the screen.
             chosen = c.id;
         }
         return chosen;
+    }
+
+    private static boolean matches009(Candidate c) {
+        String name = c.name.toLowerCase(Locale.ROOT);
+        return c.id == 3 && c.width == 1280 && c.height == 640
+                && !name.contains("rear") && !name.contains("passenger")
+                && !name.contains("后排") && !name.contains("乘客");
     }
 
     public static int findBySize(List<Candidate> displays) {

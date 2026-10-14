@@ -130,6 +130,7 @@ public class AppConfig {
     public static final int SIDE_OUTPUT_HUD = 1;
     public static final int SIDE_OUTPUT_BOTH = 2;
     private static final String KEY_HUD_SIDE_SIZE = "hud_side_size";  // 高度，HUD 高度的百分比
+    private static final String KEY_HUD_ZEEKR_009 = "hud_zeekr_009";
     private static final String KEY_HUD_SIDE_SHAPE = "hud_side_shape";  // 宽 ÷ 高 ×100
     private static final String KEY_HUD_SIDE_LEFT = "hud_side_left";  // 左右位置，0 贴左 100 贴右
     private static final String KEY_HUD_SIDE_VERTICAL = "hud_side_vertical";  // 上下位置，0 顶 100 底
@@ -1666,6 +1667,7 @@ public class AppConfig {
                 .remove(KEY_SIDE_POPUP_REPLACE_MIRROR)
                 .remove(KEY_SIDE_POPUP_MIRROR)
                 .remove(KEY_SIDE_OUTPUT)
+                .remove(KEY_HUD_ZEEKR_009)
                 .remove(KEY_HUD_SIDE_SIZE)
                 .remove(KEY_HUD_SIDE_SHAPE)
                 .remove(KEY_HUD_SIDE_LEFT)
@@ -1855,6 +1857,15 @@ public class AppConfig {
         prefs.edit().putInt(KEY_SIDE_OUTPUT,
                 Math.max(SIDE_OUTPUT_SCREEN, Math.min(SIDE_OUTPUT_BOTH, output))).apply();
         AppLog.i(TAG, "侧视画面出在: " + output + "（0 主屏 / 1 HUD / 2 两边）");
+    }
+
+    /** Owner-selected 009 display mapping; auto detection remains the default. */
+    public boolean isZeekr009HudEnabled() {
+        return prefs.getBoolean(KEY_HUD_ZEEKR_009, false);
+    }
+
+    public void setZeekr009HudEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_HUD_ZEEKR_009, enabled).apply();
     }
 
     /** HUD 上画面的高度，HUD 高度的百分比。 */

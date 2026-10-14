@@ -47,7 +47,7 @@ release numbers remain independent of upstream.
   reset, and automatic framing adjustment to avoid black patches at extreme aim
   angles. High angles can substantially narrow the visible area.
 - **Optional side-camera mirroring:** flip the image in the popup or Super mirror replacement; off by default, with recordings unchanged.
-- **Experimental HUD side camera:** adapted from Ferix PR #14; choose Screen, HUD or both, with separate HUD mirroring and layout controls. Availability on the 009 is unverified.
+- **Experimental HUD side camera:** adapted from Ferix PR #14; choose Screen, HUD or both, with separate HUD mirroring and layout controls. An opt-in Zeekr 009 mapping targets display 3 at 1280×640; physical output and camera availability on the 009 remain unverified.
 - **Optional camera labels:** identify the displayed camera in Super mirror and
   the side window. Super mirror also has a defaults reset.
 
@@ -155,7 +155,9 @@ side view and park assist take precedence.
 
 **Mirror side-camera image** flips left and right in both the separate popup and Super mirror replacement. It is off by default; labels, arrows and controls remain readable and recordings are unchanged. Reset side-camera settings restores mirroring to off.
 
-**Show side view on** selects Screen (default), HUD, or Screen and HUD. Screen output still follows **Use Super mirror when active**. HUD output is optional and experimental on the 009: it needs an accessible, powered-on, public presentation display with the known 1440×480 HUD dimensions or an explicit HUD name. Display ID 3 alone is not treated as proof of a HUD. An unavailable or rejected HUD falls back to the screen behavior, preserving its opening-speed threshold.
+**Show side view on** selects Screen (default), HUD, or Screen and HUD. Screen output still follows **Use Super mirror when active**. Automatic HUD selection needs an accessible, powered-on, public presentation display with the known 1440×480 HUD dimensions or an explicit HUD name. An unavailable or rejected HUD falls back to the screen behavior, preserving its opening-speed threshold.
+
+Under **HUD picture**, enable **Zeekr 009 HUD** to explicitly select display 3 only when its resolution is 1280×640. This option defaults off and is independent of the camera profile. The owner's 009 Diagnostics expose this anonymous display, but its physical destination and ability to show camera video remain unverified. With HUD or both outputs selected, check the result while parked and turn this option off if it appears on another screen. Private, non-presentation and explicitly named cluster/rear/passenger displays remain excluded; a missing matching display falls back to the screen. Changing the mapping releases the existing HUD window before selecting again. Reset side-camera settings restores automatic selection. Diagnostics include the selected mapping.
 
 Under **HUD picture**, adjust height (30–100%, default 74%), shape (width/height, 100–300%, default square), horizontal position (default 6%), vertical position (default 50%) and opacity (20–100%, default 100%). HUD mirroring defaults on and is independent of screen mirroring. Aim, correction, per-side rotation, camera labels and turn arrows are shared. HUD windows have no touch controls; use the settings to configure them. Reset side-camera settings also restores Screen output and all HUD defaults, retaining the main feature switch.
 

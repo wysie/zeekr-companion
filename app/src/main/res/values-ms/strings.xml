@@ -996,7 +996,9 @@
     <string name="set_side_output_hud">HUD</string>
     <string name="set_side_output_both">Skrin dan HUD</string>
     <string name="set_sub_hud_title">Gambar HUD</string>
-    <string name="set_sub_hud_summary">Saiz, kedudukan dan kelegapan pada HUD</string>
+    <string name="set_sub_hud_summary">Pilihan paparan, saiz, kedudukan dan kelegapan pada HUD</string>
+    <string name="set_hud_zeekr_009_title">HUD Zeekr 009</string>
+    <string name="set_hud_zeekr_009_summary">Gunakan pemetaan 009 untuk paparan 3 pada 1280×640. Eksperimen: periksa cermin hadapan semasa diparkir; matikan pilihan ini jika imej muncul pada skrin lain. Jika tidak tersedia, paparan skrin digunakan.</string>
     <string name="set_hud_side_size_title">Ketinggian gambar HUD (% daripada tinggi HUD)</string>
     <string name="set_hud_side_size_summary">Lebar mengikut bentuk di bawah</string>
     <string name="set_hud_side_shape_title">Bentuk gambar HUD (lebar ÷ tinggi, %)</string>
