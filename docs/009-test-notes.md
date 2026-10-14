@@ -267,3 +267,4 @@ automatic permissions, switch revocation during waits, legacy requests with all
 automatic starts off, manual recovery/manual stop, durable source changes and
 end-of-drive cancellation. Full suite: 1,258 tests, zero failures/errors/skips;
 signed release build and vital lint pass. Native car wake-up still needs a check.
+Packaged as 2.11.22-personal-alpha, versionCode 305, with the existing signing identity.

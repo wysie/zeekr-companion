@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.22-personal-alpha] - 2026-10-15
+
 - Persist recording-request origin and recheck automatic-start settings before pending/wake-up starts; preserve explicit manual recording recovery.
 - Separate delayed driver commands from manual floating-button starts and default unconfigured driver-triggered recording to off.
 - Include effective driver-recording settings and request origin in Diagnostics.
