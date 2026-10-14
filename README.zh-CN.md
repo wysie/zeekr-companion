@@ -1,6 +1,12 @@
 # 极氪即刻（车机版）
 
-面向极氪 7X 车机的环视记录仪。
+这是 wysie 的个人分支，基于 [dts88 的原项目](https://github.com/dts88/zeekr-shortcut-car)，
+主要用于自己的极氪 009。原应用面向极氪 7X；本分支的新增功能和测试范围见
+[英文说明](README.md)。原项目及其贡献者、EVCam 作者和 FerixzTanz 的贡献均保留署名，
+详见 [来源与致谢](NOTICE.md)。本分支与原项目均非极氪官方产品。
+
+**请克隆 `main`，并从 `main` 构建 APK。** `main` 包含本分支的完整功能，
+`upstream-main` 保持 dts88 的原始代码。
 
 [English](README.md) · [更新日志](CHANGELOG.md) · [来源与致谢](NOTICE.md) · [平台笔记](docs/zeekr-platform-notes.md)
 
@@ -61,9 +67,10 @@
 
 **开始之前**：你需要事先知道怎么通过 App Lab 把应用侧载到车机上，本页不介绍这一步。
 
-- **推荐 —— [最新正式版](../../releases/latest)。**
-- **想尝鲜 —— [Releases](../../releases) 页面上最新的 `-beta`。** 也可以在
-  设置 → 检查更新 里打开「接收 Beta 版」，让应用自己取。
+- **原项目版本：** [dts88 的发布页](https://github.com/dts88/zeekr-shortcut-car/releases)。
+- **本个人分支：** [本分支的发布页](https://github.com/wysie/zeekr-shortcut-car/releases)。
+  新的完整 APK 从 `main` 构建，发布标签指向对应的源代码提交。
+  个人 Alpha 版本需要手动安装，不在应用内自动更新范围内。
 
 在发布页下载 `ZeekrShortcut-*.apk`，通过 App Lab 侧载安装。安装完成后请点左上角「返回」，
 不要点「打开」，否则车机安装器会卡住，之后的安装或更新会失败。
@@ -71,8 +78,9 @@
 自行构建需要 JDK 17+ 与 Android SDK（compileSdk 36）：
 
 ```bash
-git clone https://github.com/dts88/zeekr-shortcut-car.git
-cd zeekr-shortcut-car && ./gradlew assembleRelease
+git clone --branch main https://github.com/wysie/zeekr-shortcut-car.git
+cd zeekr-shortcut-car
+bash ./gradlew assembleRelease
 ```
 
 仓库内含一个公开的 AOSP 测试签名密钥（口令 `android`），正式发布请用自己的密钥覆盖：

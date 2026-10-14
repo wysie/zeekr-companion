@@ -42,10 +42,9 @@ mirror replacement on my 009; other changes still need on-car verification. See
 [test notes](docs/009-test-notes.md) for the scope of that feedback. Compatibility
 with other models and firmware versions is not established.
 
-`main` contains the combined installable fork; `upstream-main` tracks dts88's
-unmodified code. Individual contribution branches remain separate so useful
-changes can be proposed upstream. `personal-build` is retained as a historical
-snapshot; new combined builds come from `main`. See
+**Clone `main` and build APKs from `main`.** It contains the combined installable
+fork; `upstream-main` tracks dts88's unmodified code. Individual contribution
+branches remain separate so useful changes can be proposed upstream. See
 [Fork workflow](FORK_WORKFLOW.md) for the branch layout. Whenever a feature is
 added or changed, update this README with its behavior, settings and limitations.
 
@@ -164,8 +163,9 @@ to turn on the phone's hotspot and connect the car to it.
 This page does not cover that.
 
 - **Original upstream builds:** [dts88's releases](https://github.com/dts88/zeekr-shortcut-car/releases).
-- **This personal fork:** choose the desired `personal-build-…` prerelease from
+- **This personal fork:** download the desired APK from
   [this fork's releases](https://github.com/wysie/zeekr-shortcut-car/releases).
+  New combined APKs are built from `main`; each release tag identifies its exact source commit.
   Personal alpha builds are installed manually; they are excluded from the in-app updater.
 
 The fork retains the original application ID and public test signing key so its
