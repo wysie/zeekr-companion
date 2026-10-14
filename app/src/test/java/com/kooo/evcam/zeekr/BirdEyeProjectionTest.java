@@ -93,6 +93,15 @@ public class BirdEyeProjectionTest {
     @Test(expected = IllegalArgumentException.class) public void nanCalibrationCannotGenerateAnImage() {
         new BirdEyeProjection.Camera(0, 0, 0, Double.NaN, 0, 0, 0, 190, .5, .5, false);
     }
+    @Test(expected = IllegalArgumentException.class) public void duplicateCameraCoverageIsRejected() {
+        new BirdEyeProjection.Calibration(5.2, 2, 2, new BirdEyeProjection.Camera[]{
+                camera(0, 0, 2.6, 0, false), camera(0, 0, -2.6, 180, false),
+                camera(2, -1, 0, 270, false), camera(3, 1, 0, 90, false)});
+    }
+    @Test(expected = IllegalArgumentException.class) public void silentlyFailedCopyCannotBecomeOpaqueLiveVideo() {
+        new BirdEyeProjection.Map(defaults(), CompositeStreamGeometry.analyse("surround-test", 1280, 5140),
+                64, 256, 60, 92).render(new int[64 * 256], new int[60 * 92]);
+    }
     @Test(expected = IllegalArgumentException.class) public void nonCompositeFrameIsRejected() {
         new BirdEyeProjection.Map(defaults(), CompositeStreamGeometry.analyse("other", 640, 480), 64, 64, 60, 92);
     }

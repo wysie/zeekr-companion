@@ -59,7 +59,11 @@ public final class BirdEyeProjection {
                     || cameras == null || cameras.length != 4) throw new IllegalArgumentException("Invalid vehicle geometry");
             this.length = length; this.width = width; this.margin = margin;
             this.cameras = cameras.clone();
-            for (Camera camera : cameras) if (camera == null) throw new IllegalArgumentException("Missing camera");
+            boolean[] lanes = new boolean[4];
+            for (Camera camera : cameras) {
+                if (camera == null || lanes[camera.lane]) throw new IllegalArgumentException("Four distinct cameras required");
+                lanes[camera.lane] = true;
+            }
         }
         public boolean insideCar(double x, double y) {
             return Math.abs(x) <= width / 2 && Math.abs(y) <= length / 2;
@@ -67,7 +71,8 @@ public final class BirdEyeProjection {
     }
 
     /** Precomputed source pixel addresses and normalized blend for each output pixel.
-     * All four lanes come from the same frame, so there is no inter-camera timestamp skew.
+     * All four lanes come from one delivered buffer. This does not prove that their
+     * sensor exposures are synchronized or that each individual camera is advancing.
      */
     public static final class Map {
         public final int width, height, sourceWidth, sourceHeight;
@@ -118,6 +123,9 @@ public final class BirdEyeProjection {
             for (int i = 0; i < first.length; i++) {
                 if (first[i] < 0) { output[i] = 0xff000000; continue; }
                 int a = source[first[i]], b = second[i] < 0 ? a : source[second[i]];
+                if ((a >>> 24) != 255 || (b >>> 24) != 255) {
+                    throw new IllegalArgumentException("Camera readback incomplete");
+                }
                 int wb = mix[i], wa = 255 - wb;
                 int r = (((a >> 16) & 255) * wa + ((b >> 16) & 255) * wb + 127) / 255;
                 int g = (((a >> 8) & 255) * wa + ((b >> 8) & 255) * wb + 127) / 255;

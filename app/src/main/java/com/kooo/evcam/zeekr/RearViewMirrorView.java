@@ -131,15 +131,9 @@ public class RearViewMirrorView extends ViewGroup {
     /** 分片绘制（和主界面预览、视频回看同一套）。 */
     private final FisheyeMesh mesh = new FisheyeMesh();
     private final FisheyeMesh.Painter paintTexture = this::drawTextureOnce;
-    /**
-     * 多久没有新画面就不再拿它当实时画面看。
-     *
-     * <p>最省的档位也有 10fps，2.5 秒是二十多帧没来 —— 到这个地步已经不是卡顿，
-     * 是这条流停了。</p>
-     */
-    private static final long FROZEN_AFTER_MS = 2500L;
-    /** 没有画面时靠它定期重画 —— 画面停了就没有帧来驱动重画了。 */
-    private static final long IDLE_TICK_MS = 1000L;
+    /** Cover stalled pictures at 500 ms; the timer bounds detection while no frames arrive. */
+    private static final long IDLE_TICK_MS = 100L;
+    private final CameraFrameFreshness frameFreshness = new CameraFrameFreshness();
 
     /** 按键模式点中一块之后，那块三角闪多久（从半透明橙淡到没有）。 */
     private static final long TAP_FLASH_MS = 350L;
@@ -150,7 +144,6 @@ public class RearViewMirrorView extends ViewGroup {
     private final Paint scrimPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final Paint labelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
     /** 最后一帧新画面的时刻，单调时钟。 */
-    private long lastFrameUptimeMs;
     /** 画面停了：盖住那张过时的画面，改成一句「点击恢复」。 */
     private boolean frozen;
     /** 贴边收起：那一条窄边上不画画面，只写名字。 */
@@ -283,7 +276,7 @@ public class RearViewMirrorView extends ViewGroup {
         try {
             windowManager.addView(this, params);
             attached = true;
-            lastFrameUptimeMs = SystemClock.uptimeMillis();
+            clearFrames();
             buttonMode = appConfig.isRearViewButtonMode();
             docked = RearViewTouchModel.dockedAt(params.x, params.width, screenWidth())
                     != RearViewTouchModel.Dock.NONE;
@@ -306,11 +299,18 @@ public class RearViewMirrorView extends ViewGroup {
 
     /** 服务每收到一帧新画面调一次。 */
     public void noteFrame() {
-        lastFrameUptimeMs = SystemClock.uptimeMillis();
-        if (frozen) {
-            frozen = false;
-            invalidate();
+        android.graphics.SurfaceTexture source = textureView.getSurfaceTexture();
+        try {
+            frameFreshness.observe(source, source == null ? 0 : source.getTimestamp(), SystemClock.uptimeMillis());
+        } catch (IllegalStateException released) {
+            frameFreshness.reset();
         }
+        boolean stopped = !frameFreshness.fresh(SystemClock.uptimeMillis());
+        if (frozen != stopped) { frozen = stopped; invalidate(); }
+    }
+
+    public void clearFrames() {
+        frameFreshness.reset(); frozen = true; invalidate();
     }
 
     /** 画面停了、点了那句提示时要做的事。 */
@@ -354,7 +354,7 @@ public class RearViewMirrorView extends ViewGroup {
             params.x = Math.max(0, Math.min(screenWidth() - params.width, params.x));
             docked = false;
             textureView.setVisibility(View.VISIBLE);
-            lastFrameUptimeMs = SystemClock.uptimeMillis();
+            clearFrames();
             applyLayout();
             if (dockListener != null) {
                 dockListener.onDockChanged(false);
@@ -447,7 +447,7 @@ public class RearViewMirrorView extends ViewGroup {
                 return;
             }
             boolean nowFrozen = !docked
-                    && SystemClock.uptimeMillis() - lastFrameUptimeMs > FROZEN_AFTER_MS;
+                    && !frameFreshness.fresh(SystemClock.uptimeMillis());
             if (nowFrozen != frozen) {
                 frozen = nowFrozen;
                 AppLog.i(TAG, frozen ? "后视镜画面停了，改显示「点击恢复」" : "后视镜画面回来了");
@@ -489,8 +489,8 @@ public class RearViewMirrorView extends ViewGroup {
         if (docked) {
             frozen = false;   // 收起来不算「画面停了」，是我们自己不画的
         } else {
-            // 给画面回来留出时间：会话里还带着它就是下一帧，不在了就等调度排的那一步
-            lastFrameUptimeMs = SystemClock.uptimeMillis();
+            // A retained texture on reopening is not proof of a live camera.
+            clearFrames();
         }
         // 状态先改好再改可见：设回可见时 TextureView 会叫重画，那一次 dispatchDraw 要按「放回来」画
         textureView.setVisibility(docked ? View.INVISIBLE : View.VISIBLE);
@@ -630,12 +630,11 @@ public class RearViewMirrorView extends ViewGroup {
             drawDockedLabel(canvas, width, height);
             return;
         }
+        frozen = !textureView.isAvailable() || !frameFreshness.fresh(SystemClock.uptimeMillis());
         if (plan == null || !plan.isComposite()) {
-            // 还不知道几何，先原样显示，总比全黑好
+            // Drain frames, but do not expose the packed strip before its geometry is known.
             drawTextureOnce(canvas);
-            if (frozen) {
-                drawFrozenHint(canvas, width, height);
-            }
+            drawFrozenHint(canvas, width, height);
             if (sideView.active()) {
                 drawChild(canvas, sideControls, getDrawingTime());
             }
@@ -1144,7 +1143,7 @@ public class RearViewMirrorView extends ViewGroup {
      * <p>这一层盖的是摄像头画面，不是应用自己的界面，所以不跟日夜模式走：
      * 底下永远是视频，压暗 + 浅色字在两种模式下都读得清。</p>
      */
-    private static final int FROZEN_SCRIM = 0xCC000000;
+    private static final int FROZEN_SCRIM = 0xFF000000;
     private static final int FROZEN_TEXT = 0xFFF2F2F3;
 
     /**

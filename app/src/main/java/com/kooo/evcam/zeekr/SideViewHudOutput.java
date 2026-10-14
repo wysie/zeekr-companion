@@ -295,6 +295,7 @@ final class SideViewHudOutput {
 
             @Override
             public boolean onSurfaceTextureDestroyed(SurfaceTexture st) {
+                if (panel == created) created.clearFrames();
                 // 只放自己这一块：旧窗口的画面晚一步销毁时，别把新窗口接上的相机摘掉
                 if (st == boundTexture || boundTexture == null) {
                     unbindCamera();
@@ -403,6 +404,7 @@ final class SideViewHudOutput {
         if (view == null) {
             return;
         }
+        view.noteFrame();
         lastFrameMs = SystemClock.uptimeMillis();
         if (view.isShowing()) {
             view.setCover(SideViewHudPanel.COVER_NONE);

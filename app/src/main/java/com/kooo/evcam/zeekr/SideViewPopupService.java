@@ -424,6 +424,7 @@ public class SideViewPopupService extends Service {
 
             @Override
             public boolean onSurfaceTextureDestroyed(SurfaceTexture st) {
+                if (popup != null) popup.clearFrames();
                 unbindCamera();
                 return true;
             }
@@ -480,6 +481,7 @@ public class SideViewPopupService extends Service {
         if (view == null) {
             return;
         }
+        view.noteFrame();
         if (!view.hasGeometry() && camera != null) {
             view.setSourceSize(camera.getPreviewSize());
             if (view.hasGeometry()) {

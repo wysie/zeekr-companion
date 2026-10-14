@@ -13,6 +13,10 @@ import android.view.View;
 
 import com.kooo.evcam.AppLog;
 import com.kooo.evcam.R;
+import com.kooo.evcam.telemetry.Readings;
+import com.kooo.evcam.telemetry.Signal;
+import com.kooo.evcam.telemetry.Telemetry;
+import com.kooo.evcam.screen.ScreenState;
 
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
@@ -23,7 +27,7 @@ import java.util.concurrent.Executors;
  */
 final class BirdEyePreview {
     private static final int SOURCE_W = 256, SOURCE_H = 1024, OUT_W = 320, OUT_H = 480;
-    private static final long INTERVAL_MS = 200, FRESH_MS = 1000;
+    private static final long INTERVAL_MS = 200, TICK_MS = 100, MAX_READBACK_MS = 40;
     private final View owner;
     private final BirdEyeConfig config;
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -38,8 +42,16 @@ final class BirdEyePreview {
     private BirdEyeProjection.Calibration calibration;
     private boolean running, busy;
     private int revision;
-    private long sourceTimestamp, sourceChangedAt, displayedAt;
-    private android.graphics.SurfaceTexture sourceIdentity;
+    private long displayedAt = -1, nextCaptureAt, lastReadbackMs;
+    private final CameraFrameFreshness freshness = new CameraFrameFreshness();
+    private android.graphics.SurfaceTexture displayedIdentity;
+    private boolean slow;
+    private BirdEyeSafetyPolicy.Block lastBlock = BirdEyeSafetyPolicy.Block.HIDDEN;
+    private final Telemetry.Listener vehicleListener = readings -> refreshSafety();
+    private final ScreenState.Listener screenListener = new ScreenState.Listener() {
+        public void onScreenOff() { refreshSafety(); }
+        public void onScreenOn() { refreshSafety(); }
+    };
     private int failureCount;
 
     BirdEyePreview(View owner) { this.owner = owner; config = new BirdEyeConfig(owner.getContext()); }
@@ -48,43 +60,92 @@ final class BirdEyePreview {
         if (running && this.texture == texture && this.plan == plan) return;
         stop();
         this.texture = texture; this.plan = plan;
-        calibration = config.read(); map = null;
-        sourceTimestamp = 0; sourceChangedAt = 0; sourceIdentity = null;
+        loadCalibration(); map = null;
+        freshness.reset(); slow = false; nextCaptureAt = 0;
+        Telemetry.get().addListener(vehicleListener);
+        ScreenState.addListener(screenListener);
         running = true;
         if (worker == null || worker.isShutdown()) {
-            worker = Executors.newSingleThreadExecutor(r -> new Thread(r, "diy-360"));
+            worker = Executors.newSingleThreadExecutor(r -> new Thread(() -> {
+                android.os.Process.setThreadPriority(android.os.Process.THREAD_PRIORITY_BACKGROUND);
+                r.run();
+            }, "diy-360"));
         }
         main.post(tick);
     }
     void invalidateCalibration() {
-        revision++; map = null; displayedAt = 0; calibration = config.read();
+        revision++; map = null; displayedAt = -1; loadCalibration();
         owner.invalidate();
     }
     void stop() {
-        running = false; revision++; displayedAt = 0;
+        running = false;
+        invalidatePicture();
         main.removeCallbacks(tick);
+        Telemetry.get().removeListener(vehicleListener);
+        ScreenState.removeListener(screenListener);
     }
     void release() {
         stop();
         if (worker != null) { worker.shutdown(); worker = null; }
         // Do not recycle a bitmap still referenced by a worker or a hardware display list.
     }
+    private void loadCalibration() {
+        try { calibration = config.read(); }
+        catch (IllegalArgumentException error) {
+            calibration = null;
+            AppLog.w("BirdEyePreview", "Invalid calibration: " + error.getMessage());
+        }
+    }
+    static boolean parked() {
+        Readings readings = Telemetry.get().readings();
+        return Telemetry.get().carLinkConnected()
+                && BirdEyeSafetyPolicy.parked(readings.text(Signal.GEAR), readings.number(Signal.SPEED));
+    }
+    private BirdEyeSafetyPolicy.Block runtimeBlock() {
+        Readings readings = Telemetry.get().readings();
+        return BirdEyeSafetyPolicy.block(Telemetry.get().carLinkConnected() ? readings.text(Signal.GEAR) : null, readings.number(Signal.SPEED),
+                readings.bool(Signal.STOCK_360), readings.bool(Signal.STOCK_POPUP), readings.bool(Signal.PARK_ASSIST),
+                owner.isShown() && owner.getWindowVisibility() == View.VISIBLE && !ScreenState.dark(),
+                PreviewDewarp.isActive(texture), calibration != null, slow);
+    }
+    private void invalidatePicture() {
+        revision++; displayedAt = -1; displayedIdentity = null; freshness.reset(); owner.invalidate();
+    }
+    private void refreshSafety() {
+        if (!running) return;
+        BirdEyeSafetyPolicy.Block block = runtimeBlock();
+        if (block != lastBlock) { lastBlock = block; invalidatePicture(); }
+    }
+    private static int blockText(BirdEyeSafetyPolicy.Block block) {
+        switch (block) {
+            case PARK_REQUIRED: return R.string.bird_eye_park_required;
+            case FACTORY: return R.string.bird_eye_factory_active;
+            case GPU: return R.string.bird_eye_gpu_blocked;
+            case CALIBRATION: return R.string.bird_eye_invalid_calibration;
+            case PERFORMANCE: return R.string.bird_eye_slow;
+            default: return R.string.bird_eye_waiting;
+        }
+    }
     String describeState() {
         long now = SystemClock.elapsedRealtime();
         return "running=" + running + ", busy=" + busy + ", lookup=" + (map != null)
-                + ", timestamp=" + sourceTimestamp
-                + ", sourceAgeMs=" + (sourceChangedAt == 0 ? -1 : now - sourceChangedAt)
-                + ", pictureAgeMs=" + (displayedAt == 0 ? -1 : now - displayedAt)
+                + ", block=" + runtimeBlock() + ", timestamp=" + freshness.timestamp()
+                + ", sourceAgeMs=" + (freshness.changedAt() < 0 ? -1 : now - freshness.changedAt())
+                + ", pictureAgeMs=" + (displayedAt < 0 ? -1 : now - displayedAt)
+                + ", readbackMs=" + lastReadbackMs
                 + ", capture=" + SOURCE_W + "x" + SOURCE_H + ", render=" + OUT_W + "x" + OUT_H
                 + ", failures=" + failureCount;
     }
     private final Runnable tick = new Runnable() {
         @Override public void run() {
             if (!running) return;
-            if (!busy && owner.isShown() && owner.getWindowVisibility() == View.VISIBLE && texture != null
-                    && texture.isAvailable() && !PreviewDewarp.isActive(texture)) capture();
-            owner.invalidate(); // A stalled camera must visibly lose its last picture.
-            if (running) main.postDelayed(this, INTERVAL_MS);
+            refreshSafety();
+            if (lastBlock == BirdEyeSafetyPolicy.Block.NONE) {
+                if (texture == null || !texture.isAvailable() || texture.getSurfaceTexture() == null) invalidatePicture();
+                else if (!busy && SystemClock.elapsedRealtime() >= nextCaptureAt) capture();
+            }
+            owner.invalidate();
+            if (running) main.postDelayed(this, TICK_MS);
         }
     };
 
@@ -96,20 +157,25 @@ final class BirdEyePreview {
                 outputPixels = new int[OUT_W * OUT_H];
                 output = Bitmap.createBitmap(OUT_W, OUT_H, Bitmap.Config.ARGB_8888);
             }
-            if (texture.getBitmap(source) == null || texture.getSurfaceTexture() == null) return;
-            android.graphics.SurfaceTexture identity = texture.getSurfaceTexture();
-            long timestamp = identity.getTimestamp();
-            long now = SystemClock.elapsedRealtime();
-            if (identity != sourceIdentity) {
-                sourceIdentity = identity; sourceTimestamp = timestamp;
-                sourceChangedAt = 0; // First buffer may be retained from an old, stopped session.
-            } else if (timestamp != sourceTimestamp) {
-                sourceTimestamp = timestamp;
-                sourceChangedAt = timestamp == 0 ? 0 : now;
+            long began = SystemClock.elapsedRealtime();
+            nextCaptureAt = began + INTERVAL_MS;
+            // getBitmap(Bitmap) can fail silently and leave the bitmap UNCHANGED.
+            // Transparent sentinels plus render's opacity checks prevent old pixels becoming live.
+            source.eraseColor(Color.TRANSPARENT);
+            Bitmap bitmap = texture.getBitmap(source);
+            lastReadbackMs = SystemClock.elapsedRealtime() - began;
+            if (lastReadbackMs > MAX_READBACK_MS) {
+                slow = true; refreshSafety(); return;
             }
-            if (sourceChangedAt == 0 || now - sourceChangedAt > FRESH_MS) return;
+            if (bitmap == null || !texture.isAvailable() || texture.getSurfaceTexture() == null) {
+                invalidatePicture(); return;
+            }
+            android.graphics.SurfaceTexture identity = texture.getSurfaceTexture();
+            long now = SystemClock.elapsedRealtime();
+            freshness.observe(identity, identity.getTimestamp(), now);
+            if (!freshness.fresh(now)) { revision++; displayedAt = -1; return; }
             final int request = revision;
-            final long capturedAt = sourceChangedAt;
+            final long capturedAt = freshness.changedAt();
             final BirdEyeProjection.Calibration settings = calibration;
             final CompositeStreamGeometry.Plan geometry = plan;
             final BirdEyeProjection.Map cached = map;
@@ -136,18 +202,19 @@ final class BirdEyePreview {
                     // Keep a valid LUT even if its first construction took longer than the
                     // freshness budget. The next current frame can reuse it immediately.
                     map = ready;
-                    if (SystemClock.elapsedRealtime() - capturedAt > FRESH_MS) return;
+                    if (runtimeBlock() != BirdEyeSafetyPolicy.Block.NONE) { invalidatePicture(); return; }
+                    if (!CameraFrameFreshness.freshAt(capturedAt, SystemClock.elapsedRealtime())) return;
                     output.setPixels(outputPixels, 0, OUT_W, 0, 0, OUT_W, OUT_H);
-                    displayedAt = capturedAt;
+                    displayedAt = capturedAt; displayedIdentity = capturedIdentity;
                     owner.invalidate();
                 });
             });
         } catch (Exception e) {
-            busy = false; displayedAt = 0; reportFailure(e);
+            busy = false; reportFailure(e);
         }
     }
     private void reportFailure(Exception e) {
-        displayedAt = 0;
+        invalidatePicture();
         if (failureCount++ == 0) AppLog.e("BirdEyePreview", "DIY 360 preview failed", e);
     }
     void draw(Canvas canvas, int width, int height) {
@@ -155,12 +222,21 @@ final class BirdEyePreview {
         float scale = Math.min(width / (float) OUT_W, height / (float) OUT_H);
         float w = OUT_W * scale, h = OUT_H * scale;
         destination.set((width - w) / 2, (height - h) / 2, (width + w) / 2, (height + h) / 2);
-        boolean fresh = displayedAt != 0 && SystemClock.elapsedRealtime() - displayedAt <= FRESH_MS;
+        BirdEyeSafetyPolicy.Block block = runtimeBlock();
+        boolean fresh = block == BirdEyeSafetyPolicy.Block.NONE && texture != null && texture.isAvailable()
+                && texture.getSurfaceTexture() == displayedIdentity
+                && CameraFrameFreshness.freshAt(displayedAt, SystemClock.elapsedRealtime());
         if (fresh && output != null) {
             paint.setColor(Color.WHITE); paint.setStyle(Paint.Style.FILL);
             canvas.drawBitmap(output, null, destination, paint);
         }
-        BirdEyeProjection.Calibration c = calibration == null ? config.read() : calibration;
+        BirdEyeProjection.Calibration c = calibration;
+        if (c == null) {
+            paint.setColor(Color.WHITE); paint.setTextAlign(Paint.Align.CENTER);
+            paint.setTextSize(18 * owner.getResources().getDisplayMetrics().scaledDensity);
+            canvas.drawText(owner.getContext().getString(blockText(block)), width / 2f, height / 2f, paint);
+            return;
+        }
         double mpp = Math.max((c.width + 2 * c.margin) / OUT_W, (c.length + 2 * c.margin) / OUT_H);
         float carW = (float) (c.width / mpp * scale), carH = (float) (c.length / mpp * scale);
         car.set(width / 2f - carW / 2, height / 2f - carH / 2, width / 2f + carW / 2, height / 2f + carH / 2);
@@ -172,8 +248,7 @@ final class BirdEyePreview {
         paint.setTextAlign(Paint.Align.CENTER); paint.setTextSize(18 * owner.getResources().getDisplayMetrics().scaledDensity);
         canvas.drawText(owner.getContext().getString(R.string.bird_eye_front), width / 2f, car.top + carH * .2f, paint);
         if (!fresh) {
-            canvas.drawText(owner.getContext().getString(PreviewDewarp.isActive(texture)
-                    ? R.string.bird_eye_gpu_blocked : R.string.bird_eye_waiting), width / 2f, height / 2f, paint);
+            canvas.drawText(owner.getContext().getString(blockText(block)), width / 2f, height / 2f, paint);
         }
         paint.setTextSize(14 * owner.getResources().getDisplayMetrics().scaledDensity);
         canvas.drawText(owner.getContext().getString(R.string.bird_eye_watermark), width / 2f, height - 12 * scale, paint);

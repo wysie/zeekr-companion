@@ -1037,7 +1037,7 @@
     <string name="bird_eye_button_description">Experimental 360 view. Tap to switch views; hold to calibrate.</string>
     <string name="bird_eye_calibrate">Calibrate 360 view</string>
     <string name="bird_eye_camera">Camera to calibrate</string>
-    <string name="bird_eye_calibration_note">Adjust while parked. Defaults are estimates, not a measured 009 calibration. Heading: 0° front, 90° right, 180° rear, 270° left. Mount offsets: positive X right, positive Y forward. Black areas have no camera coverage. Changes save automatically.</string>
+    <string name="bird_eye_calibration_note">Parked calibration only. Defaults are estimates, not a measured 009 calibration. Heading: 0° front, 90° right, 180° rear, 270° left. Mount offsets: positive X right, positive Y forward. Source selection swaps camera feeds to keep all four distinct. Black areas have no observed coverage. Changes save automatically.</string>
     <string name="bird_eye_reset">Reset all</string>
     <string name="bird_eye_value">%1$s: %2$d</string>
     <string name="bird_eye_length">Vehicle length (cm)</string>
@@ -1057,6 +1057,11 @@
     <string name="bird_eye_front">Front</string>
     <string name="bird_eye_waiting">Waiting for live cameras</string>
     <string name="bird_eye_gpu_blocked">GPU straightening must be off</string>
-    <string name="bird_eye_watermark">Experimental 360 · estimated calibration · up to 5 fps</string>
+    <string name="bird_eye_watermark">Parked calibration preview · not for driving</string>
     <string name="bird_eye_unavailable">360 needs an active surround preview. If GPU preview straightening is enabled, turn it off in Developer options and restart the app.</string>
+    <string name="bird_eye_park_required">Select P to test or calibrate 360</string>
+    <string name="bird_eye_factory_active">Factory camera active — 360 paused</string>
+    <string name="bird_eye_invalid_calibration">Invalid camera mapping — reset calibration</string>
+    <string name="bird_eye_slow">360 paused: camera readback too slow</string>
+    <string name="side_view_waiting_live">Waiting for live camera</string>
 </resources>

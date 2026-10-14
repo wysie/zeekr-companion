@@ -1,5 +1,7 @@
 package com.kooo.evcam.zeekr;
 
+import com.kooo.evcam.R;
+
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Matrix;
@@ -53,6 +55,16 @@ public class SideViewPopupView extends ViewGroup {
     private final SideViewControls controls;
     private final SideViewExpansion expansion = new SideViewExpansion();
     private final Matrix drawMatrix = new Matrix();
+    private final CameraFrameFreshness frameFreshness = new CameraFrameFreshness();
+    private final android.os.Handler freshnessHandler = new android.os.Handler(android.os.Looper.getMainLooper());
+    private final android.graphics.Paint stalePaint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
+    private final Runnable freshnessTick = new Runnable() {
+        @Override public void run() {
+            if (!isAttachedToWindow()) return;
+            if (!frameFreshness.fresh(android.os.SystemClock.uptimeMillis())) invalidate();
+            freshnessHandler.postDelayed(this, 100);
+        }
+    };
     private final RectF sourceRect = new RectF();
     private final RectF destRect = new RectF();
     private final FisheyeMesh mesh = new FisheyeMesh();
@@ -420,6 +432,37 @@ public class SideViewPopupView extends ViewGroup {
         invalidate();
     }
 
+    public void clearFrames() { frameFreshness.reset(); invalidate(); }
+
+    public void noteFrame() {
+        android.graphics.SurfaceTexture source = textureView.getSurfaceTexture();
+        try {
+            frameFreshness.observe(source, source == null ? 0 : source.getTimestamp(), android.os.SystemClock.uptimeMillis());
+        } catch (IllegalStateException released) { frameFreshness.reset(); }
+        invalidate();
+    }
+
+    @Override protected void onAttachedToWindow() {
+        super.onAttachedToWindow();
+        clearFrames();
+        freshnessHandler.post(freshnessTick);
+    }
+
+    @Override protected void onDetachedFromWindow() {
+        freshnessHandler.removeCallbacks(freshnessTick);
+        clearFrames();
+        super.onDetachedFromWindow();
+    }
+
+    private void drawStaleCover(Canvas canvas, int width, int height) {
+        canvas.drawColor(android.graphics.Color.BLACK);
+        stalePaint.setColor(android.graphics.Color.WHITE);
+        stalePaint.setTextAlign(android.graphics.Paint.Align.CENTER);
+        String message = getContext().getString(R.string.side_view_waiting_live);
+        stalePaint.setTextSize(Math.max(1f, Math.min(height * .12f, width / (message.length() * .6f))));
+        canvas.drawText(message, width / 2f, height / 2f, stalePaint);
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         int width = getWidth();
@@ -432,6 +475,7 @@ public class SideViewPopupView extends ViewGroup {
             // 服务就没机会补上尺寸 —— 窗口会一直黑），再盖成黑的，不露出四路挤在一起的整条合成流
             drawTextureOnce(canvas);
             canvas.drawColor(0xFF000000);
+            drawStaleCover(canvas, width, height);
             if (showControls()) drawChild(canvas, controls, getDrawingTime());
             return;
         }
@@ -464,6 +508,11 @@ public class SideViewPopupView extends ViewGroup {
             drawChild(canvas, textureView, getDrawingTime());
         }
         canvas.restoreToCount(save);
+        if (!textureView.isAvailable() || !frameFreshness.fresh(android.os.SystemClock.uptimeMillis())) {
+            drawStaleCover(canvas, width, height);
+            if (showControls()) drawChild(canvas, controls, getDrawingTime());
+            return;
+        }
         if (appConfig.isRearViewCameraLabelEnabled()) {
             cameraLabel.drawBottom(canvas, lane, width, height);
         }
