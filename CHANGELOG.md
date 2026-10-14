@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.17-personal-alpha] - 2026-10-14
+
 - Add a manual DIY 360 top-down prototype using the existing surround preview, overlap blending, saved per-camera calibration, defaults reset and stale-frame cover; defaults are estimates and 009 runtime remains unverified.
 
 ## [2.11.16-personal-alpha] - 2026-10-14
