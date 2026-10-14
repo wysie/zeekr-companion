@@ -995,4 +995,6 @@
     <string name="set_drive_auto_start_summary">坐上主驾座位就开始录制（车在 P 挡），坐着不开走也录；换出 P 挡或应用在开车途中才起来时也会开。不用开着应用界面。这一趟你自己停过的，不会自动再开。</string>
     <string name="msg_left_car_stopped">已下车，录制已停止</string>
     <string name="set_drive_auto_stop_title">下车自动停录</string>
+    <string name="set_side_popup_mirror_title">侧视画面镜像</string>
+    <string name="set_side_popup_mirror_summary">在侧视弹窗和超级后视镜替换画面中左右翻转。默认关闭；录像不受影响。</string>
 </resources>

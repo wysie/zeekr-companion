@@ -139,6 +139,8 @@ side window alongside it. Both windows share the existing surround camera stream
 window has its own output and does not replace the mirror output. Reverse, factory 360, factory
 side view and park assist take precedence.
 
+**Mirror side-camera image** flips left and right in both the separate popup and Super mirror replacement. It is off by default; labels, arrows and controls remain readable and recordings are unchanged. Reset side-camera settings restores mirroring to off.
+
 Side-camera correction and aim apply to either window. The pop-up size and placement settings
 apply only to the separate pop-up. Left and right cameras use one shared window position.
 Drag the window to place it and pinch to resize; both position and size are saved. It stays

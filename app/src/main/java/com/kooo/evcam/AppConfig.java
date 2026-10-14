@@ -98,6 +98,7 @@ public class AppConfig {
     private static final String KEY_INFO_BAR_ITEMS = "info_bar_items";  // 信息条上放哪几项（系统信息里勾的）
     private static final String KEY_SIDE_POPUP = "side_popup_enabled";  // 打转向灯弹侧视
     private static final String KEY_SIDE_POPUP_REPLACE_MIRROR = "side_popup_replace_mirror";
+    private static final String KEY_SIDE_POPUP_MIRROR = "side_popup_mirror";
     private static final String KEY_SIDE_POPUP_MIN_SPEED = "side_popup_min_speed";  // 侧视弹窗的车速门槛 km/h
     /** 默认 30 km/h：再慢原厂自己会弹侧方小窗。 */
     public static final int SIDE_POPUP_DEFAULT_MIN_SPEED = 30;
@@ -1642,6 +1643,7 @@ public class AppConfig {
     public void resetSidePopupSettings() {
         prefs.edit()
                 .remove(KEY_SIDE_POPUP_REPLACE_MIRROR)
+                .remove(KEY_SIDE_POPUP_MIRROR)
                 .remove(KEY_SIDE_POPUP_MIN_SPEED)
                 .remove(KEY_SIDE_POPUP_STRAIGHTEN)
                 .remove(KEY_SIDE_POPUP_FOV)
@@ -1660,6 +1662,15 @@ public class AppConfig {
 
     public boolean isSidePopupReplaceMirror() {
         return prefs.getBoolean(KEY_SIDE_POPUP_REPLACE_MIRROR, true);
+    }
+
+    /** Horizontal flip for side images on the center screen, off by default. */
+    public boolean isSidePopupMirrored() {
+        return prefs.getBoolean(KEY_SIDE_POPUP_MIRROR, false);
+    }
+
+    public void setSidePopupMirrored(boolean on) {
+        prefs.edit().putBoolean(KEY_SIDE_POPUP_MIRROR, on).apply();
     }
 
     public int getSidePopupRotation(int lane) {

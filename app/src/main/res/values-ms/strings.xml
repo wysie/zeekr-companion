@@ -985,4 +985,6 @@
     <string name="set_drive_auto_start_summary">Mula merakam apabila anda duduk di tempat duduk pemandu dengan kereta dalam P, walaupun anda tidak memandu pergi. Juga bermula apabila anda menukar keluar dari P, atau jika aplikasi bermula semasa anda sudah memandu. Aplikasi tidak perlu dibuka. Tidak jika anda sendiri menghentikan rakaman dalam perjalanan ini.</string>
     <string name="msg_left_car_stopped">Anda telah meninggalkan kereta. Rakaman dihentikan.</string>
     <string name="set_drive_auto_stop_title">Henti merakam apabila anda meninggalkan kereta</string>
+    <string name="set_side_popup_mirror_title">Cerminkan imej kamera sisi</string>
+    <string name="set_side_popup_mirror_summary">Balikkan kiri dan kanan dalam tetingkap sisi dan penggantian Super mirror. Dimatikan secara lalai; rakaman tidak berubah.</string>
 </resources>

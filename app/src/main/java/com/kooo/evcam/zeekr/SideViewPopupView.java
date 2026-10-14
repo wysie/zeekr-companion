@@ -431,7 +431,7 @@ public class SideViewPopupView extends ViewGroup {
             return;
         }
         int save = SideViewRotation.begin(canvas, appConfig.getSidePopupRotation(lane), width, height);
-        if (LaneCycle.isMirrored(lane)) {
+        if (appConfig.isSidePopupMirrored()) {
             canvas.scale(-1f, 1f, width / 2f, height / 2f);
         }
         if (straighten) {

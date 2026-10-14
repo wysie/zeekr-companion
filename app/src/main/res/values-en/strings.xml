@@ -1008,4 +1008,6 @@
     <string name="set_drive_auto_start_summary">Starts recording when you sit in the driver\'s seat with the car in P, even if you don\'t drive off. Also starts when you shift out of P, or if the app comes up while you\'re already driving. The app doesn\'t need to be open. Not if you stopped recording yourself on this trip.</string>
     <string name="msg_left_car_stopped">You left the car. Recording stopped.</string>
     <string name="set_drive_auto_stop_title">Stop recording when you leave the car</string>
+    <string name="set_side_popup_mirror_title">Mirror side-camera image</string>
+    <string name="set_side_popup_mirror_summary">Flip left and right in the side popup and Super mirror replacement. Off by default; recordings are unchanged.</string>
 </resources>
