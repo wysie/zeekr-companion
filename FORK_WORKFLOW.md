@@ -16,13 +16,16 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/clip-export` | Range exports, camera swipes and protection against file collisions |
 | `feature/driver-recording` | Driver sessions integrated with current upstream recording/persistence rules |
 | `feature/side-view-arrows` | Turn arrows for both display modes; starts from the existing side-view feature |
+| `feature/side-view-hud` | Ferix PR14 adapted to current scheduler and fork screen behavior, with cautious display selection; based on main after mirroring |
 | `feature/side-view-mirroring` | Fork side-camera horizontal flip, including mirror replacement; existing PR heads preserved |
 | `feature/night-ui` | Ferix night palette and floating-button styling |
 | `research/blind-spot-alerts` | Alert-signal investigation; no active obstacle trigger |
 | `research/factory-360-view` | Investigation of access to the factory stitched view |
 
-All behavior belonging to turn-signal side view lives on one feature branch. Camera
-labels remain a separate feature. The label branch is based directly on upstream main
+The original turn-signal side-view contribution keeps its related display behavior
+on one feature branch. Fork follow-ups for mirroring and HUD are separate branches
+based on main, preserving that existing upstream PR head. Camera labels remain a
+separate feature. The label branch is based directly on upstream main
 and contributes configurable Super mirror labels through [upstream PR #17](https://github.com/dts88/zeekr-shortcut-car/pull/17).
 The personal integration also retains side-view labels from the earlier label work;
 that hookup can follow when upstream has the side-view feature. Merge finished

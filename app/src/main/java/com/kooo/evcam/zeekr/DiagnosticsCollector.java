@@ -527,8 +527,15 @@ public final class DiagnosticsCollector {
                     .append(d.getName())
                     .append("  ").append(size.x).append('x').append(size.y)
                     .append("  state=").append(DisplayWatch.stateName(d.getState()))
+                    .append("  flags=0x").append(Integer.toHexString(d.getFlags()))
                     .append('\n');
         }
+        Display hud = SideViewHudPanel.find(context);
+        AppConfig hudConfig = new AppConfig(context);
+        sb.append("HUD candidate: ").append(hud == null ? "none" : hud.getDisplayId()).append("; output=")
+                .append(hudConfig.getSideOutput()).append("; screenMirrored=").append(hudConfig.isSidePopupMirrored())
+                .append("; hudMirrored=").append(hudConfig.isHudSideMirrored()).append("; window=")
+                .append(SideViewHudPanel.lastState()).append('\n');
         sb.append("可交互（isInteractive）: ").append(DisplayWatch.interactiveNow() ? "是" : "否").append('\n');
         if (displays.length <= 1) {
             sb.append(">> 只有一块屏，副屏推送不可用").append('\n');

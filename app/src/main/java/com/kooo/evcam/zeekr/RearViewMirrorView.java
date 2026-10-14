@@ -644,10 +644,7 @@ public class RearViewMirrorView extends ViewGroup {
 
         if (sideView.active()) {
             int sideSave = SideViewRotation.begin(canvas,
-                    appConfig.getSidePopupRotation(sideView.lane()), width, height);
-            if (appConfig.isSidePopupMirrored()) {
-                canvas.scale(-1f, 1f, width / 2f, height / 2f);
-            }
+                    appConfig.getSidePopupRotation(sideView.lane()), width, height, appConfig.isSidePopupMirrored());
             drawSideView(canvas, width, height);
             canvas.restoreToCount(sideSave);
             if (!frozen && appConfig.isRearViewCameraLabelEnabled()) {

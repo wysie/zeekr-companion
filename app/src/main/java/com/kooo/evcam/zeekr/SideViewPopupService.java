@@ -57,12 +57,14 @@ public class SideViewPopupService extends Service {
     private static final int MAX_RETRY = 20;
     /** 离开 D 档多久才把备着的窗口拿掉。 */
     static final long READY_GRACE_MS = 30_000L;
+    static final long STALE_AFTER_MS = 500L;
 
     private static volatile SideViewPopupService instance;
 
     private final Handler handler = new Handler(Looper.getMainLooper());
     private AppConfig appConfig;
     private SideViewPopupView popup;
+    private SideViewHudOutput hud;
     private SingleCamera boundCamera;
     private MultiCameraManager boundManager;
     /** 交给相机的是哪一个 SurfaceTexture：放手时确认槽位还是自己的。 */
@@ -119,6 +121,7 @@ public class SideViewPopupService extends Service {
         }
         svc.dismissal.dismiss(lane == LaneCycle.LEFT ? 1 : 2);
         svc.closeNow();
+        if (svc.hud != null) svc.hud.detach();
         svc.evaluate();
     }
 
@@ -138,6 +141,7 @@ public class SideViewPopupService extends Service {
             if (svc.popup != null) {
                 svc.popup.applyConfig();
             }
+            if (svc.hud != null) svc.hud.applyConfig();
             RearViewMirrorService.refreshSideViewConfig();
             svc.evaluate();
         }
@@ -145,8 +149,9 @@ public class SideViewPopupService extends Service {
 
     public static void refreshCameraLabel() {
         SideViewPopupService svc = instance;
-        if (svc != null && svc.popup != null) {
-            svc.popup.invalidate();
+        if (svc != null) {
+            if (svc.popup != null) svc.popup.invalidate();
+            if (svc.hud != null) svc.hud.refreshLabel();
         }
     }
 
@@ -156,6 +161,7 @@ public class SideViewPopupService extends Service {
         if (svc != null) {
             svc.lastReady = false;
             svc.closeNow();
+            svc.dropHud();
         }
         applyConfig();
     }
@@ -228,6 +234,7 @@ public class SideViewPopupService extends Service {
         lastReady = false;
         RearViewMirrorService.clearSideView();
         detachPopup();
+        dropHud();
         AppLog.i(TAG, "侧视弹窗：停止听转向灯");
     }
 
@@ -264,6 +271,25 @@ public class SideViewPopupService extends Service {
         if (blocked || SideViewDecision.factoryViewActive(in)) {
             lastReady = false;
             RearViewMirrorService.clearSideView();
+            detachPopup();
+            if (hud != null) hud.detach();
+            return;
+        }
+        int output = appConfig.getSideOutput();
+        if (output == AppConfig.SIDE_OUTPUT_SCREEN) dropHud();
+        boolean hudOn = output != AppConfig.SIDE_OUTPUT_SCREEN && hudOutput().available();
+        if (hudOn) {
+            SideViewDecision.Input hudIn = inputFrom(r, s, 0, hud.showingLane());
+            hudOn = hud.update(suppressed ? SideViewDecision.NONE : SideViewDecision.decide(hudIn),
+                    suppressed, !suppressed && appConfig.isSidePopupInstant() && SideViewDecision.shouldStayReady(hudIn),
+                    suppressed ? 0 : appConfig.getSidePopupCloseDelayMs());
+            hud.followIndicator(indicator);
+        } else if (hud != null) {
+            hud.detach();
+        }
+        if (!SideViewOutputRouting.screenWanted(output, hudOn)) {
+            lastReady = false;
+            closeNow();
             detachPopup();
             return;
         }
@@ -319,6 +345,29 @@ public class SideViewPopupService extends Service {
             readyExpiryScheduled = true;
             handler.postDelayed(readyExpired, READY_GRACE_MS);
         }
+    }
+
+    private SideViewDecision.Input inputFrom(Readings r, VehicleState s, int minSpeed, int showing) {
+        SideViewDecision.Input in = new SideViewDecision.Input();
+        in.turnSignal = s.turnSignal;
+        in.hazard = s.hazard;
+        in.gear = r.text(Signal.GEAR);
+        in.stock360Shown = r.bool(Signal.STOCK_360);
+        in.stockPopupShown = r.bool(Signal.STOCK_POPUP);
+        in.parkAssistOn = r.bool(Signal.PARK_ASSIST);
+        in.speedKmh = s.speedKmh;
+        in.minSpeedKmh = minSpeed;
+        in.showing = showing;
+        return in;
+    }
+
+    private SideViewHudOutput hudOutput() {
+        if (hud == null) hud = new SideViewHudOutput(this, appConfig, this::evaluate);
+        return hud;
+    }
+
+    private void dropHud() {
+        if (hud != null) { hud.dispose(); hud = null; }
     }
 
     // ================================================================= 窗口

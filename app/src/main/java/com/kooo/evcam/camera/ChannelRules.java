@@ -141,6 +141,8 @@ public final class ChannelRules {
         MIRROR,
         /** Independent turn-signal window; can coexist with the mirror. */
         SIDE_POPUP,
+        /** Independent side-camera HUD output. */
+        SIDE_HUD,
         /** 录制器的输入 SurfaceTexture：录制器停放、重新备好都是同一个，所以停录后它能留在会话里。 */
         RECORD,
         /** 不显示的出帧口：只用来补位 —— 一路要出帧、会话里却没有一个活着的输出能出帧时才加。 */
@@ -1182,6 +1184,7 @@ public final class ChannelRules {
             case MIRROR:
                 return isSurround(lane);
             case SIDE_POPUP:
+            case SIDE_HUD:
                 return w.screenOn && isSurround(lane);
             default:
                 return true;
@@ -1289,6 +1292,8 @@ public final class ChannelRules {
             case SIDE_POPUP:
                 return w.screenOn && w.holders.contains(CameraNeeds.Holder.SIDE_POPUP)
                         && isSurround(lane);
+            case SIDE_HUD:
+                return w.screenOn && w.holders.contains(CameraNeeds.Holder.SIDE_HUD) && isSurround(lane);
             case RECORD:
                 return w.holders.contains(CameraNeeds.Holder.RECORDING) && w.recordPlan.contains(lane.key);
             default:

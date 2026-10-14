@@ -32,3 +32,11 @@ concurrent clip exports. Final counts and build results are in `009-test-notes.m
 There is no connected head unit for native UI or vehicle testing. Android phone
 sharing, 009 driver signals, braking events and media export need device checks;
 passing local tests does not establish those behaviors on the car.
+
+## HUD side view and mirroring — 2026-10-14
+
+Ported from Ferix PR #14, implementation becbfe10c6c9c1ebd1840245d68791c051c96c6a and diagnostic-token correction 426c5fa3e97bc588d8bee8674c812fadc29a76b8. Screen mirroring is on feature/side-view-mirroring; HUD adaptation is on feature/side-view-hud, based on the combined fork so existing contribution heads remain unchanged.
+
+The port keeps current ChannelScheduler declarations, an independent SIDE_HUD output/holder, factory-camera priority, screen mirror replacement, labels, rotation, framing protection, close/reset behavior and recording. HUD output shares the current preview stream and yields first on session failure; it does not use the source's obsolete direct camera-open/rebuild calls. Screen is the default output; HUD mirroring defaults on and screen mirroring off.
+
+Display matching requires a public presentation-capable, on display identified by the known 7X size or a HUD name, excludes the primary display and instrument cluster, and rejects ambiguous candidates. The source's id-3 fallback is deliberately omitted because display IDs on the 009 have not been identified. Diagnostics report the inventory and selection. Unavailable/failed HUD output falls back to current screen behavior. No 009 HUD has been tested.

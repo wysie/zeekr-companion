@@ -34,6 +34,8 @@ testing coverage or device compatibility as upstream.
   resizing, temporary expand/close controls, per-side image rotation, defaults
   reset, and automatic framing adjustment to avoid black patches at extreme aim
   angles. High angles can substantially narrow the visible area.
+- **Optional side-camera mirroring:** flip the image in the popup or Super mirror replacement; off by default, with recordings unchanged.
+- **Experimental HUD side camera:** adapted from Ferix PR #14; choose Screen, HUD or both, with separate HUD mirroring and layout controls. Availability on the 009 is unverified.
 - **Optional camera labels:** identify the displayed camera in Super mirror and
   the side window. Super mirror also has a defaults reset.
 
@@ -140,6 +142,12 @@ window has its own output and does not replace the mirror output. Reverse, facto
 side view and park assist take precedence.
 
 **Mirror side-camera image** flips left and right in both the separate popup and Super mirror replacement. It is off by default; labels, arrows and controls remain readable and recordings are unchanged. Reset side-camera settings restores mirroring to off.
+
+**Show side view on** selects Screen (default), HUD, or Screen and HUD. Screen output still follows **Use Super mirror when active**. HUD output is optional and experimental on the 009: it needs an accessible, powered-on, public presentation display with the known 1440×480 HUD dimensions or an explicit HUD name. Display ID 3 alone is not treated as proof of a HUD. An unavailable or rejected HUD falls back to the screen behavior, preserving its opening-speed threshold.
+
+Under **HUD picture**, adjust height (30–100%, default 74%), shape (width/height, 100–300%, default square), horizontal position (default 6%), vertical position (default 50%) and opacity (20–100%, default 100%). HUD mirroring defaults on and is independent of screen mirroring. Aim, correction, per-side rotation, camera labels and turn arrows are shared. HUD windows have no touch controls; use the settings to configure them. Reset side-camera settings also restores Screen output and all HUD defaults, retaining the main feature switch.
+
+The HUD has no app speed threshold, but reverse, factory views, parking assist and screen-off still suppress it. Closing the screen side view also dismisses the HUD for that signal activation; it returns after cancelling and signalling again. HUD video is covered when frames stop arriving. Its optional camera output yields before screen output, mirror and recording when the session cannot support it. Diagnostics include display flags, the detected HUD, output mode, mirroring choices and recent HUD window state. This does not establish compatibility or picture quality on the 009.
 
 Side-camera correction and aim apply to either window. The pop-up size and placement settings
 apply only to the separate pop-up. Left and right cameras use one shared window position.

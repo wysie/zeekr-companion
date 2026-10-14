@@ -9,6 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Port Ferix PR #14 as an opt-in HUD side-camera output, with Screen/HUD/Both selection, independent HUD mirroring and layout, screen fallback, frame-staleness cover and display diagnostics; 009 HUD compatibility unverified.
 - Add optional horizontal mirroring to both side-camera screen modes; off by default, with labels and recordings unchanged.
 
 ## [2.11.15-personal-alpha] - 2026-10-14

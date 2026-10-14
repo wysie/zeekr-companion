@@ -53,7 +53,9 @@ public final class CameraNeeds {
          */
         PHOTO,
         /** 打转向灯的侧视窗：亮屏时显示或即时弹出备着，只要环视。 */
-        SIDE_POPUP
+        SIDE_POPUP,
+        /** Opt-in side-camera Presentation; only needs the surround channel. */
+        SIDE_HUD
     }
 
     private static final CameraNeeds CURRENT = new CameraNeeds();
