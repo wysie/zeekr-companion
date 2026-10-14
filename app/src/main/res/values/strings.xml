@@ -1017,4 +1017,33 @@
     <string name="set_hud_side_opacity_title">HUD 画面不透明度（%）</string>
     <string name="set_hud_side_opacity_summary">越低越淡。HUD 上黑色本来就不亮</string>
     <string name="set_side_hud_note">HUD 功能尚未在 009 上验证。不可用时回退到主屏。HUD 不受速度门槛限制，但仍优先使用原厂摄像头和倒车画面。</string>
+
+    <!-- DIY ground-plane 360 prototype -->
+    <string name="bird_eye_button">360°</string>
+    <string name="bird_eye_back">四路画面</string>
+    <string name="bird_eye_button_description">试验性360视图。点击切换画面，长按校准。</string>
+    <string name="bird_eye_calibrate">校准360视图</string>
+    <string name="bird_eye_camera">选择校准的相机</string>
+    <string name="bird_eye_calibration_note">停车时调整。默认值为估计，非009实测标定。朝向：0°前、90°右、180°后、270°左。安装偏移：X正值向右，Y正值向前。黑色区域没有相机覆盖。修改自动保存。</string>
+    <string name="bird_eye_reset">全部重置</string>
+    <string name="bird_eye_value">%1$s: %2$d</string>
+    <string name="bird_eye_length">车长（厘米）</string>
+    <string name="bird_eye_width">车宽（厘米）</string>
+    <string name="bird_eye_margin">车周围地面（厘米）</string>
+    <string name="bird_eye_source_lane">源相机画面</string>
+    <string name="bird_eye_height">相机离地高度（厘米）</string>
+    <string name="bird_eye_pitch">向下倾角（°）</string>
+    <string name="bird_eye_yaw">相机朝向（°）</string>
+    <string name="bird_eye_roll">画面旋转（°）</string>
+    <string name="bird_eye_fov">镜头视场角（°）</string>
+    <string name="bird_eye_cx">镜头中心X（%）</string>
+    <string name="bird_eye_cy">镜头中心Y（%）</string>
+    <string name="bird_eye_offset_x">安装偏移X（厘米）</string>
+    <string name="bird_eye_offset_y">安装偏移Y（厘米）</string>
+    <string name="bird_eye_mirror">水平翻转源画面</string>
+    <string name="bird_eye_front">前</string>
+    <string name="bird_eye_waiting">等待实时相机画面</string>
+    <string name="bird_eye_gpu_blocked">请关闭GPU鱼眼校正</string>
+    <string name="bird_eye_watermark">试验性360 · 估计标定 · 最高5帧/秒</string>
+    <string name="bird_eye_unavailable">360需要可用的环视预览。如已启用GPU预览校正，请在开发者选项关闭并重启应用。</string>
 </resources>

@@ -1,0 +1,106 @@
+# DIY 360 prototype
+
+This implements a live bird's-eye ground view from the existing four-camera
+surround composite. It does not retrieve the factory stitched view. The factory
+feed investigation remains on `research/factory-360-view`; this implementation
+is on `feature/diy-360-view`, for integration into the fork's `main`.
+
+## Use
+
+On the main live camera screen, tap **360°**. Tap **Four cameras** to return to
+the usual preview. This is a manual, session-only display mode and is off at
+launch. It does not automatically open on reversing or signalling. It is not
+an overlay or HUD output. In the surround + cabin layout, only the surround
+pane changes. Side windows, Super mirror and recordings retain their settings.
+
+Hold the **360° / Four cameras** button to open **Calibrate 360 view**. Select
+the physical camera to adjust. Changes save automatically and update the preview;
+**Reset all** resets only this prototype's calibration. The calibration is also
+included in Diagnostics exports. Reset does not affect any other feature.
+
+An active, recognized surround stream is required. GPU preview straightening
+must be disabled in Developer options, followed by an app restart if it was
+enabled: a pre-corrected frame is not the input lens model. The regular Canvas
+straightening toggle may remain enabled; it does not modify the source snapshot.
+The factory camera still owns priority; when it takes the camera, this view
+cannot obtain new frames and displays **Waiting for live cameras**.
+
+## Calibration
+
+All defaults are estimates, not measured 009 geometry or factory calibration:
+
+| Setting | Default |
+| --- | --- |
+| Vehicle length / width | 520 / 200 cm |
+| Ground around vehicle | 200 cm |
+| Camera height | 100 cm for each camera |
+| Downward tilt | 35° |
+| Heading, front / rear / left / right | 0° / 180° / 270° / 90° |
+| Lens field of view | 190°, equidistant model |
+| Lens centre | X 50%, Y 50% |
+| Image rotation / horizontal flip | 0° / off |
+| Mount offsets | X 0 cm, Y 0 cm |
+| Source images, front / rear / left / right | Lanes 0 / 1 / 2 / 3 |
+
+Base mounts are at the centre of the corresponding body edge. Positive mount X
+moves right, positive mount Y moves forward. Side cameras will likely need a
+forward mount offset, as their actual mounting position is not at the middle
+of the vehicle. Image rotation, source selection and horizontal flip compensate
+for firmware image orientation; these are independent of side-camera mirroring.
+
+For a first adjustment, park on flat ground with visible pavement lines. Check
+which image belongs to each camera, then its rotation/flip, lens centre/FOV,
+height and tilt, mounting position and heading. Align ground features across
+seams. Manual adjustment is approximate: tomorrow's original composite frame
+and geometry text can help identify orientation and cropping. Accurate
+calibration subsequently needs known-size targets at measured ground positions.
+
+## Implementation and limits
+
+The main TextureView remains the camera consumer and continues its native draw
+and update path. The prototype reads a 256×1024 snapshot of that entire existing
+frame at most every 200 ms, respecting the detected normalized lane boundaries
+and separators. No new Camera2 surface, session or vehicle control is opened.
+
+A single worker precomputes a lookup mapping each output ground point through
+the camera pose and equidistant lens. It chooses the two strongest valid views
+and blends their normalized confidence weights. It produces a 320×480 image,
+scaled with uniform metres per pixel, and draws a masked vehicle outline with
+its front indicated. Ground beyond the lens or behind a camera is rejected;
+unobserved areas remain black rather than stretching source edges or inventing
+pixels. Sampling is nearest-neighbour, so detail is deliberately limited.
+
+There is one frame in flight and no queue of old frames. New source timestamps
+are required after attaching to a texture; a retained first frame is insufficient
+to call the view live. If the observed source timestamp stops changing for a
+second, the picture is covered with a waiting message. Configuration revisions
+and texture identity invalidate pending results. Sampling pauses when the view
+is hidden, stops when leaving 360 mode, and the worker closes on detachment.
+
+This assumes a flat ground plane and an approximate lens model, with no measured
+radial distortion coefficients or automatic target calibration yet. Tall objects
+can stretch or ghost at seams. Mounting errors can leave gaps or misalign nearby
+objects. The five-fps cap, readback overhead, actual texture orientation,
+performance during recording, native layout and camera takeover/recovery need
+009 testing. This is an experimental calibration preview, not a factory-quality
+parking view or distance measurement.
+
+The geometry and compositing are original fork work, built on dts88's surround
+preview and its contributors' composite-stream layout infrastructure. This is
+not an import of Ferix's HUD or any third-party surround stitcher.
+
+## Local verification
+
+`BirdEyeProjectionTest` covers optical-axis alignment, front/rear handedness,
+left/right headings, rotation/mirroring, invalid lens coverage, vehicle masking,
+correct camera colours, normalized seam blending, separator exclusion, squeezed
+HAL geometry, invalid calibration and mismatched buffer rejection.
+
+[BirdEyeFixture](../tools/BirdEyeFixture.java) generates four simulated fisheye
+images of a ground grid and projects them through the actual app renderer. Its
+PNG is synthetic verification, not a screenshot from a 009. The reconstructed
+grid and coloured landmarks stay aligned across the four views. Desktop timings
+do not predict head-unit performance. No vehicle, emulator or actual Android
+TextureView readback was available for this build.
+
+![Simulated ground-grid reconstruction, not 009 footage](assets/diy-360-synthetic.png)

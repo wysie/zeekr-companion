@@ -90,6 +90,8 @@ public class FourLaneContainer extends ViewGroup {
         GRID,
         /** 只显示某一个画面，铺满整个容器。 */
         SINGLE,
+        /** Experimental calibrated ground-plane composite; original stream stays intact. */
+        BIRD_EYE,
         /** 不拆分，原样显示整条合成流。用于排查问题。 */
         RAW
     }
@@ -152,6 +154,7 @@ public class FourLaneContainer extends ViewGroup {
      */
     private final ScaleMode correctedScaleMode = ScaleMode.FILL;
     private DisplayMode displayMode = DisplayMode.GRID;
+    private final BirdEyePreview birdEye = new BirdEyePreview(this);
     private int focusedLane;
     /** laneOrder[格子位置] = 合成流中的画面序号。 */
     private int[] laneOrder = {0, 1, 2, 3};
@@ -295,6 +298,19 @@ public class FourLaneContainer extends ViewGroup {
         return focusedLane;
     }
 
+    public boolean showBirdEye() {
+        if (plan == null || !plan.isComposite() || PreviewDewarp.isActive(textureView)) return false;
+        stopGrow();
+        displayMode = DisplayMode.BIRD_EYE;
+        birdEye.start(textureView, plan);
+        invalidate();
+        return true;
+    }
+
+    public void calibrateBirdEye() {
+        BirdEyeCalibrationDialog.show(getContext(), birdEye::invalidateCalibration);
+    }
+
     @Override
     public boolean onTouchEvent(android.view.MotionEvent event) {
         if (event.getActionMasked() == android.view.MotionEvent.ACTION_DOWN) {
@@ -354,6 +370,7 @@ public class FourLaneContainer extends ViewGroup {
         if (index < 0 || index >= CompositeStreamGeometry.LANE_COUNT) {
             return;
         }
+        birdEye.stop();
         boolean fromGrid = displayMode == DisplayMode.GRID;
         focusedLane = index;
         displayMode = DisplayMode.SINGLE;
@@ -373,6 +390,7 @@ public class FourLaneContainer extends ViewGroup {
 
     /** @param animate false 时直接回到四宫格，理由同 {@link #focusLane(int, boolean)} */
     public void showGrid(boolean animate) {
+        birdEye.stop();
         boolean fromSingle = displayMode == DisplayMode.SINGLE;
         displayMode = DisplayMode.GRID;
         if (fromSingle && animate) {
@@ -385,6 +403,7 @@ public class FourLaneContainer extends ViewGroup {
 
     /** 不拆分，原样显示整条合成流（排查用）。 */
     public void showRaw() {
+        birdEye.stop();
         stopGrow();
         displayMode = DisplayMode.RAW;
         invalidate();
@@ -483,6 +502,7 @@ public class FourLaneContainer extends ViewGroup {
                 + " plan=" + (current == null ? "none"
                         : current.isComposite() ? "split into " + current.laneCount() : "not split")
                 + " mode=" + displayMode
+                + (displayMode == DisplayMode.BIRD_EYE ? " diy360={" + birdEye.describeState() + "}" : "")
                 + " cells=" + (activeCells == null ? "default 2x2" : String.valueOf(activeCells.length))
                 + " fisheye=" + (!fisheye ? "off"
                         : PreviewDewarp.isActive(textureView) ? "gpu" : "mesh")
@@ -506,11 +526,15 @@ public class FourLaneContainer extends ViewGroup {
         lastAttached = new java.lang.ref.WeakReference<>(this);
         readFisheye();
         fisheyeListener = new AppConfig(getContext()).onFisheyeChanged(this::readFisheye);
+        if (displayMode == DisplayMode.BIRD_EYE && plan != null && plan.isComposite()) {
+            birdEye.start(textureView, plan);
+        }
         AppLog.i(TAG, "attached: " + describeState());
     }
 
     @Override
     protected void onDetachedFromWindow() {
+        birdEye.release();
         AppLog.i(TAG, "detached: " + describeState());
         new AppConfig(getContext()).removeFisheyeListener(fisheyeListener);
         fisheyeListener = null;
@@ -543,6 +567,9 @@ public class FourLaneContainer extends ViewGroup {
             AppLog.i(TAG, "合成流拆分方案: " + plan);
         } else {
             plan = null;
+        }
+        if (displayMode == DisplayMode.BIRD_EYE && plan != null && plan.isComposite()) {
+            birdEye.start(textureView, plan);
         }
         invalidate();
     }
@@ -583,6 +610,14 @@ public class FourLaneContainer extends ViewGroup {
     @Override
     protected void dispatchDraw(Canvas canvas) {
         CompositeStreamGeometry.Plan current = plan;
+        if (displayMode == DisplayMode.BIRD_EYE) {
+            noteDrawPath("DIY bird's-eye prototype");
+            // Keep the ordinary TextureView draw/update path alive underneath the opaque
+            // result. Camera production, preview freshness callbacks and recording stay native.
+            if (textureView != null) drawChild(canvas, textureView, getDrawingTime());
+            birdEye.draw(canvas, getWidth(), getHeight());
+            return;
+        }
         if (textureView == null || current == null || !current.isComposite()
                 || displayMode == DisplayMode.RAW) {
             // 尺寸未知、不是合成流，或用户选了原样显示：走默认绘制

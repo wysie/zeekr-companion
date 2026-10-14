@@ -20,6 +20,8 @@
 信号扫描需要手动开启开发者选项。新增功能仍需在 009 上验证；扫描并不等于障碍物检测或原厂 360 图像接口。
 具体设置与来源见 [英文说明](README.md) 和 [移植记录](docs/ferix-feature-ports.md)。
 
+新增手动开启的 **DIY 360 试验视图**：在主相机画面点击 **360°** 显示俯视地面拼接，长按按钮校准或全部重置。默认安装参数是估计值，非009实测标定；并非原厂360图像接口。详见 [设置与限制](docs/diy-360-view.md)。
+
 [English](README.md) · [更新日志](CHANGELOG.md) · [来源与致谢](NOTICE.md) · [平台笔记](docs/zeekr-platform-notes.md)
 
 > [!IMPORTANT]

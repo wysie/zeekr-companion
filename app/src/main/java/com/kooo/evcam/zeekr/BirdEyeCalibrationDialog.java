@@ -1,0 +1,119 @@
+package com.kooo.evcam.zeekr;
+
+import android.content.Context;
+import android.view.View;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.LinearLayout;
+import android.widget.ScrollView;
+import android.widget.SeekBar;
+import android.widget.Spinner;
+import android.widget.TextView;
+
+import androidx.appcompat.app.AlertDialog;
+import androidx.appcompat.widget.SwitchCompat;
+import com.google.android.material.dialog.MaterialAlertDialogBuilder;
+import com.kooo.evcam.R;
+
+/** In-place manual calibration, saved independently from all other camera settings. */
+public final class BirdEyeCalibrationDialog {
+    private BirdEyeCalibrationDialog() {}
+    public static void show(Context context, Runnable changed) {
+        BirdEyeConfig config = new BirdEyeConfig(context);
+        LinearLayout content = new LinearLayout(context);
+        content.setOrientation(LinearLayout.VERTICAL);
+        int inset = dp(context, 24);
+        content.setPadding(inset, inset / 2, inset, inset);
+        TextView note = new TextView(context);
+        note.setText(R.string.bird_eye_calibration_note);
+        content.addView(note);
+        LinearLayout vehicle = new LinearLayout(context);
+        vehicle.setOrientation(LinearLayout.VERTICAL); content.addView(vehicle);
+        Spinner camera = new Spinner(context);
+        String[] cameras = {context.getString(R.string.zeekr_lane_front), context.getString(R.string.zeekr_lane_back),
+                context.getString(R.string.zeekr_lane_left), context.getString(R.string.zeekr_lane_right)};
+        camera.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, cameras));
+        camera.setContentDescription(context.getString(R.string.bird_eye_camera));
+        content.addView(camera, new LinearLayout.LayoutParams(-1, dp(context, 56)));
+        LinearLayout lens = new LinearLayout(context);
+        lens.setOrientation(LinearLayout.VERTICAL); content.addView(lens);
+        Runnable rebuild = () -> {
+            vehicle.removeAllViews(); lens.removeAllViews();
+            slider(context, vehicle, config, "length", R.string.bird_eye_length, 520, 300, 650, changed);
+            slider(context, vehicle, config, "width", R.string.bird_eye_width, 200, 140, 260, changed);
+            slider(context, vehicle, config, "margin", R.string.bird_eye_margin, 200, 50, 400, changed);
+            int index = Math.max(0, camera.getSelectedItemPosition());
+            Spinner lane = new Spinner(context);
+            lane.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, cameras));
+            TextView laneTitle = new TextView(context); laneTitle.setText(R.string.bird_eye_source_lane);
+            lens.addView(laneTitle); lens.addView(lane, new LinearLayout.LayoutParams(-1, dp(context, 56)));
+            lane.setSelection(config.get(BirdEyeConfig.key(index, "lane"), index));
+            lane.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+                public void onNothingSelected(AdapterView<?> parent) {}
+                public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                    if (position != config.get(BirdEyeConfig.key(index, "lane"), index)) {
+                        config.set(BirdEyeConfig.key(index, "lane"), position); changed.run();
+                    }
+                }
+            });
+            slider(context, lens, config, BirdEyeConfig.key(index, "height"), R.string.bird_eye_height, 100, 30, 200, changed);
+            slider(context, lens, config, BirdEyeConfig.key(index, "pitch"), R.string.bird_eye_pitch, 35, 0, 90, changed);
+            slider(context, lens, config, BirdEyeConfig.key(index, "yaw"), R.string.bird_eye_yaw,
+                    new int[]{0, 180, 270, 90}[index], 0, 359, changed);
+            slider(context, lens, config, BirdEyeConfig.key(index, "roll"), R.string.bird_eye_roll, 0, -180, 180, changed);
+            slider(context, lens, config, BirdEyeConfig.key(index, "fov"), R.string.bird_eye_fov, 190, 120, 220, changed);
+            slider(context, lens, config, BirdEyeConfig.key(index, "cx"), R.string.bird_eye_cx, 50, 25, 75, changed);
+            slider(context, lens, config, BirdEyeConfig.key(index, "cy"), R.string.bird_eye_cy, 50, 25, 75, changed);
+            slider(context, lens, config, BirdEyeConfig.key(index, "offset_x"), R.string.bird_eye_offset_x, 0, -200, 200, changed);
+            slider(context, lens, config, BirdEyeConfig.key(index, "offset_y"), R.string.bird_eye_offset_y, 0, -250, 250, changed);
+            SwitchCompat mirror = new SwitchCompat(context);
+            mirror.setText(R.string.bird_eye_mirror);
+            mirror.setChecked(config.preferences.getBoolean(BirdEyeConfig.key(index, "mirror"), false));
+            mirror.setMinHeight(dp(context, 48)); lens.addView(mirror);
+            mirror.setOnCheckedChangeListener((button, on) -> {
+                config.preferences.edit().putBoolean(BirdEyeConfig.key(index, "mirror"), on).apply(); changed.run();
+            });
+        };
+        camera.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+            public void onNothingSelected(AdapterView<?> parent) {}
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) { rebuild.run(); }
+        });
+        rebuild.run();
+        ScrollView scroll = new ScrollView(context); scroll.addView(content);
+        AlertDialog dialog = new MaterialAlertDialogBuilder(context, R.style.Theme_Cam_MaterialAlertDialog).setTitle(R.string.bird_eye_calibrate)
+                .setView(scroll).setPositiveButton(android.R.string.ok, null)
+                .setNeutralButton(R.string.bird_eye_reset, null).create();
+        dialog.setOnShowListener(ignored -> {
+            com.kooo.evcam.ui.CamDialogs.paintNow(dialog);
+            dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(v -> {
+                config.reset(); rebuild.run(); changed.run();
+            });
+        });
+        dialog.show();
+    }
+    private static void slider(Context context, LinearLayout parent, BirdEyeConfig config, String key,
+                               int title, int fallback, int min, int max, Runnable changed) {
+        TextView label = new TextView(context);
+        label.setPadding(0, dp(context, 16), 0, 0); parent.addView(label);
+        SeekBar bar = new SeekBar(context);
+        bar.setMax(max - min);
+        int value = Math.max(min, Math.min(max, config.get(key, fallback)));
+        bar.setProgress(value - min);
+        label.setText(context.getString(R.string.bird_eye_value, context.getString(title), value));
+        bar.setContentDescription(label.getText());
+        parent.addView(bar, new LinearLayout.LayoutParams(-1, dp(context, 48)));
+        bar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            public void onStartTrackingTouch(SeekBar seekBar) {}
+            public void onStopTrackingTouch(SeekBar seekBar) { changed.run(); }
+            public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                if (!fromUser) return;
+                int selected = min + progress;
+                config.set(key, selected);
+                label.setText(context.getString(R.string.bird_eye_value, context.getString(title), selected));
+                bar.setContentDescription(label.getText());
+                changed.run();
+            }
+        });
+    }
+    private static int dp(Context context, int value) { return (int) (value * context.getResources().getDisplayMetrics().density + .5f); }
+}

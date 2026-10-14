@@ -1030,4 +1030,33 @@
     <string name="set_hud_side_opacity_title">HUD picture opacity (%)</string>
     <string name="set_hud_side_opacity_summary">Lower is fainter. Black does not light up on a HUD anyway</string>
     <string name="set_side_hud_note">HUD is experimental on the 009. If unavailable, the screen view is used. The HUD ignores the speed threshold; factory cameras and reverse still take priority.</string>
+
+    <!-- DIY ground-plane 360 prototype -->
+    <string name="bird_eye_button">360°</string>
+    <string name="bird_eye_back">Four cameras</string>
+    <string name="bird_eye_button_description">Experimental 360 view. Tap to switch views; hold to calibrate.</string>
+    <string name="bird_eye_calibrate">Calibrate 360 view</string>
+    <string name="bird_eye_camera">Camera to calibrate</string>
+    <string name="bird_eye_calibration_note">Adjust while parked. Defaults are estimates, not a measured 009 calibration. Heading: 0° front, 90° right, 180° rear, 270° left. Mount offsets: positive X right, positive Y forward. Black areas have no camera coverage. Changes save automatically.</string>
+    <string name="bird_eye_reset">Reset all</string>
+    <string name="bird_eye_value">%1$s: %2$d</string>
+    <string name="bird_eye_length">Vehicle length (cm)</string>
+    <string name="bird_eye_width">Vehicle width (cm)</string>
+    <string name="bird_eye_margin">Ground around vehicle (cm)</string>
+    <string name="bird_eye_source_lane">Source camera image</string>
+    <string name="bird_eye_height">Camera height above ground (cm)</string>
+    <string name="bird_eye_pitch">Downward tilt (°)</string>
+    <string name="bird_eye_yaw">Camera heading (°)</string>
+    <string name="bird_eye_roll">Image rotation (°)</string>
+    <string name="bird_eye_fov">Lens field of view (°)</string>
+    <string name="bird_eye_cx">Lens centre X (%)</string>
+    <string name="bird_eye_cy">Lens centre Y (%)</string>
+    <string name="bird_eye_offset_x">Mount offset X (cm)</string>
+    <string name="bird_eye_offset_y">Mount offset Y (cm)</string>
+    <string name="bird_eye_mirror">Flip source image horizontally</string>
+    <string name="bird_eye_front">Front</string>
+    <string name="bird_eye_waiting">Waiting for live cameras</string>
+    <string name="bird_eye_gpu_blocked">GPU straightening must be off</string>
+    <string name="bird_eye_watermark">Experimental 360 · estimated calibration · up to 5 fps</string>
+    <string name="bird_eye_unavailable">360 needs an active surround preview. If GPU preview straightening is enabled, turn it off in Developer options and restart the app.</string>
 </resources>

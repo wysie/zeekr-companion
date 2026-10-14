@@ -114,3 +114,25 @@ Screen mirroring defaults off and covers the popup and Super mirror replacement.
 Regression tests cover known-size/named HUD selection, refusal of unknown display ID 3, main/private/non-presentation/cluster/ambiguous displays, placement, independent speed thresholds, factory-view priority, screen fallback, and HUD-only surround ownership/release without losing screen or recording requests. Existing generic holder tests include the HUD.
 
 No head unit or emulator is connected. Native UI, frame timing, 009 HUD availability, screen fallback and picture orientation remain unverified on the car. Test while parked: screen mirror on/off with each indicator, both screen display modes, Screen/HUD/Both output, factory-camera priority, X remaining closed until cancelling/re-signalling, and reset restoring Screen/off-screen-mirroring/on-HUD-mirroring defaults. If HUD is blank, export Diagnostics with HUD enabled in the car and HUD output selected.
+
+## DIY 360 prototype — 2026-10-14
+
+A manual ground-plane 360 display now uses snapshots of the existing composite
+preview. The camera session and recording paths are unchanged. All mounting/lens
+defaults are estimates; this is not the factory 360 feed or a measured 009
+calibration. The feature starts off, with saved independent calibration and reset.
+
+Local validation: 1,180 JVM tests passed, zero failures/errors/skips; signed
+assembleRelease and release vital lint passed. Fourteen new tests cover projection,
+source orientation, camera coverage, normalized blending, vehicle masking and
+composite boundary handling. A synthetic fisheye ground-grid fixture was rendered
+through the actual Java renderer and visually inspected: grid lines and coloured
+landmarks align across views, with expected low-resolution sampling aliasing.
+This fixture is not car footage. Resource XML parses in Chinese, English and Malay.
+
+No connected vehicle or emulator was available. Pending on-car checks: actual
+TextureView readback and timestamp progression; main-screen button/dialog layout;
+camera order/orientation; manual tuning and calibration reset; factory takeover
+then recovery; source loss/stale cover; switching views and backgrounding; memory,
+UI responsiveness and recording continuity while the five-fps view is active.
+Tomorrow's Diagnostics and original surround composite can refine these estimates.

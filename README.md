@@ -23,6 +23,7 @@ testing coverage or device compatibility as upstream.
 
 ## Additions in this fork
 
+- **DIY 360 prototype:** manually switch the live surround preview to a stitched top-down ground view with a central vehicle outline and overlap blending. Tap **360°** on the main camera screen; hold it to calibrate or reset. This uses our four-camera feed, not the factory stitched view. It starts with estimated geometry and needs calibration for the 009; see [setup and limits](docs/diy-360-view.md).
 - **Automatic blind spot camera:** adapted from
   [FerixzTanz's original turn-signal side view, PR #4](https://github.com/dts88/zeekr-shortcut-car/pull/4),
   with credit and original commit authorship preserved. It works with the current
