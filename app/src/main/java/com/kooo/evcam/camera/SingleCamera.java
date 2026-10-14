@@ -3535,6 +3535,11 @@ public class SingleCamera {
         try {
             cameraManager.openCamera(cameraId, stateCallback, handler);
             return true;
+        } catch (SecurityException denied) {
+            synchronized (deviceLock) {
+                if (handler == backgroundHandler) isOpening = false;
+            }
+            throw denied;
         } catch (CameraAccessException | RuntimeException e) {
             synchronized (deviceLock) {
                 if (handler == backgroundHandler) {

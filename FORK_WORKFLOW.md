@@ -18,6 +18,7 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/side-view-arrows` | Turn arrows for both display modes; starts from the existing side-view feature |
 | `feature/side-view-hud` | Ferix PR14 adapted to current scheduler and fork screen behavior, with cautious display selection; based on main after mirroring |
 | `feature/side-view-mirroring` | Fork side-camera horizontal flip, including mirror replacement; existing PR heads preserved |
+| `review/project-safety` | Whole-project audit and recording, storage, sharing, update, privacy and lifecycle corrections; based on combined main |
 | `feature/diy-360-safety` | Camera safety review fixes: parked-only 360, readback validation and shared stale-frame guards; based on main |
 | `feature/diy-360-view` | Fork prototype of live ground-plane stitching, with independent manual calibration; based on main |
 | `feature/night-ui` | Ferix night palette and floating-button styling |

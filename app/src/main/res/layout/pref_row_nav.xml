@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!-- 设置行：点进去还有下一层 / 会执行一个动作。行尾一个 ›。 -->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_marginBottom="8dp"
@@ -52,5 +53,5 @@
         android:layout_marginStart="10dp"
         android:importantForAccessibility="no"
         android:src="@drawable/ic_chevron_right"
-        android:tint="@color/text_tertiary" />
+        app:tint="@color/text_tertiary" />
 </LinearLayout>

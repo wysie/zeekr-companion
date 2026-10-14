@@ -243,6 +243,9 @@ public class TimelinePlayerActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override public void handleOnBackPressed() { handleBackNavigation(); }
+        });
         setContentView(R.layout.activity_timeline_player);
         if (savedInstanceState != null) {
             pendingSessionIndex = savedInstanceState.getInt(STATE_SESSION_INDEX, -1);
@@ -1793,8 +1796,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
     /**
      * 返回键：先退出当前这一层，最后才是离开这个界面。
      */
-    @Override
-    public void onBackPressed() {
+    private void handleBackNavigation() {
         // 多选里按返回：先退出多选。直接离开会让人以为选择被「提交」了
         if (sessionAdapter != null && sessionAdapter.isSelectionMode()) {
             setSelecting(false);
@@ -1805,7 +1807,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
             collapse();
             return;
         }
-        super.onBackPressed();
+        finish();
     }
 
     private void updateSessionInfo(RecordingTimeline.Session session) {

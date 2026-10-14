@@ -141,6 +141,9 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
+            @Override public void handleOnBackPressed() { handleBackNavigation(); }
+        });
         setContentView(R.layout.activity_photo_playback);
 
         initViews();
@@ -946,8 +949,7 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
      * 多选里按返回会直接走掉，看着像「选择被提交了」。连续回放早就是这么处理的，
      * 这里补齐，顺便把单路视图也算一层。</p>
      */
-    @Override
-    public void onBackPressed() {
+    private void handleBackNavigation() {
         if (isMultiSelectMode) {
             exitMultiSelectMode();
             return;
@@ -957,7 +959,7 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
             collapse();
             return;
         }
-        super.onBackPressed();
+        finish();
     }
 
     /**

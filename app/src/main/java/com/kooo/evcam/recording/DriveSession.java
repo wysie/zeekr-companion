@@ -70,6 +70,8 @@ public final class DriveSession {
         public boolean stoppedByUser;
         /** 屏幕黑着。 */
         public boolean screenOff;
+        /** Native speed, km/h; a known moving speed contradicts a stale P reading. */
+        public Float speedKmh;
     }
 
     private String lastGear;
@@ -86,17 +88,19 @@ public final class DriveSession {
         // 上车：主驾座位从没人（或还不知道）变成有人，车在 P（或挡位还读不到）
         boolean gotIn = Boolean.TRUE.equals(in.driverSeated) && !Boolean.TRUE.equals(lastSeated)
                 && (in.gear == null || "P".equals(in.gear));
-        if (in.driverSeated != null) {
-            lastSeated = in.driverSeated;
-        }
+        lastSeated = in.driverSeated;
+        boolean moving = in.speedKmh != null && (Float.isNaN(in.speedKmh)
+                || Float.isInfinite(in.speedKmh) || Math.abs(in.speedKmh) > .5f);
+        if (moving) away = false;
         if (in.driverSeated != null) {
             if (in.driverSeated) {
                 seatEmptySinceMs = -1L;
                 away = false;
-            } else if (seatEmptySinceMs < 0) {
+            } else if (!moving && "P".equals(in.gear) && seatEmptySinceMs < 0) {
                 seatEmptySinceMs = in.nowElapsedMs;
             }
         }
+        if (in.driverSeated == null || moving || !"P".equals(in.gear)) seatEmptySinceMs = -1L;
         if (gotIn && in.autoStart && !in.recording && !in.stoppedByUser) {
             if (in.gear != null) {
                 lastGear = in.gear;
@@ -120,7 +124,7 @@ public final class DriveSession {
             return Action.NONE;
         }
 
-        if ("P".equals(in.gear) && !away && left(in)) {
+        if ("P".equals(in.gear) && !moving && !away && left(in)) {
             away = true;
             return in.autoStop && in.recording ? Action.STOP : Action.LEFT;
         }
@@ -131,7 +135,7 @@ public final class DriveSession {
         boolean seatGone = seatEmptySinceMs >= 0
                 && (in.screenOff || in.nowElapsedMs - seatEmptySinceMs >= LEAVE_AFTER_MS);
         // 布防只在座位没坐人时算数：人坐在车里从里面锁了车，照样是「人在车里」，不停
-        boolean locked = in.sentry != null && in.sentry == SENTRY_ARMED && !Boolean.TRUE.equals(in.driverSeated);
+        boolean locked = in.sentry != null && in.sentry == SENTRY_ARMED && Boolean.FALSE.equals(in.driverSeated);
         return seatGone || locked;
     }
 

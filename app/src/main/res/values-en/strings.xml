@@ -507,6 +507,7 @@
     <string name="upd_err_no_dir">can\'t create the download folder</string>
     <string name="upd_err_over_limit">too much data, aborted</string>
     <string name="upd_err_truncated">only received %1$d of %2$d bytes</string>
+    <string name="upd_err_integrity">Installer SHA-256 is missing or does not match; download aborted</string>
     <string name="upd_need_install_title">Permission needed: Install unknown apps</string>
     <string name="upd_need_install_msg">Allow this app to install unknown apps in system settings, then come back and tap Check for updates again.</string>
     <string name="upd_go_settings">Open settings</string>
@@ -1064,4 +1065,5 @@
     <string name="bird_eye_invalid_calibration">Invalid camera mapping — reset calibration</string>
     <string name="bird_eye_slow">360 paused: camera readback too slow</string>
     <string name="side_view_waiting_live">Waiting for live camera</string>
+    <string name="dev_repair_backup_note">Verified originals are kept in repair-originals inside the video folder. They are not automatically removed; repair will not start without space for the backup.</string>
 </resources>

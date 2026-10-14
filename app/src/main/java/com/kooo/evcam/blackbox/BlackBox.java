@@ -516,6 +516,7 @@ public final class BlackBox {
      * <p>只抄 {@code "main"} 那一段：ANR 问的就是它。同一次 ANR 以后每次启动都会出现在
      * 「上次退出」里，所以记下时间戳，只抄一遍。每一帧单独一行，保持「一行一件事」。</p>
      */
+    @androidx.annotation.RequiresApi(30)
     private static void noteNewestAnrTrace(Context context, List<ApplicationExitInfo> exits) {
         ApplicationExitInfo anr = null;
         for (ApplicationExitInfo exit : exits) {
@@ -541,6 +542,7 @@ public final class BlackBox {
         }
     }
 
+    @androidx.annotation.RequiresApi(30)
     private static List<String> mainThreadOf(ApplicationExitInfo anr) {
         List<String> out = new ArrayList<>();
         try (InputStream in = anr.getTraceInputStream()) {

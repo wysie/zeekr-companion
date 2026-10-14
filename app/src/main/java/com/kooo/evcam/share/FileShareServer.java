@@ -81,6 +81,7 @@ public class FileShareServer extends NanoHTTPD {
     public FileShareServer(Context context) {
         super(AUTO_PORT);
         this.context = context.getApplicationContext();
+        setAsyncRunner(new BoundedShareRunner());
     }
 
     /**
@@ -110,7 +111,7 @@ public class FileShareServer extends NanoHTTPD {
     }
 
     private static String randomToken() {
-        byte[] bytes = new byte[6];
+        byte[] bytes = new byte[16];
         RANDOM.nextBytes(bytes);
         StringBuilder sb = new StringBuilder();
         for (byte b : bytes) {
@@ -123,6 +124,8 @@ public class FileShareServer extends NanoHTTPD {
 
     @Override
     public Response serve(IHTTPSession session) {
+        if (session.getMethod() != Method.GET && session.getMethod() != Method.HEAD)
+            return text(Response.Status.METHOD_NOT_ALLOWED, "GET or HEAD required");
         String uri = session.getUri() == null ? "" : session.getUri();
         String remote = session.getRemoteIpAddress();
         File shared;
@@ -175,7 +178,9 @@ public class FileShareServer extends NanoHTTPD {
             // 显示出来是一屏看不懂的字，直接下载才对
             response.addHeader("Content-Disposition",
                     (isMedia(shared.getName()) ? "inline" : "attachment")
-                            + "; filename=\"" + shared.getName() + "\"");
+                            + "; filename=\"" + headerFilename(shared.getName()) + "\"");
+            response.addHeader("Cache-Control", "no-store");
+            response.addHeader("X-Content-Type-Options", "nosniff");
             return response;
         } catch (IOException e) {
             AppLog.e(TAG, "读不到要分享的文件", e);
@@ -367,5 +372,15 @@ public class FileShareServer extends NanoHTTPD {
         }
         return raw.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")
                 .replace("\"", "&quot;");
+    }
+
+    static String headerFilename(String raw) {
+        if (raw == null) return "download";
+        StringBuilder safe = new StringBuilder();
+        for (int i = 0; i < raw.length(); i++) {
+            char c = raw.charAt(i);
+            if (c >= 32 && c != 127 && c != '"' && c != '\\') safe.append(c);
+        }
+        return safe.length() == 0 ? "download" : safe.toString();
     }
 }

@@ -8,6 +8,10 @@
 <full-backup-content>
     <!-- 开发者模式卸载重装后要关着：不让系统把它备份、再恢复回来（见 DeveloperMode） -->
     <exclude domain="sharedpref" path="developer_mode.xml"/>
+        <exclude domain="sharedpref" path="recording_intent.xml"/>
+        <!-- Footage and diagnostic files must not enter platform backups/transfers. -->
+        <exclude domain="file" path="."/>
+        <exclude domain="external" path="."/>
     <!--
    <include domain="sharedpref" path="."/>
    <exclude domain="sharedpref" path="device.xml"/>

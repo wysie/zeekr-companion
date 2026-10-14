@@ -11,11 +11,8 @@ import com.kooo.evcam.camera.StoragePlan;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -318,19 +315,13 @@ public final class FootageLocks {
         if (current.isEmpty()) {
             return !file.exists() || file.delete();
         }
-        File tmp = new File(dir, fileName + ".tmp");
-        try (Writer writer = new OutputStreamWriter(new FileOutputStream(tmp), StandardCharsets.UTF_8)) {
-            writer.write(format(header, current));
+        try {
+            AtomicLockList.write(file, format(header, current));
+            return true;
         } catch (IOException e) {
-            AppLog.w(TAG, "锁定清单写不进 " + tmp + ": " + e);
-            tmp.delete();
+            AppLog.w(TAG, "锁定清单写不进，保留原清单 " + file + ": " + e);
             return false;
         }
-        if (tmp.renameTo(file)) {
-            return true;
-        }
-        // 有的文件系统不让改名盖掉已有的文件：先删再改名
-        return file.delete() && tmp.renameTo(file);
     }
 
     // ================================================================= 统计
