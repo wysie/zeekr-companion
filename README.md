@@ -55,6 +55,8 @@ camera views, including the low-speed 360 window, still take priority. Factory
 stitched 360 access and obstacle-warning signals remain research topics, not
 implemented features. The scanner helps research warning signals; it does not
 provide obstacle detection or the factory stitched camera feed.
+See [factory 360 research and the collection tool](https://github.com/wysie/zeekr-shortcut-car/tree/research/factory-360-view)
+for the current investigation and the device information needed next.
 
 This fork is mainly for personal use. Automated tests and release builds are
 checked, but vehicle testing is limited. I have confirmed camera labels and Super
