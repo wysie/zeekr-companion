@@ -77,6 +77,7 @@ public final class BirdEyeProjection {
     public static final class Map {
         public final int width, height, sourceWidth, sourceHeight;
         private final int[] first, second, mix;
+        private final int[] firstFraction, secondFraction;
         public Map(Calibration calibration, CompositeStreamGeometry.Plan plan, int sourceWidth,
                    int sourceHeight, int width, int height) {
             if (plan == null || !plan.isComposite() || sourceWidth <= 0 || sourceHeight <= 0
@@ -86,6 +87,7 @@ public final class BirdEyeProjection {
             this.width = width; this.height = height;
             this.sourceWidth = sourceWidth; this.sourceHeight = sourceHeight;
             first = new int[width * height]; second = new int[first.length]; mix = new int[first.length];
+            firstFraction = new int[first.length]; secondFraction = new int[first.length];
             java.util.Arrays.fill(first, -1); java.util.Arrays.fill(second, -1);
             double[] uv = new double[2];
             double metresPerPixel = Math.max((calibration.width + 2 * calibration.margin) / width,
@@ -106,11 +108,19 @@ public final class BirdEyeProjection {
                         int maxX = Math.min(sourceWidth - 1, (int) Math.ceil(lane.u1 * sourceWidth) - 1);
                         int minY = Math.max(0, (int) Math.ceil(lane.v0 * sourceHeight));
                         int maxY = Math.min(sourceHeight - 1, (int) Math.ceil(lane.v1 * sourceHeight) - 1);
-                        int sx = Math.max(minX, Math.min(maxX, (int) ((lane.u0 + uv[0] * (lane.u1 - lane.u0)) * sourceWidth)));
-                        int sy = Math.max(minY, Math.min(maxY, (int) ((lane.v0 + uv[1] * (lane.v1 - lane.v0)) * sourceHeight)));
+                        double px = Math.max(minX, Math.min(maxX,
+                                (lane.u0 + uv[0] * (lane.u1 - lane.u0)) * sourceWidth - .5));
+                        double py = Math.max(minY, Math.min(maxY,
+                                (lane.v0 + uv[1] * (lane.v1 - lane.v0)) * sourceHeight - .5));
+                        int sx = (int) Math.floor(px), sy = (int) Math.floor(py);
+                        int fraction = (int) ((px - sx) * 256) | (int) ((py - sy) * 256) << 8;
                         int address = sy * sourceWidth + sx;
-                        if (weight > a) { b = a; second[at] = first[at]; a = weight; first[at] = address; }
-                        else if (weight > b) { b = weight; second[at] = address; }
+                        if (weight > a) {
+                            b = a; second[at] = first[at]; secondFraction[at] = firstFraction[at];
+                            a = weight; first[at] = address; firstFraction[at] = fraction;
+                        } else if (weight > b) {
+                            b = weight; second[at] = address; secondFraction[at] = fraction;
+                        }
                     }
                     mix[at] = a > 0 ? (int) Math.round(255 * b / (a + b)) : 0;
                 }
@@ -122,10 +132,8 @@ public final class BirdEyeProjection {
             }
             for (int i = 0; i < first.length; i++) {
                 if (first[i] < 0) { output[i] = 0xff000000; continue; }
-                int a = source[first[i]], b = second[i] < 0 ? a : source[second[i]];
-                if ((a >>> 24) != 255 || (b >>> 24) != 255) {
-                    throw new IllegalArgumentException("Camera readback incomplete");
-                }
+                int a = sample(source, first[i], firstFraction[i], sourceWidth);
+                int b = second[i] < 0 ? a : sample(source, second[i], secondFraction[i], sourceWidth);
                 int wb = mix[i], wa = 255 - wb;
                 int r = (((a >> 16) & 255) * wa + ((b >> 16) & 255) * wb + 127) / 255;
                 int g = (((a >> 8) & 255) * wa + ((b >> 8) & 255) * wb + 127) / 255;
@@ -133,6 +141,23 @@ public final class BirdEyeProjection {
                 output[i] = 0xff000000 | r << 16 | g << 8 | blue;
             }
         }
+    }
+
+    /** Bilinear pixel-centre sampling. Zero fractions never read an unused neighbour. */
+    static int sample(int[] source, int at, int fraction, int stride) {
+        int fx = fraction & 255, fy = fraction >>> 8;
+        int a = source[at], b = fx == 0 ? a : source[at + 1];
+        int c = fy == 0 ? a : source[at + stride];
+        int d = fy == 0 ? b : fx == 0 ? c : source[at + stride + 1];
+        if ((a >>> 24) != 255 || (b >>> 24) != 255 || (c >>> 24) != 255 || (d >>> 24) != 255)
+            throw new IllegalArgumentException("Camera readback incomplete");
+        int result = 0xff000000;
+        for (int shift = 0; shift <= 16; shift += 8) {
+            int upper = ((a >>> shift) & 255) * (256 - fx) + ((b >>> shift) & 255) * fx;
+            int lower = ((c >>> shift) & 255) * (256 - fx) + ((d >>> shift) & 255) * fx;
+            result |= ((upper * (256 - fy) + lower * fy + 32768) >>> 16) << shift;
+        }
+        return result;
     }
     private static boolean finite(double... values) {
         for (double v : values) if (Double.isNaN(v) || Double.isInfinite(v)) return false;

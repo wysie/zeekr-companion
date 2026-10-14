@@ -268,3 +268,23 @@ automatic starts off, manual recovery/manual stop, durable source changes and
 end-of-drive cancellation. Full suite: 1,258 tests, zero failures/errors/skips;
 signed release build and vital lint pass. Native car wake-up still needs a check.
 Packaged as 2.11.22-personal-alpha, versionCode 305, with the existing signing identity.
+
+## DIY 360 refinement — 2026-10-15
+
+The owner's factory and prototype photos show broadly corresponding front/rear
+scenes, but the prototype has distorted ground, seams and pixelated edges. The
+projection reproduces this offline using the supplied original frames. A limited
+experiment with side rotation, forward mounting offsets and lower heights/tilts
+did not establish a reliable calibrated preset. No new geometry defaults are
+claimed or applied. Measurements or identifiable ground correspondences remain
+needed; raised walls/cars are not flat-ground calibration targets.
+
+Bilinear sampling now interpolates within each source lane, validating all used
+pixel neighbours and preserving separator exclusion. Readback size, cadence,
+500 ms freshness and 40 ms slow-readback pause are unchanged. While 360 is active,
+the main photo action saves a fresh stitched PNG and matching calibration/state
+note to EVCam_Photo/360. Blocked/stale views are refused; saving is off-thread,
+limited to one snapshot at a time, and does not modify the camera or recordings.
+Three new interpolation/sentinel tests and existing lane-boundary tests pass:
+1,261 JVM tests, zero failures/errors/skips. Native UI/export and interpolation
+cost still need on-car checks. The geometry mismatch remains unresolved.

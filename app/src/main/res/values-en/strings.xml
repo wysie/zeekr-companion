@@ -1068,4 +1068,5 @@
     <string name="bird_eye_slow">360 paused: camera readback too slow</string>
     <string name="side_view_waiting_live">Waiting for live camera</string>
     <string name="dev_repair_backup_note">Verified originals are kept in repair-originals inside the video folder. They are not automatically removed; repair will not start without space for the backup.</string>
+    <string name="bird_eye_photo_saved">360 preview and calibration saved to DCIM/EVCam_Photo/360</string>
 </resources>

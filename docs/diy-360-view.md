@@ -18,6 +18,16 @@ the physical camera to adjust. Calibration controls require reported P and close
 **Reset all** resets only this prototype's calibration. The calibration is also
 included in Diagnostics exports. Reset does not affect any other feature.
 
+While the 360 view is selected, the main photo action exports the currently
+fresh stitched preview as a native 320×480 PNG, with a companion calibration/state
+TXT, under **DCIM/EVCam_Photo/360** on the configured storage. It includes the
+vehicle outline and experimental watermark. A blocked, hidden or stale view is
+refused; it never saves an old retained image as a current capture. Compression
+and file writes run off the UI thread, with one save at a time and no queued
+snapshots. The dedicated subfolder is outside the ordinary photo-playback list.
+Return to **Four cameras** for normal photos and raw composite exports. Existing
+recording and camera JPEG capture are unchanged.
+
 An active, recognized surround stream is required. GPU preview straightening
 must be disabled in Developer options, followed by an app restart if it was
 enabled: a pre-corrected frame is not the input lens model. The regular Canvas
@@ -68,7 +78,10 @@ and blends their normalized confidence weights. It produces a 320×480 image,
 scaled with uniform metres per pixel, and draws a masked vehicle outline with
 its front indicated. Ground beyond the lens or behind a camera is rejected;
 unobserved areas remain black rather than stretching source edges or inventing
-pixels. Sampling is nearest-neighbour, so detail is deliberately limited.
+pixels. Bilinear sampling reduces nearest-neighbour stair steps and validates
+every contributing pixel, without sampling neighbouring lanes or separators.
+Detail remains limited by the 256×1024 readback and 320×480 output; interpolation
+does not recover missing resolution or correct inaccurate calibration.
 
 There is one frame in flight and no queue of old frames. New source timestamps
 are required after attaching to a texture; a retained first frame is insufficient
@@ -118,3 +131,16 @@ and resumes require a new baseline. Producer exposure age and individual-camera
 freshness inside the composite are still not independently verified.
 
 See [the safety review](camera-safety-review.md) for findings and remaining limits.
+
+## Owner comparison, 2026-10-15
+
+The owner supplied two original four-camera composites, a factory 360 photo and
+a photo of the prototype. The prototype matches an offline reproduction of the
+estimated defaults: the broad front/rear scene placement agrees, but ground and
+seams are distorted. The four 1280×1280 source lanes and separator geometry agree
+with the raw notes. Side rotations, forward side-camera mount offsets and
+height/tilt variations were rendered offline; none establishes a reliably
+calibrated replacement from this dark scene alone. Side-popup screen rotations
+should not be blindly substituted for the optical pose parameters. Defaults are
+retained until useful ground correspondences or measurements support a fit.
+Sampling/export improvements therefore do not resolve the geometric mismatch.

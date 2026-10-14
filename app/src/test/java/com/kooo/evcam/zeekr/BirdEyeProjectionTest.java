@@ -16,6 +16,18 @@ public class BirdEyeProjectionTest {
                 camera(0, 0, 2.6, 0, false), camera(1, 0, -2.6, 180, false),
                 camera(2, -1, 0, 270, false), camera(3, 1, 0, 90, false)});
     }
+    @Test public void bilinearSamplingInterpolatesAPixelGradient() {
+        int[] pixels = {0xff000000, 0xffff0000, 0xff00ff00, 0xffffff00};
+        assertEquals(0xff808000, BirdEyeProjection.sample(pixels, 0, 128 | (128 << 8), 2));
+        assertEquals(0xff800000, BirdEyeProjection.sample(pixels, 0, 128, 2));
+    }
+    @Test public void zeroFractionDoesNotReadBeyondALaneOrBuffer() {
+        assertEquals(0xffabcdef, BirdEyeProjection.sample(new int[]{0xffabcdef}, 0, 0, 1));
+        assertEquals(0xff123456, BirdEyeProjection.sample(new int[]{0xff123456, 0}, 0, 0, 2));
+    }
+    @Test(expected=IllegalArgumentException.class) public void transparentInterpolationNeighbourRejectsReadback() {
+        BirdEyeProjection.sample(new int[]{0xff000000, 0}, 0, 128, 2);
+    }
     @Test public void opticalAxisOnGroundHitsLensCentre() {
         double[] uv = new double[2];
         assertTrue(camera(0, 0, 0, 0, false).project(0, 1, uv) > 0);

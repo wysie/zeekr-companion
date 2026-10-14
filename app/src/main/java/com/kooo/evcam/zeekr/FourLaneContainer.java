@@ -297,6 +297,10 @@ public class FourLaneContainer extends ViewGroup implements LivePreview {
         return displayMode;
     }
 
+    public android.graphics.Bitmap birdEyePhoto() {
+        return displayMode == DisplayMode.BIRD_EYE ? birdEye.photo() : null;
+    }
+
     public int getFocusedLane() {
         return focusedLane;
     }

@@ -1045,4 +1045,5 @@
     <string name="bird_eye_slow">360 dijeda: bacaan kamera terlalu perlahan</string>
     <string name="side_view_waiting_live">Menunggu kamera langsung</string>
     <string name="dev_repair_backup_note">Fail asal yang disahkan disimpan dalam repair-originals di folder video. Fail ini tidak dipadam secara automatik; pembaikan tidak bermula tanpa ruang untuk sandaran.</string>
+    <string name="bird_eye_photo_saved">Pratonton 360 dan penentukuran disimpan ke DCIM/EVCam_Photo/360</string>
 </resources>

@@ -9,7 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
-Nothing yet.
+- Smooth DIY 360 sampling with lane-bounded bilinear interpolation; preserve readback/freshness guards.
+- Save the fresh stitched 360 preview and calibration notes from the main photo action while 360 is selected; refuse blocked or stale captures.
 
 ## [2.11.22-personal-alpha] - 2026-10-15
 

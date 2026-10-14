@@ -1055,4 +1055,5 @@
     <string name="bird_eye_slow">相机读取过慢，360已暂停</string>
     <string name="side_view_waiting_live">等待实时相机画面</string>
     <string name="dev_repair_backup_note">修复前的原始文件保存在录像目录的 repair-originals 子目录中。不会自动删除；空间不足时不会开始修复。</string>
+    <string name="bird_eye_photo_saved">360 预览和校准信息已保存到 DCIM/EVCam_Photo/360</string>
 </resources>

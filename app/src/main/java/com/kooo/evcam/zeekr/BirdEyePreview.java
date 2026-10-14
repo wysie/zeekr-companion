@@ -217,6 +217,25 @@ final class BirdEyePreview {
         invalidatePicture();
         if (failureCount++ == 0) AppLog.e("BirdEyePreview", "DIY 360 preview failed", e);
     }
+    /** UI-thread snapshot of a currently fresh, permitted preview; never an old hidden frame. */
+    Bitmap photo() {
+        if (!running || runtimeBlock() != BirdEyeSafetyPolicy.Block.NONE || output == null
+                || texture == null || !texture.isAvailable()
+                || texture.getSurfaceTexture() != displayedIdentity
+                || !CameraFrameFreshness.freshAt(displayedAt, SystemClock.elapsedRealtime())) return null;
+        Bitmap result = Bitmap.createBitmap(OUT_W, OUT_H, Bitmap.Config.ARGB_8888);
+        draw(new Canvas(result), OUT_W, OUT_H);
+        // Export a readable warning at native pixel size, independent of head-unit DPI.
+        Canvas canvas = new Canvas(result);
+        paint.setStyle(Paint.Style.FILL); paint.setColor(Color.BLACK);
+        canvas.drawRect(0, OUT_H - 24, OUT_W, OUT_H, paint);
+        paint.setColor(Color.WHITE); paint.setTextAlign(Paint.Align.CENTER); paint.setTextSize(12);
+        String label = owner.getContext().getString(R.string.bird_eye_watermark);
+        float measured = paint.measureText(label);
+        if (measured > OUT_W - 12) paint.setTextSize(12 * (OUT_W - 12) / measured);
+        canvas.drawText(label, OUT_W / 2f, OUT_H - 8, paint);
+        return result;
+    }
     void draw(Canvas canvas, int width, int height) {
         canvas.drawColor(Color.BLACK);
         float scale = Math.min(width / (float) OUT_W, height / (float) OUT_H);

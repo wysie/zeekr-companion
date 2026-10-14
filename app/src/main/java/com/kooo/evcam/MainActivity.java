@@ -2759,6 +2759,12 @@ public class MainActivity extends AppCompatActivity {
      * 提示按真实结果说 —— 以前按下就弹「已保存」，不管拍没拍到。
      */
     private void takePicture() {
+        if (compositeContainer != null && compositeContainer.getDisplayMode()
+                == com.kooo.evcam.zeekr.FourLaneContainer.DisplayMode.BIRD_EYE) {
+            com.kooo.evcam.zeekr.BirdEyePhoto.save(this, compositeContainer.birdEyePhoto(),
+                    compositeContainer.describeState());
+            return;
+        }
         com.kooo.evcam.camera.CameraManagerHolder.getInstance().getOrInit(this)
                 .takePhoto(new com.kooo.evcam.ui.PhotoFeedback(this));
     }

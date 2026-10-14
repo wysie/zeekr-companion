@@ -24,6 +24,7 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `review/project-safety` | Whole-project audit and recording, storage, sharing, update, privacy and lifecycle corrections; based on combined main |
 | `feature/diy-360-safety` | Camera safety review fixes: parked-only 360, readback validation and shared stale-frame guards; based on main |
 | `feature/diy-360-view` | Fork prototype of live ground-plane stitching, with independent manual calibration; based on main |
+| `feature/diy360-refinement` | Bilinear preview sampling and fresh stitched-photo/calibration exports; geometric calibration remains unresolved |
 | `feature/night-ui` | Ferix night palette and floating-button styling |
 | `research/blind-spot-alerts` | Alert-signal investigation; no active obstacle trigger |
 | `research/factory-360-view` | Investigation of access to the factory stitched view |
