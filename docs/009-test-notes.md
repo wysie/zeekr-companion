@@ -136,3 +136,17 @@ camera order/orientation; manual tuning and calibration reset; factory takeover
 then recovery; source loss/stale cover; switching views and backgrounding; memory,
 UI responsiveness and recording continuity while the five-fps view is active.
 Tomorrow's Diagnostics and original surround composite can refine these estimates.
+
+## Camera safety follow-up — 2026-10-14
+
+The review found silent copy reuse, no independent side-popup stale cover, slow
+Super mirror stale detection, duplicate-source calibration and missing parked-only
+prototype guards. Fixes and remaining limits are in [the safety review](camera-safety-review.md).
+The DIY view now requires a connected vehicle interface reporting P. Screen popup,
+HUD and Super mirror use advancing texture timestamps with a 500 ms threshold
+and 100 ms cover checks. This is not an end-to-end latency guarantee.
+
+Twelve new regression tests cover copy validation, unique feeds, policy and
+timestamp/expiry behavior. Full suite: 1,192 tests, no failures/errors/skips.
+No attached vehicle/emulator: native texture copies, new covers/recovery behavior,
+P gating, factory takeover, HUD and recording continuity still need testing.

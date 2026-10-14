@@ -1024,7 +1024,7 @@
     <string name="bird_eye_button_description">试验性360视图。点击切换画面，长按校准。</string>
     <string name="bird_eye_calibrate">校准360视图</string>
     <string name="bird_eye_camera">选择校准的相机</string>
-    <string name="bird_eye_calibration_note">停车时调整。默认值为估计，非009实测标定。朝向：0°前、90°右、180°后、270°左。安装偏移：X正值向右，Y正值向前。黑色区域没有相机覆盖。修改自动保存。</string>
+    <string name="bird_eye_calibration_note">仅用于停车校准。默认值是估计值，非009实测标定。朝向：0°前、90°右、180°后、270°左。安装偏移：X正值向右，Y正值向前。选择源画面时交换相机，保持四路不同。黑色区域没有观测覆盖。修改自动保存。</string>
     <string name="bird_eye_reset">全部重置</string>
     <string name="bird_eye_value">%1$s: %2$d</string>
     <string name="bird_eye_length">车长（厘米）</string>
@@ -1044,6 +1044,11 @@
     <string name="bird_eye_front">前</string>
     <string name="bird_eye_waiting">等待实时相机画面</string>
     <string name="bird_eye_gpu_blocked">请关闭GPU鱼眼校正</string>
-    <string name="bird_eye_watermark">试验性360 · 估计标定 · 最高5帧/秒</string>
+    <string name="bird_eye_watermark">停车校准预览 · 不用于驾驶</string>
     <string name="bird_eye_unavailable">360需要可用的环视预览。如已启用GPU预览校正，请在开发者选项关闭并重启应用。</string>
+    <string name="bird_eye_park_required">请挂P档测试或校准360</string>
+    <string name="bird_eye_factory_active">原厂相机已开启，360暂停</string>
+    <string name="bird_eye_invalid_calibration">相机映射无效，请重置校准</string>
+    <string name="bird_eye_slow">相机读取过慢，360已暂停</string>
+    <string name="side_view_waiting_live">等待实时相机画面</string>
 </resources>

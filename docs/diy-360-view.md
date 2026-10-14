@@ -7,14 +7,14 @@ is on `feature/diy-360-view`, for integration into the fork's `main`.
 
 ## Use
 
-On the main live camera screen, tap **360°**. Tap **Four cameras** to return to
+This prototype is now restricted to **parked calibration**, not driving or parking assistance. A connected vehicle interface must report P; unknown gear or a known contradictory native speed blocks it. On the main live camera screen, tap **360°**. Tap **Four cameras** to return to
 the usual preview. This is a manual, session-only display mode and is off at
 launch. It does not automatically open on reversing or signalling. It is not
 an overlay or HUD output. In the surround + cabin layout, only the surround
 pane changes. Side windows, Super mirror and recordings retain their settings.
 
 Hold the **360° / Four cameras** button to open **Calibrate 360 view**. Select
-the physical camera to adjust. Changes save automatically and update the preview;
+the physical camera to adjust. Calibration controls require reported P and close when that condition is lost or the screen turns off. Changes save automatically and update the preview;
 **Reset all** resets only this prototype's calibration. The calibration is also
 included in Diagnostics exports. Reset does not affect any other feature.
 
@@ -49,7 +49,7 @@ of the vehicle. Image rotation, source selection and horizontal flip compensate
 for firmware image orientation; these are independent of side-camera mirroring.
 
 For a first adjustment, park on flat ground with visible pavement lines. Check
-which image belongs to each camera, then its rotation/flip, lens centre/FOV,
+which image belongs to each camera (selection swaps assignments to keep all four distinct), then its rotation/flip, lens centre/FOV,
 height and tilt, mounting position and heading. Align ground features across
 seams. Manual adjustment is approximate: tomorrow's original composite frame
 and geometry text can help identify orientation and cropping. Accurate
@@ -62,7 +62,7 @@ and update path. The prototype reads a 256×1024 snapshot of that entire existin
 frame at most every 200 ms, respecting the detected normalized lane boundaries
 and separators. No new Camera2 surface, session or vehicle control is opened.
 
-A single worker precomputes a lookup mapping each output ground point through
+A single background-priority worker precomputes a lookup mapping each output ground point through
 the camera pose and equidistant lens. It chooses the two strongest valid views
 and blends their normalized confidence weights. It produces a 320×480 image,
 scaled with uniform metres per pixel, and draws a masked vehicle outline with
@@ -72,8 +72,7 @@ pixels. Sampling is nearest-neighbour, so detail is deliberately limited.
 
 There is one frame in flight and no queue of old frames. New source timestamps
 are required after attaching to a texture; a retained first frame is insufficient
-to call the view live. If the observed source timestamp stops changing for a
-second, the picture is covered with a waiting message. Configuration revisions
+to call the view live. If the observed source timestamp stops changing for 500 ms, the picture is covered with a waiting message. Configuration revisions
 and texture identity invalidate pending results. Sampling pauses when the view
 is hidden, stops when leaving 360 mode, and the worker closes on detachment.
 
@@ -104,3 +103,18 @@ do not predict head-unit performance. No vehicle, emulator or actual Android
 TextureView readback was available for this build.
 
 ![Simulated ground-grid reconstruction, not 009 footage](assets/diy-360-synthetic.png)
+
+The safety follow-up blanks the view on known factory-camera/reverse/park-assist
+activity, missing texture, hidden/dark screen or invalid calibration. Tick checks
+run every 100 ms; this is not a hard real-time deadline. The prototype also pauses
+if a measured UI-thread camera readback exceeds 40 ms; this prevents subsequent
+copies in that activation, but cannot interrupt the first slow native call.
+
+The bitmap is cleared to transparent before every copy, since Android may silently
+leave a destination bitmap unchanged on failure. Any transparent sampled pixels
+reject the entire result; failed copies cannot reuse old destination pixels.
+Texture timestamps must advance strictly; zero, regressions, identity changes
+and resumes require a new baseline. Producer exposure age and individual-camera
+freshness inside the composite are still not independently verified.
+
+See [the safety review](camera-safety-review.md) for findings and remaining limits.
