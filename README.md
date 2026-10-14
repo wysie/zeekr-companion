@@ -144,4 +144,4 @@ Origins, third-party licences and boundaries: [NOTICE.md](NOTICE.md).
 
 ## Vehicle signal scanner
 
-Enable Settings → Developer options → Record all vehicle signals for a read-only scan of function changes and unfamiliar sensor events. Blind-spot-like functions are polled when available. It stops after three hours, skips sensors already used by the app, and exports results through Diagnostics. This is a research tool: no obstacle-alert trigger or factory 360 video feed has been identified.
+Enable Settings → Developer options → Record all vehicle signals for a read-only scan of function changes and unfamiliar sensor events. Blind-spot-like functions are polled when available. It stops after three hours or when Developer options are locked, skips sensors already used by the app, and exports results through Diagnostics. This is a research tool: no obstacle-alert trigger or factory 360 video feed has been identified.

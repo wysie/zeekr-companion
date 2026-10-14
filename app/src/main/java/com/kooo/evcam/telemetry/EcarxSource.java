@@ -329,7 +329,7 @@ final class EcarxSource {
         if (car != null) {
             return car;
         }
-        synchronized (EcarxSource.class) {
+        synchronized (SENSOR_LOCK) {
             if (cachedCar != null) {
                 return cachedCar;
             }
