@@ -87,3 +87,15 @@ Six native Android tests passed on the disposable API 32 emulator: screen-popup
 startup/fade/side switch/cancellation, normal and overlay HUD windows on owned
 secondary displays (including placement and night alpha), plus the 360 popup
 regression. These are synthetic display/frame tests, not head-unit evidence.
+
+## Optional HUD factory-view coexistence — 2026-10-15
+
+The previously excluded factory-view visibility change is now available as an
+explicit, off-by-default setting under Blind spot camera → HUD picture. It adapts
+`830f2d0d` to a separate HUD input; the centre-screen policy is never mutated.
+Reverse always suppresses HUD, and main-screen side popup/mirror replacement
+still yield even when HUD is allowed or falls back from an unavailable display.
+The setting does not force camera access or change Camera2 ownership, scheduler
+contention handling, lifecycle or stale-frame guards. Busy hardware may prevent
+video; this remains unverified on the 009. Resetting blind spot settings disables
+this option. Diagnostics include its effective value.

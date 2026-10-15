@@ -28,6 +28,8 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/vehicle-name-labels` | Cosmetic Auto/009/7X vehicle names, conservative Android-name detection and generic fallback; camera profile IDs and HUD mapping stay independent |
 | `feature/side-view-system-theme` | System day/night styling for popup and mirror controls/labels, with live configuration repaint and retained HUD backing |
 | `feature/side-view-mirroring` | Fork side-camera horizontal flip, including mirror replacement; existing PR heads preserved |
+| `feature/hud-factory-coexistence` | Off-by-default HUD coexistence with factory centre-screen views, keeping reverse, screen output and hardware arbitration independent |
+| `feature/developer-mode-toggle` | Password-free System developer switch with warning, preserved mode persistence and immediate category refresh |
 | `integration/ferix-2.12.5` | Combined CAMCORDER follow-ups through d6193888, adapted to dts88 2.11.6 and existing fork behaviour |
 | `feature/ferix-scan-callbacks` | Customize-value callbacks and bounded callback-shape reporting |
 | `fix/ferix-shared-pipeline` | Retain foreground/relay services across rapid Activity recreation using the shared pipeline |

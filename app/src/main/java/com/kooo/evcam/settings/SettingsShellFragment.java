@@ -82,6 +82,12 @@ public class SettingsShellFragment extends Fragment {
                     .commit();
             showSection(currentSection);
         }
+        // Child preferences can be restored before this view restores currentSection.
+        // Reapply selection after reading the parent's saved section.
+        Fragment restoredHeaders = getChildFragmentManager().findFragmentById(R.id.settings_headers);
+        if (restoredHeaders instanceof SettingsHeadersFragment) {
+            ((SettingsHeadersFragment) restoredHeaders).markSelected(currentSection);
+        }
         refreshTitle();
     }
 

@@ -11,6 +11,13 @@ commit message, not here.
 
 Nothing yet.
 
+## [2.11.36-personal-alpha] - 2026-10-15
+
+- Add an off-by-default HUD option to stay visible during centre-screen factory camera/parking views; retain reverse suppression, screen-camera priority and hardware arbitration.
+- Replace the hidden developer password with Settings → System → Enable developer mode and an inline warning, preserving existing mode and saved developer values.
+- Refresh the Developer category immediately and retain feature gating and signal-scan shutdown when disabled.
+- Restore the correct selected settings category after screen recreation.
+
 ## [2.11.35-personal-alpha] - 2026-10-15
 
 - Port Ferix HUD contrast, night brightness, edge fade, optional indicator-side placement and experimental display-context overlay controls, retaining existing defaults and factory priority.

@@ -51,6 +51,10 @@ public class DeveloperModeAndroidTest {
                 assertFalse(toggle(shell).isChecked());
                 assertFalse(hasDeveloperHeader(shell));
             });
+            onView(withText(target.getString(R.string.set_developer_mode_title)))
+                    .check(androidx.test.espresso.assertion.ViewAssertions.matches(
+                            androidx.test.espresso.matcher.ViewMatchers.isDisplayed()));
+            capture("zeekr-system-developer.png");
             onView(withText(target.getString(R.string.set_developer_mode_title))).perform(click());
             main(() -> {
                 assertTrue(DeveloperMode.isUnlocked());
@@ -70,6 +74,24 @@ public class DeveloperModeAndroidTest {
                 prefs.edit().putBoolean("raw_frame_dump", true).commit();
                 assertTrue(new AppConfig(target).isRawFrameDumpEnabled());
             });
+            main(() -> {
+                SettingsHeadersFragment headers = (SettingsHeadersFragment) ref.get()
+                        .getChildFragmentManager().findFragmentById(R.id.settings_headers);
+                androidx.preference.PreferenceGroupAdapter adapter =
+                        (androidx.preference.PreferenceGroupAdapter) headers.getListView().getAdapter();
+                headers.getListView().scrollToPosition(adapter.getPreferenceAdapterPosition("screen_system"));
+            });
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            main(() -> {
+                SettingsHeadersFragment headers = (SettingsHeadersFragment) ref.get()
+                        .getChildFragmentManager().findFragmentById(R.id.settings_headers);
+                androidx.preference.PreferenceGroupAdapter adapter =
+                        (androidx.preference.PreferenceGroupAdapter) headers.getListView().getAdapter();
+                androidx.recyclerview.widget.RecyclerView.ViewHolder row = headers.getListView()
+                        .findViewHolderForAdapterPosition(adapter.getPreferenceAdapterPosition("screen_system"));
+                assertNotNull(row);
+                assertTrue("Restored System category is highlighted", row.itemView.isActivated());
+            });
             onView(withText(target.getString(R.string.set_developer_mode_title))).perform(click());
             main(() -> {
                 assertFalse(DeveloperMode.isUnlocked());
@@ -78,10 +100,34 @@ public class DeveloperModeAndroidTest {
                 assertFalse(new AppConfig(target).isRawFrameDumpEnabled());
                 assertTrue("Saved developer values survive disabling", prefs.getBoolean("raw_frame_dump", false));
             });
+            scenario.onActivity(activity -> {
+                SettingsShellFragment shell = ref.get();
+                shell.showSection("screen_blind_spot_camera");
+                shell.getChildFragmentManager().executePendingTransactions();
+                shell.openDetail(SettingsPreferenceFragment.forSection("sub_side_hud"),
+                        target.getString(R.string.set_sub_hud_title));
+                shell.getChildFragmentManager().executePendingTransactions();
+            });
+            onView(withText(target.getString(R.string.set_hud_during_factory_title)))
+                    .check(androidx.test.espresso.assertion.ViewAssertions.matches(
+                            androidx.test.espresso.matcher.ViewMatchers.isDisplayed()));
+            capture("zeekr-hud-factory-option.png");
         } finally {
             prefs.edit().putBoolean("raw_frame_dump", oldRaw).commit();
             DeveloperMode.setEnabled(target, oldMode);
         }
+    }
+
+    private void capture(String name) {
+        try {
+            InstrumentationRegistry.getInstrumentation().getUiAutomation().waitForIdle(150, 2000);
+            android.os.SystemClock.sleep(350); // Let the compositor present the committed layout.
+            try (android.os.ParcelFileDescriptor fd = InstrumentationRegistry.getInstrumentation()
+                    .getUiAutomation().executeShellCommand("screencap -p /sdcard/Download/" + name);
+                 java.io.InputStream in = new android.os.ParcelFileDescriptor.AutoCloseInputStream(fd)) {
+                while (in.read() != -1) {}
+            }
+        } catch (Exception e) { throw new AssertionError("Emulator settings capture failed", e); }
     }
 
     private SwitchPreferenceCompat toggle(SettingsShellFragment shell) {

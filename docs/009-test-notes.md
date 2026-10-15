@@ -607,3 +607,44 @@ cover factory HUD information and should be disabled if unhelpful. Contrast,
 night dimming, edge fade and indicator-side positioning are individually opt-in.
 Export Diagnostics after failures. The scanner's new C: callbacks improve
 coverage but do not establish a blind-spot warning or factory stitched video feed.
+
+
+## Configurable HUD coexistence and developer toggle (2026-10-15)
+
+Settings → Blind spot camera → HUD picture adds Keep HUD side camera during
+factory views, experimental and off by default. Tests cover every combination
+of factory 360/popup/park-assist flags, enabling/disabling with a shown HUD,
+reverse and hazards, independent speed thresholds and unchanged centre-screen
+input. Service routing withdraws HUD immediately on reverse/default factory
+priority and never falls back to a screen popup over a factory view. Hardware
+arbitration and stale-frame checks are retained; no head-unit coexistence test
+has been performed.
+
+Settings → System → Enable developer mode replaces the About safety-heading
+password. The same developer_mode/unlocked preference and backup exclusions
+retain existing state across updates. New installs remain off. Off hides the
+category and gates saved settings without clearing them; the scanner control
+is still reapplied immediately. Some already-configured pipelines need restart.
+A native API 32 regression clicks the real System switch, checks immediate
+category visibility without leaving System, recreates the Activity and checks
+persistence, then disables the mode and verifies a saved raw-photo setting is
+retained but ineffective. The six existing native camera-window tests also pass.
+The password API, numeric constant, hidden About listener and obsolete strings
+were removed. README and the native UI spec describe the visible entry point.
+
+On the 009, confirm the System switch and Developer category, existing enabled
+state after upgrade, no password prompt, and optional HUD coexistence only after
+explicit enablement. Test reverse and factory takeover with the setting both off
+and on, and export Diagnostics if the HUD lacks fresh frames. Native/JVM tests
+are software evidence, not validation of camera availability on the car.
+
+
+Final 2.11.36 validation: 1,378 JVM tests, Android debug lint and signed release
+build passed. Seven native Android regressions passed; the final settings capture
+also caught/restored category highlighting after Activity recreation. The native
+test now checks the actual activated System row. Final System/HUD screenshots
+show the full warnings, visible switches and correct category selection in the
+existing tablet layout. Initial captures ran before the compositor presented the
+new screen; capture now waits for the visible target and presentation settling.
+Screenshots are emulator-only and are not committed. Hardware coexistence still
+requires the 009 test described above.
