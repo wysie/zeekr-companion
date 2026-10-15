@@ -1,5 +1,11 @@
 # Camera and display identification
 
+Enable Developer mode under **Settings → System → Enable developer mode**.
+Read the warning beside the switch; no password or About-page gesture is needed.
+The selection persists across restarts/updates. Turning it off hides the Developer
+category and disables developer-gated settings while retaining their saved values.
+
+
 Open **Settings → Developer → Camera and display tools**. Unlock Developer options
 first if hidden. Stop recording and close the factory camera.
 A connected vehicle interface is required. There is no gear or speed gate.
