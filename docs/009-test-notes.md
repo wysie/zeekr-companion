@@ -726,3 +726,14 @@ native API 32 regressions pass: ordinary HUD placement/night dimming/fade and
 legacy-flag compatibility on owned virtual displays, grouped settings navigation,
 popup lifecycle/freshness and a bounded HUD-menu capture. No vehicle display was
 used, and the existing upstream PR heads remain unchanged.
+
+## 2.11.38 installable test release
+
+Combines the menu regrouping/live manual 360 switch and retirement of the
+experimental higher HUD layer. Version code 321 supersedes 2.11.37/code 320
+with the same signing configuration. Earlier targeted validation is recorded
+above; the release build repeats JVM tests, lint and signed assembly.
+The GPU 360 renderer is not implemented. GPU live straightening remains
+experimental and incompatible with the main 360 renderer. No working HUD
+video on the owner’s 009 is established, and the pending Ferix scanner/night
+contrast changes are not part of this build.
