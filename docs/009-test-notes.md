@@ -512,3 +512,33 @@ Legacy zeekr_7x/zeekr_7x_multi IDs remain stable for stored profile and migratio
 compatibility. This cosmetic setting never chooses cameras, calibration or HUD
 displays; the existing explicit 009 HUD option remains separate. Diagnostics
 record the selection and displayed name alongside raw Android metadata.
+
+
+## 360 settings and manual popup (2026-10-15, vehicle checks pending)
+
+A new 360° camera section contains display choice (Main screen default / Popup),
+manual Open/Close popup, shared quality/calibration and two separate resets for
+window placement versus calibration/quality. The service owns a distinct
+lowest-priority surround surface; it does not open a separate CameraDevice.
+Adding/removing a shared surface can reconfigure the existing capture session.
+Hardware maximum-output behavior and recording continuity remain unverified.
+
+Native API 32 overlay testing checks minimum control targets, expand/restore,
+dragging and saved position, pinch resizing, fully on-screen final geometry, X
+and preservation of display mode/calibration. The initial short synthetic pinch
+did not cross Android’s scaling-span threshold; the final gesture does. Native
+screenshots exposed a long waiting notice clipped in narrow windows, now wrapped.
+Rapid synthetic resizing also required waiting for the window compositor before
+capturing the final screenshot; the settled window and buttons are within bounds.
+The settings page was inspected in the existing tablet layout. These native tests
+do not establish live camera output, vehicle projection accuracy or coexistence
+with the mirror, side-camera/HUD windows and recording on the 009.
+
+On the car, choose Popup window, press 360°, drag/pinch/expand/restore, minimise
+the app and check that the popup continues. X closes only this runtime request;
+press 360° or Open popup to reopen. While open, Take photo must save a fresh
+stitched image. Check factory takeover/return, screen off/on, developer probe
+release/recovery and simultaneous recording. A rejected extra output must close
+only the optional 360 view with an explanatory message. Existing factory/reverse
+and freshness guards remain; there is no P-only restriction or boot/indicator
+autostart. Exit stops the service. README and workflow describe the new controls.

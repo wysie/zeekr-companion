@@ -32,6 +32,7 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `review/project-safety` | Whole-project audit and recording, storage, sharing, update, privacy and lifecycle corrections; based on combined main |
 | `feature/diy-360-safety` | Camera safety review fixes: readback validation and shared stale-frame guards; based on main |
 | `feature/diy-360-view` | Fork prototype of live ground-plane stitching, with independent manual calibration; based on main |
+| `feature/diy360-popup` | Dedicated 360 settings and manual overlay, with shared renderer/calibration, independent saved layout and lowest-priority camera surface |
 | `feature/diy360-cadence` | Faster bounded CPU preview pacing at unchanged resolution, duplicate-frame readback avoidance and presentation timing diagnostics |
 | `feature/diy360-refinement` | Bilinear preview sampling and fresh stitched-photo/calibration exports; geometric calibration remains unresolved |
 | `feature/app-storage-folders` | Unified public app folder with legacy playback, per-directory protection and combined cleanup; no automatic migration |

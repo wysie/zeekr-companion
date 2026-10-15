@@ -344,6 +344,7 @@ public class SingleCamera {
     private Declared declaredMirror;
     private Declared declaredSidePopup;
     private Declared declaredSideHud;
+    private Declared declaredBirdEye;
     private Declared declaredRecord;
     /**
      * 我们自己建的 Surface（预览、后视镜的 {@code new Surface(SurfaceTexture)}，或者鱼眼校正管线的入口），按输出记。
@@ -381,7 +382,7 @@ public class SingleCamera {
 
     /** Preview, mirror and side popup share one stream; recording and JPEG are separate. */
     private static final ChannelRules.Kind[] SESSION_ORDER = {
-            ChannelRules.Kind.PREVIEW, ChannelRules.Kind.MIRROR, ChannelRules.Kind.SIDE_POPUP, ChannelRules.Kind.SIDE_HUD,
+            ChannelRules.Kind.PREVIEW, ChannelRules.Kind.MIRROR, ChannelRules.Kind.SIDE_POPUP, ChannelRules.Kind.SIDE_HUD, ChannelRules.Kind.BIRD_EYE,
             ChannelRules.Kind.SINK, ChannelRules.Kind.RECORD};
 
     /**
@@ -1217,6 +1218,8 @@ public class SingleCamera {
                             return "side-popup";
                         case SIDE_HUD:
                             return "side-hud";
+                        case BIRD_EYE:
+                            return "diy-360";
                         case RECORD:
                             return "record";
                         default:
@@ -1592,6 +1595,29 @@ public class SingleCamera {
         return changed;
     }
 
+    /** Optional DIY canvas, sharing the surround stream after the higher-priority windows. */
+    public boolean declareBirdEye(SurfaceTexture texture, RecordDropped onDropped) {
+        if (texture == null) return false;
+        ChannelRules.Out out = new ChannelRules.Out(ChannelRules.Kind.BIRD_EYE, texture);
+        boolean changed;
+        synchronized (outputLock) {
+            changed = declaredBirdEye == null || !declaredBirdEye.out.equals(out);
+            declaredBirdEye = new Declared(out, null, null, onDropped);
+        }
+        if (changed) tidyLater();
+        return changed;
+    }
+
+    public boolean withdrawBirdEye(SurfaceTexture texture) {
+        boolean changed;
+        synchronized (outputLock) {
+            changed = texture != null && declaredBirdEye != null && declaredBirdEye.out.consumer == texture;
+            if (changed) declaredBirdEye = null;
+        }
+        if (changed) tidyLater();
+        return changed;
+    }
+
     /** Side window owns its own canvas; declaring it never replaces the mirror. */
     public boolean declareSideHud(SurfaceTexture texture, RecordDropped onDropped) {
         if (texture == null) {
@@ -1670,7 +1696,8 @@ public class SingleCamera {
     public RecordDropped dropListener(ChannelRules.Out out) {
         synchronized (outputLock) {
             Declared current = out.kind == ChannelRules.Kind.SIDE_POPUP
-                    ? declaredSidePopup : out.kind == ChannelRules.Kind.SIDE_HUD ? declaredSideHud : declaredRecord;
+                    ? declaredSidePopup : out.kind == ChannelRules.Kind.SIDE_HUD ? declaredSideHud
+                    : out.kind == ChannelRules.Kind.BIRD_EYE ? declaredBirdEye : declaredRecord;
             return current != null && current.out.equals(out) ? current.onDropped : null;
         }
     }
@@ -1686,7 +1713,7 @@ public class SingleCamera {
     public Set<ChannelRules.Out> declaredOutputs() {
         Set<ChannelRules.Out> result = new LinkedHashSet<>();
         synchronized (outputLock) {
-            for (Declared declared : new Declared[]{declaredPreview, declaredMirror, declaredSidePopup, declaredSideHud, declaredRecord}) {
+            for (Declared declared : new Declared[]{declaredPreview, declaredMirror, declaredSidePopup, declaredSideHud, declaredBirdEye, declaredRecord}) {
                 if (declared != null && alive(declared.out.consumer)
                         && (declared.surface == null || declared.surface.isValid())) {
                     result.add(declared.out);
@@ -1870,7 +1897,7 @@ public class SingleCamera {
 
     /** 和这一样输出相同的声明；没有返回 null（{@link #outputLock}）。 */
     private Declared declaredFor(ChannelRules.Out out) {
-        for (Declared declared : new Declared[]{declaredPreview, declaredMirror, declaredSidePopup, declaredSideHud, declaredRecord}) {
+        for (Declared declared : new Declared[]{declaredPreview, declaredMirror, declaredSidePopup, declaredSideHud, declaredBirdEye, declaredRecord}) {
             if (declared != null && declared.out.equals(out)) {
                 return declared;
             }
@@ -2268,11 +2295,13 @@ public class SingleCamera {
 
         } catch (CameraAccessException e) {
             synchronized (sessionLock) { isConfiguring = false; isSessionClosing = false; }
+            if (yieldBirdEye(targets)) return;
             AppLog.e(TAG, "Failed to create preview session for camera " + cameraId, e);
             AppLog.e(TAG, "Exception details: " + e.getMessage());
             e.printStackTrace();
         } catch (IllegalArgumentException e) {
             synchronized (sessionLock) { isConfiguring = false; isSessionClosing = false; }
+            if (yieldBirdEye(targets)) return;
             // 特殊处理 "Surface was abandoned" 错误
             String message = e.getMessage();
             if (message != null && message.contains("abandoned") && dropAbandoned(targets)) {
@@ -2283,6 +2312,7 @@ public class SingleCamera {
             e.printStackTrace();
         } catch (Exception e) {
             synchronized (sessionLock) { isConfiguring = false; isSessionClosing = false; }
+            if (yieldBirdEye(targets)) return;
             AppLog.e(TAG, "Unexpected exception creating session for camera " + cameraId, e);
             AppLog.e(TAG, "Exception details: " + e.getMessage());
             e.printStackTrace();
@@ -2298,6 +2328,15 @@ public class SingleCamera {
      *   <li>一样都不剩：补出帧口 —— 和规则里「要出帧、会话里却没有一个活输出才加出帧口」是同一条，相机得有地方出帧。</li>
      * </ul>
      */
+    private boolean yieldBirdEye(List<Target> targets) {
+        ChannelRules.Out optional = firstOfKind(targets, ChannelRules.Kind.BIRD_EYE);
+        if (optional == null) return false;
+        AppLog.w(TAG, "Camera " + cameraId + " session exception: yielding DIY 360 output");
+        dropOutput(optional, Drop.CONFIG_FAILED);
+        requestSessionRebuild("exception-diy-360", 200);
+        return true;
+    }
+
     private List<Target> requestedTargets(Set<ChannelRules.Out> wanted) {
         List<Target> targets = new ArrayList<>();
         List<ChannelRules.Out> dead = new ArrayList<>();
@@ -2433,13 +2472,14 @@ public class SingleCamera {
         for (Target target : targets) {
             ChannelRules.Kind kind = target.out.kind;
             if (kind == ChannelRules.Kind.PREVIEW || kind == ChannelRules.Kind.MIRROR
-                    || kind == ChannelRules.Kind.SIDE_POPUP || kind == ChannelRules.Kind.SIDE_HUD) {
+                    || kind == ChannelRules.Kind.SIDE_POPUP || kind == ChannelRules.Kind.SIDE_HUD
+                    || kind == ChannelRules.Kind.BIRD_EYE) {
                 if (previewSharedConfig == null) {
                     previewSharedConfig = new OutputConfiguration(target.surface);
                     previewSharedConfig.enableSurfaceSharing();
                     outputConfigs.add(previewSharedConfig);
                 } else {
-                    if ((kind == ChannelRules.Kind.SIDE_POPUP || kind == ChannelRules.Kind.SIDE_HUD)
+                    if ((kind == ChannelRules.Kind.SIDE_POPUP || kind == ChannelRules.Kind.SIDE_HUD || kind == ChannelRules.Kind.BIRD_EYE)
                             && previewSharedConfig.getSurfaces().size()
                             >= previewSharedConfig.getMaxSharedSurfaceCount()) {
                         AppLog.w(TAG, "Camera " + cameraId + " shared surface limit: skipping " + kind + "");
@@ -2488,8 +2528,6 @@ public class SingleCamera {
 
         // 配不上时按这份会话里有什么来丢
         final ChannelRules.Out mirrorOut = firstOfKind(targets, ChannelRules.Kind.MIRROR);
-        final ChannelRules.Out sidePopupOut = firstOfKind(targets, ChannelRules.Kind.SIDE_POPUP);
-        final ChannelRules.Out sideHudOut = firstOfKind(targets, ChannelRules.Kind.SIDE_HUD);
         final ChannelRules.Out recordOut = firstOfKind(targets, ChannelRules.Kind.RECORD);
 
         // 注：旧会话关闭已提前到方法开头处理（确保 SurfaceTexture 断开连接后再创建 EGL Surface）
@@ -2578,19 +2616,10 @@ public class SingleCamera {
                     return;
                 }
 
-                // The extra HUD yields before the screen, mirror, JPEG and recording.
-                if (sideHudOut != null && built.containsKey(sideHudOut)) {
-                    dropOutput(sideHudOut, Drop.CONFIG_FAILED);
-                    requestSessionRebuild("config-failed-side-hud", 200);
-                    return;
-                }
-
-                // Retry by yielding the optional side popup first, then JPEG, mirror and recording.
-                // The optional side window yields before the existing mirror, recording or JPEG.
-                if (sidePopupOut != null && built.containsKey(sidePopupOut)) {
-                    AppLog.w(TAG, "Camera " + cameraId + " retrying without side popup output");
-                    dropOutput(sidePopupOut, Drop.CONFIG_FAILED);
-                    requestSessionRebuild("config-failed-side-popup", 200);
+                ChannelRules.Out optional = ChannelRules.optionalPreviewToDrop(built.keySet());
+                if (optional != null) {
+                    dropOutput(optional, Drop.CONFIG_FAILED);
+                    requestSessionRebuild("config-failed-" + optional.kind.name().toLowerCase(java.util.Locale.ROOT), 200);
                     return;
                 }
 

@@ -36,6 +36,11 @@ final class BirdEyePreview {
     private final BirdEyeConfig config;
     private final Handler main = new Handler(Looper.getMainLooper());
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
+    private final android.text.TextPaint noticePaint = new android.text.TextPaint(Paint.ANTI_ALIAS_FLAG);
+    private final android.text.TextPaint footerPaint = new android.text.TextPaint(Paint.ANTI_ALIAS_FLAG);
+    private android.text.StaticLayout noticeLayout, footerLayout;
+    private String noticeText, footerText;
+    private int noticeWidth, footerWidth;
     private final RectF destination = new RectF(), car = new RectF();
     private ExecutorService worker;
     private TextureView texture;
@@ -61,6 +66,8 @@ final class BirdEyePreview {
         public void onScreenOn() { refreshSafety(); }
     };
     private int failureCount;
+    private final android.content.SharedPreferences.OnSharedPreferenceChangeListener calibrationListener = (prefs, key) ->
+            main.post(() -> { if (running) invalidateCalibration(); });
 
     BirdEyePreview(View owner) { this.owner = owner; config = new BirdEyeConfig(owner.getContext()); }
 
@@ -74,6 +81,7 @@ final class BirdEyePreview {
         Telemetry.get().addListener(vehicleListener);
         ScreenState.addListener(screenListener);
         running = true;
+        config.preferences.registerOnSharedPreferenceChangeListener(calibrationListener);
         noteState();
         if (worker == null || worker.isShutdown()) {
             worker = Executors.newSingleThreadExecutor(r -> new Thread(() -> {
@@ -91,6 +99,7 @@ final class BirdEyePreview {
     }
     void stop() {
         running = false;
+        config.preferences.unregisterOnSharedPreferenceChangeListener(calibrationListener);
         invalidatePicture();
         main.removeCallbacks(tick);
         Telemetry.get().removeListener(vehicleListener);
@@ -346,9 +355,7 @@ final class BirdEyePreview {
         }
         BirdEyeProjection.Calibration c = calibration;
         if (c == null) {
-            paint.setColor(Color.WHITE); paint.setTextAlign(Paint.Align.CENTER);
-            paint.setTextSize(18 * owner.getResources().getDisplayMetrics().scaledDensity);
-            canvas.drawText(owner.getContext().getString(blockText(block)), width / 2f, height / 2f, paint);
+            drawNotice(canvas, owner.getContext().getString(blockText(block)), width, height / 2f);
             return;
         }
         double mpp = Math.max((c.width + 2 * c.margin) / size.outputWidth, (c.length + 2 * c.margin) / size.outputHeight);
@@ -359,12 +366,38 @@ final class BirdEyePreview {
         paint.setColor(0xffdedee2); paint.setStyle(Paint.Style.STROKE); paint.setStrokeWidth(2 * scale);
         canvas.drawRoundRect(car, 10 * scale, 10 * scale, paint);
         paint.setStyle(Paint.Style.FILL); paint.setColor(Color.WHITE);
-        paint.setTextAlign(Paint.Align.CENTER); paint.setTextSize(18 * owner.getResources().getDisplayMetrics().scaledDensity);
+        paint.setTextAlign(Paint.Align.CENTER);
+        paint.setTextSize(Math.min(18 * owner.getResources().getDisplayMetrics().scaledDensity, Math.max(1, carW / 3)));
         canvas.drawText(owner.getContext().getString(R.string.bird_eye_front), width / 2f, car.top + carH * .2f, paint);
         if (!fresh) {
-            canvas.drawText(owner.getContext().getString(blockText(block)), width / 2f, height / 2f, paint);
+            drawNotice(canvas, owner.getContext().getString(blockText(block)), width, height / 2f);
         }
-        paint.setTextSize(14 * owner.getResources().getDisplayMetrics().scaledDensity);
-        canvas.drawText(owner.getContext().getString(R.string.bird_eye_watermark), width / 2f, height - 12 * scale, paint);
+        String footer = owner.getContext().getString(R.string.bird_eye_watermark);
+        float textSize = 14 * owner.getResources().getDisplayMetrics().scaledDensity;
+        int inset = Math.max(1, Math.round(8 * owner.getResources().getDisplayMetrics().density));
+        int available = Math.max(1, width - 2 * inset);
+        if (footerLayout == null || !footer.equals(footerText) || available != footerWidth || footerPaint.getTextSize() != textSize) {
+            footerText = footer; footerWidth = available; footerPaint.setColor(Color.WHITE); footerPaint.setTextSize(textSize);
+            footerLayout = android.text.StaticLayout.Builder.obtain(footer, 0, footer.length(), footerPaint, available)
+                    .setAlignment(android.text.Layout.Alignment.ALIGN_CENTER).setIncludePad(false).setMaxLines(2)
+                    .setEllipsize(android.text.TextUtils.TruncateAt.END).build();
+        }
+        int save = canvas.save();
+        canvas.translate(inset, Math.max(0, height - footerLayout.getHeight() - 12 * scale));
+        footerLayout.draw(canvas); canvas.restoreToCount(save);
+    }
+
+    private void drawNotice(Canvas canvas, String text, int width, float centreY) {
+        int inset = Math.max(1, Math.round(12 * owner.getResources().getDisplayMetrics().density));
+        int available = Math.max(1, width - 2 * inset);
+        float textSize = 18 * owner.getResources().getDisplayMetrics().scaledDensity;
+        if (noticeLayout == null || !text.equals(noticeText) || available != noticeWidth || noticePaint.getTextSize() != textSize) {
+            noticeText = text; noticeWidth = available; noticePaint.setColor(Color.WHITE); noticePaint.setTextSize(textSize);
+            noticeLayout = android.text.StaticLayout.Builder.obtain(text, 0, text.length(), noticePaint, available)
+                    .setAlignment(android.text.Layout.Alignment.ALIGN_CENTER).setIncludePad(false).setMaxLines(4)
+                    .setEllipsize(android.text.TextUtils.TruncateAt.END).build();
+        }
+        int save = canvas.save(); canvas.translate(inset, Math.max(0, centreY - noticeLayout.getHeight() / 2f));
+        noticeLayout.draw(canvas); canvas.restoreToCount(save);
     }
 }

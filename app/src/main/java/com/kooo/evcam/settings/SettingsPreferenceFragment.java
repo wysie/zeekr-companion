@@ -105,6 +105,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         bindStorage();
         bindRearView();
         bindSidePopup();
+        bindBirdEye();
         bindFloating();
         bindInterface();
         bindSystem();
@@ -1176,6 +1177,42 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         if (pref != null && getContext() != null) {
             pref.setSummary(getString(R.string.set_fisheye_projection_summary, pref.getEntry()));
         }
+    }
+
+    /** DIY renderer settings and the independently placed manual popup. */
+    private void bindBirdEye() {
+        if (findPreference("pref_bird_display") == null) return;
+        com.kooo.evcam.zeekr.BirdEyeWindowConfig window = new com.kooo.evcam.zeekr.BirdEyeWindowConfig(requireContext());
+        com.kooo.evcam.zeekr.BirdEyeConfig config = new com.kooo.evcam.zeekr.BirdEyeConfig(requireContext());
+        bindEnum("pref_bird_display", SettingSpec.of("bird_display", "360 display", "main",
+                SettingSpec.entry("main", "Main", R.string.bird_eye_display_main),
+                SettingSpec.entry("popup", "Popup", R.string.bird_eye_display_popup)), window.popup() ? "popup" : "main", value -> {
+            window.setPopup("popup".equals(value));
+            if (window.popup() && getActivity() instanceof MainActivity) ((MainActivity) getActivity()).leaveBirdEyeMain();
+            if (!window.popup()) com.kooo.evcam.zeekr.BirdEyePopupService.stop(requireContext());
+        });
+        bindEnum("pref_bird_quality", SettingSpec.of("bird_quality", "360 quality", "1",
+                SettingSpec.entry("0", "Low", R.string.bird_eye_quality_low),
+                SettingSpec.entry("1", "Balanced", R.string.bird_eye_quality_balanced),
+                SettingSpec.entry("2", "Full", R.string.bird_eye_quality_full)), Integer.toString(config.quality()),
+                value -> config.set("quality", Integer.parseInt(value)));
+        bindSlider("pref_bird_popup_size", 20, 75, window.size(), "%", value -> {
+            window.setSize(value); com.kooo.evcam.zeekr.BirdEyePopupService.applyLayout();
+        });
+        onClick("pref_bird_open", pref -> {
+            if (getActivity() instanceof MainActivity) ((MainActivity) getActivity()).openBirdEyePopup();
+        });
+        onClick("pref_bird_close", pref -> com.kooo.evcam.zeekr.BirdEyePopupService.stop(requireContext()));
+        onClick("pref_bird_calibrate", pref -> com.kooo.evcam.zeekr.BirdEyeCalibrationDialog.show(requireContext(), () -> {}));
+        onClick("pref_bird_reset_layout", pref -> {
+            window.resetLayout(); com.kooo.evcam.zeekr.BirdEyePopupService.applyLayout();
+            SeekBarPreference size = findPreference("pref_bird_popup_size"); if (size != null) size.setValue(window.size());
+        });
+        onClick("pref_bird_reset_calibration", pref -> {
+            config.reset();
+            ListPreference quality = findPreference("pref_bird_quality");
+            if (quality != null) { quality.setValue(Integer.toString(config.quality())); quality.setSummary(quality.getEntry()); }
+        });
     }
 
     /**

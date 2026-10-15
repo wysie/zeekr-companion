@@ -193,3 +193,35 @@ Diagnostics include captureIntervalMs and presentationGapMs alongside copy/rende
 times. The last measured presentation gap remains available after leaving the
 preview, and is reset on a new activation or quality change. Check these and
 concurrent recording at each quality setting.
+
+## Popup window and dedicated settings (2026-10-15)
+
+Settings → 360° camera contains the main/popup preference (main by default),
+Open/Close popup actions, quality, popup size, popup-layout reset, calibration and
+calibration/quality reset. Holding the main 360° button still opens calibration.
+Popup placement uses a separate store; calibration/quality reset does not reset
+popup placement, mirror/side-view preferences or the selected display mode.
+
+The service owns its own TextureView and runs the same bounded CPU renderer and
+freshness policy while the app is minimised. Opening from MainActivity returns
+the main preview to the grid so there is only one visible DIY renderer. X closes
+the runtime window without changing the selected display mode. There is no
+automatic boot/indicator opening or sticky service restart. While the popup is open, Take
+photo uses the fresh popup render and refuses suspended/stale pictures.
+
+BIRD_EYE is a separate surround-only camera holder/output. It shares the existing
+preview hardware stream; adding/removing it may rebuild that camera session. It
+is last among preview surfaces, yields at the shared-surface limit, and is the
+first optional output removed on asynchronous configuration failure. Synchronous
+session-creation exceptions also yield it before retrying. Removing it leaves
+mirror, side view and recording declarations intact. These policies do not
+establish zero recording gaps on an actual HAL; test continuity and all active
+window combinations on the car. A rejected output closes the popup and reports
+the limitation rather than repeatedly retrying it.
+
+Factory cameras, reverse, screen-off, a disconnected vehicle and an exclusive
+developer probe detach the popup/release its claim. It can resume when those
+conditions clear while its explicit runtime request remains active. Closing/X or
+Exit ends that request. The prototype remains uncalibrated; there is no P-only
+or speed eligibility rule. System-themed corner controls reuse the side popup’s
+48 dp controls. Loading/status notices wrap in the narrower window.

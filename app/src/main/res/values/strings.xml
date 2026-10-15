@@ -1060,7 +1060,7 @@
     <string name="bird_eye_quality_low">低 — 最快</string>
     <string name="bird_eye_quality_balanced">均衡 — 默认</string>
     <string name="bird_eye_quality_full">完整 — 原生预览分辨率</string>
-    <string name="bird_eye_quality_note">均衡模式提高预览清晰度。完整模式复制可用的实时画面（最高 800 万像素），最高每秒 3 帧。复制、绘制太慢或内存不足时，本次显示会降低分辨率；低模式仍太慢则暂停。照片使用实际分辨率。提高分辨率不会修正校准。</string>
+    <string name="bird_eye_quality_note">均衡模式提高预览清晰度。完整模式复制可用的实时画面（最高 800 万像素），最高每秒 5 帧。复制、绘制太慢或内存不足时，本次显示会降低分辨率；低模式仍太慢则暂停。照片使用实际分辨率。提高分辨率不会修正校准。</string>
     <string name="bird_eye_quality_reduced">360 处理太慢或内存不足，已降低分辨率。详细信息见诊断报告。</string>
     <string name="msg_record_profile_restart">相机选择已更改。请退出并重新打开应用后再录像。</string>
     <string name="dev_camera_display_title">相机与显示屏工具</string>
@@ -1078,4 +1078,18 @@
     <string name="vehicle_name_summary">显示为 %1$s。自动识别使用设备报告的车型名称；无法识别时可手动选择。仅更改显示名称。</string>
     <string name="vehicle_profile_surround">%1$s（环视）</string>
     <string name="vehicle_profile_cabins">%1$s（环视 + 前后座舱）</string>
+    <string name="bird_eye_section">360° 摄像头</string>
+    <string name="bird_eye_experimental">实验性自制 360° 环视</string>
+    <string name="bird_eye_section_note">使用四路环视画面并手动标定。拼接位置和距离仍有误差；原厂摄像头优先。</string>
+    <string name="bird_eye_display_title">360° 按钮打开</string>
+    <string name="bird_eye_display_main">主界面</string>
+    <string name="bird_eye_display_popup">悬浮窗</string>
+    <string name="bird_eye_popup_button">360° 悬浮窗</string>
+    <string name="bird_eye_popup_open">打开 360° 悬浮窗</string>
+    <string name="bird_eye_popup_close">关闭 360° 悬浮窗</string>
+    <string name="bird_eye_popup_summary">拖动移动、双指缩放，或使用放大和关闭按钮。应用最小化后仍显示；不会随开机或转向灯自动打开。</string>
+    <string name="bird_eye_popup_size">悬浮窗高度（%）</string>
+    <string name="bird_eye_popup_reset">重置悬浮窗大小和位置</string>
+    <string name="bird_eye_calibration_reset">重置标定和画质</string>
+    <string name="bird_eye_popup_rejected">相机不支持更多窗口，已关闭 360° 悬浮窗。其他相机输出优先。</string>
 </resources>
