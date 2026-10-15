@@ -19,6 +19,7 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/side-view-hud` | Ferix PR14 adapted to current scheduler and fork screen behavior, with cautious display selection; based on main after mirroring |
 | `feature/009-hud-display` | Opt-in 009 HUD mapping for display 3 at 1280×640, based on the owner's Diagnostics; physical destination and video output await testing |
 | `fix/side-popup-startup-flash` | Prepare the separate side popup transparently until live frames arrive, with a delayed waiting notice and retained stalled-frame cover |
+| `fix/playback-action-layout` | Shared content-sized wrapping photo/video controls, retaining native text size and same-row alignment |
 | `fix/settings-layout-overflow` | Camera/preset card sizing, wrapping options/actions, short-window action-rail scrolling and settings category navigation; native Android layout regression tests |
 | `fix/unused-microphone-permission` | Remove undeclared, unused microphone startup gate and its unavailable Developer permission row |
 | `fix/remove-park-only-gates` | Remove gear/speed eligibility from developer tools and DIY 360 preview/calibration; retain factory priority, lifecycle and freshness guards |

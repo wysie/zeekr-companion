@@ -275,3 +275,13 @@
 
 实现：`RecordingLanes.summarize`（各路的样子 → 整体的样子，有单元测试）、`RecordButtonUi.State.WAITING`、
 `RecordingFloatingService`（`setRecording(recording, waiting)`）、`RecordingCoordinator.notificationTitle`。
+
+## Fork playback-control follow-up (2026-10-15)
+
+Video and photo action rows use `WrappingActionRow`. Buttons measure their native
+labels at the current language/font size, share remaining row width and equal row
+height, and wrap when needed. They retain at least 52 dp height; text is not shrunk
+or ellipsized. No baseline alignment is used. Camera previews receive the remaining
+height; normal wide layouts retain one row. Existing action IDs and callbacks stay
+unchanged. Native tests cover EN/ZH/MS, both themes, 1.0/1.3 font scale, widths
+360–1800 dp, resizing back down, photo controls and RTL placement.

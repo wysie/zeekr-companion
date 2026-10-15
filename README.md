@@ -61,6 +61,7 @@ release numbers remain independent of upstream.
   the existing mirror, then restore the previous view; alternatively, show a
   separate side-camera window alongside it or temporarily hide the mirror while
   that popup is visible.
+- **Playback controls:** video and photo action buttons size to their labels, keep equal heights within each row, and wrap to another row when space is tight. “Send to phone” remains aligned and fully readable without shrinking the text.
 - **Side-window controls and tuning:** shared left/right placement, drag and pinch
   resizing, temporary expand/close controls, per-side image rotation, defaults
   reset, and automatic framing adjustment to avoid black patches at extreme aim
@@ -178,7 +179,7 @@ alongside the separate popup. **Hide during popup** instead hides the mirror onl
 once the independent popup becomes visible, retaining its own shape and size.
 The mirror returns when that popup closes, finishes fading out, is dismissed with
 X or is detached for factory/screen takeover. Hidden startup/prewarming and HUD-only
-output do not hide it. This never changes the mirror enable switch, saved camera,
+output without a screen popup does not hide it. This never changes the mirror enable switch, saved camera,
 position or size. Existing replacement/on and alongside/off selections are preserved;
 reset restores Use its window. Hiding keeps the mirror feed attached and does not
 free an output slot. Both windows share the existing surround camera stream; the side
