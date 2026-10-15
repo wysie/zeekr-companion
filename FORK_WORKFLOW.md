@@ -49,6 +49,7 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/night-ui` | Ferix night palette and floating-button styling |
 | `research/blind-spot-alerts` | Alert-signal investigation; no active obstacle trigger |
 | `research/factory-360-view` | Investigation of access to the factory stitched view |
+| `research/009-image-calibration` | Offline approximate ray-to-reference transforms from existing owner captures; no app profile or default changes |
 
 The original turn-signal side-view contribution keeps its related display behavior
 on one feature branch. Fork follow-ups for mirroring and HUD are separate branches

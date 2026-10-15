@@ -96,6 +96,13 @@ provide obstacle detection or the factory stitched camera feed.
 See [factory 360 research and the collection tool](https://github.com/wysie/zeekr-shortcut-car/tree/research/factory-360-view)
 for the current investigation and the device information needed next.
 
+Image-based 009 calibration is also being investigated with the existing raw
+composites and factory phone reference. An offline fitter can derive approximate
+per-camera transforms without a checkerboard; the current front/rear candidates
+still lack reliable side-camera fits and validation on other scenes. It does not
+change the app or provide an installable calibration profile. See
+[the image-fitting research](docs/009-image-calibration.md).
+
 This fork is mainly for personal use. Automated tests and release builds are
 checked, but vehicle testing is limited. I have confirmed camera labels and Super
 mirror replacement on my 009; other changes still need on-car verification. See
