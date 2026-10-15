@@ -9,7 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
-Nothing yet.
+- Prepare the separate side popup transparently until live frames arrive; show the waiting window only after 750 ms of startup, retaining stalled-frame protection.
 
 ## [2.11.30-personal-alpha] - 2026-10-15
 

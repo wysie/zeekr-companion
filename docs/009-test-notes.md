@@ -458,3 +458,40 @@ long option labels and diagnostics buttons align, the category title is correct
 after leaving the editor, and Settings remains reachable in a shortened app window.
 The unidentified button in the owner's recollection cannot be identified with
 certainty without seeing that page. No owner photos/diagnostics are published.
+
+
+## Side-popup startup presentation (2026-10-15, 009 check pending)
+
+The owner reported a roughly half-second “Waiting for live camera” flash before
+the side-camera image. The freshness cover was introduced in 2.11.18 and shows
+while startup geometry/frame progression is unavailable. Its 500 ms expiry is a
+stall threshold, not a mandatory startup delay. No timing log was supplied for
+this occurrence, so the actual camera/session startup duration remains unknown.
+
+The separate overlay now remains attached, transparent and touch-through while
+its requested activation starts. Geometry plus advancing texture timestamps reveal
+it immediately. After 750 ms without readiness (checked every 100 ms), reveal the
+existing waiting/close UI. The service still regards the startup request as showing,
+so repeated telemetry does not restart startup or defeat temporary dismissal.
+Cancellation hides it, and each new activation gets its own deadline. An already
+revealed feed that stalls remains visible with the existing black freshness cover;
+this presentation change never extends camera freshness. HUD and Super mirror
+presentation are unchanged. No image caching or producer timestamp substitution
+is used in app code.
+
+On the 009, check first activation, repeated left/right signals, instant-ready on
+and off, cancellation before a picture arrives, X then cancel/re-signal, and
+recording continuity. A warm fresh popup should appear immediately; startup that
+finishes within the grace period should have no waiting-message flash. If startup
+actually lasts longer, the waiting message remains intentional.
+
+Seven JVM startup regressions cover retained first buffers, immediate warm reveal,
+repeated requests and the notice deadline, stalls after reveal, cancellation and
+next activations. Two API 32 native tests use the actual overlay/TextureView and
+continuous timestamped synthetic EGL buffers. They verify alpha 0 and touch-through
+at startup, alpha 0 on the first positive timestamp, alpha 1 on progression, a
+visible waiting fallback without frames, and no reappearance after cancellation.
+The initial single-buffer test did not advance: the UI callback can precede
+RenderThread latching, and Canvas buffers in this emulator reported timestamp 0.
+The final test uses continuous EGL presentation timestamps, like a video producer;
+app freshness rules are unchanged. This is emulator evidence, not 009 validation.

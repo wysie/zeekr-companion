@@ -56,11 +56,13 @@ public class SideViewPopupView extends ViewGroup {
     private final SideViewExpansion expansion = new SideViewExpansion();
     private final Matrix drawMatrix = new Matrix();
     private final CameraFrameFreshness frameFreshness = new CameraFrameFreshness();
+    private final SidePopupStartup startup = new SidePopupStartup();
     private final android.os.Handler freshnessHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private final android.graphics.Paint stalePaint = new android.graphics.Paint(android.graphics.Paint.ANTI_ALIAS_FLAG);
     private final Runnable freshnessTick = new Runnable() {
         @Override public void run() {
             if (!isAttachedToWindow()) return;
+            refreshStartupReveal();
             if (!frameFreshness.fresh(android.os.SystemClock.uptimeMillis())) invalidate();
             freshnessHandler.postDelayed(this, 100);
         }
@@ -167,6 +169,7 @@ public class SideViewPopupView extends ViewGroup {
         }
         plan = CompositeStreamGeometry.analyse(id, size.getWidth(), size.getHeight());
         AppLog.i(TAG, "侧视取景: " + plan + " 第 " + lane + " 路");
+        refreshStartupReveal();
         invalidate();
     }
 
@@ -224,6 +227,7 @@ public class SideViewPopupView extends ViewGroup {
         }
         attached = false;
         visible = false;
+        startup.request(false, false, android.os.SystemClock.uptimeMillis());
     }
 
     /** 设置页改了大小 / 位置 / 拉直：套用到挂着的窗口上。 */
@@ -254,11 +258,13 @@ public class SideViewPopupView extends ViewGroup {
         if (attached) {
             boolean visibilityChanged = show != visible;
             visible = show;
+            float previousAlpha = params.alpha;
+            int previousFlags = params.flags;
             applyVisibility(show);
             if (sideChanged) {
                 place();
             }
-            if (sideChanged || visibilityChanged) {
+            if (sideChanged || visibilityChanged || previousAlpha != params.alpha || previousFlags != params.flags) {
                 update();
             }
             if (sideChanged) {
@@ -294,11 +300,28 @@ public class SideViewPopupView extends ViewGroup {
      * 不然 D 档时屏幕上会有一块看不见又点不动的区域。</p>
      */
     private void applyVisibility(boolean show) {
-        params.alpha = show ? 1f : 0f;
-        if (show) {
+        startup.request(show, hasLivePicture(), android.os.SystemClock.uptimeMillis());
+        boolean reveal = startup.revealed();
+        params.alpha = reveal ? 1f : 0f;
+        if (reveal) {
             params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         } else {
             params.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        }
+    }
+
+    private boolean hasLivePicture() {
+        return hasGeometry() && textureView.isAvailable()
+                && frameFreshness.fresh(android.os.SystemClock.uptimeMillis());
+    }
+
+    private void refreshStartupReveal() {
+        // HUD owns a Presentation rather than these overlay params; its routing is unchanged.
+        if (params == null || !attached) return;
+        if (startup.advance(hasLivePicture(), android.os.SystemClock.uptimeMillis())) {
+            applyVisibility(visible);
+            update();
+            invalidate();
         }
     }
 
@@ -446,6 +469,7 @@ public class SideViewPopupView extends ViewGroup {
         try {
             frameFreshness.observe(source, source == null ? 0 : source.getTimestamp(), android.os.SystemClock.uptimeMillis());
         } catch (IllegalStateException released) { frameFreshness.reset(); }
+        refreshStartupReveal();
         invalidate();
     }
 
