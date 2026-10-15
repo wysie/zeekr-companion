@@ -775,6 +775,29 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             appConfig.setHudSideMirrored(value);
             com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
         });
+        bindSwitch("pref_hud_side_overlay", appConfig.isHudSideOverlay(), value -> {
+            appConfig.setHudSideOverlay(value);
+            com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+        });
+        bindSwitch("pref_hud_side_follow", appConfig.isHudSideFollowSignal(), value -> {
+            appConfig.setHudSideFollowSignal(value);
+            com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+        });
+        bindSlider("pref_hud_side_contrast", AppConfig.HUD_SIDE_MIN_CONTRAST_PERCENT,
+                AppConfig.HUD_SIDE_MAX_CONTRAST_PERCENT, appConfig.getHudSideContrastPercent(), "%", value -> {
+                    appConfig.setHudSideContrastPercent(value);
+                    com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+                });
+        bindSlider("pref_hud_side_night", AppConfig.HUD_SIDE_MIN_NIGHT_PERCENT,
+                AppConfig.HUD_SIDE_MAX_NIGHT_PERCENT, appConfig.getHudSideNightPercent(), "%", value -> {
+                    appConfig.setHudSideNightPercent(value);
+                    com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+                });
+        bindSlider("pref_hud_side_fade", AppConfig.HUD_SIDE_MIN_FADE_PERCENT,
+                AppConfig.HUD_SIDE_MAX_FADE_PERCENT, appConfig.getHudSideFadePercent(), "%", value -> {
+                    appConfig.setHudSideFadePercent(value);
+                    com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+                });
         bindSlider("pref_hud_side_size", AppConfig.HUD_SIDE_MIN_SIZE_PERCENT,
                 AppConfig.HUD_SIDE_MAX_SIZE_PERCENT, appConfig.getHudSideSizePercent(), "%", value -> {
                     appConfig.setHudSideSizePercent(value);

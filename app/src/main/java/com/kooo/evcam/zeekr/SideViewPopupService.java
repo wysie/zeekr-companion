@@ -284,6 +284,7 @@ public class SideViewPopupService extends Service {
                     suppressed, !suppressed && appConfig.isSidePopupInstant() && SideViewDecision.shouldStayReady(hudIn),
                     suppressed ? 0 : appConfig.getSidePopupCloseDelayMs());
             hud.followIndicator(indicator);
+            hud.setNight(Integer.valueOf(Signal.NIGHT).equals(r.code(Signal.DAY_NIGHT)));
         } else if (hud != null) {
             hud.detach();
         }

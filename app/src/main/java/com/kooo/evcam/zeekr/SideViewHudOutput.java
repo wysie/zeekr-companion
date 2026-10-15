@@ -52,6 +52,7 @@ final class SideViewHudOutput {
     private final Handler handler = new Handler(Looper.getMainLooper());
 
     private SideViewHudPanel panel;
+    private boolean night;
     private SingleCamera boundCamera;
     private MultiCameraManager boundManager;
     private final Runnable onUnavailable;
@@ -70,6 +71,7 @@ final class SideViewHudOutput {
     private long failedUntilMs;
     private boolean presentKnown;
     private boolean zeekr009Hud;
+    private boolean overlayLayer;
     private boolean present;
     private long presentCheckedMs;
     private boolean closePending;
@@ -84,6 +86,7 @@ final class SideViewHudOutput {
         this.context = context;
         this.config = config;
         this.zeekr009Hud = config.isZeekr009HudEnabled();
+        this.overlayLayer = config.isHudSideOverlay();
         this.onUnavailable = onUnavailable;
     }
 
@@ -122,14 +125,23 @@ final class SideViewHudOutput {
         }
     }
 
+    /** 车上是不是夜间模式（{@link HudNightDimming}）。记下来：窗口还没建好时，建好后照这个来。 */
+    void setNight(boolean night) {
+        this.night = night;
+        if (panel != null) {
+            panel.setNight(night);
+        }
+    }
+
     /** 设置页改了东西：窗口套用新的大小位置拉直。 */
     void refreshLabel() { if (panel != null) panel.invalidate(); }
 
     void applyConfig() {
         boolean selected009 = config.isZeekr009HudEnabled();
-        if (selected009 != zeekr009Hud) {
+        if (selected009 != zeekr009Hud || config.isHudSideOverlay() != overlayLayer) {
             detach();
             zeekr009Hud = selected009;
+            overlayLayer = config.isHudSideOverlay();
         }
         presentKnown = false;
         failedUntilMs = 0;
@@ -161,6 +173,10 @@ final class SideViewHudOutput {
             disarmReadyExpiry();
             if (showingLane() != want) {
                 AppLog.i(TAG, "HUD：弹出「" + LaneCycle.labelOf(want) + "」路");
+                // 黑匣子里留一行：弹哪一边、窗口此前停在哪一边 —— 「打右灯先蹦出左边」这类事回头看得见
+                BlackBox.note("HUD 弹出「" + LaneCycle.labelOf(want) + "」路："
+                        + (panel == null ? "没有窗口" : "窗口此前在「" + LaneCycle.labelOf(panel.lane()) + "」路"
+                        + (panel.isShowing() ? "，显示中" : "，备着")));
                 show(want);
             }
             return;
@@ -288,6 +304,7 @@ final class SideViewHudOutput {
             return;
         }
         SideViewHudPanel created = new SideViewHudPanel(context, config, hud);
+        created.setNight(night);
         lastFrameMs = 0;   // 新窗口：上一个窗口的帧不算
         created.getTextureView().setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override

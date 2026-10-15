@@ -143,3 +143,14 @@ The shared pipeline lookup and tests are adapted from
 [FerixzTanz/CAMCORDER 57797edd](https://github.com/FerixzTanz/CAMCORDER/commit/57797edd4b52c1aa2ee554d5eea6adf589e066e3).
 Current upstream already keeps camera ownership outside the Activity; this port
 uses the lookup to retain foreground/relay services during rapid recreation.
+
+## CAMCORDER HUD refinements
+
+Contrast, night dimming, edge fade, indicator-side geometry and optional HUD
+overlay windows are adapted from [Ferix PR #15](https://github.com/FerixzTanz/CAMCORDER/pull/15)
+and subsequent commits through [d6193888](https://github.com/FerixzTanz/CAMCORDER/commit/d6193888b3fa86465ab82ec4fc232f0b9a15959e).
+Source feature commits include `3fa7005e`, `3262e896`, `5b625ed9`, `4520dc05`,
+`e67dfddd`, `6218413c`, `3ea2c9b1` and `d6193888`. The port retains the fork's
+009 mapping, freshness guards and current scheduler. New picture treatments and
+indicator-side positioning are opt-in; Ferix's owner-specific defaults and
+factory-view bypass are not imported.
