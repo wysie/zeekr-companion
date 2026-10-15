@@ -11,9 +11,9 @@ vehicle performance or 009 display-inset audit was performed.
 
 The existing native two-pane structure and semantic day/night palette should be
 kept. The problem is accumulated settings and some fixed control sizes, not a
-need to replace the visual design. This review does not authorize or implement
-a wholesale menu reorganisation; the narrow fixes requested by the owner are
-implemented separately.
+need to replace the visual design. The owner subsequently approved the menu regrouping. The navigation changes and
+manual 360 popup switch are now implemented; see [current settings map](settings-menu.md).
+The original inventory and findings below record the review before that change.
 
 ## Current inventory
 
@@ -60,19 +60,19 @@ Hide during popup. Existing booleans migrate without changing behaviour; an
 explanation is separate from the current-value row. The mirror enable switch
 continues to express the owner's saved intent. The selected value stays visible.
 
-### [P2, proposed] Split blind-spot tuning by task
+### [P2, implemented] Split blind-spot tuning by task
 
 Location: `screen_blind_spot_camera` in `preferences.xml`.
 The common enable/output/mirror relationship/speed controls precede a long mixture
 of lens framing, source rotation, timing and window layout. Finding one option
 requires remembering where it falls in a scroll. Keep behaviour at the top, with
 three named destinations: Image and framing, Popup window, HUD picture. Place
-straightening/FOV/aim/rotation in the first, size/position/close timing/prewarming
-in the second. Preserve the minimum-speed and high-angle notes beside their
+straightening/FOV/aim/rotation in the first, size/position in the second. Timing and prewarming remain on the parent page
+because they affect more than the separate popup. Preserve the minimum-speed and high-angle notes beside their
 controls and retain existing keys/reset semantics. Do not add more top-level
 sidebar categories to solve this.
 
-### [P2, proposed] Separate HUD picture, placement and advanced routing
+### [P2, implemented] Separate HUD picture, placement and advanced routing
 
 Location: `sub_side_hud`.
 Group mirror/contrast/night brightness/edge fade under Picture; height/shape/
@@ -81,7 +81,7 @@ coexistence under a clearly labelled Advanced group. The experimental descriptio
 and defaults must stay visible with the affected controls. Keep display output
 selection at the parent page; avoid duplicating it under HUD.
 
-### [P2, proposed] Make shared camera labels discoverable from blind-spot settings
+### [P2, implemented] Make shared camera labels discoverable from blind-spot settings
 
 Location: `pref_rearview_camera_label` under Super mirror.
 Its existing summary correctly says it affects Super mirror and the side popup,
@@ -90,7 +90,7 @@ or another view of the same stored setting under Image and framing, keeping one
 source of truth and live refresh for both outputs. Do not create a second,
 conflicting preference merely to improve navigation.
 
-### [P2, proposed] Group developer tools and demote the System entry
+### [P2, implemented] Group developer tools and demote the System entry
 
 Location: `screen_developer` / `screen_system`.
 The 17-row developer list mixes capture diagnostics, rendering experiments,
@@ -99,7 +99,7 @@ Enable developer mode after the common System controls, retaining its warning.
 Keep the Developer category hidden when disabled and retain existing stored-value
 and signal-scan shutdown rules. Do not make a new generic Advanced top-level page.
 
-### [P2, proposed] Keep optional recording stamps off the main behaviour list
+### [P2, implemented] Keep optional recording stamps off the main behaviour list
 
 Location: `screen_recording`.
 App/plate/timestamp/specs/driving-info controls lengthen the page after its core
@@ -118,11 +118,21 @@ switch. This is a navigation proposal, not an approved recording-policy change.
   speed thresholds and high-angle cropping.
 - Earlier responsive camera-card and segmented-choice fixes remain covered by tests.
 
-## Recommended follow-up
+## Implementation and verification
 
-Make one focused navigation-only branch for Blind spot camera/HUD grouping, then
-another for Recording/Developer grouping. Keep preference keys, defaults, reset
-scopes, overlay lifecycles and existing upstream PR branches unchanged. Verify
-nested Back navigation and current-value visibility, and finish with one bounded
-native polish pass. Existing source review and emulator screenshots do not replace
-an on-car check at the 009's actual display density and system bar geometry.
+Implemented on `feature/settings-menu-organisation`, based on combined main. Existing
+preference storage keys, defaults, reset scopes, overlay camera claims and independent
+upstream PR branches are retained. Added the current-session 360 popup switch and
+service lifecycle notifications; no boot/indicator activation was added.
+
+Native regression tests exercise actual subpage clicks, Back/category navigation,
+shared labels, developer-category visibility, popup session closure/recreation and
+destination changes. JVM checks validate unique keys and self-contained dependencies
+for every extracted page. The developer-gating inventory now walks grouped rows.
+Emulator verification does not establish vehicle display geometry or camera compatibility.
+
+Validation: 1,381 JVM tests and 16 native tests pass; four native menu/navigation
+checks also pass in the dark-theme confirmation. Debug lint and signed release
+assembly succeed. Initial viewports and all subpages were captured, with additional
+recording/blind-spot parent scroll positions in the confirmation; this is not a
+complete on-car or accessibility audit.

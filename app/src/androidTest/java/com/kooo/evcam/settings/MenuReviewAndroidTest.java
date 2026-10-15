@@ -49,6 +49,26 @@ public class MenuReviewAndroidTest {
                     ref.get().getChildFragmentManager().executePendingTransactions();
                 });
                 capture("menu-"+section+".png");
+                if (!confirmation && ("recording".equals(section) || "blind_spot_camera".equals(section))) {
+                    scenario.onActivity(activity -> {
+                        SettingsPreferenceFragment detail = (SettingsPreferenceFragment) ref.get().getChildFragmentManager().findFragmentById(R.id.settings_detail);
+                        detail.scrollToPreference("recording".equals(section) ? "sub_recording_stamps" : "sub_side_image");
+                    });
+                    capture("menu-"+section+"-more.png");
+                    String[] children = "recording".equals(section) ? new String[]{"sub_recording_stamps"}
+                            : new String[]{"sub_side_image", "sub_side_window"};
+                    for (String child : children) {
+                        scenario.onActivity(activity -> {
+                            SettingsPreferenceFragment detail = (SettingsPreferenceFragment) ref.get().getChildFragmentManager().findFragmentById(R.id.settings_detail);
+                            detail.findPreference(child).performClick();
+                            ref.get().getChildFragmentManager().executePendingTransactions();
+                        });
+                        capture("menu-"+child+".png");
+                        scenario.onActivity(activity -> {
+                            ref.get().getChildFragmentManager().popBackStackImmediate();
+                        });
+                    }
+                }
                 if (confirmation && "blind_spot_camera".equals(section)) {
                     scenario.onActivity(activity -> {
                         SettingsPreferenceFragment detail = (SettingsPreferenceFragment) ref.get().getChildFragmentManager().findFragmentById(R.id.settings_detail);

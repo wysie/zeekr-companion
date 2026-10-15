@@ -687,3 +687,26 @@ while the popup is visible. The normal mirror must return with its previous size
 position and lane, and its enabled setting must not change. Hidden mirror output
 still consumes its usual camera surface. Menu regrouping is a documented proposal,
 not a change to the shipped navigation.
+
+## Settings regrouping and live 360 popup switch (unreleased)
+
+Implemented on combined-main feature branch `feature/settings-menu-organisation`.
+The original ten categories remain, with recording stamps and blind-spot image /
+window tuning on native child pages, grouped HUD/Developer rows, and screen-off
+recording moved into Recording & photos. Existing AppConfig keys/defaults and
+upstream PR heads are retained. Camera labels have a second view of the same value.
+
+Verification on the disposable API 32 emulator: 1,381 JVM tests; 16 native tests
+covering actual child navigation and Back/category changes, shared labels, developer
+visibility, live 360 session closure/recreation and destination change, existing
+window geometry/freshness/HUD and responsive playback/settings regressions. Native
+light screenshots include every initial category and all four settings subpages;
+long pages are not claimed as complete scroll-position or accessibility coverage.
+A bounded dark-theme confirmation also passed the menu capture and three navigation
+tests. Debug lint and signed release assembly pass. No new vehicle testing is implied.
+
+On the 009, check navigation and readable layout at the car's actual density,
+then open the manual 360 popup, close it with X and confirm the switch follows.
+Factory/screen suspension should retain its session, and reopening the app after
+a closed session must not open it automatically. Camera output limits and actual
+360 alignment remain subject to the existing limitations.

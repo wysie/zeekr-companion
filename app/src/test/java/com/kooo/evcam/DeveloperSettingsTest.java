@@ -7,9 +7,6 @@ import static org.junit.Assume.assumeTrue;
 import org.junit.Test;
 
 import java.io.File;
-import java.io.IOException;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedHashMap;
@@ -18,8 +15,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 /**
  * 关闭开发者选项后，「其中的功能停止生效」（项目所有者 2026-10-05）。
@@ -77,10 +72,8 @@ public class DeveloperSettingsTest {
             "video_storage_limit_gb", "photo_storage_limit_gb", "custom_sd_card_path",
             "exposure_compensation", "awb_mode", "car_model");
 
-    private static final Pattern KEY = Pattern.compile("android:key=\"([^\"]+)\"");
-
     @Test
-    public void everyRowOfTheDeveloperSectionIsAccountedFor() throws IOException {
+    public void everyRowOfTheDeveloperSectionIsAccountedFor() throws Exception {
         Set<String> rows = developerSectionRows();
         assumeTrue("读不到 preferences.xml 的开发者选项分区，跳过", !rows.isEmpty());
 
@@ -117,24 +110,25 @@ public class DeveloperSettingsTest {
         }
     }
 
-    /** {@code screen_developer} 里各行的 key（分区里没有嵌套的分区，读到它的结束标签为止）。 */
-    private static Set<String> developerSectionRows() throws IOException {
+    /** Inspect actionable/info rows recursively; category headings do not store configuration. */
+    private static Set<String> developerSectionRows() throws Exception {
         Set<String> rows = new LinkedHashSet<>();
         File module = findModuleRoot();
-        if (module == null) {
-            return rows;
-        }
-        String xml = new String(Files.readAllBytes(
-                new File(module, "src/main/res/xml/preferences.xml").toPath()), StandardCharsets.UTF_8);
-        int start = xml.indexOf("android:key=\"screen_developer\"");
-        int end = start < 0 ? -1 : xml.indexOf("</PreferenceScreen>", start);
-        if (end < 0) {
-            return rows;
-        }
-        Matcher matcher = KEY.matcher(xml.substring(start, end));
-        while (matcher.find()) {
-            if (!"screen_developer".equals(matcher.group(1))) {
-                rows.add(matcher.group(1));
+        if (module == null) return rows;
+        org.w3c.dom.Element document = javax.xml.parsers.DocumentBuilderFactory.newInstance()
+                .newDocumentBuilder().parse(new File(module, "src/main/res/xml/preferences.xml"))
+                .getDocumentElement();
+        org.w3c.dom.NodeList all = document.getElementsByTagName("PreferenceScreen");
+        for (int i = 0; i < all.getLength(); i++) {
+            org.w3c.dom.Element section = (org.w3c.dom.Element) all.item(i);
+            if (!"screen_developer".equals(section.getAttribute("android:key"))) continue;
+            org.w3c.dom.NodeList children = section.getElementsByTagName("*");
+            for (int j = 0; j < children.getLength(); j++) {
+                org.w3c.dom.Element child = (org.w3c.dom.Element) children.item(j);
+                if ("PreferenceCategory".equals(child.getTagName())
+                        || "PreferenceScreen".equals(child.getTagName())) continue;
+                String key = child.getAttribute("android:key");
+                if (!key.isEmpty()) rows.add(key);
             }
         }
         return rows;

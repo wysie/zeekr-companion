@@ -28,6 +28,13 @@ import com.kooo.evcam.telemetry.Telemetry;
 /** Explicit, non-sticky 360 overlay; never starts from boot or an indicator. */
 public final class BirdEyePopupService extends Service {
     private static volatile BirdEyePopupService instance;
+    private static final java.util.Set<Runnable> stateListeners =
+            new java.util.concurrent.CopyOnWriteArraySet<>();
+
+    /** Main-thread lifecycle notifications; the requested session includes temporary suspension. */
+    public static void addStateListener(Runnable listener) { stateListeners.add(listener); }
+    public static void removeStateListener(Runnable listener) { stateListeners.remove(listener); }
+    private static void notifyState() { for (Runnable listener : stateListeners) listener.run(); }
     private final Handler main = new Handler(Looper.getMainLooper());
     private BirdEyePopupView view;
     private SingleCamera camera;
@@ -56,7 +63,9 @@ public final class BirdEyePopupService extends Service {
     public static String describe() { return instance == null ? "closed" : instance.view == null ? "suspended" : instance.view.describe(); }
     public static void applyLayout() { if (instance != null && instance.view != null) instance.view.applyLayout(); }
 
-    @Override public void onCreate() { super.onCreate(); instance = this; ScreenState.addListener(screen); }
+    @Override public void onCreate() {
+        super.onCreate(); instance = this; ScreenState.addListener(screen); notifyState();
+    }
     @Override public int onStartCommand(Intent intent, int flags, int id) {
         if (intent == null || UserExit.blocks(this, "BirdEyePopupService") || !WakeUpHelper.hasOverlayPermission(this)) {
             stopSelf(); return START_NOT_STICKY;
@@ -147,7 +156,7 @@ public final class BirdEyePopupService extends Service {
     }
     @Override public void onDestroy() {
         destroyed = true; main.removeCallbacksAndMessages(null); listen(false); ScreenState.removeListener(screen);
-        suspend(); if (instance == this) instance = null; super.onDestroy();
+        suspend(); if (instance == this) { instance = null; notifyState(); } super.onDestroy();
     }
     @Override public IBinder onBind(Intent intent) { return null; }
 }

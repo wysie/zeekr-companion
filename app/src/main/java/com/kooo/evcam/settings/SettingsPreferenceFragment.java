@@ -60,6 +60,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     private static final String TAG = "SettingsPreference";
 
     private AppConfig appConfig;
+    private final Runnable birdEyeStateChanged = this::refreshBirdEyePopup;
     /** 绑定这一页时开发者选项开没开；回到这一页时变了就重绑（见 {@link #onResume}）。 */
     private boolean boundUnlocked;
     /** 外置卷的取值前缀，后面接它在探测结果里的下标。 */
@@ -129,6 +130,19 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     }
 
     @Override
+    public void onStart() {
+        super.onStart();
+        com.kooo.evcam.zeekr.BirdEyePopupService.addStateListener(birdEyeStateChanged);
+        refreshBirdEyePopup();
+    }
+
+    @Override
+    public void onStop() {
+        com.kooo.evcam.zeekr.BirdEyePopupService.removeStateListener(birdEyeStateChanged);
+        super.onStop();
+    }
+
+    @Override
     public void onResume() {
         super.onResume();
         // 停在开发者选项这一页时把它关了（系统开关关闭）：这一页不能再留着，换回默认分区
@@ -148,6 +162,9 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         updateStorageUsage();
         refreshRearViewSize();
         refreshSidePopupSize();
+        refreshCameraLabels();
+        refreshSideNavigation();
+        refreshBirdEyePopup();
     }
 
     // ------------------------------------------------------------------ 录制
@@ -218,6 +235,8 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         // 不弹权限框（项目所有者 2026-10-06）；没有就不显示，见 LocationSource
         bindSwitch("pref_info_bar", appConfig.isInfoBarEnabled(),
                 value -> appConfig.setInfoBarEnabled(value));
+        onClick("pref_info_bar_items", pref ->
+                openFragment(new VehicleInfoFragment(), R.string.set_vehicle_info_title));
     }
 
     /**
@@ -697,6 +716,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     private void bindSidePopup() {
         bindOverlaySwitch("pref_side_popup", appConfig.isSidePopupEnabled(),
                 OverlayCoordinator::setSidePopupEnabled, on -> {
+                    refreshSideNavigation();
                     if (on) {
                         toast(getString(R.string.msg_side_popup_on));
                     }
@@ -843,6 +863,16 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             bindSidePopup();
             toast(getString(R.string.msg_side_popup_reset));
         });
+        refreshSideNavigation();
+    }
+
+    /** Child screens have no XML dependency on a master outside their own root. */
+    private void refreshSideNavigation() {
+        if (appConfig == null) return;
+        for (String key : new String[]{"sub_side_image", "sub_side_window", "sub_side_hud"}) {
+            Preference page = findPreference(key);
+            if (page != null) page.setEnabled(appConfig.isSidePopupEnabled());
+        }
     }
 
     /** 侧视画面出在哪：主屏、HUD、两边都出。存下去的是 {@link AppConfig#getSideOutput} 那三个数。 */
@@ -883,11 +913,14 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     // ------------------------------------------------------------------ 超级后视镜
 
     private void bindRearView() {
-        bindSwitch("pref_rearview_camera_label", appConfig.isRearViewCameraLabelEnabled(), value -> {
-            appConfig.setRearViewCameraLabelEnabled(value);
-            RearViewMirrorService.refreshCameraLabel();
-            com.kooo.evcam.zeekr.SideViewPopupService.refreshCameraLabel();
-        });
+        for (String key : new String[]{"pref_rearview_camera_label", "pref_side_camera_label"}) {
+            bindSwitch(key, appConfig.isRearViewCameraLabelEnabled(), value -> {
+                appConfig.setRearViewCameraLabelEnabled(value);
+                refreshCameraLabels();
+                RearViewMirrorService.refreshCameraLabel();
+                com.kooo.evcam.zeekr.SideViewPopupService.refreshCameraLabel();
+            });
+        }
         // 这个开关原先没查悬浮窗权限：没授权时它会拨上去、提示语还讲了手势怎么用，
         // 而服务在 onStartCommand 里就 stopSelf() 走了，屏幕上什么都没有。
         bindOverlaySwitch("pref_rearview", appConfig.isRearViewEnabled(),
@@ -955,6 +988,14 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             }
             toast(getString(R.string.msg_rearview_reset));
         });
+    }
+
+    private void refreshCameraLabels() {
+        if (appConfig == null) return;
+        for (String key : new String[]{"pref_rearview_camera_label", "pref_side_camera_label"}) {
+            SwitchPreferenceCompat pref = findPreference(key);
+            if (pref != null) pref.setChecked(appConfig.isRearViewCameraLabelEnabled());
+        }
     }
 
     /**
@@ -1236,10 +1277,22 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         bindSlider("pref_bird_popup_size", 20, 75, window.size(), "%", value -> {
             window.setSize(value); com.kooo.evcam.zeekr.BirdEyePopupService.applyLayout();
         });
-        onClick("pref_bird_open", pref -> {
-            if (getActivity() instanceof MainActivity) ((MainActivity) getActivity()).openBirdEyePopup();
-        });
-        onClick("pref_bird_close", pref -> com.kooo.evcam.zeekr.BirdEyePopupService.stop(requireContext()));
+        SwitchPreferenceCompat visible = findPreference("pref_bird_visible");
+        if (visible != null) {
+            visible.setPersistent(false); // This is a live session, never a boot preference.
+            visible.setChecked(com.kooo.evcam.zeekr.BirdEyePopupService.isRunning());
+            visible.setOnPreferenceChangeListener((pref, value) -> {
+                if (Boolean.TRUE.equals(value)) {
+                    boolean accepted = getActivity() instanceof MainActivity
+                            && ((MainActivity) getActivity()).openBirdEyePopup();
+                    visible.setChecked(accepted);
+                } else {
+                    com.kooo.evcam.zeekr.BirdEyePopupService.stop(requireContext());
+                    visible.setChecked(false);
+                }
+                return false; // Service lifecycle reconciles X, startup refusal and other stop paths.
+            });
+        }
         onClick("pref_bird_calibrate", pref -> com.kooo.evcam.zeekr.BirdEyeCalibrationDialog.show(requireContext(), () -> {}));
         onClick("pref_bird_reset_layout", pref -> {
             window.resetLayout(); com.kooo.evcam.zeekr.BirdEyePopupService.applyLayout();
@@ -1250,6 +1303,16 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             ListPreference quality = findPreference("pref_bird_quality");
             if (quality != null) { quality.setValue(Integer.toString(config.quality())); quality.setSummary(quality.getEntry()); }
         });
+    }
+
+    private void refreshBirdEyePopup() {
+        if (!isAdded() || getPreferenceScreen() == null) return;
+        SwitchPreferenceCompat visible = findPreference("pref_bird_visible");
+        if (visible != null) visible.setChecked(com.kooo.evcam.zeekr.BirdEyePopupService.isRunning());
+        SeekBarPreference size = findPreference("pref_bird_popup_size");
+        if (size != null && getContext() != null) {
+            size.setValue(new com.kooo.evcam.zeekr.BirdEyeWindowConfig(requireContext()).size());
+        }
     }
 
     /**
