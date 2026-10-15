@@ -1017,7 +1017,7 @@
     <string name="bird_eye_button_description">Paparan 360 percubaan. Ketik untuk tukar paparan; tekan lama untuk menentukur.</string>
     <string name="bird_eye_calibrate">Tentukur paparan 360</string>
     <string name="bird_eye_camera">Kamera untuk ditentukur</string>
-    <string name="bird_eye_calibration_note">Penentukuran semasa parkir sahaja. Nilai lalai ialah anggaran, bukan penentukuran 009 yang diukur. Arah: 0° depan, 90° kanan, 180° belakang, 270° kiri. Ofset: X positif ke kanan, Y positif ke depan. Pemilihan sumber menukar kamera untuk memastikan empat suapan berbeza. Kawasan hitam tiada liputan diperhatikan. Perubahan disimpan secara automatik.</string>
+    <string name="bird_eye_calibration_note">Penentukuran eksperimen. Nilai lalai ialah anggaran, bukan penentukuran 009 yang diukur. Arah: 0° depan, 90° kanan, 180° belakang, 270° kiri. Ofset: X positif ke kanan, Y positif ke depan. Pemilihan sumber menukar kamera untuk memastikan empat suapan berbeza. Kawasan hitam tiada liputan diperhatikan. Perubahan disimpan secara automatik.</string>
     <string name="bird_eye_reset">Tetapkan semula semua</string>
     <string name="bird_eye_value">%1$s: %2$d</string>
     <string name="bird_eye_length">Panjang kenderaan (cm)</string>
@@ -1037,9 +1037,9 @@
     <string name="bird_eye_front">Depan</string>
     <string name="bird_eye_waiting">Menunggu kamera langsung</string>
     <string name="bird_eye_gpu_blocked">Matikan pelurusan GPU</string>
-    <string name="bird_eye_watermark">Pratonton penentukuran parkir · bukan untuk memandu</string>
+    <string name="bird_eye_watermark">360 eksperimen · belum ditentukur</string>
     <string name="bird_eye_unavailable">360 memerlukan pratonton keliling aktif. Jika pelurusan GPU aktif, matikannya dalam Pilihan pembangun dan mulakan semula aplikasi.</string>
-    <string name="bird_eye_park_required">Pilih P untuk menguji atau menentukur 360</string>
+    <string name="bird_eye_vehicle_required">Sambungkan antara muka kenderaan untuk menguji atau menentukur 360</string>
     <string name="bird_eye_factory_active">Kamera kilang aktif — 360 dijeda</string>
     <string name="bird_eye_invalid_calibration">Pemetaan kamera tidak sah — tetapkan semula</string>
     <string name="bird_eye_slow">360 dijeda: pemprosesan terlalu perlahan atau memori terhad</string>
@@ -1054,8 +1054,8 @@
     <string name="bird_eye_quality_reduced">Resolusi 360 diturunkan kerana pemprosesan perlahan atau memori terhad. Butiran terdapat dalam Diagnostics.</string>
     <string name="msg_record_profile_restart">Pilihan kamera berubah. Keluar dan buka semula aplikasi untuk menggunakannya sebelum merakam.</string>
     <string name="dev_camera_display_title">Alat kamera dan paparan</string>
-    <string name="dev_camera_display_summary">Petikan kamera dan ujian paparan bernombor semasa parkir; eksport ke ZeekrShortcutApp/Developer</string>
-    <string name="dev_camera_display_help">Pastikan kereta dalam P, hentikan rakaman dan tutup kamera kilang dahulu.\n\nEksport kamera menyimpan satu imej tanpa pembetulan bagi setiap ID Camera2 yang tersedia, bersama saiz dan ralat. Paparan biasa aplikasi dilepaskan sementara. Aliran kilang peribadi tidak dapat diakses.\n\nPengenalpastian paparan menghantar kad bernombor selama 10 saat. PNG yang dieksport ialah kad ujian kami, bukan tangkapan skrin kandungan kilang. Catat nombor yang muncul pada HUD, kluster atau skrin belakang. Pemetaan kamera dan tetapan HUD tidak diubah.\n\nFail: ZeekrShortcutApp/Developer pada storan dipilih.</string>
+    <string name="dev_camera_display_summary">Petikan kamera dan ujian paparan bernombor; eksport ke ZeekrShortcutApp/Developer</string>
+    <string name="dev_camera_display_help">Hentikan rakaman dan tutup kamera kilang dahulu.\n\nEksport kamera menyimpan satu imej tanpa pembetulan bagi setiap ID Camera2 yang tersedia, bersama saiz dan ralat. Paparan biasa aplikasi dilepaskan sementara. Aliran kilang peribadi tidak dapat diakses.\n\nPengenalpastian paparan menghantar kad bernombor selama 10 saat. PNG yang dieksport ialah kad ujian kami, bukan tangkapan skrin kandungan kilang. Catat nombor yang muncul pada HUD, kluster atau skrin belakang. Pemetaan kamera dan tetapan HUD tidak diubah.\n\nFail: ZeekrShortcutApp/Developer pada storan dipilih.</string>
     <string name="dev_camera_export">Eksport semua suapan kamera</string>
     <string name="dev_display_identify">Kenal pasti paparan dan eksport kad</string>
     <string name="dev_probe_stop">Henti</string>

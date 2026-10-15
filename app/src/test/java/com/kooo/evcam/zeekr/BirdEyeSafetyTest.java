@@ -5,27 +5,25 @@ import static org.junit.Assert.*;
 import static com.kooo.evcam.zeekr.BirdEyeSafetyPolicy.Block.*;
 
 public class BirdEyeSafetyTest {
-    @Test public void unknownOrNonParkGearCannotEnableThePrototype() {
-        for (String gear : new String[]{null, "", "D", "N", "R", "S"}) assertFalse(BirdEyeSafetyPolicy.parked(gear, 0f));
-        assertTrue(BirdEyeSafetyPolicy.parked("P", 0f));
+    @Test public void connectedVehicleDoesNotRequirePOrAKnownGear() {
+        for (String gear : new String[]{null, "", "P", "D", "N", "S"})
+            assertEquals(NONE, BirdEyeSafetyPolicy.block(true, gear, false, false, false, true, false, true, false));
     }
-    @Test public void parkGearWithContradictoryOrInvalidSpeedIsRejected() {
-        for (Float speed : new Float[]{1f, -1f, Float.NaN, Float.POSITIVE_INFINITY, Float.NEGATIVE_INFINITY})
-            assertFalse(BirdEyeSafetyPolicy.parked("P", speed));
-        assertTrue(BirdEyeSafetyPolicy.parked("P", null)); // Reported P is required even with no speed source.
+    @Test public void disconnectedVehicleRemainsBlocked() {
+        assertEquals(VEHICLE_REQUIRED, BirdEyeSafetyPolicy.block(false, "D", false, false, false, true, false, true, false));
     }
-    @Test public void allFactoryTriggersSuppressEvenAParkedLiveFeed() {
-        assertEquals(FACTORY, BirdEyeSafetyPolicy.block("P", 0f, true, false, false, true, false, true, false));
-        assertEquals(FACTORY, BirdEyeSafetyPolicy.block("P", 0f, false, true, false, true, false, true, false));
-        assertEquals(FACTORY, BirdEyeSafetyPolicy.block("P", 0f, false, false, true, true, false, true, false));
-        assertEquals(FACTORY, BirdEyeSafetyPolicy.block("R", 0f, false, false, false, true, false, true, false));
+    @Test public void factoryAndReverseTriggersStillSuppressTheLiveFeed() {
+        assertEquals(FACTORY, BirdEyeSafetyPolicy.block(true, "D", true, false, false, true, false, true, false));
+        assertEquals(FACTORY, BirdEyeSafetyPolicy.block(true, "D", false, true, false, true, false, true, false));
+        assertEquals(FACTORY, BirdEyeSafetyPolicy.block(true, "D", false, false, true, true, false, true, false));
+        assertEquals(FACTORY, BirdEyeSafetyPolicy.block(true, "R", false, false, false, true, false, true, false));
     }
     @Test public void hiddenGpuInvalidAndSlowPathsCannotDisplayLivePictures() {
-        assertEquals(HIDDEN, BirdEyeSafetyPolicy.block("P", 0f, false, false, false, false, false, true, false));
-        assertEquals(GPU, BirdEyeSafetyPolicy.block("P", 0f, false, false, false, true, true, true, false));
-        assertEquals(CALIBRATION, BirdEyeSafetyPolicy.block("P", 0f, false, false, false, true, false, false, false));
-        assertEquals(PERFORMANCE, BirdEyeSafetyPolicy.block("P", 0f, false, false, false, true, false, true, true));
-        assertEquals(NONE, BirdEyeSafetyPolicy.block("P", 0f, false, false, false, true, false, true, false));
+        assertEquals(HIDDEN, BirdEyeSafetyPolicy.block(true, "D", false, false, false, false, false, true, false));
+        assertEquals(GPU, BirdEyeSafetyPolicy.block(true, "D", false, false, false, true, true, true, false));
+        assertEquals(CALIBRATION, BirdEyeSafetyPolicy.block(true, "D", false, false, false, true, false, false, false));
+        assertEquals(PERFORMANCE, BirdEyeSafetyPolicy.block(true, "D", false, false, false, true, false, true, true));
+        assertEquals(NONE, BirdEyeSafetyPolicy.block(true, "D", false, false, false, true, false, true, false));
     }
     @Test public void firstRetainedFrameIsNotLive() {
         CameraFrameFreshness f = new CameraFrameFreshness();

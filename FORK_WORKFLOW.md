@@ -18,13 +18,14 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/side-view-arrows` | Turn arrows for both display modes; starts from the existing side-view feature |
 | `feature/side-view-hud` | Ferix PR14 adapted to current scheduler and fork screen behavior, with cautious display selection; based on main after mirroring |
 | `feature/009-hud-display` | Opt-in 009 HUD mapping for display 3 at 1280×640, based on the owner's Diagnostics; physical destination and video output await testing |
-| `feature/developer-camera-display-tools` | Parked-only batch Camera2 snapshots and numbered public-display identification, with exclusive native camera closure and Developer-folder exports |
+| `fix/remove-park-only-gates` | Remove gear/speed eligibility from developer tools and DIY 360 preview/calibration; retain factory priority, lifecycle and freshness guards |
+| `feature/developer-camera-display-tools` | Batch Camera2 snapshots and numbered public-display identification, with exclusive native camera closure and Developer-folder exports |
 | `fix/profile-camera-selection` | Honor individual enabled channels, cabin-only previews and recording; reject unapplied channel changes with a restart instruction |
 | `fix/automatic-recording-permission` | Recording request origin, current-setting checks and opt-in driver-start defaults; existing PR heads preserved |
 | `feature/side-view-mirroring` | Fork side-camera horizontal flip, including mirror replacement; existing PR heads preserved |
 | `integration/upstream-about` | Upstream 2.11.4 integration and fork-only About attribution; existing PR heads preserved |
 | `review/project-safety` | Whole-project audit and recording, storage, sharing, update, privacy and lifecycle corrections; based on combined main |
-| `feature/diy-360-safety` | Camera safety review fixes: parked-only 360, readback validation and shared stale-frame guards; based on main |
+| `feature/diy-360-safety` | Camera safety review fixes: readback validation and shared stale-frame guards; based on main |
 | `feature/diy-360-view` | Fork prototype of live ground-plane stitching, with independent manual calibration; based on main |
 | `feature/diy360-refinement` | Bilinear preview sampling and fresh stitched-photo/calibration exports; geometric calibration remains unresolved |
 | `feature/app-storage-folders` | Unified public app folder with legacy playback, per-directory protection and combined cleanup; no automatic migration |

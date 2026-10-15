@@ -134,14 +134,12 @@ final class BirdEyePreview {
         refreshSafety();
         noteState();
     }
-    static boolean parked() {
-        Readings readings = Telemetry.get().readings();
-        return Telemetry.get().carLinkConnected()
-                && BirdEyeSafetyPolicy.parked(readings.text(Signal.GEAR), readings.number(Signal.SPEED));
+    static boolean canConfigure() {
+        return Telemetry.get().carLinkConnected() && !ScreenState.dark() && !ScreenState.androidOff();
     }
     private BirdEyeSafetyPolicy.Block runtimeBlock() {
         Readings readings = Telemetry.get().readings();
-        return BirdEyeSafetyPolicy.block(Telemetry.get().carLinkConnected() ? readings.text(Signal.GEAR) : null, readings.number(Signal.SPEED),
+        return BirdEyeSafetyPolicy.block(Telemetry.get().carLinkConnected(), readings.text(Signal.GEAR),
                 readings.bool(Signal.STOCK_360), readings.bool(Signal.STOCK_POPUP), readings.bool(Signal.PARK_ASSIST),
                 owner.isShown() && owner.getWindowVisibility() == View.VISIBLE && !ScreenState.dark(),
                 PreviewDewarp.isActive(texture), calibration != null, slow);
@@ -156,7 +154,7 @@ final class BirdEyePreview {
     }
     private static int blockText(BirdEyeSafetyPolicy.Block block) {
         switch (block) {
-            case PARK_REQUIRED: return R.string.bird_eye_park_required;
+            case VEHICLE_REQUIRED: return R.string.bird_eye_vehicle_required;
             case FACTORY: return R.string.bird_eye_factory_active;
             case GPU: return R.string.bird_eye_gpu_blocked;
             case CALIBRATION: return R.string.bird_eye_invalid_calibration;

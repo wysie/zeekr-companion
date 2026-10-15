@@ -37,7 +37,6 @@ import com.kooo.evcam.settings.DeveloperMode;
 import com.kooo.evcam.telemetry.Readings;
 import com.kooo.evcam.telemetry.Signal;
 import com.kooo.evcam.telemetry.Telemetry;
-import com.kooo.evcam.zeekr.BirdEyeSafetyPolicy;
 
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -52,7 +51,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
-/** User-initiated, parked-only identification. Never changes camera mappings or HUD settings. */
+/** User-initiated identification. Never changes camera mappings or HUD settings. */
 public final class CameraDisplayToolsActivity extends AppCompatActivity {
     private final Handler main = new Handler(Looper.getMainLooper());
     private final List<Presentation> cards = new ArrayList<>();
@@ -123,7 +122,7 @@ public final class CameraDisplayToolsActivity extends AppCompatActivity {
     private String block() {
         if (!visible || !DeveloperMode.isUnlocked() || ScreenState.dark() || ScreenState.androidOff()) return "Keep the tools open with the screen on.";
         Readings r = Telemetry.get().readings();
-        if (!Telemetry.get().carLinkConnected() || !BirdEyeSafetyPolicy.parked(r.text(Signal.GEAR), r.number(Signal.SPEED))) return "A connected vehicle in P is required.";
+        if (!Telemetry.get().carLinkConnected()) return "A connected vehicle interface is required.";
         if (Boolean.TRUE.equals(r.bool(Signal.STOCK_360)) || Boolean.TRUE.equals(r.bool(Signal.STOCK_POPUP))
                 || Boolean.TRUE.equals(r.bool(Signal.PARK_ASSIST))) return "Close the factory camera / parking-assist view first.";
         return null;

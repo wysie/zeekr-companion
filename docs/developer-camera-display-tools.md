@@ -1,9 +1,9 @@
 # Camera and display identification
 
 Open **Settings → Developer → Camera and display tools**. Unlock Developer options
-first if hidden. Keep the vehicle in P, stop recording and close the factory camera.
-A connected vehicle interface is required; unknown gear, contradictory speed,
-factory camera/parking assistance and screen-off block or cancel the tools.
+first if hidden. Stop recording and close the factory camera.
+A connected vehicle interface is required. There is no gear or speed gate.
+Factory camera/parking assistance, interface loss and screen-off block or cancel the tools.
 
 ## Export all camera feeds
 
@@ -53,7 +53,7 @@ One tap enumerates displays and shows a numbered test card for 10 seconds on
 public, powered-on, presentation-capable secondary displays. Display 0's card is
 shown inside the tools page. Other private/off/unsupported displays are recorded
 as skipped. Small transparent, non-touchable Presentation windows limit coverage;
-Stop, leaving the page, recording starting or losing the parked/factory-camera
+Stop, leaving the page, recording starting or losing the vehicle-interface/factory-camera
 conditions dismisses the cards.
 
 Record which number appears on the actual HUD, instrument cluster, rear screen

@@ -19,8 +19,8 @@ import com.kooo.evcam.R;
 public final class BirdEyeCalibrationDialog {
     private BirdEyeCalibrationDialog() {}
     public static void show(Context context, Runnable changed) {
-        if (!BirdEyePreview.parked()) {
-            android.widget.Toast.makeText(context, R.string.bird_eye_park_required, android.widget.Toast.LENGTH_LONG).show();
+        if (!BirdEyePreview.canConfigure()) {
+            android.widget.Toast.makeText(context, R.string.bird_eye_vehicle_required, android.widget.Toast.LENGTH_LONG).show();
             return;
         }
         BirdEyeConfig config = new BirdEyeConfig(context);
@@ -55,7 +55,7 @@ public final class BirdEyeCalibrationDialog {
             quality.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
                 public void onNothingSelected(AdapterView<?> parent) {}
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
-                    if (position != config.quality() && BirdEyePreview.parked()) {
+                    if (position != config.quality() && BirdEyePreview.canConfigure()) {
                         config.set("quality", position); changed.run();
                     }
                 }
@@ -75,7 +75,7 @@ public final class BirdEyeCalibrationDialog {
                 public void onNothingSelected(AdapterView<?> parent) {}
                 public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                     if (position != config.get(BirdEyeConfig.key(index, "lane"), index)) {
-                        if (!BirdEyePreview.parked()) return;
+                        if (!BirdEyePreview.canConfigure()) return;
                         config.assignLane(index, position); changed.run();
                     }
                 }
@@ -95,7 +95,7 @@ public final class BirdEyeCalibrationDialog {
             mirror.setChecked(config.preferences.getBoolean(BirdEyeConfig.key(index, "mirror"), false));
             mirror.setMinHeight(dp(context, 48)); lens.addView(mirror);
             mirror.setOnCheckedChangeListener((button, on) -> {
-                if (!BirdEyePreview.parked()) return;
+                if (!BirdEyePreview.canConfigure()) return;
                 config.preferences.edit().putBoolean(BirdEyeConfig.key(index, "mirror"), on).apply(); changed.run();
             });
         };
@@ -111,12 +111,12 @@ public final class BirdEyeCalibrationDialog {
         dialog.setOnShowListener(ignored -> {
             com.kooo.evcam.ui.CamDialogs.paintNow(dialog);
             dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(v -> {
-                if (!BirdEyePreview.parked()) return;
+                if (!BirdEyePreview.canConfigure()) return;
                 config.reset(); rebuild.run(); changed.run();
             });
         });
         com.kooo.evcam.telemetry.Telemetry.Listener guard = readings -> {
-            if (!BirdEyePreview.parked()) dialog.dismiss();
+            if (!BirdEyePreview.canConfigure()) dialog.dismiss();
         };
         com.kooo.evcam.screen.ScreenState.Listener screenGuard = new com.kooo.evcam.screen.ScreenState.Listener() {
             public void onScreenOff() { dialog.dismiss(); }
@@ -146,7 +146,7 @@ public final class BirdEyeCalibrationDialog {
             public void onStopTrackingTouch(SeekBar seekBar) { changed.run(); }
             public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
                 if (!fromUser) return;
-                if (!BirdEyePreview.parked()) return;
+                if (!BirdEyePreview.canConfigure()) return;
                 int selected = min + progress;
                 config.set(key, selected);
                 label.setText(context.getString(R.string.bird_eye_value, context.getString(title), selected));
