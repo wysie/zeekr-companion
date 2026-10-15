@@ -143,52 +143,30 @@ public class CameraManagerHolder {
 
     /**
      * 这一份照什么建：车型（存下的映射按它存）、配置里开了几路（主界面的布局也照它）、座舱两格要不要建。
-     * 和主界面 setupLayoutByCarModel / laneFor 是同一个判断：开了不止一路是多路，座舱那一路开着、有格子才建。
+     * 和主界面使用同一个 ProfileChannels：看启用的通道身份，不能把单独座舱误当作环视。
      */
     private static final class Shape {
         final String carModel;
         final Profile profile;
-        final boolean multi;
-        /** 前座舱（key back，配置里的座舱 1）要建。 */
+        final com.kooo.evcam.profile.ProfileChannels channels;
         final boolean cabinFront;
-        /** 后座舱（key left，配置里的座舱 2）要建。 */
         final boolean cabinRear;
-        /** 最多开几路。 */
         final int count;
 
-        private Shape(String carModel, Profile profile, boolean multi, boolean cabinFront, boolean cabinRear, int count) {
+        private Shape(String carModel, Profile profile) {
             this.carModel = carModel;
             this.profile = profile;
-            this.multi = multi;
-            this.cabinFront = cabinFront;
-            this.cabinRear = cabinRear;
-            this.count = count;
+            channels = com.kooo.evcam.profile.ProfileChannels.of(profile);
+            cabinFront = channels.cabinFront;
+            cabinRear = channels.cabinRear;
+            count = Math.max(1, channels.count);
         }
 
         static Shape of(Context app) {
-            Profile profile = new ProfileStore(app).current();
-            int enabled = 0;
-            for (CameraProfile camera : profile.cameras) {
-                if (camera.enabled) {
-                    enabled++;
-                }
-            }
-            boolean multi = enabled > 1;
-            return new Shape(new AppConfig(app).getCarModel(), profile, multi,
-                    multi && hasLane(profile, CameraProfile.ROLE_CABIN_1),
-                    multi && hasLane(profile, CameraProfile.ROLE_CABIN_2),
-                    multi ? Math.min(enabled, 3) : 1);
+            return new Shape(new AppConfig(app).getCarModel(), new ProfileStore(app).current());
         }
 
-        /** 配置里这一路开着、有格子：关着的那一路不算数（三路永远都在配置里，开关才是开关）。 */
-        private static boolean hasLane(Profile profile, String role) {
-            CameraProfile camera = profile.camera(role);
-            return camera != null && camera.enabled && !camera.lanes.isEmpty();
-        }
-
-        String key() {
-            return carModel + (multi ? "/multi" : "/single") + (cabinFront ? "+cabin1" : "") + (cabinRear ? "+cabin2" : "");
-        }
+        String key() { return carModel + "/channels=" + channels.key(); }
     }
 
     /**
@@ -210,6 +188,12 @@ public class CameraManagerHolder {
      */
     public synchronized MultiCameraManager getForMainScreen(Context context) {
         return obtain(context, true);
+    }
+
+    /** Channel toggles are saved immediately but need a new main-screen layout/pipeline. */
+    public synchronized boolean hasPendingChannelChange(Context context) {
+        return cameraManager != null && !cameraManager.isReleased()
+                && !Shape.of(context.getApplicationContext()).key().equals(builtFor);
     }
 
     private MultiCameraManager obtain(Context context, boolean forMainScreen) {
@@ -431,7 +415,7 @@ public class CameraManagerHolder {
             if (plan == null) {
                 manager.initCameras(null, null, null, null, null, null, null, null);
             } else {
-                manager.initCameras(plan.compositeId, null,
+                manager.initCameras(shape.channels.surround ? plan.compositeId : null, null,
                         shape.cabinFront ? plan.cabin1Id : null, null,
                         shape.cabinRear ? plan.cabin2Id : null, null,
                         null, null);

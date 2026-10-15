@@ -334,3 +334,17 @@ should work for both old and new media. Use disposable test files if checking ma
 deletion; do not lower storage limits merely to provoke deletion of real footage.
 Private session logs/relay buffers remain in app-private storage; diagnostics exports
 include session logs as before. Factory Sentry paths are unaffected.
+
+## 15 October daytime export: camera selection mismatch
+
+See [diagnostic findings](009-diagnostics-2026-10-15.md). The recording failure was
+an empty intersection of live Surround and selected Front cabin, before files or
+encoders were opened. Restore Surround ON / cabins OFF and All Auto mapping, then
+fully exit and reopen. After the channel-selection fix, cabin-only probing should
+open the selected cabin channel rather than silently substituting Surround. Only selected
+texture listeners count toward readiness, so hidden unused panes do not block
+initialization or resuming from the background.
+Validate Front-only, Rear-only, Surround + Rear and normal Surround playback/photo/
+manual recording while parked. Changing channel switches in a running session must
+show the restart instruction instead of repeatedly reporting generic start failure.
+The supplied PNG was Balanced; select Full explicitly for the next quality comparison.

@@ -32,6 +32,8 @@ release numbers remain independent of upstream.
 
 ## Additions in this fork
 
+- **Independent camera selection:** Surround, Front cabin and Rear cabin are opened according to their individual profile switches, including cabin-only profiles. Exit and reopen after changing switches; recording shows an explicit restart message while saved channel choices differ from the live pipeline.
+
 - **One app folder:** new recordings, photos and exported diagnostics go under **ZeekrShortcutApp/Videos**, **Photos** and **Logs** on selected storage. Playback, protection, storage accounting and cleanup also support older EVCam folders without moving existing files. See [storage layout](docs/app-storage-folders.md).
 
 - **Recording and transfer integrity:** verified USB/archive copies preserve both files on collisions; relay buffers use private files instead of disposable Android cache. Failed protection-list replacement keeps the old list; developer repair first retains a verified original backup. See the [whole-project review](docs/project-safety-review.md) for fixes and remaining limits.
