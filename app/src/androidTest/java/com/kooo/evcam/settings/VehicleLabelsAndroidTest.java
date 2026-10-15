@@ -42,6 +42,8 @@ public class VehicleLabelsAndroidTest {
                 assertEquals(hud, config.isZeekr009HudEnabled());
             }
             config.setVehicleNameMode("invalid");
+            assertEquals("7x", config.getVehicleNameMode()); // Invalid writes preserve the valid setting.
+            config.setVehicleNameMode("auto");
             assertEquals("auto", config.getVehicleNameMode());
             assertEquals("Zeekr", VehicleLabels.name(english)); // Disposable emulator reports no Zeekr model.
         } finally { config.setVehicleNameMode(original); }
