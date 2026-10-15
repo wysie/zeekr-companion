@@ -28,7 +28,6 @@ import java.util.concurrent.Executors;
 final class BirdEyePreview {
     private static volatile String lastDescription = "never activated";
     static String lastDescription() { return lastDescription; }
-    private static final long TICK_MS = 100;
     private int requestedQuality = BirdEyeQuality.BALANCED, activeQuality = BirdEyeQuality.BALANCED;
     private BirdEyeQuality.Size size = BirdEyeQuality.resolve(BirdEyeQuality.BALANCED, 1280, 5140);
     private int qualityFallbacks;
@@ -49,6 +48,9 @@ final class BirdEyePreview {
     private int revision;
     private long displayedAt = -1, nextCaptureAt, lastReadbackMs;
     private long lastRenderMs, lastLookupMs;
+    private long lastPresentedAt = -1, lastPresentationGapMs = -1;
+    private long copiedTimestamp;
+    private android.graphics.SurfaceTexture copiedIdentity;
     private final CameraFrameFreshness freshness = new CameraFrameFreshness();
     private android.graphics.SurfaceTexture displayedIdentity;
     private boolean slow;
@@ -145,7 +147,10 @@ final class BirdEyePreview {
                 PreviewDewarp.isActive(texture), calibration != null, slow);
     }
     private void invalidatePicture() {
-        revision++; displayedAt = -1; displayedIdentity = null; freshness.reset(); owner.invalidate();
+        revision++; displayedAt = -1; displayedIdentity = null; freshness.reset();
+        copiedIdentity = null; copiedTimestamp = 0;
+        lastPresentedAt = lastPresentationGapMs = -1;
+        owner.invalidate();
     }
     private void refreshSafety() {
         if (!running) return;
@@ -170,6 +175,7 @@ final class BirdEyePreview {
                 + ", pictureAgeMs=" + (displayedAt < 0 ? -1 : now - displayedAt)
                 + ", readbackMs=" + lastReadbackMs
                 + ", renderMs=" + lastRenderMs + ", lookupMs=" + lastLookupMs
+                + ", captureIntervalMs=" + size.intervalMs + ", presentationGapMs=" + lastPresentationGapMs
                 + ", qualityRequested=" + requestedQuality + ", qualityActive=" + activeQuality
                 + ", fallbacks=" + qualityFallbacks + ", qualityReason=" + qualityReason
                 + ", capture=" + size.sourceWidth + "x" + size.sourceHeight
@@ -188,13 +194,26 @@ final class BirdEyePreview {
                 else if (!busy && SystemClock.elapsedRealtime() >= nextCaptureAt) capture();
             }
             owner.invalidate();
-            if (running) main.postDelayed(this, TICK_MS);
+            scheduleTick();
         }
     };
+
+    private void scheduleTick() {
+        main.removeCallbacks(tick);
+        if (running) main.postDelayed(tick, BirdEyeCadence.delay(SystemClock.elapsedRealtime(),
+                nextCaptureAt, busy, lastBlock == BirdEyeSafetyPolicy.Block.NONE));
+    }
 
     private void capture() {
         try {
             final BirdEyeQuality.Size frameSize = size;
+            long began = SystemClock.elapsedRealtime();
+            nextCaptureAt = began + frameSize.intervalMs;
+            android.graphics.SurfaceTexture current = texture.getSurfaceTexture();
+            long timestamp = current == null ? 0 : current.getTimestamp();
+            // Do not pay for readback/blending twice when the producer has not advanced.
+            if (timestamp <= 0) { invalidatePicture(); return; }
+            if (current == copiedIdentity && timestamp == copiedTimestamp) return;
             if (source == null || source.getWidth() != frameSize.sourceWidth || source.getHeight() != frameSize.sourceHeight
                     || output.getWidth() != frameSize.outputWidth || output.getHeight() != frameSize.outputHeight) {
                 Bitmap nextSource = Bitmap.createBitmap(frameSize.sourceWidth, frameSize.sourceHeight, Bitmap.Config.ARGB_8888);
@@ -204,8 +223,7 @@ final class BirdEyePreview {
                 if (source != null) source.recycle(); // No worker is active, and this bitmap is never drawn.
                 source = nextSource; output = nextOutput; inputPixels = nextInput; outputPixels = nextPixels;
             }
-            long began = SystemClock.elapsedRealtime();
-            nextCaptureAt = began + frameSize.intervalMs;
+            began = SystemClock.elapsedRealtime();
             // getBitmap(Bitmap) can fail silently and leave the bitmap UNCHANGED.
             // Transparent sentinels plus render's opacity checks prevent old pixels becoming live.
             source.eraseColor(Color.TRANSPARENT);
@@ -218,8 +236,10 @@ final class BirdEyePreview {
                 invalidatePicture(); return;
             }
             android.graphics.SurfaceTexture identity = texture.getSurfaceTexture();
+            copiedIdentity = identity;
+            copiedTimestamp = identity.getTimestamp();
             long now = SystemClock.elapsedRealtime();
-            freshness.observe(identity, identity.getTimestamp(), now);
+            freshness.observe(identity, copiedTimestamp, now);
             if (!freshness.fresh(now)) { revision++; displayedAt = -1; return; }
             final int request = revision;
             final long capturedAt = freshness.changedAt();
@@ -252,6 +272,7 @@ final class BirdEyePreview {
                 final boolean memoryError = memoryFailure;
                 main.post(() -> {
                     busy = false;
+                    scheduleTick(); // Worker completion re-arms the exact capture deadline.
                     if (!running || revision != request || texture == null
                             || texture.getSurfaceTexture() != capturedIdentity) return;
                     lastLookupMs = timings[0]; lastRenderMs = timings[1];
@@ -269,6 +290,9 @@ final class BirdEyePreview {
                     if (!CameraFrameFreshness.freshAt(capturedAt, SystemClock.elapsedRealtime())) return;
                     target.setPixels(renderedPixels, 0, frameSize.outputWidth, 0, 0, frameSize.outputWidth, frameSize.outputHeight);
                     displayedAt = capturedAt; displayedIdentity = capturedIdentity;
+                    long presentedAt = SystemClock.elapsedRealtime();
+                    lastPresentationGapMs = lastPresentedAt < 0 ? -1 : presentedAt - lastPresentedAt;
+                    lastPresentedAt = presentedAt;
                     owner.invalidate();
                     noteState();
                 });

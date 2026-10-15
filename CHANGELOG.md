@@ -9,7 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
-Nothing yet.
+- Raise DIY 360 preview targets to about 15/10/5 fps at Low/Balanced/Full, pace capture deadlines and skip unchanged source frames while retaining resolution/freshness guards.
 
 ## [2.11.31-personal-alpha] - 2026-10-15
 

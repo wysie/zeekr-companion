@@ -8,18 +8,20 @@ public class BirdEyeQualityTest {
         BirdEyeQuality.Size s = BirdEyeQuality.resolve(BirdEyeQuality.FULL, 1280, 5140);
         assertEquals(1280, s.sourceWidth); assertEquals(5140, s.sourceHeight);
         assertEquals(960, s.outputWidth); assertEquals(1440, s.outputHeight);
-        assertEquals(333, s.intervalMs);
+        assertEquals(200, s.intervalMs);
     }
     @Test public void balancedIsSharperAndPreservesCompositeAspect() {
         BirdEyeQuality.Size s = BirdEyeQuality.resolve(BirdEyeQuality.BALANCED, 1280, 5140);
         assertEquals(512, s.sourceWidth); assertEquals(2056, s.sourceHeight);
         assertEquals(640, s.outputWidth); assertEquals(960, s.outputHeight);
+        assertEquals(100, s.intervalMs);
         assertEquals(1280.0 / 5140, (double)s.sourceWidth / s.sourceHeight, .001);
     }
     @Test public void lowRetainsTheSmallOutputWithCorrectSourceAspect() {
         BirdEyeQuality.Size s = BirdEyeQuality.resolve(BirdEyeQuality.LOW, 1280, 5140);
         assertEquals(256, s.sourceWidth); assertEquals(1028, s.sourceHeight);
         assertEquals(320, s.outputWidth); assertEquals(480, s.outputHeight);
+        assertEquals(67, s.intervalMs);
     }
     @Test public void nativeSmallFeedIsNotUpscaledDuringReadback() {
         BirdEyeQuality.Size s = BirdEyeQuality.resolve(BirdEyeQuality.BALANCED, 128, 514);
