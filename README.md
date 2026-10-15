@@ -225,6 +225,11 @@ modes, including camera labels shared with the side popup. The side-view reset i
 
 ### USB startup and storage fallback
 
+Use the designated dashcam/Sentry storage port: **USB-C on the 009** and
+**USB-A on the 7X**. Other ports may lose power after you leave; confirm that
+the selected drive remains available. The Storage page identifies both models
+rather than assuming every car uses the 7X port layout.
+
 With USB selected and **Allow internal storage fallback** off (default), an existing
 recording request waits for a writable USB drive instead of using head-unit storage.
 Detection runs in the background every two seconds for the first two minutes,
