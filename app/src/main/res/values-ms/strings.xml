@@ -1003,8 +1003,8 @@
     <string name="set_hud_side_size_summary">Lebar mengikut bentuk di bawah</string>
     <string name="set_hud_side_shape_title">Bentuk gambar HUD (lebar ÷ tinggi, %)</string>
     <string name="set_hud_side_shape_summary">100 ialah segi empat sama; lebih tinggi lebih lebar</string>
-    <string name="set_hud_side_left_title">Kedudukan melintang pada HUD (%)</string>
-    <string name="set_hud_side_left_summary">0 ialah kiri, 100 ialah kanan</string>
+    <string name="set_hud_side_left_title">Kedudukan mendatar HUD (%)</string>
+    <string name="set_hud_side_left_summary">Tetap: 0 kiri, 100 kanan. Jika Ikut sisi isyarat dihidupkan: 0 tepi sisi isyarat, 50 tengah.</string>
     <string name="set_hud_side_vertical_title">Ketinggian pada HUD (%)</string>
     <string name="set_hud_side_vertical_summary">0 ialah atas, 100 ialah bawah</string>
     <string name="set_hud_side_opacity_title">Kelegapan gambar HUD (%)</string>

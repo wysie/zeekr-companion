@@ -154,3 +154,12 @@ Source feature commits include `3fa7005e`, `3262e896`, `5b625ed9`, `4520dc05`,
 009 mapping, freshness guards and current scheduler. New picture treatments and
 indicator-side positioning are opt-in; Ferix's owner-specific defaults and
 factory-view bypass are not imported.
+
+## CAMCORDER side-window transitions
+
+Popup/HUD fades and hidden-view alpha are adapted from
+[FerixzTanz/CAMCORDER 3176bae5](https://github.com/FerixzTanz/CAMCORDER/commit/3176bae5)
+and HUD side-switch follow-up `6218413c`. The port retains shared screen-popup
+placement, startup grace, stale covers, close dismissal and immediate factory
+handover; switching sides requires new source progression. Native regressions
+use synthetic buffers and disposable secondary displays, not vehicle cameras.

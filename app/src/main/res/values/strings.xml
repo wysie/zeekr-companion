@@ -1013,8 +1013,8 @@
     <string name="set_hud_side_size_summary">宽度由下面的形状决定</string>
     <string name="set_hud_side_shape_title">HUD 画面形状（宽 ÷ 高，%）</string>
     <string name="set_hud_side_shape_summary">100 为正方形，越大越宽</string>
-    <string name="set_hud_side_left_title">HUD 画面左右位置（%）</string>
-    <string name="set_hud_side_left_summary">0 贴左，100 贴右</string>
+    <string name="set_hud_side_left_title">HUD 水平位置（%）</string>
+    <string name="set_hud_side_left_summary">固定位置：0 靠左，100 靠右。开启跟随转向灯：0 靠打灯侧边缘，50 居中。</string>
     <string name="set_hud_side_vertical_title">HUD 画面上下位置（%）</string>
     <string name="set_hud_side_vertical_summary">0 贴顶，100 贴底</string>
     <string name="set_hud_side_opacity_title">HUD 画面不透明度（%）</string>

@@ -195,6 +195,7 @@ public class SideViewHudPanel extends SideViewPopupView {
             releasePresentation();
         }
         if (isAttached()) {
+            boolean wasShown = windowShown();
             boolean visibilityChanged = show != visible;
             visible = show;
             if (sideChanged) {
@@ -202,13 +203,17 @@ public class SideViewHudPanel extends SideViewPopupView {
                 // 不然相机换成了左路、窗口还停在右边
                 place();
             }
-            applyWindowAlpha();
+            if (sideChanged) clearFrames();
+            if (show && (visibilityChanged || sideChanged)) reveal(wasShown && !sideChanged);
+            else if (!show && wasShown) hideWithFade();
+            else applyWindowAlpha();
             if (sideChanged || visibilityChanged) {
                 invalidate();
             }
             return;
         }
         releasePresentation();
+        setAlpha(IDLE_ALPHA);
         boolean overlay = appConfig.isHudSideOverlay();
         // Presentation 的窗口类型改不了：Android 12 上 setType(2038) 被拒（Window type mismatch，
         // 2026-10-15 实车）。悬浮窗层级要走 createWindowContext(屏, 2038) 拿到的 WindowManager 直接挂。
@@ -224,6 +229,7 @@ public class SideViewHudPanel extends SideViewPopupView {
             visible = show;
             applyWindowAlpha();
             attached = true;
+            if (show) reveal(false);
             lastState = (show ? "showing" : "ready") + " on display " + display.getDisplayId() + " (" + display.getName() + ")"
                     + (useOverlay ? " overlay" : overlay ? " presentation (overlay needs Android 11+)" : " presentation");
             BlackBox.note("HUD 侧视窗挂上：" + lastState);
@@ -315,7 +321,7 @@ public class SideViewHudPanel extends SideViewPopupView {
             return;
         }
         visible = false;
-        applyWindowAlpha();
+        hideWithFade();
     }
 
     /** 整个拿掉。 */
@@ -351,7 +357,7 @@ public class SideViewHudPanel extends SideViewPopupView {
 
     /** 显示时按设置里的不透明度，备着时全透明。 */
     private void applyWindowAlpha() {
-        float alpha = visible ? HudNightDimming.opacity(
+        float alpha = windowShown() ? HudNightDimming.opacity(
                 appConfig.getHudSideOpacityPercent(), appConfig.getHudSideNightPercent(), night) : 0f;
         Presentation p = presentation;
         if (p != null) {
@@ -378,7 +384,11 @@ public class SideViewHudPanel extends SideViewPopupView {
         }
     }
 
+    @Override protected void windowUp() { applyWindowAlpha(); }
+    @Override protected void windowDown() { applyWindowAlpha(); }
+
     private void releasePresentation() {
+        abortFade();
         Presentation p = presentation;
         FrameLayout frame = root;
         WindowManager wm = overlayWm;

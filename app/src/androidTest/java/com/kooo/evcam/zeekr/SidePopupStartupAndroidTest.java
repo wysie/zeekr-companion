@@ -178,7 +178,7 @@ public class SidePopupStartupAndroidTest {
             assertEquals(0f, f.alpha(), 0f);
             await("Waiting UI must appear after startup deadline", () -> f.alpha() == 1f);
             main(() -> f.view.conceal());
-            assertEquals(0f, f.alpha(), 0f);
+            await("Fade-out finishes hidden", () -> f.alpha() == 0f);
             main(() -> {
                 f.view.show(LaneCycle.RIGHT);
                 f.view.conceal();
@@ -187,4 +187,37 @@ public class SidePopupStartupAndroidTest {
             assertEquals("Cancelled request must not reappear", 0f, f.alpha(), 0f);
         }
     }
+    @Test public void warmReactivationFadesAndSideSwitchRequiresNewSourceFrames() throws Exception {
+        try (Fixture f = new Fixture()) {
+            main(() -> f.view.show(LaneCycle.LEFT));
+            for (int i = 0; i < 12; i++) { f.frame(Color.RED); SystemClock.sleep(30); }
+            assertEquals(1f, f.alpha(), 0f);
+            main(() -> { assertEquals(1f, f.view.getAlpha(), .02f); f.view.conceal(); });
+            await("Window hides after fade", () -> f.alpha() == 0f);
+            for (int i = 0; i < 3; i++) { f.frame(Color.BLUE); SystemClock.sleep(30); }
+            main(() -> {
+                assertEquals(SideViewPopupView.IDLE_ALPHA, f.view.getAlpha(), .001f);
+                f.view.show(LaneCycle.LEFT);
+                assertEquals(1f, ((WindowManager.LayoutParams) f.view.getLayoutParams()).alpha, 0f);
+                assertTrue(f.view.getAlpha() < 1f);
+            });
+            for (int i = 0; i < 7; i++) { f.frame(Color.BLUE); SystemClock.sleep(30); }
+            main(() -> {
+                assertEquals(1f, f.view.getAlpha(), .02f);
+                f.view.show(LaneCycle.RIGHT);
+                assertEquals("Old side remains hidden", 0f,
+                        ((WindowManager.LayoutParams) f.view.getLayoutParams()).alpha, 0f);
+            });
+            for (int i = 0; i < 9; i++) { f.frame(Color.GREEN); SystemClock.sleep(30); }
+            assertEquals(1f, f.alpha(), 0f);
+            main(() -> {
+                f.view.conceal();
+                f.view.detach();
+                assertFalse(f.view.isAttached());
+            });
+            SystemClock.sleep(250);
+            main(() -> assertFalse("Detached animation must not reopen", f.view.isAttached()));
+        }
+    }
+
 }
