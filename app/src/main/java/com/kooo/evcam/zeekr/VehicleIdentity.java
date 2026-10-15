@@ -8,7 +8,7 @@ import java.util.regex.Pattern;
 public final class VehicleIdentity {
     public enum Model { UNKNOWN, ZEEKR_009, ZEEKR_7X }
     private static final Pattern NAMED_MODEL = Pattern.compile(
-            "(?:\\bzeekr[ _-]*|极氪\\s*)(009|7x)(?![a-z0-9])", Pattern.CASE_INSENSITIVE);
+            "\\bzeekr[ _-]*(009|7x)(?![a-z0-9])", Pattern.CASE_INSENSITIVE);
     private VehicleIdentity() {}
 
     public static Model resolve(String selection, String... reportedNames) {
@@ -19,6 +19,7 @@ public final class VehicleIdentity {
         for (String name : reportedNames) {
             if (name == null) continue;
             String text = name.trim().toLowerCase(Locale.ROOT);
+            if (text.startsWith("极氪")) text = "zeekr " + text.substring(2);
             Model found = model(text);
             if (found == Model.UNKNOWN) {
                 Matcher match = NAMED_MODEL.matcher(text);
