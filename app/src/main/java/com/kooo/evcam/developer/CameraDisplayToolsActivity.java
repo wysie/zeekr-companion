@@ -1,23 +1,14 @@
 package com.kooo.evcam.developer;
 
-import android.app.Presentation;
 import android.content.Context;
 import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.graphics.Color;
-import android.graphics.Paint;
-import android.graphics.drawable.ColorDrawable;
 import android.hardware.display.DisplayManager;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Looper;
 import android.os.SystemClock;
-import android.view.Display;
-import android.view.Gravity;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageView;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -38,26 +29,22 @@ import com.kooo.evcam.telemetry.Readings;
 import com.kooo.evcam.telemetry.Signal;
 import com.kooo.evcam.telemetry.Telemetry;
 
-import org.json.JSONArray;
 import org.json.JSONObject;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.nio.charset.StandardCharsets;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 import java.util.UUID;
 
 /** User-initiated identification. Never changes camera mappings or HUD settings. */
 public final class CameraDisplayToolsActivity extends AppCompatActivity {
     private final Handler main = new Handler(Looper.getMainLooper());
-    private final List<Presentation> cards = new ArrayList<>();
     private TextView status;
     private Button scanButton, displayButton, stopButton;
-    private ImageView mainCard;
+    private FrameLayout root;
     private boolean visible, identifying, leaseOwned, awaitingClose;
     private volatile boolean scanning, cancelScan;
     private long closeDeadline;
@@ -67,6 +54,8 @@ public final class CameraDisplayToolsActivity extends AppCompatActivity {
         final JSONObject report;
         final java.util.concurrent.ExecutorService files = java.util.concurrent.Executors.newSingleThreadExecutor();
         File folder;
+        DisplayIdentification session;
+        boolean completed;
         DisplayRun(JSONObject report) { this.report = report; }
     }
     private final Telemetry.Listener telemetryListener = r -> checkSafety();
@@ -83,7 +72,8 @@ public final class CameraDisplayToolsActivity extends AppCompatActivity {
         if (!DeveloperMode.isUnlocked()) { finish(); return; }
         LinearLayout content = new LinearLayout(this);
         content.setOrientation(LinearLayout.VERTICAL); content.setPadding(24, 16, 24, 16);
-        ScrollView scroll = new ScrollView(this); scroll.addView(content); setContentView(scroll);
+        ScrollView scroll = new ScrollView(this); scroll.addView(content);
+        root = new FrameLayout(this); root.addView(scroll, new FrameLayout.LayoutParams(-1, -1)); setContentView(root);
         TextView title = new TextView(this); title.setText(R.string.dev_camera_display_title); title.setTextSize(24); content.addView(title);
         TextView help = new TextView(this);
         help.setText(R.string.dev_camera_display_help);
@@ -92,7 +82,6 @@ public final class CameraDisplayToolsActivity extends AppCompatActivity {
         displayButton = button(content, getString(R.string.dev_display_identify), this::startDisplays);
         stopButton = button(content, getString(R.string.dev_probe_stop), () -> stop("Stopped by user"));
         status = new TextView(this); status.setTextSize(18); content.addView(status);
-        mainCard = new ImageView(this); content.addView(mainCard);
         button(content, getString(R.string.dev_probe_back), this::finish);
         Telemetry.get().addListener(telemetryListener);
         updateButtons();
@@ -219,94 +208,63 @@ public final class CameraDisplayToolsActivity extends AppCompatActivity {
 
     private void startDisplays() {
         if (!canStart()) return;
-        identifying = true; displayRun = null; updateButtons();
+        identifying = true; updateButtons();
         try {
-            JSONObject displayReport = report("display_test_cards");
-            final DisplayRun run = new DisplayRun(displayReport);
+            final DisplayRun run = new DisplayRun(report("display_test_cards"));
             displayRun = run;
-            displayReport.put("note", "PNGs are generated test cards, NOT screenshots. A successful show call does not prove the physical HUD destination. Please record which physical screen showed each ID.");
-            JSONArray results = new JSONArray(); displayReport.put("displays", results);
-            DisplayManager dm = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
-            List<Bitmap> bitmaps = new ArrayList<>(); List<String> names = new ArrayList<>();
-            for (Display display : dm.getDisplays()) {
-                Display.Mode mode = display.getMode(); int w = mode.getPhysicalWidth(), h = mode.getPhysicalHeight();
-                JSONObject row = new JSONObject().put("id", display.getDisplayId()).put("name", display.getName())
-                        .put("width", w).put("height", h).put("flags", display.getFlags()).put("state", display.getState());
-                results.put(row);
-                if (display.getState() != Display.STATE_ON || (display.getFlags() & Display.FLAG_PRIVATE) != 0
-                        || (display.getDisplayId() != Display.DEFAULT_DISPLAY && (display.getFlags() & Display.FLAG_PRESENTATION) == 0)) {
-                    row.put("result", "Skipped: off, private or not presentation-capable"); continue;
-                }
-                Bitmap card = card(display.getDisplayId(), w, h);
-                String name = "display_" + display.getDisplayId() + "_test_card.png";
-                bitmaps.add(card); names.add(name); row.put("test_card", name);
-                if (display.getDisplayId() == Display.DEFAULT_DISPLAY) {
-                    mainCard.setImageBitmap(card); row.put("result", "Shown inside tools activity");
-                } else {
-                    try {
-                        Presentation presentation = new Presentation(this, display);
-                        ImageView image = new ImageView(presentation.getContext()); image.setImageBitmap(card);
-                        presentation.setContentView(image);
-                        Window window = presentation.getWindow();
-                        if (window == null) throw new IllegalStateException("No Presentation window");
-                        window.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
-                        window.addFlags(WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
-                        window.clearFlags(WindowManager.LayoutParams.FLAG_DIM_BEHIND);
-                        window.setGravity(Gravity.CENTER);
-                        window.setLayout(card.getWidth(), card.getHeight());
-                        cards.add(presentation);
-                        presentation.show(); window.setLayout(card.getWidth(), card.getHeight());
-                        row.put("result", "Presentation.show returned; physical visibility unconfirmed");
-                    } catch (Exception e) { row.put("result", e.toString()); }
-                }
-            }
-            JSONObject snapshot = new JSONObject(displayReport.toString());
+            // All file operations are serialized, including observations, cancellation and final report.
             run.files.execute(() -> {
-                try {
-                    File destination = folder("DisplayTest");
-                    run.folder = destination;
-                    for (int i = 0; i < bitmaps.size(); i++) {
-                        try (FileOutputStream out = new FileOutputStream(new File(destination, names.get(i)))) {
-                            if (!bitmaps.get(i).compress(Bitmap.CompressFormat.PNG, 100, out)) throw new IllegalStateException("PNG encoding failed");
-                        }
-                    }
-                    writeReport(destination, snapshot);
-                    main.post(() -> { if (displayRun == run && !isDestroyed()) show("Display cards exported: " + destination + "\nNote which physical screens showed each ID."); });
-                } catch (Exception e) { main.post(() -> show("Display export failed: " + e)); }
+                try { run.folder = folder("DisplayTest"); }
+                catch (Exception e) { displayExportFailed(run, e); }
             });
-            main.postDelayed(() -> { if (displayRun == run && identifying) finishDisplays("10-second display test completed"); }, 10_000);
+            run.session = new DisplayIdentification(this, root, run.report, new DisplayIdentification.Listener() {
+                @Override public void card(String name, Bitmap bitmap) {
+                    run.files.execute(() -> {
+                        try {
+                            if (run.folder == null) return;
+                            try (FileOutputStream out = new FileOutputStream(new File(run.folder, name))) {
+                                if (!bitmap.compress(Bitmap.CompressFormat.PNG, 100, out)) throw new IllegalStateException("PNG encoding failed");
+                            }
+                        } catch (Exception e) { displayExportFailed(run, e); }
+                    });
+                }
+                @Override public void changed() { saveDisplayReport(run); }
+                @Override public void finished(String reason) { completeDisplays(run, reason); }
+            });
+            DisplayManager dm = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
+            run.session.start(dm.getDisplays());
         } catch (Exception e) { finishDisplays("Display test failed: " + e); }
     }
-    private void finishDisplays(String reason) {
-        identifying = false;
-        for (Presentation presentation : cards) { try { presentation.dismiss(); } catch (Exception ignored) { } }
-        cards.clear(); mainCard.setImageDrawable(null);
-        DisplayRun run = displayRun;
-        if (run != null) {
-            try { run.report.put("end_reason", reason); } catch (Exception ignored) { }
-            String json = run.report.toString();
-            // Serialized behind card/report creation, even if Stop is pressed immediately.
-            run.files.execute(() -> {
-                try { if (run.folder != null) writeReport(run.folder, new JSONObject(json)); }
-                catch (Exception e) { main.post(() -> { if (displayRun == run) show("Could not save display end status: " + e); }); }
-            });
-            run.files.shutdown();
-        }
-        show(reason + "\nExports are under ZeekrShortcutApp/Developer/DisplayTest_…"); updateButtons();
+    private void displayExportFailed(DisplayRun run, Exception error) {
+        main.post(() -> {
+            if (displayRun != run || isDestroyed()) return;
+            if (!run.completed) {
+                try { run.report.put("export_error", error.toString()); } catch (Exception ignored) { }
+                finishDisplays("Display export failed: " + error);
+            } else show("Display export failed: " + error);
+        });
     }
-    private static Bitmap card(int id, int nativeW, int nativeH) {
-        int w = Math.max(80, Math.min(320, nativeW / 3)), h = Math.max(60, Math.min(140, nativeH / 3));
-        Bitmap bitmap = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bitmap); canvas.drawColor(Color.BLACK);
-        Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG);
-        int[] colors = { Color.CYAN, Color.YELLOW, Color.GREEN, Color.MAGENTA };
-        paint.setColor(colors[Math.floorMod(id, colors.length)]); paint.setStyle(Paint.Style.STROKE); paint.setStrokeWidth(4);
-        canvas.drawRect(2, 2, w - 2, h - 2, paint); paint.setStyle(Paint.Style.FILL); paint.setTextAlign(Paint.Align.CENTER);
-        paint.setTextSize(Math.min(32, h / 3f)); canvas.drawText("DISPLAY " + id, w / 2f, h * .43f, paint);
-        paint.setColor(Color.WHITE); paint.setTextSize(Math.min(18, h / 6f));
-        canvas.drawText(nativeW + " × " + nativeH, w / 2f, h * .66f, paint);
-        canvas.drawText("TEST CARD · 10 seconds", w / 2f, h * .86f, paint);
-        return bitmap;
+    private void saveDisplayReport(DisplayRun run) {
+        if (run.completed) return;
+        String json = run.report.toString();
+        run.files.execute(() -> {
+            try { if (run.folder != null) writeReport(run.folder, new JSONObject(json)); }
+            catch (Exception e) { displayExportFailed(run, e); }
+        });
+    }
+    private void finishDisplays(String reason) {
+        DisplayRun run = displayRun;
+        if (run == null || run.completed) { identifying = false; updateButtons(); return; }
+        if (run.session != null) run.session.stop(reason);
+        else {
+            try { run.report.put("end_reason", reason); } catch (Exception ignored) { }
+            saveDisplayReport(run); completeDisplays(run, reason);
+        }
+    }
+    private void completeDisplays(DisplayRun run, String reason) {
+        if (run.completed) return;
+        run.completed = true; identifying = false; run.files.shutdown();
+        show(reason + "\nExports are under ZeekrShortcutApp/Developer/DisplayTest_…"); updateButtons();
     }
     private static void writeReport(File folder, JSONObject report) throws Exception {
         File temp = new File(folder, "report.json.tmp");

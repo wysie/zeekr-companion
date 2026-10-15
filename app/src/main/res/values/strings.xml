@@ -1056,7 +1056,7 @@
     <string name="msg_record_profile_restart">相机选择已更改。请退出并重新打开应用后再录像。</string>
     <string name="dev_camera_display_title">相机与显示屏工具</string>
     <string name="dev_camera_display_summary">批量保存相机画面、显示编号测试卡；导出至 ZeekrShortcutApp/Developer</string>
-    <string name="dev_camera_display_help">请先停止录像并关闭原厂相机。\n\n相机导出会暂时释放本应用的正常画面，为每个可用的 Camera2 ID 保存一张未经校正的图像，以及尺寸和错误报告；无法获取未公开的原厂视频流。\n\n显示屏识别会发送持续 10 秒的编号测试卡。导出的 PNG 是我们发送的测试卡，不是原厂画面的截图。请记下 HUD、仪表或后排屏幕上出现的编号。不会更改相机映射或 HUD 设置。\n\n文件保存至所选存储的 ZeekrShortcutApp/Developer。</string>
+    <string name="dev_camera_display_help">请先停止录像并关闭原厂相机。\n\n相机导出会暂时释放本应用的正常画面，为每个可用的 Camera2 ID 保存一张未经校正的图像，以及尺寸和错误报告；无法获取未公开的原厂视频流。\n\n显示屏识别先显示主屏大测试卡。确认可见后，每次单独测试一个副屏，持续最多 30 秒。请记录编号实际出现的位置，或选择未看到。导出的 PNG 是生成的测试卡，不是截图。不会更改相机映射或 HUD 设置。\n\n文件保存至所选存储的 ZeekrShortcutApp/Developer。</string>
     <string name="dev_camera_export">导出全部相机画面</string>
     <string name="dev_display_identify">识别显示屏并导出测试卡</string>
     <string name="dev_probe_stop">停止</string>
@@ -1141,4 +1141,32 @@
     <string name="msg_wait_usb_before_internal">正在等待 U 盘，10 秒后才允许使用内置存储。</string>
     <string name="record_waiting_usb">等待 U 盘</string>
     <string name="record_cancel_usb_wait">点击取消等待</string>
+
+    <string name="dev_display_main_title">主屏显示检查</string>
+    <string name="dev_display_main_help">请先确认下方的大号 DISPLAY 0 测试卡可见，再测试其他屏幕。</string>
+    <string name="dev_display_main_confirm">我看到了 DISPLAY 0</string>
+    <string name="dev_display_main_not_seen">测试卡不可见</string>
+    <string name="dev_display_choose_title">选择要测试的屏幕</string>
+    <string name="dev_display_choose_help">每次仅测试一个屏幕。编号不代表实际屏幕位置，请只记录亲眼看到的结果。</string>
+    <string name="dev_display_test_target">测试屏幕 %1$d · %2$d × %3$d</string>
+    <string name="dev_display_last_result">上次观察：%1$s</string>
+    <string name="dev_display_no_secondary">没有可用的、已开启的公开副屏。</string>
+    <string name="dev_display_finish">结束并保存</string>
+    <string name="dev_display_secondary_title">查看其他屏幕</string>
+    <string name="dev_display_secondary_help">请在挡风玻璃 HUD、仪表或其他屏幕上寻找 DISPLAY %1$d。选择实际出现的位置，或选择未看到，然后保存。本页仅显示控制项，不显示目标测试卡。</string>
+    <string name="dev_display_observation">测试卡出现在哪里？</string>
+    <string name="dev_display_save_observation">保存观察结果</string>
+    <string name="dev_display_countdown">剩余时间：%1$d 秒</string>
+    <string name="dev_display_timed_out">已超时；可见性未确认</string>
+    <string name="dev_display_show_failed">无法打开测试窗口</string>
+    <string name="dev_display_unconfirmed">可见性未确认</string>
+    <string-array name="dev_display_observations">
+        <item>请选择观察结果</item>
+        <item>挡风玻璃 HUD</item>
+        <item>仪表屏</item>
+        <item>后排 / 乘客屏</item>
+        <item>主屏</item>
+        <item>其他屏幕</item>
+        <item>未看到</item>
+    </string-array>
 </resources>

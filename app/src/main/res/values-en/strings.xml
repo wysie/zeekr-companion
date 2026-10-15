@@ -1069,7 +1069,7 @@
     <string name="msg_record_profile_restart">Camera selection changed. Exit and reopen the app to apply it before recording.</string>
     <string name="dev_camera_display_title">Camera and display tools</string>
     <string name="dev_camera_display_summary">Camera snapshots and numbered display tests; exports to ZeekrShortcutApp/Developer</string>
-    <string name="dev_camera_display_help">Stop recording and close the factory camera first.\n\nCamera export saves one uncorrected image per available Camera2 ID, plus sizes and errors. It temporarily releases this app’s regular feeds. It cannot expose private factory streams.\n\nDisplay identification sends numbered cards for 10 seconds. Exported PNGs are our test cards, not screenshots of factory content. Note which number appears on the HUD, cluster or rear screen. No camera mappings or HUD settings are changed.\n\nFiles: ZeekrShortcutApp/Developer on the selected storage.</string>
+    <string name="dev_camera_display_help">Stop recording and close the factory camera first.\n\nCamera export saves one uncorrected image per available Camera2 ID, plus sizes and errors. It temporarily releases this app’s regular feeds. It cannot expose private factory streams.\n\nDisplay identification starts with a large main-screen card. Confirm it, then test one secondary display at a time for up to 30 seconds and record where its number appeared, or that it was not seen. Exported PNGs are generated cards, not screenshots. Camera mappings and HUD settings stay unchanged.\n\nFiles: ZeekrShortcutApp/Developer on the selected storage.</string>
     <string name="dev_camera_export">Export all camera feeds</string>
     <string name="dev_display_identify">Identify displays and export cards</string>
     <string name="dev_probe_stop">Stop</string>
@@ -1154,4 +1154,32 @@
     <string name="msg_wait_usb_before_internal">Waiting up to 10 seconds for USB before using internal storage.</string>
     <string name="record_waiting_usb">Waiting for USB</string>
     <string name="record_cancel_usb_wait">Tap to cancel waiting</string>
+
+    <string name="dev_display_main_title">Main-screen check</string>
+    <string name="dev_display_main_help">Confirm that the large DISPLAY 0 card below is visible before testing another screen.</string>
+    <string name="dev_display_main_confirm">I can see DISPLAY 0</string>
+    <string name="dev_display_main_not_seen">Card not visible</string>
+    <string name="dev_display_choose_title">Choose a display to test</string>
+    <string name="dev_display_choose_help">Test one display at a time. Its number does not identify its physical screen. Record only what you actually see.</string>
+    <string name="dev_display_test_target">Test display %1$d · %2$d × %3$d</string>
+    <string name="dev_display_last_result">Last observation: %1$s</string>
+    <string name="dev_display_no_secondary">No public, powered-on secondary display is available.</string>
+    <string name="dev_display_finish">Finish and save</string>
+    <string name="dev_display_secondary_title">Check the other screens</string>
+    <string name="dev_display_secondary_help">Look for DISPLAY %1$d on the windscreen HUD, instrument cluster or another screen. Choose where it appeared, or Not seen, then save. This page shows the controls, not the target card.</string>
+    <string name="dev_display_observation">Where did the card appear?</string>
+    <string name="dev_display_save_observation">Save observation</string>
+    <string name="dev_display_countdown">Time remaining: %1$d seconds</string>
+    <string name="dev_display_timed_out">Timed out; visibility unconfirmed</string>
+    <string name="dev_display_show_failed">Window could not open</string>
+    <string name="dev_display_unconfirmed">Visibility unconfirmed</string>
+    <string-array name="dev_display_observations">
+        <item>Choose an observation</item>
+        <item>Windscreen HUD</item>
+        <item>Instrument cluster</item>
+        <item>Rear / passenger screen</item>
+        <item>Main screen</item>
+        <item>Another screen</item>
+        <item>Not seen</item>
+    </string-array>
 </resources>
