@@ -113,6 +113,32 @@ public class PreferenceKeysTest {
         return found;
     }
 
+    @Test
+    public void everySubpageCanResolveItsOwnDependenciesAndKeysAreUnique() throws Exception {
+        File moduleRoot = findModuleRoot();
+        assumeTrue("Cannot locate module sources", moduleRoot != null);
+        Element document = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new File(moduleRoot, "src/main/res/xml/preferences.xml")).getDocumentElement();
+        Set<String> unique = new LinkedHashSet<>();
+        NodeList all = document.getElementsByTagName("*");
+        for (int i = 0; i < all.getLength(); i++) {
+            Element element = (Element) all.item(i);
+            String key = element.getAttribute("android:key");
+            assertTrue("Duplicate settings key: " + key, key.isEmpty() || unique.add(key));
+            if (!"PreferenceScreen".equals(element.getTagName())) continue;
+            Set<String> local = new LinkedHashSet<>();
+            local.add(key);
+            NodeList children = element.getElementsByTagName("*");
+            for (int j = 0; j < children.getLength(); j++)
+                local.add(((Element) children.item(j)).getAttribute("android:key"));
+            for (int j = 0; j < children.getLength(); j++) {
+                String dependency = ((Element) children.item(j)).getAttribute("android:dependency");
+                assertTrue(key + " cannot inflate dependency " + dependency,
+                        dependency.isEmpty() || local.contains(dependency));
+            }
+        }
+    }
+
     /** 从工作目录往上找，直到看见 {@code src/main/res/xml/preferences.xml}。 */
     private static File findModuleRoot() {
         File dir = new File(System.getProperty("user.dir", "."));

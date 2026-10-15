@@ -285,3 +285,5 @@ or ellipsized. No baseline alignment is used. Camera previews receive the remain
 height; normal wide layouts retain one row. Existing action IDs and callbacks stay
 unchanged. Native tests cover EN/ZH/MS, both themes, 1.0/1.3 font scale, widths
 360–1800 dp, resizing back down, photo controls and RTL placement.
+
+2026-10-15 fork 菜单整理：保留原生两栏分类；侧视画面/弹窗和录制水印使用子页，HUD 与开发者工具使用分组标题。子页沿用同一导航行与返回栈，切换分类清空旧子页路径。360 弹窗仅使用非持久化的当前会话开关，X/服务退出后同步；原厂画面和息屏暂时挂起不改变会话意图。设置存储键、默认值、原有 PR 分支不变。

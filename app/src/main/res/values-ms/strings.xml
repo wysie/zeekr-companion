@@ -11,7 +11,7 @@
     <string name="set_update_beta_title">Termasuk keluaran beta</string>
     <string name="set_update_beta_summary">Jika dimatikan, hanya keluaran stabil disemak</string>
     <string name="upd_none_release">Tiada keluaran stabil yang boleh dipasang</string>
-    <string name="set_section_recording">Rakaman</string>
+    <string name="set_section_recording">Rakaman &amp; foto</string>
     <string name="set_section_storage">Storan</string>
     <string name="set_section_rearview">Cermin super</string>
     <string name="set_section_floating">Butang terapung</string>
@@ -54,7 +54,7 @@
     <string name="set_rearview_height_title">Tinggi tetingkap</string>
     <string name="set_rearview_height_summary">Setiap satu boleh sehingga skrin penuh; nisbah gambar kekal dan bentuk tetingkap hanya menentukan berapa banyak yang kelihatan</string>
     <string name="set_rearview_reset_title">Set semula tetapan Cermin super</string>
-    <string name="set_rearview_reset_summary">Memulihkan tetingkap, bingkai, pembetulan dan mod penukaran lalai, serta kembali ke pandangan belakang; mengekalkan keadaan hidup/mati</string>
+    <string name="set_rearview_reset_summary">Memulihkan tetingkap, bingkai, pembetulan, pilihan kamera dan kawalan, termasuk label bersama paparan sisi; kembali ke pandangan belakang dan mengekalkan keadaan hidup/mati</string>
     <string name="set_rearview_guide_title">Cara guna</string>
     <string name="set_rearview_guide_summary">Zon gerak isyarat, tukar kamera, bingkai, lekap tepi dan ubah saiz</string>
     <string name="rearview_guide_hint">Leret untuk tukar halaman · Ketik di luar untuk tutup</string>
@@ -82,7 +82,7 @@
     <string name="set_reset_floating_title">Set semula butang terapung</string>
     <string name="set_reset_floating_summary">Memulihkan kedudukan, saiz butang dan saiz teks masa kepada lalai</string>
     <string name="set_auto_start_title">Mula semasa but</string>
-    <string name="set_auto_start_summary">Memastikan apl terus berjalan di latar belakang. Selepas unit kepala dimulakan semula atau sistem menutup apl, memulakannya semula dan memulihkan Cermin super, butang terapung dan rakaman automatik jika dihidupkan. Jika dimatikan, apl tidak dimulakan semula.</string>
+    <string name="set_auto_start_summary">Memulakan semula apl selepas but atau ditutup sistem dan memulihkan tetingkap yang didayakan. Rakaman hanya bermula jika tetapan rakaman automatik berasingan membenarkannya. Jika dimatikan, apl tidak dimulakan semula.</string>
     <string name="set_auto_record_title">Rakam semasa dibuka</string>
     <string name="set_auto_record_summary">Mula merakam apabila apl dibuka, dan menyambung rakaman yang berhenti kerana skrin padam apabila skrin hidup semula; rakaman yang anda hentikan tidak dimulakan semula</string>
     <string name="set_screen_off_title">Rakaman skrin padam (kekal berjaga)</string>
@@ -110,7 +110,7 @@
     <!-- System info (experimental): groups, signal names, values -->
     <string name="set_vehicle_info_title">Maklumat sistem (percubaan)</string>
     <string name="set_vehicle_info_summary">Isyarat kenderaan yang didedahkan unit kepala dan keadaan semasanya; item yang ditanda dipaparkan pada Bar maklumat pemanduan</string>
-    <string name="vi_legend">Item yang ditanda dipaparkan pada Bar maklumat pemanduan (memerlukan Tetapan → Rakaman → Bar maklumat pemanduan): sebagai ikon jika ada, jika tidak sebagai teks buat masa ini, seperti dinyatakan di bawah setiap baris; item yang tidak muat tidak dipaparkan. Warna label menunjukkan tahap pengesahan: warna teks biasa, konsisten dalam ujian di kereta (masih disemak silang); kelabu, boleh digunakan, butiran belum muktamad; kelabu pudar, boleh dibaca tetapi belum disahkan, hanya boleh ditanda apabila pilihan pembangun dihidupkan.</string>
+    <string name="vi_legend">Item yang ditanda dipaparkan pada Bar maklumat pemanduan (memerlukan Tetapan → Rakaman &amp; foto → Tera &amp; maklumat pemanduan → Bar maklumat pemanduan): sebagai ikon jika ada, jika tidak sebagai teks buat masa ini, seperti dinyatakan di bawah setiap baris; item yang tidak muat tidak dipaparkan. Warna label menunjukkan tahap pengesahan: warna teks biasa, konsisten dalam ujian di kereta (masih disemak silang); kelabu, boleh digunakan, butiran belum muktamad; kelabu pudar, boleh dibaca tetapi belum disahkan, hanya boleh ditanda apabila pilihan pembangun dihidupkan.</string>
     <string name="vi_position">Kedudukan (lat/long)</string>
     <string name="vi_position_source">Lokasi sistem</string>
     <!-- System info status line under the legend (VehicleInfoFragment.status); how each signal ID is read (VehicleInfoFragment.address; IDs and zones stay hex) -->
@@ -863,7 +863,7 @@
     <string name="dev_perm_not_granted">Tidak dibenarkan · %1$s</string>
     <string name="dev_perm_settings_unavailable">Unit kepala ini tidak dapat membuka halaman tetapan sistem itu</string>
     <string name="dev_raw_frame_title">Simpan juga bingkai asal</string>
-    <string name="dev_raw_frame_summary">Disimpan tanpa dipotong, disusun semula atau ditera dalam photos/raw bersama nota geometri bingkai, untuk mengukur susunan strim komposit dan parameter kanta</string>
+    <string name="dev_raw_frame_summary">Menyimpan bingkai asal dan nota geometri ke ZeekrShortcutApp/Photos/Raw untuk analisis susunan kamera dan parameter kanta</string>
     <string name="dev_gpu_fisheye_preview_title">Pratonton: pembetulan mata ikan per piksel dengan GPU</string>
     <string name="dev_gpu_fisheye_preview_summary">Membetulkan pratonton langsung sekeliling piksel demi piksel dengan GPU, melalui GL apl, selurus main semula foto dan bukan secara tampalan. Ini memilih kaedah sahaja; butang Luruskan masih menghidupkan dan mematikan pembetulan. Berkuat kuasa selepas apl dimulakan semula.</string>
     <string name="dev_gpu_fisheye_video_title">Main semula video: pembetulan mata ikan per piksel dengan GPU</string>
@@ -927,14 +927,14 @@
     <string name="dev_tool_recording_title">Rakaman sedang berjalan</string>
     <string name="dev_tool_progress">(%1$d/%2$d) %3$s</string>
     <string name="dev_tool_file_result">%1$s: %2$s</string>
-    <string name="dev_note">Ketik Safety notice dalam Tetapan → Perihal &amp; penghargaan untuk mematikan pilihan pembangun dan menyembunyikan bahagian ini</string>
+    <string name="dev_note">Matikan Tetapan → Sistem → Dayakan mod pembangun untuk menyembunyikan bahagian ini. Nilai pembangun yang disimpan dikekalkan.</string>
     <string name="set_rearview_camera_label_title">Tunjukkan label kamera</string>
     <string name="set_rearview_camera_label_summary">Memaparkan Depan, Belakang, Kiri atau Kanan dalam Cermin super dan tetingkap pandangan sisi</string>
     <string name="set_side_popup_replace_mirror_title">Guna Cermin super apabila aktif</string>
     <string name="set_side_popup_replace_mirror_summary">Hidup: paparkan kamera sisi sementara dalam Cermin super apabila aktif; jika tidak, guna tetingkap berasingan. Mati: sentiasa guna tetingkap berasingan bersama cermin.</string>
     <string name="msg_side_popup_unavailable">Tetingkap kamera titik buta tidak tersedia. Cuba Guna Cermin super apabila aktif dengan Cermin super dihidupkan.</string>
     <string name="set_side_popup_reset_title">Set semula tetapan kamera titik buta</string>
-    <string name="set_side_popup_reset_summary">Memulihkan kelajuan, gambar, mod paparan, masa, saiz dan kedudukan lalai; mengekalkan keadaan hidup/mati</string>
+    <string name="set_side_popup_reset_summary">Memulihkan kelajuan, gambar, output, masa, susun atur timbul dan semua tetapan HUD; mengekalkan keadaan hidup/mati dan label kamera bersama</string>
     <string name="msg_side_popup_reset">Tetapan kamera titik buta dipulihkan kepada lalai</string>
     <string name="set_side_popup_rotation_left_title">Putaran imej kiri (°)</string>
     <string name="set_side_popup_rotation_right_title">Putaran imej kanan (°)</string>
@@ -1092,4 +1092,40 @@
     <string name="set_side_mirror_replace">Guna tetingkap Cermin super</string>
     <string name="set_side_mirror_both">Papar kedua-dua tetingkap</string>
     <string name="set_side_mirror_hide">Sembunyikan cermin semasa pop timbul</string>
+    <!-- Grouped settings navigation; groups are headings, not extra pages. -->
+    <string name="menu_cameras">Kamera</string>
+    <string name="menu_automatic_recording">Rakaman automatik</string>
+    <string name="menu_screen_off">Skrin padam</string>
+    <string name="menu_photos">Foto</string>
+    <string name="menu_stamps">Tera &amp; maklumat pemanduan</string>
+    <string name="menu_stamps_summary">Apl, nombor plat, masa, spesifikasi rakaman dan maklumat kenderaan</string>
+    <string name="menu_info_items">Pilih maklumat pemanduan</string>
+    <string name="menu_info_items_summary">Pilih isyarat kenderaan dalam jalur maklumat</string>
+    <string name="menu_destination">Destinasi</string>
+    <string name="menu_capacity">Kapasiti &amp; penggunaan</string>
+    <string name="menu_protected_footage">Rakaman dilindungi</string>
+    <string name="menu_camera_selection">Pilihan kamera &amp; kawalan</string>
+    <string name="menu_picture">Gambar</string>
+    <string name="menu_window">Tetingkap</string>
+    <string name="menu_image_framing">Imej &amp; bingkai</string>
+    <string name="menu_image_framing_summary">Pembetulan, arah pandangan, putaran, pencerminan skrin dan label bersama</string>
+    <string name="menu_popup_window">Tetingkap timbul</string>
+    <string name="menu_popup_window_summary">Saiz, kedudukan dan gerak isyarat tetingkap</string>
+    <string name="menu_popup_gestures">Seret untuk alih, cubit untuk ubah saiz, atau guna kawalan penjuru untuk besar/pulih. X menutup paparan bagi isyarat semasa; batalkan dan beri isyarat semula untuk buka. Cermin super mengekalkan saiz dan kedudukannya sendiri.</string>
+    <string name="menu_placement">Kedudukan</string>
+    <string name="menu_advanced_experimental">Lanjutan · percubaan</string>
+    <string name="menu_output">Output</string>
+    <string name="menu_activation">Pengaktifan</string>
+    <string name="menu_timing">Masa paparan</string>
+    <string name="menu_opening">Cara membuka</string>
+    <string name="menu_bird_visible">Papar tetingkap timbul 360°</string>
+    <string name="menu_bird_visible_summary">Buka atau tutup tetingkap sekarang; X turut mematikannya. Tidak mengaktifkan permulaan automatik. Paparan kilang dan skrin padam menggantungnya sementara.</string>
+    <string name="menu_calibration">Penentukuran</string>
+    <string name="menu_actions">Tindakan</string>
+    <string name="menu_appearance">Rupa</string>
+    <string name="menu_preview_playback">Pembetulan pratonton &amp; main balik</string>
+    <string name="menu_recording_internals">Dalaman rakaman</string>
+    <string name="menu_image_rendering">Imej &amp; pemaparan</string>
+    <string name="menu_camera_research">Penyelidikan kamera &amp; diagnostik</string>
+    <string name="menu_maintenance">Penyelenggaraan</string>
 </resources>

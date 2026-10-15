@@ -33,7 +33,15 @@ import com.kooo.evcam.ui.MotionPolicy;
  * 右栏用 {@code setPreferencesFromResource(res, rootKey)} 按 key 取出其中一段。
  * 所以分区只在那个 XML 里声明一次，这里不再另列一份 —— 两处各写一份迟早会对不上。</p>
  */
-public class SettingsShellFragment extends Fragment {
+public class SettingsShellFragment extends Fragment implements
+        androidx.preference.PreferenceFragmentCompat.OnPreferenceStartScreenCallback {
+
+    @Override
+    public boolean onPreferenceStartScreen(androidx.preference.PreferenceFragmentCompat caller,
+                                            androidx.preference.PreferenceScreen screen) {
+        openDetail(SettingsPreferenceFragment.forSection(screen.getKey()), screen.getTitle());
+        return true;
+    }
 
     private static final String STATE_SECTION = "section";
 

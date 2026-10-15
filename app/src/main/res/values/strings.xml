@@ -25,7 +25,7 @@
     <string name="set_update_beta_title">接收 Beta 版</string>
     <string name="set_update_beta_summary">关闭后，仅检查正式版</string>
     <string name="upd_none_release">未找到可安装的正式版</string>
-    <string name="set_section_recording">录制</string>
+    <string name="set_section_recording">录制与照片</string>
     <string name="set_section_storage">存储</string>
     <string name="set_section_rearview">超级后视镜</string>
     <string name="set_section_floating">悬浮按钮</string>
@@ -68,7 +68,7 @@
     <string name="set_rearview_height_title">窗口高度</string>
     <string name="set_rearview_height_summary">宽度和高度均可调至全屏；画面比例不变，窗口形状只决定可见范围</string>
     <string name="set_rearview_reset_title">重置超级后视镜设置</string>
-    <string name="set_rearview_reset_summary">恢复窗口、取景、校正和切换模式的默认值，并切回后视；保留当前开关状态</string>
+    <string name="set_rearview_reset_summary">恢复窗口、取景、校正、相机选择和操作方式，包括与侧视弹窗共用的角标；切回后视并保留当前开关状态</string>
     <string name="set_rearview_guide_title">使用指南</string>
     <string name="set_rearview_guide_summary">手势区域、切换画面、调整取景、贴边隐藏、调整窗口大小</string>
     <string name="rearview_guide_hint">左右滑动翻页 · 点击图片外关闭</string>
@@ -100,7 +100,7 @@
     <string name="set_reset_floating_title">重置悬浮按钮</string>
     <string name="set_reset_floating_summary">恢复默认位置、按钮大小和时长文字大小</string>
     <string name="set_auto_start_title">开机自启动</string>
-    <string name="set_auto_start_summary">保持应用在后台运行。车机重启或应用被系统关闭后自动重新启动，并恢复已开启的超级后视镜、悬浮按钮和自动录制。关闭后不再自动启动。</string>
+    <string name="set_auto_start_summary">车机启动或应用被系统关闭后自动重新启动，并恢复已启用的悬浮窗口。是否自动录制由单独的自动录制设置决定；关闭后不再自动重启应用。</string>
     <string name="set_auto_record_title">启动自动录制</string>
     <string name="set_auto_record_summary">应用启动时自动开始录制，因熄屏停止的录制在亮屏后自动恢复；手动停止后不再自动开始</string>
     <string name="set_screen_off_title">熄屏录制（阻止休眠）</string>
@@ -128,7 +128,7 @@
     <!-- 系统信息（试验性）：分组、信号名、值 -->
     <string name="set_vehicle_info_title">系统信息（试验性）</string>
     <string name="set_vehicle_info_summary">车机可读取的车辆信号及当前状态；勾选的项目显示在行驶信息条上</string>
-    <string name="vi_legend">勾选的项目显示在行驶信息条上（需开启「设置 → 录制 → 行驶信息条」）：有图标的显示为图标，其余暂以文字显示，每行下方注明；超出信息条宽度的不显示。名称颜色表示验证程度：正文色为实车测试结果一致（持续交叉验证）；灰色为可用、细节待定；淡灰色为可读取但未验证，需开启开发者选项才能勾选。</string>
+    <string name="vi_legend">勾选的项目显示在行驶信息条上（需开启「设置 → 录制与照片 → 水印与行驶信息 → 行驶信息条」）：有图标的显示为图标，其余暂以文字显示，每行下方注明；超出信息条宽度的不显示。名称颜色表示验证程度：正文色为实车测试结果一致（持续交叉验证）；灰色为可用、细节待定；淡灰色为可读取但未验证，需开启开发者选项才能勾选。</string>
     <string name="vi_position">位置（经纬度）</string>
     <string name="vi_position_source">系统定位</string>
     <!-- 系统信息图例下方的状态行（VehicleInfoFragment.status）；每行号码后的读法（VehicleInfoFragment.address，号码与区域号照原样） -->
@@ -873,7 +873,7 @@
     <string name="dev_perm_not_granted">未授权 · %1$s</string>
     <string name="dev_perm_settings_unavailable">此车机无法打开对应的系统设置页</string>
     <string name="dev_raw_frame_title">拍照时另存原始整帧</string>
-    <string name="dev_raw_frame_summary">不切分、不重排、不加水印，与画面几何说明一并保存至 photos/raw，用于分析环视合成流的排布和鱼眼参数</string>
+    <string name="dev_raw_frame_summary">将未切分、未重排、未加水印的原始画面与几何说明保存至 ZeekrShortcutApp/Photos/Raw，用于分析相机排布与镜头参数</string>
     <string name="dev_gpu_fisheye_preview_title">预览：GPU 逐像素鱼眼校正</string>
     <string name="dev_gpu_fisheye_preview_summary">主界面环视预览改用 GPU 逐像素校正（画面经应用内 GL 渲染后显示），效果与照片回放一致，不再分块近似。仅切换算法，是否校正仍由「鱼眼校正」按钮控制。重启应用后生效。</string>
     <string name="dev_gpu_fisheye_video_title">录像回放：GPU 逐像素鱼眼校正</string>
@@ -937,14 +937,14 @@
     <string name="dev_tool_recording_title">正在录制</string>
     <string name="dev_tool_progress">（%1$d/%2$d）%3$s</string>
     <string name="dev_tool_file_result">%1$s：%2$s</string>
-    <string name="dev_note">在「设置 → 关于与致谢」中点击「安全须知」可关闭开发者选项，关闭后此分区隐藏</string>
+    <string name="dev_note">可在「设置 → 系统 → 启用开发者模式」中关闭并隐藏此分区，已保存的开发者设置会保留。</string>
     <string name="set_rearview_camera_label_title">显示摄像头名称</string>
     <string name="set_rearview_camera_label_summary">在超级后视镜和侧视悬浮窗中显示前、后、左或右</string>
     <string name="set_side_popup_replace_mirror_title">超级后视镜开启时使用其窗口</string>
     <string name="set_side_popup_replace_mirror_summary">开启：超级后视镜运行时在其窗口临时显示侧视，否则使用独立窗口。关闭：始终使用独立窗口，与后视镜同时显示。</string>
     <string name="msg_side_popup_unavailable">盲区摄像头窗口不可用。请开启超级后视镜，并尝试开启「超级后视镜开启时使用其窗口」。</string>
     <string name="set_side_popup_reset_title">重置盲区摄像头设置</string>
-    <string name="set_side_popup_reset_summary">恢复速度、画面、显示模式、时机、窗口大小和位置的默认值；保留当前开关状态</string>
+    <string name="set_side_popup_reset_summary">恢复速度、画面、显示输出、时机、弹窗布局与全部 HUD 设置；保留当前开关状态和共用相机角标</string>
     <string name="msg_side_popup_reset">盲区摄像头设置已恢复默认</string>
     <string name="set_side_popup_rotation_left_title">左侧画面旋转（°）</string>
     <string name="set_side_popup_rotation_right_title">右侧画面旋转（°）</string>
@@ -1102,4 +1102,40 @@
     <string name="set_side_mirror_replace">使用超级后视镜窗口</string>
     <string name="set_side_mirror_both">同时显示两个窗口</string>
     <string name="set_side_mirror_hide">侧视弹窗显示时隐藏后视镜</string>
+    <!-- Grouped settings navigation; groups are headings, not extra pages. -->
+    <string name="menu_cameras">相机</string>
+    <string name="menu_automatic_recording">自动录制</string>
+    <string name="menu_screen_off">息屏</string>
+    <string name="menu_photos">照片</string>
+    <string name="menu_stamps">水印与行驶信息</string>
+    <string name="menu_stamps_summary">应用、车牌、时间、录制参数与车辆信息</string>
+    <string name="menu_info_items">选择行驶信息</string>
+    <string name="menu_info_items_summary">选择信息条中显示的车辆信号</string>
+    <string name="menu_destination">保存位置</string>
+    <string name="menu_capacity">容量与用量</string>
+    <string name="menu_protected_footage">锁定影像</string>
+    <string name="menu_camera_selection">相机选择与操作</string>
+    <string name="menu_picture">画面</string>
+    <string name="menu_window">窗口</string>
+    <string name="menu_image_framing">画面与取景</string>
+    <string name="menu_image_framing_summary">校正、取景方向、旋转、主屏镜像与共用角标</string>
+    <string name="menu_popup_window">弹出窗口</string>
+    <string name="menu_popup_window_summary">大小、位置与窗口手势</string>
+    <string name="menu_popup_gestures">拖动可移动，双指缩放可改变大小，角落按钮可放大或还原。X 仅关闭本次打灯画面；取消后再次打灯会重新显示。超级后视镜保留自己的窗口大小与位置。</string>
+    <string name="menu_placement">位置</string>
+    <string name="menu_advanced_experimental">高级 · 试验性</string>
+    <string name="menu_output">显示输出</string>
+    <string name="menu_activation">开启条件</string>
+    <string name="menu_timing">显示时机</string>
+    <string name="menu_opening">打开方式</string>
+    <string name="menu_bird_visible">显示 360° 弹窗</string>
+    <string name="menu_bird_visible_summary">立即打开或关闭弹窗，X 也会关闭此开关；不会启用自动启动。原厂画面或息屏时会暂时隐藏。</string>
+    <string name="menu_calibration">标定</string>
+    <string name="menu_actions">操作</string>
+    <string name="menu_appearance">外观</string>
+    <string name="menu_preview_playback">预览与回放校正</string>
+    <string name="menu_recording_internals">录制内部选项</string>
+    <string name="menu_image_rendering">画面与渲染</string>
+    <string name="menu_camera_research">相机研究与诊断</string>
+    <string name="menu_maintenance">维护</string>
 </resources>

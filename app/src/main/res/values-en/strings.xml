@@ -11,7 +11,7 @@
     <string name="set_update_beta_title">Include beta releases</string>
     <string name="set_update_beta_summary">When off, checks stable releases only</string>
     <string name="upd_none_release">No installable stable release found</string>
-    <string name="set_section_recording">Recording</string>
+    <string name="set_section_recording">Recording &amp; photos</string>
     <string name="set_section_storage">Storage</string>
     <string name="set_section_rearview">Super mirror</string>
     <string name="set_section_floating">Floating button</string>
@@ -54,7 +54,7 @@
     <string name="set_rearview_height_title">Window height</string>
     <string name="set_rearview_height_summary">Each can go up to full screen; the picture keeps its proportions and the window shape only sets how much is visible</string>
     <string name="set_rearview_reset_title">Reset Super mirror settings</string>
-    <string name="set_rearview_reset_summary">Restores default window, framing, correction and switching modes, and returns to the rear view; keeps the current on/off state</string>
+    <string name="set_rearview_reset_summary">Restores window, framing, correction, camera selection and controls, including camera labels shared with the side popup; returns to rear view and keeps the current on/off state</string>
     <string name="set_rearview_guide_title">How to use</string>
     <string name="set_rearview_guide_summary">Gesture zones, switching cameras, framing, docking and resizing</string>
     <string name="rearview_guide_hint">Swipe to turn pages · Tap outside to close</string>
@@ -82,7 +82,7 @@
     <string name="set_reset_floating_title">Reset floating button</string>
     <string name="set_reset_floating_summary">Restores the default position, button size and time text size</string>
     <string name="set_auto_start_title">Start on boot</string>
-    <string name="set_auto_start_summary">Keeps the app running in the background. After the head unit restarts or the system closes the app, restarts it and restores Super mirror, the floating button and auto-recording if they were on. When off, it isn\'t restarted.</string>
+    <string name="set_auto_start_summary">Restarts the app after boot or system closure and restores enabled overlays. Recording starts only if its separate automatic-recording settings allow it. When off, the app is not restarted.</string>
     <string name="set_auto_record_title">Record on launch</string>
     <string name="set_auto_record_summary">Starts recording when the app opens and resumes a recording stopped by screen-off when the screen turns on; never restarts one you stopped</string>
     <string name="set_screen_off_title">Screen-off recording (keep awake)</string>
@@ -110,7 +110,7 @@
     <!-- System info (experimental): groups, signal names, values -->
     <string name="set_vehicle_info_title">System info (experimental)</string>
     <string name="set_vehicle_info_summary">Vehicle signals the head unit exposes and their current state; ticked items appear on the Driving info bar</string>
-    <string name="vi_legend">Ticked items appear on the Driving info bar (requires Settings → Recording → Driving info bar): as an icon where one exists, otherwise as text for now, as noted under each row; items that don\'t fit are left out. Label color shows how well a signal is verified: normal text color, consistent in on-car tests (still cross-checked); grey, usable with details pending; faint grey, readable but unverified, can be ticked only with developer options on.</string>
+    <string name="vi_legend">Ticked items appear on the Driving info bar (requires Settings → Recording &amp; photos → Stamps &amp; driving information → Driving info bar): as an icon where one exists, otherwise as text for now, as noted under each row; items that don\'t fit are left out. Label color shows how well a signal is verified: normal text color, consistent in on-car tests (still cross-checked); grey, usable with details pending; faint grey, readable but unverified, can be ticked only with developer options on.</string>
     <string name="vi_position">Position (lat/long)</string>
     <string name="vi_position_source">System location</string>
     <!-- System info status line under the legend (VehicleInfoFragment.status); how each signal ID is read (VehicleInfoFragment.address; IDs and zones stay hex) -->
@@ -882,7 +882,7 @@
     <string name="dev_perm_not_granted">Not granted · %1$s</string>
     <string name="dev_perm_settings_unavailable">This head unit can\'t open that system settings page</string>
     <string name="dev_raw_frame_title">Also save the raw frame</string>
-    <string name="dev_raw_frame_summary">Saves the frame as captured (not split, rearranged or stamped) to photos/raw with a geometry note, for measuring the composite stream layout and fisheye parameters</string>
+    <string name="dev_raw_frame_summary">Saves the unmodified captured frame and geometry note to ZeekrShortcutApp/Photos/Raw for analysing camera layout and lens parameters</string>
     <string name="dev_gpu_fisheye_preview_title">Preview: per-pixel fisheye correction on the GPU</string>
     <string name="dev_gpu_fisheye_preview_summary">Corrects the live surround view pixel by pixel on the GPU, rendered through the app GL pipeline, as straight as photo playback instead of in patches. Picks the method only; the Straighten button still turns correction on and off. Takes effect after restarting the app.</string>
     <string name="dev_gpu_fisheye_video_title">Video playback: per-pixel fisheye correction on the GPU</string>
@@ -950,14 +950,14 @@
     <string name="dev_tool_recording_title">Recording in progress</string>
     <string name="dev_tool_progress">(%1$d/%2$d) %3$s</string>
     <string name="dev_tool_file_result">%1$s: %2$s</string>
-    <string name="dev_note">Tap Safety notice in Settings → About &amp; credits to turn off developer options and hide this section</string>
+    <string name="dev_note">Turn off Settings → System → Enable developer mode to hide this section. Saved developer values are retained.</string>
     <string name="set_rearview_camera_label_title">Show camera label</string>
     <string name="set_rearview_camera_label_summary">Shows Front, Rear, Left or Right in Super mirror and the side-view pop-up</string>
     <string name="set_side_popup_replace_mirror_title">Use Super mirror when active</string>
     <string name="set_side_popup_replace_mirror_summary">On: temporarily show the side camera in Super mirror when it is active; otherwise use a separate window. Off: always use a separate window alongside the mirror.</string>
     <string name="msg_side_popup_unavailable">Blind spot camera window unavailable. Try Use Super mirror when active with Super mirror enabled.</string>
     <string name="set_side_popup_reset_title">Reset blind spot camera settings</string>
-    <string name="set_side_popup_reset_summary">Restores default speed, picture, display mode, timing, window size and position; keeps the current on/off state</string>
+    <string name="set_side_popup_reset_summary">Restores speed, picture, output, timing, popup layout and all HUD settings; keeps the current on/off state and shared camera labels</string>
     <string name="msg_side_popup_reset">Blind spot camera settings restored to defaults</string>
     <string name="set_side_popup_rotation_left_title">Left image rotation (°)</string>
     <string name="set_side_popup_rotation_right_title">Right image rotation (°)</string>
@@ -1115,4 +1115,40 @@
     <string name="set_side_mirror_replace">Use its window</string>
     <string name="set_side_mirror_both">Show both windows</string>
     <string name="set_side_mirror_hide">Hide during popup</string>
+    <!-- Grouped settings navigation; groups are headings, not extra pages. -->
+    <string name="menu_cameras">Cameras</string>
+    <string name="menu_automatic_recording">Automatic recording</string>
+    <string name="menu_screen_off">Screen off</string>
+    <string name="menu_photos">Photos</string>
+    <string name="menu_stamps">Stamps &amp; driving information</string>
+    <string name="menu_stamps_summary">App, plate, time, recording specifications and vehicle information</string>
+    <string name="menu_info_items">Choose driving information</string>
+    <string name="menu_info_items_summary">Choose the vehicle signals included in the information bar</string>
+    <string name="menu_destination">Destination</string>
+    <string name="menu_capacity">Capacity &amp; usage</string>
+    <string name="menu_protected_footage">Protected footage</string>
+    <string name="menu_camera_selection">Camera selection &amp; controls</string>
+    <string name="menu_picture">Picture</string>
+    <string name="menu_window">Window</string>
+    <string name="menu_image_framing">Image &amp; framing</string>
+    <string name="menu_image_framing_summary">Correction, viewing direction, rotation, screen mirroring and shared labels</string>
+    <string name="menu_popup_window">Popup window</string>
+    <string name="menu_popup_window_summary">Size, position and window gestures</string>
+    <string name="menu_popup_gestures">Drag to move, pinch to resize, or use the corner control to expand/restore. X dismisses this signal activation; cancel and signal again to reopen. Super mirror keeps its own window size and position.</string>
+    <string name="menu_placement">Placement</string>
+    <string name="menu_advanced_experimental">Advanced · experimental</string>
+    <string name="menu_output">Output</string>
+    <string name="menu_activation">Activation</string>
+    <string name="menu_timing">Timing</string>
+    <string name="menu_opening">Opening</string>
+    <string name="menu_bird_visible">Show 360° popup</string>
+    <string name="menu_bird_visible_summary">Opens or closes the popup now; X switches this off too. Does not enable automatic startup. Factory views and screen-off temporarily suspend it.</string>
+    <string name="menu_calibration">Calibration</string>
+    <string name="menu_actions">Actions</string>
+    <string name="menu_appearance">Appearance</string>
+    <string name="menu_preview_playback">Preview &amp; playback correction</string>
+    <string name="menu_recording_internals">Recording internals</string>
+    <string name="menu_image_rendering">Image &amp; rendering</string>
+    <string name="menu_camera_research">Camera research &amp; diagnostics</string>
+    <string name="menu_maintenance">Maintenance</string>
 </resources>
