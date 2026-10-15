@@ -211,6 +211,8 @@ public class MainActivity extends AppCompatActivity {
 
     // 车型配置相关
     private AppConfig appConfig;
+    private int previewLayoutSlots = 4;
+    private com.kooo.evcam.profile.ProfileChannels previewChannels;
     private int configuredCameraCount = 4;  // 配置的摄像头数量
     // 录制状态显示相关
     private TextView tvRecordingStats;
@@ -460,23 +462,12 @@ public class MainActivity extends AppCompatActivity {
         // 布局仍然是单路的（只有一个 TextureView），路数上限仍然是 1 ——
         // 加进去的相机既没有地方显示，也不会被拍照和录制算进去。
         Profile profile = new ProfileStore(this).current();
-        int enabled = 0;
-        for (CameraProfile camera : profile.cameras) {
-            if (camera.enabled) {
-                enabled++;
-            }
-        }
-
-        if (enabled > 1) {
-            layoutId = R.layout.activity_main_zeekr_7x_multi;
-            configuredCameraCount = Math.min(enabled, 3);
-            AppLog.d(TAG, "多路布局：配置里启用了 " + enabled + " 路");
-        } else {
-            // 一路合成流，由 FourLaneContainer 重画成四宫格。也是兜底。
-            layoutId = R.layout.activity_main_zeekr_7x;
-            configuredCameraCount = 1;
-            AppLog.d(TAG, "单路布局：环视合成流 + 四宫格拆分");
-        }
+        com.kooo.evcam.profile.ProfileChannels channels = com.kooo.evcam.profile.ProfileChannels.of(profile);
+        previewChannels = channels;
+        previewLayoutSlots = channels.layoutSlots();
+        configuredCameraCount = Math.max(1, channels.count);
+        layoutId = channels.cabinLayout() ? R.layout.activity_main_zeekr_7x_multi : R.layout.activity_main_zeekr_7x;
+        AppLog.d(TAG, "Camera layout channels=" + channels.key() + " texture slots=" + previewLayoutSlots);
 
         setContentView(layoutId);
     }
@@ -622,15 +613,15 @@ public class MainActivity extends AppCompatActivity {
 
         btnTakePhoto.setOnClickListener(v -> takePicture());
 
-        if (textureFront != null) {
+        if (textureFront != null && previewChannels.needsTexture("front")) {
             textureFront.setSurfaceTextureListener(buildSurfaceListener("front"));
         }
         // 哪一路存在按槽位号判断，规则在 PreviewSlots 里 ——
         // 「left 是第三路还是和 right 成对」这处笔误已经咬过两次。
-        if (textureBack != null && PreviewSlots.exists(configuredCameraCount, "back")) {
+        if (textureBack != null && previewChannels.needsTexture("back")) {
             textureBack.setSurfaceTextureListener(buildSurfaceListener("back"));
         }
-        if (textureLeft != null && PreviewSlots.exists(configuredCameraCount, "left")) {
+        if (textureLeft != null && previewChannels.needsTexture("left")) {
             textureLeft.setSurfaceTextureListener(buildSurfaceListener("left"));
         }
         // 主界面重建：上一个界面留下的预览画布接回来（大纲 §7.6），要在画布挂上窗口、系统自己建画布之前
@@ -707,11 +698,11 @@ public class MainActivity extends AppCompatActivity {
     private AutoFitTextureView canvasFor(String cameraKey) {
         switch (cameraKey) {
             case "front":
-                return textureFront;
+                return previewChannels.needsTexture("front") ? textureFront : null;
             case "back":
-                return PreviewSlots.exists(configuredCameraCount, "back") ? textureBack : null;
+                return previewChannels.needsTexture("back") ? textureBack : null;
             case "left":
-                return PreviewSlots.exists(configuredCameraCount, "left") ? textureLeft : null;
+                return previewChannels.needsTexture("left") ? textureLeft : null;
             default:
                 return null;
         }
@@ -842,10 +833,10 @@ public class MainActivity extends AppCompatActivity {
         if (labelFront != null) {
             updateCameraLabel(labelFront, appConfig.getCameraName(this, "front"));
         }
-        if (labelBack != null && configuredCameraCount >= 2) {
+        if (labelBack != null && previewLayoutSlots >= 2) {
             updateCameraLabel(labelBack, appConfig.getCameraName(this, "back"));
         }
-        if (labelLeft != null && configuredCameraCount >= 3) {
+        if (labelLeft != null && previewLayoutSlots >= 3) {
             updateCameraLabel(labelLeft, appConfig.getCameraName(this, "left"));
         }
     }
@@ -1581,8 +1572,14 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         showBuilt(built);
-        // 布局是新建的，座舱两格默认都显示。管线里只有真正要建的那一路才有实例（配置里关着的那一路没有），问它就是结论
-        showCabinPanes(pipeline.getCamera("back") != null, pipeline.getCamera("left") != null);
+        // Show the selected roles, including unavailable ones; only selected textures count toward readiness.
+        boolean surroundOn = previewChannels.surround;
+        boolean cabinFrontOn = previewChannels.cabinFront;
+        boolean cabinRearOn = previewChannels.cabinRear;
+        showCabinPanes(cabinFrontOn, cabinRearOn);
+        showPane(R.id.composite_wrapper, surroundOn);
+        showPane(R.id.cabin_column, cabinFrontOn || cabinRearOn);
+        showPane(R.id.btn_bird_eye, surroundOn);
         pipeline.declarePreviews(textureFront, textureBack, textureLeft);
         // 各路的画面尺寸可能在挂上回调之前就算出来了（不开设备先算的、上一个界面时开过的）：补一次
         pipeline.firePreviewSizeCallbacks();
@@ -1609,8 +1606,8 @@ public class MainActivity extends AppCompatActivity {
         if (plan.compositeIsReal && built.compositeSize != null && compositeContainer != null) {
             compositeContainer.setSourceSize(built.compositeUse != null ? built.compositeUse : built.compositeSize);
         }
-        if (configuredCameraCount > 1) {
-            if (plan.assignedCount() == 0) {
+        if (previewLayoutSlots > 1) {
+            if ((cameraManager == null || cameraManager.getCameraCount() == 0)) {
                 AppLog.w(TAG, "没有任何可用相机，三路模式无法显示");
                 Toast.makeText(this, R.string.msg_no_camera_available, Toast.LENGTH_LONG).show();
             }
@@ -1900,11 +1897,9 @@ public class MainActivity extends AppCompatActivity {
 
     /** 三路模式下把槽位分配显示在画面上——黑屏时这是最直接的线索。 */
     private String describeMultiSlots(com.kooo.evcam.zeekr.ZeekrMultiPlan plan) {
-        return getString(R.string.slot_surround) + " " + plan.compositeId
-                + " (" + getString(plan.compositeIsReal
-                        ? R.string.composite_kind_real : R.string.composite_kind_plain) + ")"
-                + " · " + getString(R.string.slot_cabin_front) + " " + plan.cabin1Id
-                + " · " + getString(R.string.slot_cabin_rear) + " " + plan.cabin2Id;
+        return getString(R.string.slot_surround) + " " + (previewChannels.surround ? plan.compositeId : "–")
+                + " · " + getString(R.string.slot_cabin_front) + " " + (previewChannels.cabinFront ? plan.cabin1Id : "–")
+                + " · " + getString(R.string.slot_cabin_rear) + " " + (previewChannels.cabinRear ? plan.cabin2Id : "–");
     }
 
     /**

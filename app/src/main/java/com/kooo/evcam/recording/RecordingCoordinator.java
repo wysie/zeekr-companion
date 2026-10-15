@@ -1126,6 +1126,10 @@ public final class RecordingCoordinator {
             }
         }
         // 录哪几路 = 配置里启用了哪几路。这两件事本来就是同一件：关掉的相机不开、不录、不占流
+        if (CameraManagerHolder.getInstance().hasPendingChannelChange(context)) {
+            refused(why, context.getString(R.string.msg_record_profile_restart), false);
+            return;
+        }
         Set<String> cameras = com.kooo.evcam.profile.RecordSpecs.enabledCameraKeys(context);
         if (cameras.isEmpty()) {
             refused(why, context.getString(R.string.msg_keep_one_camera_refuse), false);
@@ -1155,6 +1159,10 @@ public final class RecordingCoordinator {
         onAutomaticSettingsChanged();
         // 查盘这段时间里人停了、退出了（不等了）：不开
         if (pending != why || !startAllowed(why)) {
+            return;
+        }
+        if (CameraManagerHolder.getInstance().hasPendingChannelChange(context)) {
+            refused(why, context.getString(R.string.msg_record_profile_restart), false);
             return;
         }
         MultiCameraManager manager = currentManager();

@@ -1075,4 +1075,5 @@
     <string name="bird_eye_quality_full">Full — native preview resolution</string>
     <string name="bird_eye_quality_note">Balanced uses a sharper preview. Full copies the available live frame (up to 8 MP) at up to 3 fps. Slow copying, rendering or memory pressure lowers resolution for this activation; Low pauses if still too slow. Saved photos use the active resolution. Resolution does not fix calibration.</string>
     <string name="bird_eye_quality_reduced">360 resolution reduced because processing was too slow or memory was limited. Details are in Diagnostics.</string>
+    <string name="msg_record_profile_restart">Camera selection changed. Exit and reopen the app to apply it before recording.</string>
 </resources>

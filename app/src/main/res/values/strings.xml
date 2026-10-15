@@ -1062,4 +1062,5 @@
     <string name="bird_eye_quality_full">完整 — 原生预览分辨率</string>
     <string name="bird_eye_quality_note">均衡模式提高预览清晰度。完整模式复制可用的实时画面（最高 800 万像素），最高每秒 3 帧。复制、绘制太慢或内存不足时，本次显示会降低分辨率；低模式仍太慢则暂停。照片使用实际分辨率。提高分辨率不会修正校准。</string>
     <string name="bird_eye_quality_reduced">360 处理太慢或内存不足，已降低分辨率。详细信息见诊断报告。</string>
+    <string name="msg_record_profile_restart">相机选择已更改。请退出并重新打开应用后再录像。</string>
 </resources>

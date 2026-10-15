@@ -1052,4 +1052,5 @@
     <string name="bird_eye_quality_full">Penuh — resolusi pratonton asal</string>
     <string name="bird_eye_quality_note">Seimbang menghasilkan pratonton lebih jelas. Penuh menyalin bingkai langsung yang tersedia (hingga 8 MP), sehingga 3 fps. Penyalinan atau rendering perlahan, atau kekurangan memori, menurunkan resolusi untuk sesi ini; Rendah berhenti jika masih terlalu perlahan. Foto menggunakan resolusi aktif. Resolusi tidak membetulkan penentukuran.</string>
     <string name="bird_eye_quality_reduced">Resolusi 360 diturunkan kerana pemprosesan perlahan atau memori terhad. Butiran terdapat dalam Diagnostics.</string>
+    <string name="msg_record_profile_restart">Pilihan kamera berubah. Keluar dan buka semula aplikasi untuk menggunakannya sebelum merakam.</string>
 </resources>
