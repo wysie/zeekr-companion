@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.32-personal-alpha] - 2026-10-15
+
 - Raise DIY 360 preview targets to about 15/10/5 fps at Low/Balanced/Full, pace capture deadlines and skip unchanged source frames while retaining resolution/freshness guards.
 - Add Auto/009/7X vehicle display names for builtin profiles and status, with generic Zeekr fallback and independent camera/HUD configuration.
 
