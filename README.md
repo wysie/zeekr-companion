@@ -73,7 +73,7 @@ The following additions are adapted from
 in [NOTICE.md](NOTICE.md) and source hashes in [port notes](docs/ferix-feature-ports.md).
 
 - **Phone sharing fixes and diagnostics:** reachable network addresses, transfer status and HEAD/compression fixes. Android timeout reports still need device verification.
-- **Read-only vehicle signal scanner:** an opt-in Developer option for finding unmapped signals, including possible blind-spot warnings; automatically stops after three hours or when Developer options are locked.
+- **Read-only vehicle signal scanner:** an opt-in Developer option for finding unmapped signals, including possible blind-spot warnings; automatically stops after three hours or when Developer options are locked. It also records customize-value callbacks as C: entries and reports other callback shapes, while retaining bounded callback queues.
 - **Turn arrows:** upright green/grey indicator arrows in both side-camera display modes, placed between the popup controls.
 - **Hard-braking footage locks:** automatic protection around hard stops, with a separate storage budget that preserves manual locks.
 - **Custom clip export:** choose a range up to 10 minutes in playback and save without re-encoding; repeated exports preserve existing files.
