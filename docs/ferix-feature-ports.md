@@ -44,19 +44,12 @@ The port keeps current ChannelScheduler declarations, an independent SIDE_HUD ou
 Display matching requires a public presentation-capable, on display identified by the known 7X size or a HUD name, excludes the primary display and instrument cluster, and rejects ambiguous candidates. The source's id-3 fallback is deliberately omitted because display IDs on the 009 have not been identified. Diagnostics report the inventory and selection. Unavailable/failed HUD output falls back to current screen behavior. No 009 HUD has been tested.
 
 
-## Public source recheck — 2026-10-15
+## Source access correction — 2026-10-15
 
-The old `FerixzTanz/CAMCORDER` URL no longer resolves. GitHub currently lists
-[FerixzTanz/zeekr-shortcut-car](https://github.com/FerixzTanz/zeekr-shortcut-car)
-with main at `8993f37fd538901e3d80719d1b83997c9e1de12f`, an ancestor of dts88 main.
-Its public `turn-signal-side-view`, `ui-details` and
-`claude/compassionate-goldwasser-1ff252` branches contain no newer feature work
-than the side-camera and upstream UI/GPU work already included in this fork.
-The current repository has no listed pull requests. This does not establish
-whether unavailable/private work exists.
+An initial GitHub API/Git request returned not found for CAMCORDER. A repeat
+request succeeded: [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER)
+is public, with main at `d6193888b3fa86465ab82ec4fc232f0b9a15959e` (2.12.5).
+The separately public `FerixzTanz/zeekr-shortcut-car` is an older fork and is
+not the source of the latest CAMCORDER changes. The earlier unavailability
+conclusion was incorrect. Original source links remain valid.
 
-The last fetched CAMCORDER main, `f93ad7d` (2.12.0), is retained locally as
-`archive/ferix-camcorder-2.12.0`; its HUD implementation and token correction
-were already adapted here. No additional Ferix code was imported in the
-upstream 2.11.6 integration. Historical source URLs and hashes remain in NOTICE
-for attribution even where the original repository is unavailable.

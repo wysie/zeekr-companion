@@ -576,5 +576,5 @@ Check factory-camera takeover/return and recording files around the transition.
 Export Diagnostics if a feed or recording fails to return: upstream's new
 camera history, cabin-close coupling and error/buffer counters are included.
 
-The public Ferix source recheck is documented in ferix-feature-ports.md; no
-additional feature work was accessible beyond our existing ports.
+The initial Ferix source request failed; a repeat succeeded. The correction and
+new CAMCORDER port details are documented in ferix-feature-ports.md.

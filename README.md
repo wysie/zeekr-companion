@@ -9,7 +9,7 @@ and license details are in [NOTICE.md](NOTICE.md).
 
 Special thanks to [FerixzTanz (Felix Tan)](https://github.com/FerixzTanz) for
 [the original turn-signal side-camera implementation](https://github.com/dts88/zeekr-shortcut-car/pull/4)
-and the features ported from his [former CAMCORDER project](https://github.com/FerixzTanz/zeekr-shortcut-car).
+and the features ported from his [CAMCORDER project](https://github.com/FerixzTanz/CAMCORDER).
 Our side-camera work builds on his contribution; phone sharing, signal scanning,
 hard-braking locks, clip export, driver recording, turn arrows and UI refinements
 also include his project's work. Original authorship and source links are retained
@@ -68,11 +68,9 @@ release numbers remain independent of upstream.
 - **Optional camera labels:** identify the displayed camera in Super mirror and
   the side window. Super mirror also has a defaults reset.
 
-The following additions were adapted from FerixzTanz's former CAMCORDER repository,
-with source credit in [NOTICE.md](NOTICE.md). As checked on 2026-10-15, the old URL
-is unavailable; his currently public [zeekr-shortcut-car fork](https://github.com/FerixzTanz/zeekr-shortcut-car)
-has no additional feature changes beyond the work already incorporated here.
-Historical source commits are recorded in [port notes](docs/ferix-feature-ports.md).
+The following additions are adapted from
+[FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER), with source credit
+in [NOTICE.md](NOTICE.md) and source hashes in [port notes](docs/ferix-feature-ports.md).
 
 - **Phone sharing fixes and diagnostics:** reachable network addresses, transfer status and HEAD/compression fixes. Android timeout reports still need device verification.
 - **Read-only vehicle signal scanner:** an opt-in Developer option for finding unmapped signals, including possible blind-spot warnings; automatically stops after three hours or when Developer options are locked.
