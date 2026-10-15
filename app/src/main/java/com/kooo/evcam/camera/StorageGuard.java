@@ -97,23 +97,21 @@ public final class StorageGuard {
 
     private static StoragePlan.Decision enforceLocked(Context context, File videoDir, Runnable beforeDelete) {
         List<StoragePlan.Clip> clips = new ArrayList<>();
-        File[] files = videoDir != null ? videoDir.listFiles() : null;
-        if (files != null) {
+        java.util.Map<String, File> byPath = new java.util.LinkedHashMap<>();
+        Set<String> locked = new HashSet<>();
+        for (File dir : com.kooo.evcam.storage.StorageLayout.videoDirectoriesFor(videoDir)) {
+            Set<String> names = com.kooo.evcam.storage.FootageLocks.protectedNames(context, dir);
+            File[] files = dir.listFiles();
+            if (files == null) continue;
             for (File file : files) {
                 if (file.isFile() && StoragePlan.isOwnClip(file.getName())) {
-                    clips.add(new StoragePlan.Clip(file.getName(), file.length()));
+                    String path = file.getAbsolutePath();
+                    clips.add(new StoragePlan.Clip(file.getName(), path, file.length()));
+                    byPath.put(path, file);
+                    // Unreadable protection lists fail closed for that directory.
+                    if (names == null || names.contains(file.getName())) locked.add(path);
                 }
             }
-        }
-
-        Set<String> locked = com.kooo.evcam.storage.FootageLocks.protectedNames(context, videoDir);
-        if (locked == null) {
-            // 锁定清单读不出来：这一轮一个都不删，宁可空间不够停录也不误删锁定的
-            locked = new HashSet<>();
-            for (StoragePlan.Clip clip : clips) {
-                locked.add(clip.name);
-            }
-            com.kooo.evcam.blackbox.BlackBox.noteImportant("存储检查：锁定清单读不出来，这一轮不删录像");
         }
 
         long capBytes = new AppConfig(context).getVideoStorageLimitGb() * GB;
@@ -140,18 +138,26 @@ public final class StorageGuard {
                 MAIN.post(beforeDelete);
             }
             int deleted = 0;
-            List<String> gone = new ArrayList<>();
+            java.util.Map<File, List<String>> gone = new java.util.LinkedHashMap<>();
             for (String name : decision.toDelete) {
-                File file = new File(videoDir, name);
+                File file = byPath.get(name);
+                if (file == null) continue;
                 if (file.delete()) {
                     deleted++;
-                    gone.add(name);
+                    List<String> group = gone.get(file.getParentFile());
+                    if (group == null) {
+                        group = new ArrayList<>();
+                        gone.put(file.getParentFile(), group);
+                    }
+                    group.add(file.getName());
                 } else {
                     AppLog.w(TAG, "删不掉: " + name);
                 }
             }
             // 开关关着时锁定的也会被删：删掉的从清单里拿掉
-            com.kooo.evcam.storage.FootageLocks.forget(videoDir, gone);
+            for (java.util.Map.Entry<File, List<String>> group : gone.entrySet()) {
+                com.kooo.evcam.storage.FootageLocks.forget(group.getKey(), group.getValue());
+            }
             AppLog.i(TAG, "删掉最旧的录像 " + deleted + "/" + decision.toDelete.size()
                     + " 个，约 " + StorageHelper.formatSize(decision.deleteBytes));
         }

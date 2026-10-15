@@ -27,8 +27,8 @@ public final class ClipExporter {
 
     private static final String TAG = "ClipExporter";
 
-    /** 片段放在哪（和录像目录同级）。 */
-    public static final String DIR_NAME = "EVCam_Clips";
+    /** 片段放在哪（录像目录里的 Clips 子目录）。 */
+    public static final String DIR_NAME = "Clips";
     /** 前后各多少。 */
     public static final long HALF_MS = 15_000L;
     /** 自己选的一段最长多久：再长就是好几百 MB，发手机也发不动。 */
@@ -50,9 +50,9 @@ public final class ClipExporter {
     private ClipExporter() {
     }
 
-    /** 片段要存到的目录：录像目录的同级。 */
+    /** 片段要存到的目录：录像目录里的 Clips 子目录。 */
     public static File clipsDir(File videoDir) {
-        File parent = videoDir != null ? videoDir.getParentFile() : null;
+        File parent = videoDir;
         return parent != null ? new File(parent, DIR_NAME) : null;
     }
 

@@ -541,7 +541,7 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
         }
         btnLock.setVisibility(lockEnabled && currentGroup != null ? View.VISIBLE : View.GONE);
         if (lockEnabled && currentGroup != null) {
-            boolean locked = lockedPhotos.containsAll(currentGroup.fileNames());
+            boolean locked = lockedPhotos.containsAll(currentGroup.filePaths());
             btnLock.setText(locked ? R.string.action_unlock_footage : R.string.action_lock_footage);
         }
     }
@@ -551,10 +551,10 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
         if (currentGroup == null || currentGroup.getPhotoCount() == 0) {
             return;
         }
-        final List<String> names = currentGroup.fileNames();
+        final List<String> names = currentGroup.filePaths();
         final boolean unlock = lockedPhotos.containsAll(names);
         btnLock.setEnabled(false);
-        com.kooo.evcam.storage.FootageLocks.set(StorageHelper.getPhotoDir(this), names, !unlock, ok -> {
+        com.kooo.evcam.storage.FootageLocks.setFiles(currentGroup.getAllPhotoFiles().values(), !unlock, ok -> {
             if (isFinishing() || isDestroyed()) {
                 return;
             }
@@ -727,42 +727,32 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
     private void updatePhotoList() {
         // 屏幕上现在放的是哪一组。扫描之后 PhotoGroup 全是新对象，
         // 得靠时间戳把它认回来。
-        String shown = currentGroup != null ? currentGroup.getTimestampPrefix() : null;
+        String shown = currentGroup != null ? currentGroup.storageKey() : null;
         dateSections.clear();
 
-        File saveDir = StorageHelper.getPhotoDir(PhotoPlaybackActivity.this);
+        List<File> dirs = StorageHelper.getPhotoReadDirs(PhotoPlaybackActivity.this);
         lockEnabled = com.kooo.evcam.storage.FootageLocks.enabled(PhotoPlaybackActivity.this);
-        lockedPhotos = com.kooo.evcam.storage.FootageLocks.shown(PhotoPlaybackActivity.this, saveDir);
+        lockedPhotos = com.kooo.evcam.storage.FootageLocks.shownFiles(PhotoPlaybackActivity.this, dirs);
         adapter.setLockedNames(lockedPhotos);
         updateLockButton();
-        // null：没有地方存照片（没有 U 盘、开发者选项没开），也就没有照片可列
-        if (saveDir == null || !saveDir.exists() || !saveDir.isDirectory()) {
-            showEmptyState();
-            showNoSelection();
-            return;
-        }
 
-        File[] files = saveDir.listFiles((dir, name) -> {
-            String lower = name.toLowerCase();
-            return lower.endsWith(".jpg") || lower.endsWith(".jpeg") || lower.endsWith(".png");
-        });
-
-        if (files == null || files.length == 0) {
-            showEmptyState();
-            showNoSelection();
-            return;
-        }
-
-        // 第一步：按时间戳分组（同一秒拍摄的多路图片）
         Map<String, PhotoGroup> groupMap = new HashMap<>();
-        for (File file : files) {
-            String timestamp = PhotoGroup.extractTimestampPrefix(file.getName());
-            PhotoGroup group = groupMap.get(timestamp);
-            if (group == null) {
-                group = new PhotoGroup(timestamp);
-                groupMap.put(timestamp, group);
+        for (File dir : dirs) {
+            File[] files = dir.listFiles(file -> file.isFile() && (
+                    file.getName().toLowerCase(java.util.Locale.US).endsWith(".jpg")
+                    || file.getName().toLowerCase(java.util.Locale.US).endsWith(".jpeg")
+                    || file.getName().toLowerCase(java.util.Locale.US).endsWith(".png")));
+            if (files == null) continue;
+            for (File file : files) {
+                String timestamp = PhotoGroup.extractTimestampPrefix(file.getName());
+                String key = dir.getAbsolutePath() + "/" + timestamp;
+                PhotoGroup group = groupMap.get(key);
+                if (group == null) {
+                    group = new PhotoGroup(timestamp);
+                    groupMap.put(key, group);
+                }
+                group.addFile(file);
             }
-            group.addFile(file);
         }
 
         // 转为列表并排序（最新的在前）
@@ -789,6 +779,7 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
         // 更新UI
         if (dateSections.isEmpty()) {
             showEmptyState();
+            showNoSelection();
         } else {
             photoList.setVisibility(View.VISIBLE);
             emptyText.setVisibility(View.GONE);
@@ -816,7 +807,7 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
         }
         for (DateSection<PhotoGroup> section : dateSections) {
             for (PhotoGroup group : section.getItems()) {
-                if (timestampPrefix.equals(group.getTimestampPrefix())) {
+                if (timestampPrefix.equals(group.storageKey())) {
                     adapter.setSelectedGroup(group);
                     adapter.notifyDataSetChanged();
                     loadPhotoGroup(group);
@@ -901,7 +892,7 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
                     // 删除选中的图片组：锁定的留下（锁定影像关着时不算），留下的那几组还在列表里
                     Set<String> keep = lockEnabled ? lockedPhotos : new HashSet<String>();
                     for (PhotoGroup group : new HashSet<>(deleted)) {
-                        deletedCount += group.deleteAllExcept(keep);
+                        deletedCount += group.deleteAllExceptPaths(keep);
                         if (group.getPhotoCount() > 0) {
                             keptCount += group.getPhotoCount();
                             deleted.remove(group);

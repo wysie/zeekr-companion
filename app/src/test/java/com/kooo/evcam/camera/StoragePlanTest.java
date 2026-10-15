@@ -297,4 +297,29 @@ public class StoragePlanTest {
         assertEquals(before.verdict, now.verdict);
         assertEquals(before.toDelete, now.toDelete);
     }
+    @Test
+    public void combinedLayoutsCountBothCopiesButKeepLocksLocationSpecific() {
+        String oldName = "20261015_000000_surround.mp4";
+        String freshName = "20261015_000100_surround.mp4";
+        List<StoragePlan.Clip> clips = Arrays.asList(
+                new StoragePlan.Clip(oldName, "/new/" + oldName, 100 * MB),
+                new StoragePlan.Clip(oldName, "/legacy/" + oldName, 100 * MB),
+                new StoragePlan.Clip(freshName, "/new/" + freshName, 100 * MB));
+        Set<String> locked = new HashSet<>(Arrays.asList("/legacy/" + oldName));
+        StoragePlan.Decision decision = StoragePlan.decide(clips, locked, 300 * MB, 10 * GB, 100 * MB);
+        assertEquals(StoragePlan.Verdict.DELETE, decision.verdict);
+        assertEquals(Arrays.asList("/new/" + oldName), decision.toDelete);
+        assertEquals(100 * MB, decision.deleteBytes);
+    }
+
+    @Test
+    public void combinedLayoutsWithNoLimitNeverDeleteEitherCopy() {
+        List<StoragePlan.Clip> clips = Arrays.asList(
+                new StoragePlan.Clip("20261015_000000_surround.mp4", "/legacy/file", 100 * MB),
+                new StoragePlan.Clip("20261015_000100_surround.mp4", "/new/file", 100 * MB));
+        StoragePlan.Decision decision = StoragePlan.decide(clips, 0, 1, 100 * MB);
+        assertEquals(StoragePlan.Verdict.FULL, decision.verdict);
+        assertTrue(decision.toDelete.isEmpty());
+    }
+
 }

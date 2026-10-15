@@ -111,7 +111,7 @@ public class StorageCleanupManager {
         // 照片：超了上限从最旧的删到上限的八成
         if (photoLimitGb > 0) {
             CleanupResult photoResult = cleanupPhotos(
-                StorageHelper.getPhotoDir(context),
+                StorageHelper.getPhotoReadDirs(context),
                 photoLimitGb * GB_TO_BYTES
             );
             if (photoResult.deletedCount > 0) {
@@ -124,39 +124,27 @@ public class StorageCleanupManager {
     
     /**
      * 清理照片目录：超了上限，从最旧的删到上限的八成
-     * @param directory 照片目录
+     * @param directories 当前和旧照片目录
      * @param limitBytes 限制大小（字节）
      * @return 清理结果
      */
-    private CleanupResult cleanupPhotos(File directory, long limitBytes) {
+    private CleanupResult cleanupPhotos(List<File> directories, long limitBytes) {
         synchronized (com.kooo.evcam.storage.FootageLocks.guard()) {
-            return cleanupPhotosLocked(directory, limitBytes);
+            return cleanupPhotosLocked(directories, limitBytes);
         }
     }
 
-    private CleanupResult cleanupPhotosLocked(File directory, long limitBytes) {
+    private CleanupResult cleanupPhotosLocked(List<File> directories, long limitBytes) {
         CleanupResult result = new CleanupResult();
         
-        if (directory == null) {
-            // 没插 U 盘、开发者选项也关着：照片没有地方可存，自然也没有要清的（不是异常）
-            return result;
+        List<File> files = new ArrayList<>();
+        for (File directory : directories) {
+            File[] entries = directory.listFiles(file -> file.isFile()
+                    && com.kooo.evcam.camera.StoragePlan.isOwnPhoto(file.getName()));
+            if (entries != null) java.util.Collections.addAll(files, entries);
         }
-        if (!directory.exists() || !directory.isDirectory()) {
-            AppLog.w(TAG, "照片目录不存在: " + directory.getAbsolutePath());
-            return result;
-        }
-        
-        // 获取目录中所有文件（不筛选格式）
-        // 只认本应用写出来的文件：U 盘上可能有用户自己的东西，以前这里有什么删什么
-        File[] files = directory.listFiles(file -> file.isFile()
-                && (com.kooo.evcam.camera.StoragePlan.isOwnClip(file.getName())
-                || com.kooo.evcam.camera.StoragePlan.isOwnPhoto(file.getName())));
-        
-        if (files == null || files.length == 0) {
-            AppLog.d(TAG, "照片目录为空");
-            return result;
-        }
-        
+        if (files.isEmpty()) return result;
+
         // 计算当前总大小
         long totalSize = 0;
         for (File file : files) {
@@ -182,15 +170,12 @@ public class StorageCleanupManager {
                 "，目标大小: " + StorageHelper.formatSize(targetSize));
         
         // 按修改时间排序（最旧的在前）；锁定的不删（但算在占用里）
-        List<File> sortedFiles = deletableOldestFirst(directory, files);
-        if (sortedFiles == null) {
-            return result;
-        }
-        
+        List<File> sortedFiles = deletableOldestFirst(directories, files);
+
         // 删除最旧的文件直到达到目标大小
         long deletedSize = 0;
         int deletedCount = 0;
-        List<String> gone = new ArrayList<>();
+        java.util.Map<File, List<String>> gone = new java.util.LinkedHashMap<>();
         
         for (File file : sortedFiles) {
             if (totalSize - deletedSize <= targetSize) {
@@ -201,7 +186,12 @@ public class StorageCleanupManager {
             String fileName = file.getName();
             
             if (file.delete()) {
-                gone.add(fileName);
+                List<String> group = gone.get(file.getParentFile());
+                if (group == null) {
+                    group = new ArrayList<>();
+                    gone.put(file.getParentFile(), group);
+                }
+                group.add(fileName);
                 deletedSize += fileSize;
                 deletedCount++;
                 AppLog.d(TAG, "已删除照片: " + fileName + " (" + StorageHelper.formatSize(fileSize) + ")");
@@ -210,7 +200,9 @@ public class StorageCleanupManager {
             }
         }
         
-        com.kooo.evcam.storage.FootageLocks.forget(directory, gone);
+        for (java.util.Map.Entry<File, List<String>> group : gone.entrySet()) {
+            com.kooo.evcam.storage.FootageLocks.forget(group.getKey(), group.getValue());
+        }
         result.deletedCount = deletedCount;
         result.deletedSize = deletedSize;
         result.finalSize = totalSize - deletedSize;
@@ -223,20 +215,17 @@ public class StorageCleanupManager {
     
     /**
      * 能删的文件，最旧的在前：锁定的拿掉（{@link com.kooo.evcam.storage.FootageLocks}）。
-     * 锁定清单读不出来返回 null —— 这一轮不删。调用方拿着清单的锁。
+     * 锁定清单读不出来的目录不删。调用方拿着清单的锁。
      */
-    private List<File> deletableOldestFirst(File directory, File[] files) {
-        java.util.Set<String> locked =
-                com.kooo.evcam.storage.FootageLocks.protectedNames(context, directory);
-        if (locked == null) {
-            AppLog.w(TAG, "锁定清单读不出来，这一轮不清理: " + directory);
-            return null;
+    private List<File> deletableOldestFirst(List<File> directories, List<File> files) {
+        java.util.Map<File, java.util.Set<String>> locked = new java.util.HashMap<>();
+        for (File directory : directories) {
+            locked.put(directory, com.kooo.evcam.storage.FootageLocks.protectedNames(context, directory));
         }
         List<File> sorted = new ArrayList<>();
         for (File file : files) {
-            if (!locked.contains(file.getName())) {
-                sorted.add(file);
-            }
+            java.util.Set<String> names = locked.get(file.getParentFile());
+            if (names != null && !names.contains(file.getName())) sorted.add(file);
         }
         sorted.sort(Comparator.comparingLong(File::lastModified));
         return sorted;
@@ -267,7 +256,7 @@ public class StorageCleanupManager {
      * @return 占用大小（字节）
      */
     public long getVideoUsedSize() {
-        return getDirectorySize(StorageHelper.getVideoDir(context));
+        return getDirectoriesSize(StorageHelper.getVideoReadDirs(context));
     }
     
     /**
@@ -275,12 +264,18 @@ public class StorageCleanupManager {
      * @return 占用大小（字节）
      */
     public long getPhotoUsedSize() {
-        return getDirectorySize(StorageHelper.getPhotoDir(context));
+        return getDirectoriesSize(StorageHelper.getPhotoReadDirs(context));
     }
     
     /**
      * 获取目录中所有文件的总大小
      */
+    private long getDirectoriesSize(List<File> dirs) {
+        long bytes = 0;
+        for (File dir : dirs) bytes += getDirectorySize(dir);
+        return bytes;
+    }
+
     private long getDirectorySize(File directory) {
         if (directory == null || !directory.exists() || !directory.isDirectory()) {
             return 0;

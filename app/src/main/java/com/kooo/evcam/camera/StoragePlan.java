@@ -110,10 +110,17 @@ public final class StoragePlan {
     /** 盘上的一个录像文件。 */
     public static final class Clip {
         public final String name;
+        /** Distinct identity across directories; defaults to name for single-directory callers. */
+        public final String key;
         public final long bytes;
 
         public Clip(String name, long bytes) {
+            this(name, name, bytes);
+        }
+
+        public Clip(String name, String key, long bytes) {
             this.name = name;
+            this.key = key;
             this.bytes = bytes;
         }
     }
@@ -130,6 +137,7 @@ public final class StoragePlan {
     /** 决定的结果。 */
     public static final class Decision {
         public final Verdict verdict;
+        /** Clip keys (full paths for multi-directory callers), never reconstructed by name. */
         public final List<String> toDelete;
         public final long deleteBytes;
         public final long marginBytes;
@@ -234,7 +242,7 @@ public final class StoragePlan {
         long lockedOld = 0;
         for (String key : order) {
             for (Clip clip : groups.get(key)) {
-                if (locked.contains(clip.name)) {
+                if (locked.contains(clip.key)) {
                     lockedOld += Math.max(0, clip.bytes);
                 } else {
                     deletable += Math.max(0, clip.bytes);
@@ -257,10 +265,10 @@ public final class StoragePlan {
                 break;
             }
             for (Clip clip : groups.get(key)) {
-                if (locked.contains(clip.name)) {
+                if (locked.contains(clip.key)) {
                     continue;
                 }
-                toDelete.add(clip.name);
+                toDelete.add(clip.key);
                 freed += Math.max(0, clip.bytes);
             }
         }

@@ -459,37 +459,38 @@ public class TimelinePlayerActivity extends AppCompatActivity {
             List<RecordingTimeline.Source> sources = new ArrayList<>();
             Map<String, List<RecordingTimeline.Source>> others = new HashMap<>();
             try {
-                File dir = StorageHelper.getVideoDir(getApplicationContext());
-                File[] files = dir != null ? dir.listFiles() : null;
-                if (files != null) {
-                    for (File f : files) {
-                        if (!f.isFile() || !f.getName().toLowerCase(Locale.US).endsWith(".mp4")) {
-                            continue;
-                        }
-                        String slot = RecordingTimeline.parseCameraSlot(f.getName());
-                        long start = RecordingTimeline.parseStartEpochMs(f.getName());
-                        if (slot == null || start < 0) {
-                            continue;
-                        }
-                        long duration = ClipDurations.of(f);
-                        if (duration <= 0) {
-                            continue;
-                        }
-                        RecordingTimeline.Source source = new RecordingTimeline.Source(
-                                f.getAbsolutePath(), start, duration, f.length());
-                        // 时间轴只按环视那一路排。三路录制时同一分段会写出三个文件，
-                        // 时间戳前缀一模一样 —— 全收进时间轴就会被当成前后相接的三段。
-                        // 其余几路另外收着，播放时按真实时刻跟着环视走
-                        if (RecordingTimeline.isSlot(f.getName(), COMPOSITE_SLOT)) {
-                            sources.add(source);
-                        } else {
-                            String key = CameraSlots.canonical(slot.toLowerCase(Locale.US));
-                            List<RecordingTimeline.Source> list = others.get(key);
-                            if (list == null) {
-                                list = new ArrayList<>();
-                                others.put(key, list);
+                for (File dir : StorageHelper.getVideoReadDirs(getApplicationContext())) {
+                    File[] files = dir.listFiles();
+                    if (files != null) {
+                        for (File f : files) {
+                            if (!f.isFile() || !f.getName().toLowerCase(Locale.US).endsWith(".mp4")) {
+                                continue;
                             }
-                            list.add(source);
+                            String slot = RecordingTimeline.parseCameraSlot(f.getName());
+                            long start = RecordingTimeline.parseStartEpochMs(f.getName());
+                            if (slot == null || start < 0) {
+                                continue;
+                            }
+                            long duration = ClipDurations.of(f);
+                            if (duration <= 0) {
+                                continue;
+                            }
+                            RecordingTimeline.Source source = new RecordingTimeline.Source(
+                                    f.getAbsolutePath(), start, duration, f.length());
+                            // 时间轴只按环视那一路排。三路录制时同一分段会写出三个文件，
+                            // 时间戳前缀一模一样 —— 全收进时间轴就会被当成前后相接的三段。
+                            // 其余几路另外收着，播放时按真实时刻跟着环视走
+                            if (RecordingTimeline.isSlot(f.getName(), COMPOSITE_SLOT)) {
+                                sources.add(source);
+                            } else {
+                                String key = CameraSlots.canonical(slot.toLowerCase(Locale.US));
+                                List<RecordingTimeline.Source> list = others.get(key);
+                                if (list == null) {
+                                    list = new ArrayList<>();
+                                    others.put(key, list);
+                                }
+                                list.add(source);
+                            }
                         }
                     }
                 }
@@ -505,8 +506,8 @@ public class TimelinePlayerActivity extends AppCompatActivity {
                         .byRecording(built, segmentMsOf(entry.getKey())));
             }
             final boolean locksOn = com.kooo.evcam.storage.FootageLocks.enabled(getApplicationContext());
-            final java.util.Set<String> locked = com.kooo.evcam.storage.FootageLocks.shown(
-                    getApplicationContext(), StorageHelper.getVideoDir(getApplicationContext()));
+            final java.util.Set<String> locked = com.kooo.evcam.storage.FootageLocks.shownFiles(
+                    getApplicationContext(), StorageHelper.getVideoReadDirs(getApplicationContext()));
             runOnUiThread(() -> {
                 sessions = built;
                 laneSources.clear();
@@ -1198,7 +1199,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
 
     /**
      * 保存片段（2.10.8）：此刻前后各 15 秒，看的是哪一路就抄哪一路（网格或放大某一路时是环视那个文件），
-     * 存到 EVCam_Clips，存好后打开「发送到手机」。不重新编码，几秒钟。
+     * 存到 ZeekrShortcutApp/Videos/Clips，存好后打开「发送到手机」。不重新编码，几秒钟。
      */
     private void showClipChoices() {
         Lane lane = expanded != null ? expanded : surround;
@@ -1253,7 +1254,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
 
     /**
      * 把 [fromMs, toMs] 抄成一个 MP4（2.10.8 起；2.11.0 之后可以自己选起止）：看的是哪一路就抄哪一路
-     * （网格或放大某一路时是环视那个文件），存到 EVCam_Clips，存好后打开「发送到手机」。不重新编码，几秒钟。
+     * （网格或放大某一路时是环视那个文件），存到 ZeekrShortcutApp/Videos/Clips，存好后打开「发送到手机」。不重新编码，几秒钟。
      *
      * @param around 是「此刻前后 15 秒」（文件名、提示按此刻），不是自己选的一段
      */
@@ -1594,7 +1595,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
 
     /** 锁定的文件回放里不能直接删：先解锁（锁定影像关着时不算）。 */
     private boolean isLocked(String path) {
-        return lockEnabled && lockedVideos.contains(new File(path).getName());
+        return lockEnabled && lockedVideos.contains(new File(path).getAbsolutePath());
     }
 
     private String deletedText(int deleted, int kept) {
@@ -1658,10 +1659,10 @@ public class TimelinePlayerActivity extends AppCompatActivity {
         return files;
     }
 
-    private static List<String> namesOf(List<File> files) {
+    private static List<String> pathsOf(List<File> files) {
         List<String> names = new ArrayList<>();
         for (File file : files) {
-            names.add(file.getName());
+            names.add(file.getAbsolutePath());
         }
         return names;
     }
@@ -1677,10 +1678,10 @@ public class TimelinePlayerActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.msg_footage_nothing_here, Toast.LENGTH_SHORT).show();
             return;
         }
-        final List<String> names = namesOf(files);
+        final List<String> names = pathsOf(files);
         final boolean unlock = lockedVideos.containsAll(names);
         lockButton.setEnabled(false);
-        com.kooo.evcam.storage.FootageLocks.set(files.get(0).getParentFile(), names, !unlock, ok -> {
+        com.kooo.evcam.storage.FootageLocks.setFiles(files, !unlock, ok -> {
             if (isFinishing() || isDestroyed()) {
                 return;
             }
@@ -1738,7 +1739,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
         java.util.Set<String> drawn = new java.util.HashSet<>();
         List<Long> ends = new ArrayList<>();
         for (LaneTrack.Clip clip : clips) {
-            if (drawn.add(clip.path) && lockedVideos.contains(new File(clip.path).getName())) {
+            if (drawn.add(clip.path) && lockedVideos.contains(new File(clip.path).getAbsolutePath())) {
                 long from = session.positionAt(clip.startEpochMs);
                 long to = session.positionAt(clip.startEpochMs + clip.durationMs);
                 ends.add(from);
@@ -1764,7 +1765,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
             return;
         }
         List<File> files = filesHere();
-        boolean locked = !files.isEmpty() && lockedVideos.containsAll(namesOf(files));
+        boolean locked = !files.isEmpty() && lockedVideos.containsAll(pathsOf(files));
         lockButton.setText(locked ? R.string.action_unlock_footage : R.string.action_lock_footage);
     }
 
@@ -1776,7 +1777,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
         }
         for (int i = 0; i < flags.length; i++) {
             for (LaneTrack.Clip clip : filesOf(i)) {
-                if (lockedVideos.contains(new File(clip.path).getName())) {
+                if (lockedVideos.contains(new File(clip.path).getAbsolutePath())) {
                     flags[i] = true;
                     break;
                 }

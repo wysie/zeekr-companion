@@ -38,4 +38,39 @@ public class FootageLocksTest {
         assertTrue(FootageLocks.parse(null).isEmpty());
         assertTrue(FootageLocks.parse("").isEmpty());
     }
+    @Test
+    public void lockWritesGoBesideEachFileEvenWhenNamesMatch() {
+        String name = "20261015_001000_surround.mp4";
+        java.io.File current = new java.io.File("/storage/drive/ZeekrShortcutApp/Videos", name);
+        java.io.File old = new java.io.File("/storage/drive/DCIM/EVCam_Video", name);
+        java.util.Map<java.io.File, java.util.List<String>> groups = FootageLocks.groupFiles(
+                Arrays.asList(current, old, current));
+        assertEquals(2, groups.size());
+        assertEquals(Arrays.asList(name), groups.get(current.getParentFile()));
+        assertEquals(Arrays.asList(name), groups.get(old.getParentFile()));
+    }
+
+    @Test
+    public void queuedRelayClipKeepsPreUpgradeProtectionBeforePublication() throws Exception {
+        java.nio.file.Path volume = java.nio.file.Files.createTempDirectory("relay-layout-test");
+        try {
+            java.io.File current = StorageLayout.directory(volume.toFile(), StorageLayout.Kind.VIDEO);
+            java.io.File old = StorageLayout.legacyDirectory(volume.toFile(), StorageLayout.Kind.VIDEO);
+            org.junit.Assert.assertTrue(current.mkdirs());
+            org.junit.Assert.assertTrue(old.mkdirs());
+            String name = "20261015_001000_surround.mp4";
+            java.nio.file.Files.write(new java.io.File(old, FootageLocks.FILE_NAME).toPath(),
+                    (name + "\n").getBytes(java.nio.charset.StandardCharsets.UTF_8));
+            org.junit.Assert.assertTrue(FootageLocks.keepRelayProtection(new java.io.File(current, name)));
+            assertTrue(FootageLocks.read(current).contains(name));
+            assertTrue(FootageLocks.read(old).contains(name));
+            org.junit.Assert.assertFalse(new java.io.File(current, name).exists());
+            org.junit.Assert.assertTrue(FootageLocks.keepRelayProtection(new java.io.File(current, name)));
+        } finally {
+            try (java.util.stream.Stream<java.nio.file.Path> paths = java.nio.file.Files.walk(volume)) {
+                paths.sorted(java.util.Comparator.reverseOrder()).forEach(path -> path.toFile().delete());
+            }
+        }
+    }
+
 }

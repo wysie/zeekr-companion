@@ -32,9 +32,11 @@ release numbers remain independent of upstream.
 
 ## Additions in this fork
 
+- **One app folder:** new recordings, photos and exported diagnostics go under **ZeekrShortcutApp/Videos**, **Photos** and **Logs** on selected storage. Playback, protection, storage accounting and cleanup also support older EVCam folders without moving existing files. See [storage layout](docs/app-storage-folders.md).
+
 - **Recording and transfer integrity:** verified USB/archive copies preserve both files on collisions; relay buffers use private files instead of disposable Android cache. Failed protection-list replacement keeps the old list; developer repair first retains a verified original backup. See the [whole-project review](docs/project-safety-review.md) for fixes and remaining limits.
 - **Camera freshness guards:** Main surround/cabin previews, Super mirror, side popup and HUD cover stalled pictures after 500 ms without advancing texture timestamps, checked at 100 ms intervals. Reopened textures require new frame progression; missing geometry stays covered. These software guards still need on-car timing checks. See the [camera safety review](docs/camera-safety-review.md).
-- **DIY 360 prototype (parked calibration only):** with the vehicle reporting P, manually switch the live surround preview to a stitched top-down ground view with a central vehicle outline, overlap blending and bilinear sampling. Tap **360°** on the main camera screen; hold it to calibrate, choose **360 resolution** or reset. Balanced is the sharper default; Full requests the live frame at its native dimensions (up to 8 MP), with automatic resolution reduction if processing is slow or memory is limited. On the supplied 009 stream, Balanced uses 512×2056 → 640×960; Full uses 1280×5140 → 960×1440. While 360 is selected, the main photo action saves the fresh stitched preview at the active resolution and calibration notes to **DCIM/EVCam_Photo/360** on configured storage. Switch back to Four cameras to capture ordinary/raw composite photos. Saved 360 PNGs are separate from the regular photo-playback list. It requires a connected vehicle interface and P; unknown gear or a known contradictory speed blocks it. Geometry is still estimated: owner feedback confirms visible misalignment, and resolution/export improvements do not establish calibrated distances. See [setup and limits](docs/diy-360-view.md).
+- **DIY 360 prototype (parked calibration only):** with the vehicle reporting P, manually switch the live surround preview to a stitched top-down ground view with a central vehicle outline, overlap blending and bilinear sampling. Tap **360°** on the main camera screen; hold it to calibrate, choose **360 resolution** or reset. Balanced is the sharper default; Full requests the live frame at its native dimensions (up to 8 MP), with automatic resolution reduction if processing is slow or memory is limited. On the supplied 009 stream, Balanced uses 512×2056 → 640×960; Full uses 1280×5140 → 960×1440. While 360 is selected, the main photo action saves the fresh stitched preview at the active resolution and calibration notes to **ZeekrShortcutApp/Photos/360** on configured storage. Switch back to Four cameras to capture ordinary/raw composite photos. Saved 360 PNGs are separate from the regular photo-playback list. It requires a connected vehicle interface and P; unknown gear or a known contradictory speed blocks it. Geometry is still estimated: owner feedback confirms visible misalignment, and resolution/export improvements do not establish calibrated distances. See [setup and limits](docs/diy-360-view.md).
 - **Automatic blind spot camera:** adapted from
   [FerixzTanz's original turn-signal side view, PR #4](https://github.com/dts88/zeekr-shortcut-car/pull/4),
   with credit and original commit authorship preserved. It works with the current
@@ -306,7 +308,7 @@ Settings → Storage → Lock footage on hard braking is on by default and depen
 
 ## Custom clip export
 
-In playback, tap Save clip to save 15 seconds before/after the current point, or choose a range starting here, move to the end and tap Save to here. Custom clips are limited to 10 minutes and copied without re-encoding; the start may include preceding keyframe footage. Clips are saved beside the recording directory in EVCam_Clips and can be sent to the phone. A codec change stops concatenation. Saved clips and concurrent exports are never overwritten. Swipe left/right to switch cameras when a surround cell is enlarged.
+In playback, tap Save clip to save 15 seconds before/after the current point, or choose a range starting here, move to the end and tap Save to here. Custom clips are limited to 10 minutes and copied without re-encoding; the start may include preceding keyframe footage. Clips are saved under ZeekrShortcutApp/Videos/Clips and can be sent to the phone. A codec change stops concatenation. Saved clips and concurrent exports are never overwritten. Swipe left/right to switch cameras when a surround cell is enlarged.
 
 ## Recording follows the driver
 
@@ -341,7 +343,7 @@ uninstalling removes them. Transfer destinations and pending lock retries are no
 persisted across process death. Keep the original USB attached for recovery.
 
 Developer MP4 repair keeps the original filename and edits its index after saving a
-verified backup under `EVCam_Video/repair-originals/<filename>.original`. It refuses to
+verified backup under `ZeekrShortcutApp/Videos/repair-originals/<filename>.original`. It refuses to
 edit if that backup cannot be made or conflicts with an existing different backup.
 Repair bounds its sample tables (100,000 samples), reference index (8 MiB), decoder description (1 MiB) and validation buffer (8 MiB); oversized files are refused. Backups are retained, consume additional USB space, and require manual recovery or
 cleanup; they are not included in automatic recording rotation.

@@ -306,10 +306,7 @@ public final class Mp4RepairFlow {
     /** 录制目录和最终目录可能不是一个（开了中转写入时），两个都看。 */
     private static Set<File> dirs(Activity activity) {
         Set<File> dirs = new LinkedHashSet<>();
-        File video = StorageHelper.getVideoDir(activity);
-        if (video != null && video.isDirectory()) {
-            dirs.add(video);
-        }
+        dirs.addAll(StorageHelper.getVideoReadDirs(activity));
         File recording = StorageHelper.getRecordingDir(activity);
         if (recording != null && recording.isDirectory()) {
             dirs.add(recording);

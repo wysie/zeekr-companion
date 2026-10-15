@@ -283,7 +283,7 @@ Bilinear sampling now interpolates within each source lane, validating all used
 pixel neighbours and preserving separator exclusion. Readback size, cadence,
 500 ms freshness and 40 ms slow-readback pause are unchanged. While 360 is active,
 the main photo action saves a fresh stitched PNG and matching calibration/state
-note to EVCam_Photo/360. Blocked/stale views are refused; saving is off-thread,
+note to ZeekrShortcutApp/Photos/360. Blocked/stale views are refused; saving is off-thread,
 limited to one snapshot at a time, and does not modify the camera or recordings.
 Three new interpolation/sentinel tests and existing lane-boundary tests pass:
 1,261 JVM tests, zero failures/errors/skips. Native UI/export and interpolation
@@ -320,3 +320,17 @@ errors or skips. Signed build/vital lint pass. Native copy speed, heap use,
 full-size export and recording continuity await owner testing. Geometric
 misalignment remains unresolved.
 Packaged as 2.11.24-personal-alpha, versionCode 307, retaining the existing signer.
+
+
+## App folder layout (2026-10-15; vehicle check pending)
+
+New files are under ZeekrShortcutApp/Videos, Photos and Logs on the selected volume.
+Clips are under Videos/Clips, stitched PNG/TXT pairs under Photos/360, raw JPEG/TXT
+pairs under Photos/Raw. Export fresh Diagnostics to Logs. Existing files in old
+DCIM/EVCam_Video and DCIM/EVCam_Photo are listed without moving them. Confirm a
+new ordinary photo and short manually started recording appear under the new root,
+then confirm old media plays and old locked items remain protected. Phone sharing
+should work for both old and new media. Use disposable test files if checking manual
+deletion; do not lower storage limits merely to provoke deletion of real footage.
+Private session logs/relay buffers remain in app-private storage; diagnostics exports
+include session logs as before. Factory Sentry paths are unaffected.

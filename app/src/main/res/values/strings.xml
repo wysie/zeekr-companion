@@ -978,12 +978,12 @@
     <string name="set_footage_lock_brake_summary" formatted="false">录制时急刹车（包括车辆自动紧急制动），自动锁定此刻前后 10 秒所在的录像片段。自动锁定最多占录像空间的 10%，超出时先放开最早的。</string>
     <string name="msg_brake_locked">急刹车：已锁定前后 10 秒所在的录像片段</string>
     <string name="action_save_clip">保存片段</string>
-    <string name="clip_share_note_range">自己选的一段（%1$s），已存到 DCIM/EVCam_Clips，不会被自动清理。</string>
+    <string name="clip_share_note_range">自己选的一段（%1$s），已存到 ZeekrShortcutApp/Videos/Clips，不会被自动清理。</string>
     <string name="msg_clip_saved">片段已保存：%1$s</string>
     <string name="clip_cancel_range">取消选段</string>
     <string name="msg_clip_failed">片段没能保存</string>
     <string name="msg_clip_saving_range">正在保存这一段（%1$s）…</string>
-    <string name="clip_share_note">此刻前后约 30 秒的片段，已存到 DCIM/EVCam_Clips，不会被自动清理。</string>
+    <string name="clip_share_note">此刻前后约 30 秒的片段，已存到 ZeekrShortcutApp/Videos/Clips，不会被自动清理。</string>
     <string name="clip_save_around">此刻前后 15 秒</string>
     <string name="msg_deleting">正在删除…</string>
     <string name="clip_start_marked">起点定在 %1$s。拖到终点，再点「保存到此处」（最长 10 分钟）</string>
@@ -1055,7 +1055,7 @@
     <string name="bird_eye_slow">处理过慢或内存不足，360已暂停</string>
     <string name="side_view_waiting_live">等待实时相机画面</string>
     <string name="dev_repair_backup_note">修复前的原始文件保存在录像目录的 repair-originals 子目录中。不会自动删除；空间不足时不会开始修复。</string>
-    <string name="bird_eye_photo_saved">360 预览和校准信息已保存到 DCIM/EVCam_Photo/360</string>
+    <string name="bird_eye_photo_saved">360 预览和校准信息已保存到 ZeekrShortcutApp/Photos/360</string>
     <string name="bird_eye_quality">360 分辨率</string>
     <string name="bird_eye_quality_low">低 — 最快</string>
     <string name="bird_eye_quality_balanced">均衡 — 默认</string>
