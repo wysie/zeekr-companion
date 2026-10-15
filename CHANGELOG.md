@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.27-personal-alpha] - 2026-10-15
+
 - Add parked-only Developer camera/display tools: batch snapshots of exposed Camera2 IDs and numbered 10-second public-display test cards.
 - Save image/card exports and result reports under ZeekrShortcutApp/Developer; retain the camera lease through delayed native closure and preserve saved mappings/settings.
 

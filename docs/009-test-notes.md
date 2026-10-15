@@ -350,7 +350,7 @@ show the restart instruction instead of repeatedly reporting generic start failu
 The supplied PNG was Balanced; select Full explicitly for the next quality comparison.
 
 
-## Pending: developer camera and display tools
+## 2.11.27: developer camera and display tools (vehicle test pending)
 
 The owner requested a batch alternative to switching camera IDs individually,
 and HUD identification as well. The new Developer page captures one representative
@@ -376,3 +376,5 @@ JVM checks cover the exclusive lease, delayed closure, channel close ordering,
 YUV stride/offset packing and allocation bounds. Native stream combinations,
 Presentation placement and HUD routing await the owner's vehicle test. Existing
 PR #17/#19 heads remain unchanged; no owner diagnostics or images are published.
+
+Release validation: 1,294 JVM tests, signed release assembly and vital release lint pass. Native Camera2 and Presentation behavior remain untested on the car.
