@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.33-personal-alpha] - 2026-10-15
+
 - Add a dedicated 360° camera settings section and an independent draggable/resizable popup with expand/close, saved layout, shared calibration/quality and stitched photos.
 - Give the optional 360 camera surface lowest priority, suspend it for factory/screen/probe takeover, and wrap 360 notices for smaller windows.
 
