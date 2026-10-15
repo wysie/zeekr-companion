@@ -136,3 +136,10 @@ or existing contribution history.
 Customize-value callbacks and callback-shape reporting are adapted from
 [FerixzTanz/CAMCORDER 945ee4ed](https://github.com/FerixzTanz/CAMCORDER/commit/945ee4ed160bb8d91ca5e54411bab2ffa68cf3d3).
 The fork retains its bounded event queue and caps reported callback shapes.
+
+## CAMCORDER rapid theme-change fix
+
+The shared pipeline lookup and tests are adapted from
+[FerixzTanz/CAMCORDER 57797edd](https://github.com/FerixzTanz/CAMCORDER/commit/57797edd4b52c1aa2ee554d5eea6adf589e066e3).
+Current upstream already keeps camera ownership outside the Activity; this port
+uses the lookup to retain foreground/relay services during rapid recreation.
