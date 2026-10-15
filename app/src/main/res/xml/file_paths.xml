@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
-    <!-- DCIM directory for recorded videos (内部存储) -->
+    <external-path name="app_videos" path="ZeekrShortcutApp/Videos/" />
+    <external-path name="app_photos" path="ZeekrShortcutApp/Photos/" />
+    <external-path name="app_logs" path="ZeekrShortcutApp/Logs/" />
+
+    <!-- Legacy DCIM directory for recorded videos (内部存储) -->
     <external-path
         name="videos"
         path="DCIM/EVCam_Video/" />

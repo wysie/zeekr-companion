@@ -6,6 +6,7 @@ import android.os.Environment;
 import android.os.StatFs;
 
 import java.io.File;
+import com.kooo.evcam.storage.StorageLayout;
 
 /**
  * 存储帮助类
@@ -17,9 +18,9 @@ public class StorageHelper {
     private static final String TAG = "StorageHelper";
     
     // 存储目录名称
-    public static final String VIDEO_DIR_NAME = "EVCam_Video";
-    public static final String PHOTO_DIR_NAME = "EVCam_Photo";
-    public static final String LOG_DIR_NAME = "EVCam_Log";
+    public static final String VIDEO_DIR_NAME = StorageLayout.VIDEOS;
+    public static final String PHOTO_DIR_NAME = StorageLayout.PHOTOS;
+    public static final String LOG_DIR_NAME = StorageLayout.LOGS;
     
     // ==================== 内存缓存（性能优化）====================
     // U盘检测结果缓存（避免重复的文件系统 I/O）
@@ -77,9 +78,9 @@ public class StorageHelper {
         return listSdCardRootsFromMounts();
     }
 
-    /** 某个盘上录像该放的目录：root/DCIM/EVCam_Video，和 {@link #getVideoDir} 选好盘之后的规则一样。 */
+    /** 某个盘上录像该放的目录：root/ZeekrShortcutApp/Videos，和 {@link #getVideoDir} 选好盘之后的规则一样。 */
     public static File videoDirOn(File root) {
-        return new File(new File(root, Environment.DIRECTORY_DCIM), VIDEO_DIR_NAME);
+        return StorageLayout.directory(root, StorageLayout.Kind.VIDEO);
     }
 
     /**
@@ -140,13 +141,13 @@ public class StorageHelper {
         boolean result = false;
         
         if (sdCardRoot != null && sdCardRoot.exists()) {
-            // 检查 DCIM 目录是否可写
-            File dcimDir = new File(sdCardRoot, Environment.DIRECTORY_DCIM);
+            // 检查应用目录是否可写
+            File dcimDir = new File(sdCardRoot, StorageLayout.ROOT);
             if (!dcimDir.exists()) {
-                // 尝试创建 DCIM 目录
+                // 尝试创建应用目录
                 boolean created = dcimDir.mkdirs();
                 if (!created) {
-                    AppLog.w(TAG, "无法在U盘上创建 DCIM 目录");
+                    AppLog.w(TAG, "无法在U盘上创建 ZeekrShortcutApp 目录");
                 }
             }
             result = dcimDir.exists() && dcimDir.canWrite();
@@ -312,7 +313,7 @@ public class StorageHelper {
      * @return 视频存储目录；没有地方可存时为 null（见 {@link #footageRoot}）
      */
     public static File getVideoDir(Context context, boolean useExternalSd) {
-        return getStorageDir(footageRoot(context, useExternalSd), VIDEO_DIR_NAME, Environment.DIRECTORY_DCIM);
+        return getStorageDir(footageRoot(context, useExternalSd), VIDEO_DIR_NAME, StorageLayout.ROOT);
     }
 
     /**
@@ -322,7 +323,7 @@ public class StorageHelper {
      * @return 图片存储目录；没有地方可存时为 null（见 {@link #footageRoot}）
      */
     public static File getPhotoDir(Context context, boolean useExternalSd) {
-        return getStorageDir(footageRoot(context, useExternalSd), PHOTO_DIR_NAME, Environment.DIRECTORY_DCIM);
+        return getStorageDir(footageRoot(context, useExternalSd), PHOTO_DIR_NAME, StorageLayout.ROOT);
     }
 
     /**
@@ -340,7 +341,7 @@ public class StorageHelper {
             AppLog.w(TAG, "U盘不可用，日志目录回退到内置存储");
         }
         return getStorageDir(sdCardRoot != null ? sdCardRoot : Environment.getExternalStorageDirectory(),
-                LOG_DIR_NAME, Environment.DIRECTORY_DOWNLOADS);
+                LOG_DIR_NAME, StorageLayout.ROOT);
     }
 
     /**
@@ -405,6 +406,17 @@ public class StorageHelper {
         return getPhotoDir(context, config.isUsingExternalSdCard());
     }
 
+    /** All existing current/legacy media folders on the selected volume. No migration. */
+    public static java.util.List<File> getVideoReadDirs(Context context) {
+        return StorageLayout.readDirectories(footageRoot(context,
+                new AppConfig(context).isUsingExternalSdCard()), StorageLayout.Kind.VIDEO);
+    }
+
+    public static java.util.List<File> getPhotoReadDirs(Context context) {
+        return StorageLayout.readDirectories(footageRoot(context,
+                new AppConfig(context).isUsingExternalSdCard()), StorageLayout.Kind.PHOTO);
+    }
+
     /**
      * 影像（录像、照片）放在哪个盘上 —— 只有这一处决定（项目所有者 2026-10-06：不允许存到内置存储）。
      *
@@ -419,7 +431,7 @@ public class StorageHelper {
      */
     private static File footageRoot(Context context, boolean useExternalSd) {
         if (useExternalSd) {
-            // U盘的公共目录（U盘/DCIM/EVCam_Video 或 U盘/DCIM/EVCam_Photo）
+            // U盘的公共目录（U盘/ZeekrShortcutApp/Videos 或 U盘/ZeekrShortcutApp/Photos）
             File sdCardRoot = getExternalSdCardRoot(context);
             if (sdCardRoot != null) {
                 return sdCardRoot;

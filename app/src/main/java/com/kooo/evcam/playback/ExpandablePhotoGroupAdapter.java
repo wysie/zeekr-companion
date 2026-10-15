@@ -240,7 +240,7 @@ public class ExpandablePhotoGroupAdapter extends RecyclerView.Adapter<RecyclerVi
         int count = group.getPhotoCount();
         holder.videoCountBadge.setText(
                 context.getResources().getQuantityString(R.plurals.photo_count_badge, count, count)
-                + (group.isLocked(lockedNames) ? " · " + context.getString(R.string.photo_group_locked) : ""));
+                + (group.isLockedPaths(lockedNames) ? " · " + context.getString(R.string.photo_group_locked) : ""));
 
         // 加载四个位置的缩略图
         loadThumbnail(group.getFrontPhoto(), holder.thumbFront);

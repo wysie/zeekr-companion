@@ -31,7 +31,7 @@ U 盘上可能有用户自己的东西。清理只认本应用写出来的文件
 - **锁的是文件。** 录像：回放里「锁定此刻」锁的是这一刻各路正在放的那几个文件（环视、前座舱、后座舱有几路锁几路；
   各路分段长度可以不一样，所以按文件、不按时间戳组），加上挂在此刻环视那一段上的、环视之外的座舱文件（2026-10-11，ui-spec 七）。
   照片：一次拍摄的一整组。
-- **清单放在 U 盘上**，和影像同一个目录：`DCIM/EVCam_Video/locked.txt`、`DCIM/EVCam_Photo/locked.txt`，一行一个文件名。
+- **清单放在 U 盘上**，和影像同一个目录：`ZeekrShortcutApp/Videos/locked.txt`、`ZeekrShortcutApp/Photos/locked.txt`，一行一个文件名。
   换盘、重装、清除数据都还在；插到电脑上能打开看。写的时候先写临时文件再改名，拔盘不会写坏一半（`FootageLocks`）。
 - **两条自动清理都跳过锁定的，但锁定的照样算占用。** 没锁的删光了还不够（上限或余量），就停录，
   提示「锁定的影像占满了空间，请在回放里解锁一些」（`StoragePlan` 的 `lockedFull`，停录原因 `STORAGE_LOCKED`）。
@@ -113,3 +113,11 @@ U 盘上可能有用户自己的东西。清理只认本应用写出来的文件
   - 导出的诊断报告不是影像，不归这一条管：没有 U 盘时照旧写在内置存储上（`StorageHelper.getLogDir`）。
 - **存储页「录像保存路径」**：在录时写录制器实际写的目录（换过盘就是新盘；中转写入时写转存到的目录，不写缓存）；
   没在录时写下一次开录会写的目录；此刻录不了（没有 U 盘、开发者选项没开）写「未检测到 U 盘」（`StorageHelper.savedVideoDir`）。
+
+
+## Fork folder compatibility (2026-10-15)
+
+New public files live under ZeekrShortcutApp/Videos, Photos and Logs. Legacy media
+stays in its existing EVCam directories and is included in playback, accounting and
+cleanup. Protection lists stay with their own directory; full paths distinguish
+matching filenames. No startup migration is performed. See app-storage-folders.md.

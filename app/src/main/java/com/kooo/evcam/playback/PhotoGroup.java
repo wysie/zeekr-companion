@@ -204,6 +204,31 @@ public class PhotoGroup {
         return names;
     }
 
+    public List<String> filePaths() {
+        List<String> paths = new ArrayList<>();
+        for (File file : photoFiles.values()) paths.add(file.getAbsolutePath());
+        return paths;
+    }
+
+    /** Same timestamp on another volume/layout is a separate group. */
+    public String storageKey() {
+        File file = getThumbnailFile();
+        return (file == null ? "" : file.getAbsoluteFile().getParent()) + "/" + timestampPrefix;
+    }
+
+    public boolean isLockedPaths(Set<String> locked) {
+        for (String path : filePaths()) if (locked.contains(path)) return true;
+        return false;
+    }
+
+    public int deleteAllExceptPaths(Set<String> keep) {
+        Set<String> names = new java.util.HashSet<>();
+        for (File file : photoFiles.values()) {
+            if (keep.contains(file.getAbsolutePath())) names.add(file.getName());
+        }
+        return deleteAllExcept(names);
+    }
+
     /** 有没有锁定的（{@code locked} 是锁定的文件名）。 */
     public boolean isLocked(Set<String> locked) {
         for (File file : photoFiles.values()) {

@@ -317,6 +317,9 @@ public class FileTransferManager {
         }
 
         try {
+            if (!com.kooo.evcam.storage.FootageLocks.keepRelayProtection(task.targetFile)) {
+                throw new IOException("Cannot preserve legacy relay protection; source retained");
+            }
             com.kooo.evcam.storage.VerifiedFileCopy.copy(task.sourceFile, task.targetFile);
             long targetSize = task.targetFile.length();
             if (!task.sourceFile.delete()) AppLog.w(TAG, "Verified copy retained at both locations: " + task.sourceFile);

@@ -63,8 +63,9 @@ public final class RecentRecordings {
         } else if (chosen != null) {
             sb.append("目录: ").append(chosen.getAbsolutePath()).append('\n');
         }
-        if (chosen != null) {
-            appendDir(sb, chosen);
+        for (File dir : StorageHelper.getVideoReadDirs(context)) {
+            sb.append("Media directory: ").append(dir.getAbsolutePath()).append('\n');
+            appendDir(sb, dir);
         }
         sb.append('\n');
     }

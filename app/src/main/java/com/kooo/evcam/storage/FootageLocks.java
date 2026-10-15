@@ -31,7 +31,7 @@ import java.util.concurrent.Executors;
  *
  * <h3>清单放在 U 盘上</h3>
  *
- * <p>和影像同一个目录：{@code DCIM/EVCam_Video/locked.txt}、{@code DCIM/EVCam_Photo/locked.txt}，
+ * <p>和影像同一个目录：{@code ZeekrShortcutApp/Videos/locked.txt}、{@code ZeekrShortcutApp/Photos/locked.txt}（旧目录的清单也保留），
  * 一行一个文件名。换盘、重装、清除数据都还在；插到电脑上也能打开看锁了哪些。
  * 锁的是文件：录像是这一刻各路正在放的那几个文件，照片是同一次拍摄的一整组。</p>
  *
@@ -162,6 +162,79 @@ public final class FootageLocks {
         }
         Set<String> names = read(dir);
         return names != null ? names : new TreeSet<String>();
+    }
+
+    /** Playback uses full paths, so equal filenames in old/new folders are independent. */
+    public static Set<String> shownFiles(Context context, Collection<File> dirs) {
+        Set<String> paths = new TreeSet<>();
+        if (!enabled(context)) return paths;
+        for (File dir : dirs) {
+            Set<String> names = read(dir);
+            if (names != null) {
+                for (String name : names) paths.add(new File(dir, name).getAbsolutePath());
+            } else {
+                // Unreadable metadata must not expose protected footage to manual deletion.
+                File[] files = dir.listFiles();
+                if (files != null) for (File file : files) {
+                    if (file.isFile() && (StoragePlan.isOwnClip(file.getName())
+                            || StoragePlan.isOwnPhoto(file.getName()))) paths.add(file.getAbsolutePath());
+                }
+            }
+        }
+        return paths;
+    }
+
+    /** On the relay IO thread, before publishing a clip into the new public folder. */
+    public static boolean keepRelayProtection(File target) {
+        File dir = target.getParentFile();
+        File old = StorageLayout.legacyVideoDirectoryFor(dir);
+        if (old == null || !old.isDirectory()) return true;
+        synchronized (GUARD) {
+            Set<String> before = read(old);
+            if (before == null) return false;
+            if (!before.contains(target.getName())) return true;
+            Set<String> current = read(dir);
+            if (current == null) return false;
+            if (current.contains(target.getName())) return true;
+            // Keep old metadata untouched. A pending clip may have been locked before upgrade.
+            return update(dir, Collections.singleton(target.getName()), true);
+        }
+    }
+
+    /** One user action can include media in both current and legacy folders. */
+    public static void setFiles(Collection<File> files, boolean locked, Result result) {
+        final Map<File, List<String>> groups = groupFiles(files);
+        IO.execute(() -> {
+            boolean ok = !groups.isEmpty();
+            synchronized (GUARD) {
+                for (Map.Entry<File, List<String>> group : groups.entrySet()) {
+                    boolean saved = update(group.getKey(), group.getValue(), locked);
+                    if (saved) updateList(group.getKey(), AUTO_FILE_NAME, AUTO_HEADER, group.getValue(), false);
+                    ok &= saved;
+                }
+            }
+            final boolean success = ok;
+            new Handler(Looper.getMainLooper()).post(() -> {
+                if (result != null) result.done(success);
+                // Also refresh after partial failure; never show an assumed all-or-nothing result.
+                for (Runnable listener : LISTENERS) listener.run();
+            });
+        });
+    }
+
+    static Map<File, List<String>> groupFiles(Collection<File> files) {
+        Map<File, List<String>> groups = new java.util.LinkedHashMap<>();
+        for (File file : files) {
+            File dir = file.getAbsoluteFile().getParentFile();
+            if (dir == null) continue;
+            List<String> names = groups.get(dir);
+            if (names == null) {
+                names = new ArrayList<>();
+                groups.put(dir, names);
+            }
+            if (!names.contains(file.getName())) names.add(file.getName());
+        }
+        return groups;
     }
 
     /** 自动清理「读清单 → 决定 → 删」整段拿着它。 */
@@ -350,6 +423,17 @@ public final class FootageLocks {
                     bytes += file.length();
                 }
             }
+        }
+        return new Usage(files, bytes);
+    }
+
+    public static Usage usageAll(Collection<File> dirs) {
+        int files = 0;
+        long bytes = 0;
+        for (File dir : dirs) {
+            Usage part = usage(dir);
+            files += part.files;
+            bytes += part.bytes;
         }
         return new Usage(files, bytes);
     }

@@ -27,7 +27,7 @@ import java.nio.charset.StandardCharsets;
  * 每一路落在哪个矩形、当时的录制配置是什么）。有了这两个文件，画面几何就能在电脑上量准，
  * 而不是照着模型猜。</p>
  *
- * <p>存在 {@code photos/raw/} 下，不在图片回看的扫描范围内 —— 回看列出的是拍下来的照片，
+ * <p>存在 {@code Photos/Raw/} 下，不在图片回看的扫描范围内 —— 回看列出的是拍下来的照片，
  * 而这是一份取证材料，混在一起只会让人以为应用突然开始存重复的图。</p>
  */
 public final class RawFrameDump {
@@ -35,7 +35,7 @@ public final class RawFrameDump {
     private static final String TAG = "RawFrameDump";
 
     /** 原图另存的子目录名。 */
-    public static final String DIR_NAME = "raw";
+    public static final String DIR_NAME = "Raw";
 
     private RawFrameDump() {
     }

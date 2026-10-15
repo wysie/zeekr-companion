@@ -1,7 +1,6 @@
 package com.kooo.evcam.repair;
 
 import android.app.Activity;
-import android.os.Environment;
 import android.util.TypedValue;
 import android.view.Gravity;
 import android.view.ViewGroup;
@@ -35,8 +34,8 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * <ul>
  *   <li><b>录制中不归档</b>：正在写的那一段搬不得。</li>
- *   <li><b>只搬本应用的目录</b>：{@code DCIM/EVCam_Video}、{@code DCIM/EVCam_Photo}、
- *       {@code Download/EVCam_Log}（诊断报告），盘上别人的东西一律不碰。
+ *   <li><b>只搬本应用的目录</b>：{@code ZeekrShortcutApp} 内的目录和旧 EVCam 目录，
+ *       保留各自的相对路径和锁定清单，盘上别人的东西一律不碰。
  *       应用自己的运行日志（内部存储）是<b>复制</b>不是搬 —— 它还在写。</li>
  *   <li><b>搬 = 复制、核对大小、再删源文件</b>；目标盘上同名且内容逐字节校验一致的文件当作搬过了，只删源文件；
  *       复制失败的源文件原样留着，写了一半的目标文件删掉。</li>
@@ -131,19 +130,25 @@ public final class ArchiveFlow {
         AlertDialog waiting = spinner(activity, activity.getString(R.string.dev_archive_scanning, source.getName()));
         new Thread(() -> {
             Plan plan = new Plan();
-            File dcimFrom = new File(source, Environment.DIRECTORY_DCIM);
-            File dcimTo = new File(target, Environment.DIRECTORY_DCIM);
-            File downloadFrom = new File(source, Environment.DIRECTORY_DOWNLOADS);
-            File downloadTo = new File(target, Environment.DIRECTORY_DOWNLOADS);
-            plan.videos = collect(plan, new File(dcimFrom, StorageHelper.VIDEO_DIR_NAME),
-                    new File(dcimTo, StorageHelper.VIDEO_DIR_NAME), true);
-            plan.photos = collect(plan, new File(dcimFrom, StorageHelper.PHOTO_DIR_NAME),
-                    new File(dcimTo, StorageHelper.PHOTO_DIR_NAME), true);
-            plan.logs = collect(plan, new File(downloadFrom, StorageHelper.LOG_DIR_NAME),
-                    new File(downloadTo, StorageHelper.LOG_DIR_NAME), true);
-            // 应用自己的运行日志还在写：只复制，放在目标盘日志目录下的 app-logs 里
+            // Preserve each source layout, including its lock lists and equal-name files.
+            for (com.kooo.evcam.storage.StorageLayout.Kind kind : com.kooo.evcam.storage.StorageLayout.Kind.values()) {
+                for (File dir : com.kooo.evcam.storage.StorageLayout.readDirectories(source, kind)) {
+                    boolean legacy = dir.equals(com.kooo.evcam.storage.StorageLayout.legacyDirectory(source, kind));
+                    File out = legacy ? com.kooo.evcam.storage.StorageLayout.legacyDirectory(target, kind)
+                            : com.kooo.evcam.storage.StorageLayout.directory(target, kind);
+                    int count = collect(plan, dir, out, true);
+                    if (kind == com.kooo.evcam.storage.StorageLayout.Kind.VIDEO) plan.videos += count;
+                    else if (kind == com.kooo.evcam.storage.StorageLayout.Kind.PHOTO) plan.photos += count;
+                    else plan.logs += count;
+                }
+            }
+            // Live private session logs are copied, not moved, into the exported Logs folder.
             plan.logs += collect(plan, new File(activity.getFilesDir(), "logs"),
-                    new File(new File(downloadTo, StorageHelper.LOG_DIR_NAME), "app-logs"), false);
+                    new File(com.kooo.evcam.storage.StorageLayout.directory(target,
+                            com.kooo.evcam.storage.StorageLayout.Kind.LOG), "app-logs"), false);
+            // Previously exported clips lived beside the legacy video folder.
+            plan.videos += collect(plan, new File(new File(source, "DCIM"), "EVCam_Clips"),
+                    new File(new File(target, "DCIM"), "EVCam_Clips"), true);
             activity.runOnUiThread(() -> {
                 dismiss(waiting);
                 confirm(activity, source, target, plan);

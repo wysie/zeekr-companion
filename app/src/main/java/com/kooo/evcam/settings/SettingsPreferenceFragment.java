@@ -330,9 +330,9 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             }
             new Thread(() -> {
                 com.kooo.evcam.storage.FootageLocks.Usage videos =
-                        com.kooo.evcam.storage.FootageLocks.usage(StorageHelper.getVideoDir(context));
+                        com.kooo.evcam.storage.FootageLocks.usageAll(StorageHelper.getVideoReadDirs(context));
                 com.kooo.evcam.storage.FootageLocks.Usage photos =
-                        com.kooo.evcam.storage.FootageLocks.usage(StorageHelper.getPhotoDir(context));
+                        com.kooo.evcam.storage.FootageLocks.usageAll(StorageHelper.getPhotoReadDirs(context));
                 if (!isAdded()) {
                     return;
                 }
@@ -377,9 +377,9 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         final boolean on = appConfig.isFootageLockEnabled();
         new Thread(() -> {
             com.kooo.evcam.storage.FootageLocks.Usage videos =
-                    com.kooo.evcam.storage.FootageLocks.usage(StorageHelper.getVideoDir(context));
+                    com.kooo.evcam.storage.FootageLocks.usageAll(StorageHelper.getVideoReadDirs(context));
             com.kooo.evcam.storage.FootageLocks.Usage photos =
-                    com.kooo.evcam.storage.FootageLocks.usage(StorageHelper.getPhotoDir(context));
+                    com.kooo.evcam.storage.FootageLocks.usageAll(StorageHelper.getPhotoReadDirs(context));
             if (!isAdded()) {
                 return;
             }
