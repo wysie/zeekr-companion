@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.30-personal-alpha] - 2026-10-15
+
 - Keep camera switches visible beside long names and custom badges; reflow camera/preset cards in narrower panes.
 - Wrap shared option buttons without fixed-height clipping, let Diagnostics actions grow, and keep main action-column buttons reachable by scrolling in short windows.
 - Clear nested settings history when changing category so the title and Back action match the page.

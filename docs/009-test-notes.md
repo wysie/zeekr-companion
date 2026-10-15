@@ -432,7 +432,7 @@ adding microphone access. Existing car installations may receive different OEM
 permission treatment; this finding is reproduced on a fresh emulator install.
 
 
-## Settings layout review (2026-10-15, vehicle follow-up pending)
+## 2.11.30: settings layout review (2026-10-15, vehicle follow-up pending)
 
 The owner supplied a photo of the Surround switch clipped by its long card name.
 An API 32 tablet emulator at 2560×1600 reproduced that exact clipping. Camera
