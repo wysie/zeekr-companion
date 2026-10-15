@@ -25,9 +25,9 @@ public class HudWindowAndroidTest {
     private void main(Runnable r) { InstrumentationRegistry.getInstrumentation().runOnMainSync(r); }
 
     @Test public void presentationWindowRemainsOnTheSelectedDisplay() throws Exception { exercise(false); }
-    @Test public void overlayUsesAWindowContextOnTheSelectedDisplay() throws Exception { exercise(true); }
+    @Test public void legacyOverlayFlagStillUsesTheNormalPresentation() throws Exception { exercise(true); }
 
-    private void exercise(boolean overlay) throws Exception {
+    private void exercise(boolean legacyOverlay) throws Exception {
         Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
         try (ParcelFileDescriptor fd = InstrumentationRegistry.getInstrumentation().getUiAutomation()
                 .executeShellCommand("appops set " + target.getPackageName() + " SYSTEM_ALERT_WINDOW allow");
@@ -36,7 +36,10 @@ public class HudWindowAndroidTest {
         }
         Context context = new ContextThemeWrapper(target, R.style.Theme_Cam);
         AppConfig config = new AppConfig(context);
-        boolean oldOverlay = config.isHudSideOverlay(), oldFollow = config.isHudSideFollowSignal();
+        android.content.SharedPreferences preferences = target.getSharedPreferences("app_config", Context.MODE_PRIVATE);
+        boolean hadLegacy = preferences.contains("hud_side_overlay");
+        boolean oldLegacy = preferences.getBoolean("hud_side_overlay", false);
+        boolean oldFollow = config.isHudSideFollowSignal();
         int oldOpacity = config.getHudSideOpacityPercent(), oldNight = config.getHudSideNightPercent();
         AtomicReference<SideViewHudPanel> ref = new AtomicReference<>();
         ImageReader images = ImageReader.newInstance(1280, 640, PixelFormat.RGBA_8888, 3);
@@ -52,7 +55,9 @@ public class HudWindowAndroidTest {
                         | DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY);
         assertNotNull(display);
         try {
-            config.setHudSideOverlay(overlay); config.setHudSideFollowSignal(true);
+            // Upgrades can retain this obsolete value; it must never select an overlay window.
+            preferences.edit().putBoolean("hud_side_overlay", legacyOverlay).commit();
+            config.setHudSideFollowSignal(true);
             config.setHudSideOpacityPercent(80); config.setHudSideNightPercent(50);
             main(() -> {
                 SideViewHudPanel panel = new SideViewHudPanel(context, config, display.getDisplay());
@@ -64,7 +69,7 @@ public class HudWindowAndroidTest {
                 assertTrue(SideViewHudPanel.lastState(), panel.isAttached());
                 assertEquals(display.getDisplay().getDisplayId(), panel.getRootView().getDisplay().getDisplayId());
                 WindowManager.LayoutParams window = (WindowManager.LayoutParams) panel.getRootView().getLayoutParams();
-                assertEquals(overlay, window.type == WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY);
+                assertNotEquals(WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY, window.type);
                 assertTrue((window.flags & WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE) != 0);
                 assertEquals(.8f, window.alpha, .01f);
                 int left = ((FrameLayout.LayoutParams) panel.getLayoutParams()).leftMargin;
@@ -84,7 +89,9 @@ public class HudWindowAndroidTest {
         } finally {
             main(() -> { if (ref.get() != null) ref.get().detach(); });
             display.release(); images.close(); consumer.quitSafely(); consumer.join(1000);
-            config.setHudSideOverlay(oldOverlay); config.setHudSideFollowSignal(oldFollow);
+            if (hadLegacy) preferences.edit().putBoolean("hud_side_overlay", oldLegacy).commit();
+            else preferences.edit().remove("hud_side_overlay").commit();
+            config.setHudSideFollowSignal(oldFollow);
             config.setHudSideOpacityPercent(oldOpacity); config.setHudSideNightPercent(oldNight);
         }
     }

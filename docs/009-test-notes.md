@@ -602,8 +602,8 @@ On the 009, check repeated left/right activation, close then cancel/re-signal,
 instant-ready on/off, factory takeover, startup/stall covers and recording
 continuity. Check rapid day/night changes while a window and recording are
 active. For HUD experiments keep the 009 mapping independent, first try the
-normal Presentation path, then explicitly try the overlay if needed; it can
-cover factory HUD information and should be disabled if unhelpful. Contrast,
+normal Presentation path. The later removal of the unsuccessful overlay experiment
+is recorded below; it is no longer offered. Contrast,
 night dimming, edge fade and indicator-side positioning are individually opt-in.
 Export Diagnostics after failures. The scanner's new C: callbacks improve
 coverage but do not establish a blind-spot warning or factory stitched video feed.
@@ -710,3 +710,19 @@ then open the manual 360 popup, close it with X and confirm the switch follows.
 Factory/screen suspension should retain its session, and reopening the app after
 a closed session must not open it automatically. Camera output limits and actual
 360 alignment remain subject to the existing limitations.
+
+## Retired HUD layer experiment (2026-10-16, unreleased)
+
+The higher HUD window-layer switch and implementation are removed following
+Ferix’s reported failure to draw over factory graphics on his 7X. Existing
+`hud_side_overlay` values are ignored; tests cover upgrades with the old flag
+still set. Ordinary HUD output, 009 display mapping, centre-screen fallback,
+factory coexistence, freshness covers, placement and fades remain.
+The owner still reports no working HUD video on the 009. This cleanup does not
+resolve display identification or establish a working video path.
+
+Validation: 1,381 JVM tests, debug lint and signed release assembly pass. Ten
+native API 32 regressions pass: ordinary HUD placement/night dimming/fade and
+legacy-flag compatibility on owned virtual displays, grouped settings navigation,
+popup lifecycle/freshness and a bounded HUD-menu capture. No vehicle display was
+used, and the existing upstream PR heads remain unchanged.

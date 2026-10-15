@@ -139,7 +139,6 @@ public class AppConfig {
     // 左右翻转，像门上的后视镜：后面来的车从画面外侧进来。HUD 默认翻（和后视镜一样读），主屏默认不翻（LaneWatch 的读法）
     private static final String KEY_HUD_SIDE_MIRROR = "hud_side_mirror";
     private static final String KEY_HUD_DURING_FACTORY = "hud_during_factory_views";
-    private static final String KEY_HUD_SIDE_OVERLAY = "hud_side_overlay";
     private static final String KEY_HUD_SIDE_FOLLOW = "hud_side_follow";
     private static final String KEY_HUD_SIDE_CONTRAST = "hud_side_contrast";
     private static final String KEY_HUD_SIDE_NIGHT = "hud_side_night";
@@ -1695,7 +1694,6 @@ public class AppConfig {
                 .remove(KEY_HUD_SIDE_VERTICAL)
                 .remove(KEY_HUD_SIDE_OPACITY)
                 .remove(KEY_HUD_SIDE_MIRROR)
-                .remove(KEY_HUD_SIDE_OVERLAY)
                 .remove(KEY_HUD_DURING_FACTORY)
                 .remove(KEY_HUD_SIDE_FOLLOW)
                 .remove(KEY_HUD_SIDE_CONTRAST)
@@ -1972,14 +1970,6 @@ public class AppConfig {
 
     public boolean isHudDuringFactoryViews() { return prefs.getBoolean(KEY_HUD_DURING_FACTORY, false); }
     public void setHudDuringFactoryViews(boolean on) { prefs.edit().putBoolean(KEY_HUD_DURING_FACTORY, on).apply(); }
-
-    public boolean isHudSideOverlay() {
-        return prefs.getBoolean(KEY_HUD_SIDE_OVERLAY, false);
-    }
-
-    public void setHudSideOverlay(boolean on) {
-        prefs.edit().putBoolean(KEY_HUD_SIDE_OVERLAY, on).apply();
-    }
 
     public int getHudSideContrastPercent() {
         int v = prefs.getInt(KEY_HUD_SIDE_CONTRAST, HUD_SIDE_DEFAULT_CONTRAST_PERCENT);

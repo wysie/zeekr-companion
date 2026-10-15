@@ -71,7 +71,6 @@ final class SideViewHudOutput {
     private long failedUntilMs;
     private boolean presentKnown;
     private boolean zeekr009Hud;
-    private boolean overlayLayer;
     private boolean present;
     private long presentCheckedMs;
     private boolean closePending;
@@ -86,7 +85,6 @@ final class SideViewHudOutput {
         this.context = context;
         this.config = config;
         this.zeekr009Hud = config.isZeekr009HudEnabled();
-        this.overlayLayer = config.isHudSideOverlay();
         this.onUnavailable = onUnavailable;
     }
 
@@ -138,10 +136,9 @@ final class SideViewHudOutput {
 
     void applyConfig() {
         boolean selected009 = config.isZeekr009HudEnabled();
-        if (selected009 != zeekr009Hud || config.isHudSideOverlay() != overlayLayer) {
+        if (selected009 != zeekr009Hud) {
             detach();
             zeekr009Hud = selected009;
-            overlayLayer = config.isHudSideOverlay();
         }
         presentKnown = false;
         failedUntilMs = 0;

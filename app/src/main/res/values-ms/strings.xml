@@ -1073,8 +1073,6 @@
     <string name="bird_eye_popup_reset">Tetapkan semula saiz dan kedudukan popup</string>
     <string name="bird_eye_calibration_reset">Tetapkan semula penentukuran dan kualiti</string>
     <string name="bird_eye_popup_rejected">Popup 360° ditutup: kamera tidak menyokong tetingkap tambahan ini. Output kamera lain diberi keutamaan.</string>
-    <string name="set_hud_side_overlay_title">Gambar HUD di atas maklumat HUD kereta (percubaan)</string>
-    <string name="set_hud_side_overlay_summary">Apabila hidup, gambar menggunakan lapisan tetingkap yang lebih tinggi dan mungkin menutup ikon navigasi dan lorong. Jika unit kepala menolaknya, pop timbul skrin digunakan. Matikan jika tidak membantu. Mati secara lalai</string>
     <string name="set_hud_side_contrast_title">Kontras gambar HUD (%)</string>
     <string name="set_hud_side_contrast_summary">Lebih tinggi menjadikan bahagian gelap lebih gelap, supaya gambar tidak pudar pada HUD. 100 ialah gambar asal kamera</string>
     <string name="set_hud_side_night_title">Kecerahan gambar HUD pada waktu malam (%)</string>

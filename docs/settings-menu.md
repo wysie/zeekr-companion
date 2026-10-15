@@ -26,7 +26,7 @@ add navigation depth; their native Back button returns to their parent.
 - **Popup window:** size, height/position and drag/pinch/expand/close guidance.
 - **HUD picture:** Picture (mirror, contrast, night brightness, opacity, edge fade);
   Placement (height, shape, horizontal/vertical position, follow indicator side);
-  Advanced experimental routing (009 mapping, overlay, factory-view coexistence).
+  Advanced experimental routing (009 mapping and factory-view coexistence).
 
 Timing/prewarming remain on the parent because their effects are not limited to
 popup geometry. Screen and HUD mirroring remain separate. The camera-label rows
@@ -57,3 +57,8 @@ The reorganisation retains stored values, defaults, permission/developer gating,
 factory/reverse priority and existing independent PR branch heads. It does not
 change the recording policy or 360 geometry. New labels/help are localised in
 English, Chinese and Malay.
+
+The former “HUD above factory information” experiment has been removed. Stored
+`hud_side_overlay` values are ignored. Normal HUD output, optional 009 display
+mapping and factory-view coexistence remain available for investigation; working
+HUD video on the owner’s 009 has not been established.

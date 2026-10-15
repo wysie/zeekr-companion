@@ -136,3 +136,7 @@ checks also pass in the dark-theme confirmation. Debug lint and signed release
 assembly succeed. Initial viewports and all subpages were captured, with additional
 recording/blind-spot parent scroll positions in the confirmation; this is not a
 complete on-car or accessibility audit.
+
+2026-10-16 follow-up: the unsuccessful above-factory-HUD experiment is retired.
+HUD Advanced now contains 009 mapping and factory-view coexistence; see the
+current settings map and test notes.
