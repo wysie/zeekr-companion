@@ -1110,4 +1110,9 @@
     <string name="set_hud_during_factory_summary">Off by default. Keeps only the HUD side camera during factory 360, camera pop-ups or parking assist. Reverse still hides it; screen views still yield. Shared camera hardware may interrupt the feed. This does not force camera access.</string>
     <string name="set_developer_mode_title">Enable developer mode</string>
     <string name="set_developer_mode_summary">Warning: experimental features and troubleshooting tools can affect cameras, recording and storage. Off on new installs; stays as selected across restarts and updates. Turning it off hides Developer options and disables their settings without erasing saved values. Some changes require restarting the app.</string>
+    <string name="set_side_mirror_mode_title">When Super mirror is active</string>
+    <string name="set_side_mirror_mode_summary">Use its window for the side camera, keep both windows, or hide Super mirror while the separate popup is visible. HUD-only output leaves Super mirror visible.</string>
+    <string name="set_side_mirror_replace">Use its window</string>
+    <string name="set_side_mirror_both">Show both windows</string>
+    <string name="set_side_mirror_hide">Hide during popup</string>
 </resources>

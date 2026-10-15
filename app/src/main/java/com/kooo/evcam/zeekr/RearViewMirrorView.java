@@ -96,6 +96,26 @@ public class RearViewMirrorView extends ViewGroup {
     private final SideViewExpansion sideExpansion = new SideViewExpansion();
 
     private WindowManager.LayoutParams params;
+    private boolean hiddenForSidePopup;
+    public boolean isHiddenForSidePopup() { return hiddenForSidePopup; }
+
+    /** Keep the attached TextureView draining while the separate side window is presented. */
+    public void setHiddenForSidePopup(boolean hidden) {
+        if (hiddenForSidePopup == hidden) return;
+        hiddenForSidePopup = hidden;
+        cancelGlide();
+        cancelTapFlash();
+        applySidePopupVisibility();
+        if (attached) applyLayout();
+    }
+
+    private void applySidePopupVisibility() {
+        setAlpha(hiddenForSidePopup ? SideViewPopupView.IDLE_ALPHA : 1f);
+        if (params == null) return;
+        params.alpha = hiddenForSidePopup ? 0f : 1f;
+        if (hiddenForSidePopup) params.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        else params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+    }
     private boolean attached;
 
     /** 合成流的真实尺寸决定拆分几何，不能用缓冲区尺寸（HAL 可能给个压扁的提示值）。 */
@@ -262,6 +282,7 @@ public class RearViewMirrorView extends ViewGroup {
                         | WindowManager.LayoutParams.FLAG_LAYOUT_NO_LIMITS,
                 PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.TOP | Gravity.START;
+        applySidePopupVisibility();
 
         int savedX = appConfig.getRearViewX();
         int savedY = appConfig.getRearViewY();

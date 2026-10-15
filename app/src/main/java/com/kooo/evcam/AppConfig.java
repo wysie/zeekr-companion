@@ -98,6 +98,7 @@ public class AppConfig {
     private static final String KEY_INFO_BAR_ITEMS = "info_bar_items";  // 信息条上放哪几项（系统信息里勾的）
     private static final String KEY_SIDE_POPUP = "side_popup_enabled";  // 打转向灯弹侧视
     private static final String KEY_SIDE_POPUP_REPLACE_MIRROR = "side_popup_replace_mirror";
+    private static final String KEY_SIDE_POPUP_HIDE_MIRROR = "side_popup_hide_mirror";
     private static final String KEY_SIDE_POPUP_MIRROR = "side_popup_mirror";
     private static final String KEY_SIDE_POPUP_MIN_SPEED = "side_popup_min_speed";  // 侧视弹窗的车速门槛 km/h
     /** 默认 30 km/h：再慢原厂自己会弹侧方小窗。 */
@@ -1684,6 +1685,7 @@ public class AppConfig {
     public void resetSidePopupSettings() {
         prefs.edit()
                 .remove(KEY_SIDE_POPUP_REPLACE_MIRROR)
+                .remove(KEY_SIDE_POPUP_HIDE_MIRROR)
                 .remove(KEY_SIDE_POPUP_MIRROR)
                 .remove(KEY_SIDE_OUTPUT)
                 .remove(KEY_HUD_ZEEKR_009)
@@ -1717,6 +1719,19 @@ public class AppConfig {
 
     public boolean isSidePopupReplaceMirror() {
         return prefs.getBoolean(KEY_SIDE_POPUP_REPLACE_MIRROR, true);
+    }
+
+    public int getSidePopupMirrorMode() {
+        return com.kooo.evcam.zeekr.SidePopupMirrorMode.fromLegacy(isSidePopupReplaceMirror(),
+                prefs.getBoolean(KEY_SIDE_POPUP_HIDE_MIRROR, false));
+    }
+
+    public void setSidePopupMirrorMode(int mode) {
+        int value = com.kooo.evcam.zeekr.SidePopupMirrorMode.normalize(mode);
+        prefs.edit().putBoolean(KEY_SIDE_POPUP_REPLACE_MIRROR,
+                value == com.kooo.evcam.zeekr.SidePopupMirrorMode.REPLACE)
+                .putBoolean(KEY_SIDE_POPUP_HIDE_MIRROR,
+                        value == com.kooo.evcam.zeekr.SidePopupMirrorMode.HIDE).apply();
     }
 
     /** Horizontal flip for side images on the center screen, off by default. */

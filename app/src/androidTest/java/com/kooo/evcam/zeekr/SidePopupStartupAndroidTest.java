@@ -220,4 +220,59 @@ public class SidePopupStartupAndroidTest {
         }
     }
 
+    @Test public void popupHidesMirrorOnlyAfterRevealAndRestoresWithoutLosingItsSurface() throws Exception {
+        try (Fixture f = new Fixture()) {
+            Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
+            int oldMode = f.config.getSidePopupMirrorMode();
+            boolean oldEnabled = f.config.isRearViewEnabled();
+            AtomicReference<RearViewMirrorView> mirror = new AtomicReference<>();
+            try {
+                f.config.setSidePopupMirrorMode(SidePopupMirrorMode.HIDE);
+                main(() -> {
+                    RearViewMirrorView view = new RearViewMirrorView(new ContextThemeWrapper(target, R.style.Theme_Cam), f.config);
+                    mirror.set(view);
+                    view.show();
+                    f.view.setWindowVisibilityListener(() -> view.setHiddenForSidePopup(
+                            SidePopupMirrorMode.hideMirror(f.config.getSidePopupMirrorMode(), f.view.isPresented())));
+                    f.view.show(LaneCycle.LEFT);
+                    assertEquals(1f, ((WindowManager.LayoutParams) view.getLayoutParams()).alpha, 0f);
+                });
+                await("Mirror texture available", () -> mirror.get().getTextureView().isAvailable());
+                SurfaceTexture original = mirror.get().getTextureView().getSurfaceTexture();
+                for (int i = 0; i < 12 && f.alpha() == 0f; i++) { f.frame(Color.BLUE); SystemClock.sleep(40); }
+                await("Popup presented", () -> f.alpha() == 1f);
+                main(() -> {
+                    assertTrue(f.view.isPresented());
+                    WindowManager.LayoutParams params = (WindowManager.LayoutParams) mirror.get().getLayoutParams();
+                    assertEquals(0f, params.alpha, 0f);
+                    assertTrue((params.flags & WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE) != 0);
+                    assertTrue(mirror.get().isShowing());
+                    assertSame(original, mirror.get().getTextureView().getSurfaceTexture());
+                    assertEquals(oldEnabled, f.config.isRearViewEnabled());
+                    f.view.conceal();
+                });
+                await("Popup fade finished", () -> f.alpha() == 0f);
+                main(() -> {
+                    WindowManager.LayoutParams params = (WindowManager.LayoutParams) mirror.get().getLayoutParams();
+                    assertEquals(1f, params.alpha, 0f);
+                    assertEquals(0, params.flags & WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE);
+                    assertSame(original, mirror.get().getTextureView().getSurfaceTexture());
+                    f.view.show(LaneCycle.LEFT);
+                });
+                await("Popup waiting notice presented", () -> f.alpha() == 1f);
+                main(() -> {
+                    f.view.detach();
+                    assertEquals(1f, ((WindowManager.LayoutParams) mirror.get().getLayoutParams()).alpha, 0f);
+                    f.config.resetSidePopupSettings();
+                    assertEquals(SidePopupMirrorMode.REPLACE, f.config.getSidePopupMirrorMode());
+                    f.config.setSidePopupMirrorMode(SidePopupMirrorMode.ALONGSIDE);
+                    assertFalse(f.config.isSidePopupReplaceMirror());
+                });
+            } finally {
+                main(() -> { f.view.detach(); if (mirror.get() != null) mirror.get().hide(); });
+                f.config.setSidePopupMirrorMode(oldMode);
+            }
+        }
+    }
+
 }

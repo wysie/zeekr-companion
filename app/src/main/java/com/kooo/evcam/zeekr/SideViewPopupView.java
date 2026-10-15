@@ -205,6 +205,16 @@ public class SideViewPopupView extends ViewGroup {
         return isAttached() && visible;
     }
 
+    private boolean presented;
+    private Runnable windowVisibilityListener;
+    public boolean isPresented() { return presented; }
+    public void setWindowVisibilityListener(Runnable listener) { windowVisibilityListener = listener; }
+    private void noteWindowVisibility(boolean shown) {
+        if (presented == shown) return;
+        presented = shown;
+        if (windowVisibilityListener != null) windowVisibilityListener.run();
+    }
+
     public int lane() {
         return lane;
     }
@@ -244,6 +254,7 @@ public class SideViewPopupView extends ViewGroup {
         }
         attached = false;
         visible = false;
+        noteWindowVisibility(false);
         startup.request(false, false, android.os.SystemClock.uptimeMillis());
     }
 
@@ -298,6 +309,7 @@ public class SideViewPopupView extends ViewGroup {
         try {
             windowManager.addView(this, params);
             attached = true;
+            noteWindowVisibility(params.alpha > 0f);
             if (show && startup.revealed()) startFade(IDLE_ALPHA, 1f, FADE_IN_MS, null);
         } catch (Exception e) {
             visible = false;
@@ -489,6 +501,7 @@ public class SideViewPopupView extends ViewGroup {
     protected void update() {
         try {
             windowManager.updateViewLayout(this, params);
+            noteWindowVisibility(attached && params.alpha > 0f);
         } catch (Exception e) {
             AppLog.w(TAG, "侧视窗更新失败: " + e);
         }

@@ -133,6 +133,16 @@ public class SideViewPopupService extends Service {
         }
     }
 
+    public static boolean hidesSuperMirror() {
+        SideViewPopupService svc = instance;
+        return svc != null && svc.popup != null && SidePopupMirrorMode.hideMirror(
+                svc.appConfig.getSidePopupMirrorMode(), svc.popup.isPresented());
+    }
+
+    private void syncMirrorVisibility() {
+        RearViewMirrorService.setHiddenForSidePopup(hidesSuperMirror());
+    }
+
     /** 设置页改了侧视的任何一项：窗口套用新的大小位置拉直，再按新规则判一次。 */
     public static void applyConfig() {
         SideViewPopupService svc = instance;
@@ -240,6 +250,11 @@ public class SideViewPopupService extends Service {
 
     /** 主线程上：按最新的读数决定弹 / 收 / 换边 / 备着。 */
     private void evaluate() {
+        try { evaluateNow(); }
+        finally { syncMirrorVisibility(); }
+    }
+
+    private void evaluateNow() {
         if (!listening) {
             return;
         }
@@ -411,6 +426,7 @@ public class SideViewPopupService extends Service {
             return;
         }
         popup = new SideViewPopupView(this, appConfig);
+        popup.setWindowVisibilityListener(this::syncMirrorVisibility);
         popup.getTextureView().setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture st, int w, int h) {
@@ -453,6 +469,7 @@ public class SideViewPopupService extends Service {
             popup.detach();
             popup = null;
         }
+        syncMirrorVisibility();
     }
 
     private void cancelReadyExpiry() {

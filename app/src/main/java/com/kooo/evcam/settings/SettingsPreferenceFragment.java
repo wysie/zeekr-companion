@@ -701,10 +701,20 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                         toast(getString(R.string.msg_side_popup_on));
                     }
                 });
-        bindSwitch("pref_side_popup_replace_mirror", appConfig.isSidePopupReplaceMirror(), value -> {
-            appConfig.setSidePopupReplaceMirror(value);
-            com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
-        });
+        ListPreference mirrorMode = findPreference("pref_side_popup_mirror_mode");
+        if (mirrorMode != null) {
+            mirrorMode.setPersistent(false);
+            mirrorMode.setEntries(new CharSequence[]{getString(R.string.set_side_mirror_replace),
+                    getString(R.string.set_side_mirror_both), getString(R.string.set_side_mirror_hide)});
+            mirrorMode.setEntryValues(new CharSequence[]{"0", "1", "2"});
+            mirrorMode.setValue(String.valueOf(appConfig.getSidePopupMirrorMode()));
+            mirrorMode.setSummaryProvider(p -> ((ListPreference) p).getEntry());
+            mirrorMode.setOnPreferenceChangeListener((p, value) -> {
+                appConfig.setSidePopupMirrorMode(Integer.parseInt(String.valueOf(value)));
+                com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+                return true;
+            });
+        }
         bindSwitch("pref_side_popup_mirror", appConfig.isSidePopupMirrored(), value -> {
             appConfig.setSidePopupMirrored(value);
             com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
