@@ -2934,7 +2934,12 @@ public class MainActivity extends AppCompatActivity {
         com.kooo.evcam.camera.CameraNeeds needs = com.kooo.evcam.camera.CameraNeeds.current();
         final boolean othersNeedCamera = needs.heldByAnyoneExcept(
                 com.kooo.evcam.camera.CameraNeeds.Holder.PREVIEW);
-        final boolean keepServices = cameraManager != null && !cameraManager.isReleased()
+        // A rapidly recreated Activity may not yet have its local camera reference.
+        // Keep foreground/relay services for the live process-owned pipeline too.
+        final MultiCameraManager pipeline = com.kooo.evcam.camera.LivePipeline.pick(cameraManager,
+                com.kooo.evcam.camera.CameraManagerHolder.getInstance().getCameraManager(),
+                MultiCameraManager::isReleased);
+        final boolean keepServices = pipeline != null
                 && (recordingCoordinator.needsPipeline() || isChangingConfigurations() || othersNeedCamera);
         AppLog.i(TAG, "onDestroy 前台服务、中转写入" + (keepServices ? "保留" : "照没人要收") + " "
                 + instanceTag() + " recording=" + recordingCoordinator.isRecording()
