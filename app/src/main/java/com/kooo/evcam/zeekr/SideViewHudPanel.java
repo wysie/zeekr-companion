@@ -45,7 +45,7 @@ public class SideViewHudPanel extends SideViewPopupView {
     private FrameLayout.LayoutParams panelParams = new FrameLayout.LayoutParams(1, 1);
 
     public SideViewHudPanel(Context context, AppConfig appConfig, Display display) {
-        super(context, appConfig);
+        super(context, appConfig, false); // Projected HUD keeps its dark-backed, light foreground badges.
         this.display = display;
     }
 

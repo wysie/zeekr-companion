@@ -396,3 +396,27 @@ For the next vehicle check, confirm D/N and unknown gear do not independently
 block the tools or calibration, then verify factory-camera takeover, closing the
 page and screen-off still cancel/hide as appropriate. No change was made to
 firmware behavior or the app's general foreground/background lifecycle.
+
+
+## System-theme camera controls (vehicle check pending)
+
+The owner's factory screenshots show light popup controls in the light system UI
+and dark controls in the dark UI. The fork used fixed dark control, label and
+arrow backgrounds. The new theme follows Android's reported uiMode, with day/night
+colour resources and live view configuration handling. This covers the separate
+side popup, side view replacing Super mirror and regular Super mirror labels;
+projected HUD labels/arrows retain their existing dark backgrounds. Video pixels,
+recording, window position/size and temporary close/expand state do not change.
+
+Check both Android day/night modes, then switch while a side popup is open and
+while expanded. Confirm expand/restore and X still work, left/right labels and
+active/grey turn arrows remain readable, and Super mirror replacement updates too.
+Verify there is no camera reopen or recording interruption during the repaint.
+The 009's factory theme must be published through Android uiMode for automatic
+matching; the screenshot alone does not establish that firmware behavior.
+
+Existing JVM regression/resource-parity checks and release lint pass. Measured
+minimum contrast over black/white video exceeds 11:1 for button icons, 8:1 for
+label text and 3.8:1 for arrows in either theme. Native rendering and live theme
+switching await the owner's 009 check; no native screenshot verification was
+available during this change. Existing upstream PR heads remain unchanged.

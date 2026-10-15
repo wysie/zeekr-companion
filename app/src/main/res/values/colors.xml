@@ -62,4 +62,13 @@
     -->
     <color name="status_overlay_text">#F2FFFFFF</color>
     <color name="status_overlay_text_dim">#B3FFFFFF</color>
+    <!-- Camera overlay chrome follows Android uiMode; image pixels are unchanged. -->
+    <color name="side_control_background">#E6F1F2F4</color>
+    <color name="side_control_icon">#FF202124</color>
+    <color name="side_control_pressed">#30202124</color>
+    <color name="camera_label_background">#E6F1F2F4</color>
+    <color name="camera_label_text">#FF202124</color>
+    <color name="side_arrow_background">#E6F1F2F4</color>
+    <color name="side_arrow_lit">#FF087B2C</color>
+    <color name="side_arrow_unlit">#FF61656B</color>
 </resources>

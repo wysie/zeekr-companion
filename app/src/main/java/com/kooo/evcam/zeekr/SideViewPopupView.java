@@ -88,11 +88,13 @@ public class SideViewPopupView extends ViewGroup {
     private final SideViewFraming framing = new SideViewFraming();
     private final FisheyeMesh.SourceMap turnedMap = framing::sourcePoint;
 
-    public SideViewPopupView(Context context, AppConfig appConfig) {
+    public SideViewPopupView(Context context, AppConfig appConfig) { this(context, appConfig, true); }
+
+    protected SideViewPopupView(Context context, AppConfig appConfig, boolean followSystemTheme) {
         super(context);
         this.appConfig = appConfig;
-        this.cameraLabel = new CameraLabel(context);
-        this.sideArrow = new SideTurnArrow(context);
+        this.cameraLabel = new CameraLabel(context, followSystemTheme);
+        this.sideArrow = new SideTurnArrow(context, followSystemTheme);
         dragSlop = ViewConfiguration.get(context).getScaledTouchSlop();
         resizeGesture = new ScaleGestureDetector(context,
                 new ScaleGestureDetector.SimpleOnScaleGestureListener() {
@@ -142,6 +144,11 @@ public class SideViewPopupView extends ViewGroup {
             }
         });
         readConfig();
+    }
+
+    @Override protected void onConfigurationChanged(android.content.res.Configuration configuration) {
+        super.onConfigurationChanged(configuration);
+        invalidate(); // Repaint Canvas badges even when the current frame is unchanged.
     }
 
     public AutoFitTextureView getTextureView() {

@@ -1,12 +1,14 @@
 package com.kooo.evcam.zeekr;
 
 import android.content.Context;
+import android.content.res.Configuration;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Typeface;
 
 import androidx.appcompat.app.AppCompatDelegate;
 
+import com.kooo.evcam.R;
 import com.kooo.evcam.camera.CameraNames;
 import com.kooo.evcam.settings.Languages;
 
@@ -17,9 +19,14 @@ final class CameraLabel {
     private final Paint text = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final String[] names = new String[4];
     private String language;
+    private final boolean followSystemTheme;
+    private int themeMode = -1;
 
-    CameraLabel(Context context) {
+    CameraLabel(Context context) { this(context, true); }
+
+    CameraLabel(Context context, boolean followSystemTheme) {
         this.context = context;
+        this.followSystemTheme = followSystemTheme;
         background.setColor(0xB3000000);
         text.setColor(0xFFFFFFFF);
         text.setTypeface(Typeface.create(Typeface.DEFAULT, Typeface.BOLD));
@@ -36,6 +43,12 @@ final class CameraLabel {
     private void draw(Canvas canvas, int lane, int width, int height, boolean bottom) {
         if (lane < 0 || lane >= names.length || width <= 0 || height <= 0) {
             return;
+        }
+        int mode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        if (followSystemTheme && mode != themeMode) {
+            themeMode = mode;
+            background.setColor(context.getResources().getColor(R.color.camera_label_background, null));
+            text.setColor(context.getResources().getColor(R.color.camera_label_text, null));
         }
         String currentLanguage = AppCompatDelegate.getApplicationLocales().toLanguageTags()
                 + ":" + context.getResources().getConfiguration().getLocales().toLanguageTags();

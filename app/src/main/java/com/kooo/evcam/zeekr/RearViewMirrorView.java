@@ -618,6 +618,11 @@ public class RearViewMirrorView extends ViewGroup {
         invalidate();
     }
 
+    @Override protected void onConfigurationChanged(android.content.res.Configuration configuration) {
+        super.onConfigurationChanged(configuration);
+        invalidate();
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
         int width = getWidth();
