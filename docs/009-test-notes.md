@@ -322,7 +322,7 @@ misalignment remains unresolved.
 Packaged as 2.11.24-personal-alpha, versionCode 307, retaining the existing signer.
 
 
-## App folder layout (2026-10-15; vehicle check pending)
+## App folder layout (2.11.25-personal-alpha; vehicle check pending)
 
 New files are under ZeekrShortcutApp/Videos, Photos and Logs on the selected volume.
 Clips are under Videos/Clips, stitched PNG/TXT pairs under Photos/360, raw JPEG/TXT

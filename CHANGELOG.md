@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.25-personal-alpha] - 2026-10-15
+
 - Save new public app files under ZeekrShortcutApp/Videos, Photos and Logs, with nested Clips, 360 and Raw folders.
 - Keep older recordings/photos available in playback with location-specific protection lists, combined storage accounting/cleanup and archive/repair support.
 
