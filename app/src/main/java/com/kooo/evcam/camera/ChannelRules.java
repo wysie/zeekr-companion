@@ -360,6 +360,8 @@ public final class ChannelRules {
         final Set<String> recordPlan = new LinkedHashSet<>();
         /** 登记表每变一次（含停了再开录）调度在 CameraNeeds 的监听里 +1：几次变化并成一轮也认得出「变过」。 */
         int needsVersion;
+        /** Temporary exclusive developer lease: close usual feeds without changing their claims. */
+        boolean developerProbe;
         /**
          * 通道眼里屏幕亮着（{@link ChannelRules#darkForChannel} 的反面）：屏幕真黑了还不到 30 秒、车机也没要睡，照亮着算。
          * 预览要不要、保持、熄屏放开座舱、关的原因、亮屏解除停手，读的都是它。
@@ -495,6 +497,7 @@ public final class ChannelRules {
         DARK_RELEASE,
         /** 车机要睡。 */
         SLEEP,
+        DEVELOPER_PROBE,
         /** 退出。 */
         EXIT,
         // ---- 开 ----
@@ -1226,7 +1229,7 @@ public final class ChannelRules {
 
     /** 退出、或者车机要睡：只关，不开、不改、不救。 */
     static boolean winding(World w) {
-        return w.exitSince != 0 || w.sleepSince != 0;
+        return w.exitSince != 0 || w.sleepSince != 0 || w.developerProbe;
     }
 
     /**
@@ -1733,6 +1736,7 @@ public final class ChannelRules {
         if (w.sleepSince != 0) {
             return Why.SLEEP;
         }
+        if (w.developerProbe) return Why.DEVELOPER_PROBE;
         if (releasedByDark(w, lane)) {
             return Why.DARK_RELEASE;
         }

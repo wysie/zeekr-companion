@@ -85,6 +85,25 @@ public class ChannelRulesTest {
 
     // ================================================================= 该开
 
+    @Test public void developerProbeClosesInOrderNeverReopensAndRestoresClaimsOnRelease() {
+        claim(Holder.PREVIEW);
+        streamingAll();
+        w.developerProbe = true;
+        assertFalse(ChannelRules.shouldOpen(w, surround));
+        Decision first = round();
+        assertEquals(Move.CLOSE, first.move);
+        assertEquals(Why.DEVELOPER_PROBE, first.why);
+        assertEquals(Arrays.asList(SUR), first.keys);
+        perform(first);
+        assertEquals(Move.IDLE, run().move);
+        assertTrue(ChannelRules.allClosed(w));
+        assertEquals(0, count(Move.OPEN));
+        assertEquals(0, count(Move.RESCUE));
+        assertTrue(w.holders.contains(Holder.PREVIEW));
+        w.developerProbe = false;
+        assertTrue(ChannelRules.shouldOpen(w, surround));
+    }
+
     @Test
     public void previewWantsEveryLaneOnlyWhileTheScreenIsOn() {
         claim(Holder.PREVIEW);

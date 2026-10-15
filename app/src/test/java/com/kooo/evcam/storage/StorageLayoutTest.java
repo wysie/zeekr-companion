@@ -18,6 +18,8 @@ public class StorageLayoutTest {
         assertEquals(new File(root, "ZeekrShortcutApp/Videos"), StorageLayout.directory(root, StorageLayout.Kind.VIDEO));
         assertEquals(new File(root, "ZeekrShortcutApp/Photos"), StorageLayout.directory(root, StorageLayout.Kind.PHOTO));
         assertEquals(new File(root, "ZeekrShortcutApp/Logs"), StorageLayout.directory(root, StorageLayout.Kind.LOG));
+        assertEquals(new File(root, "ZeekrShortcutApp/Developer"), StorageLayout.developerDirectory(root));
+        assertNull(StorageLayout.developerDirectory(null));
         assertFalse(new File(root, "ZeekrShortcutApp").exists());
         assertNull(StorageLayout.directory(null, StorageLayout.Kind.VIDEO));
         assertTrue(StorageLayout.readDirectories(null, StorageLayout.Kind.VIDEO).isEmpty());

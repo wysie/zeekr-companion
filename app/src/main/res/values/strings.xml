@@ -1063,4 +1063,11 @@
     <string name="bird_eye_quality_note">均衡模式提高预览清晰度。完整模式复制可用的实时画面（最高 800 万像素），最高每秒 3 帧。复制、绘制太慢或内存不足时，本次显示会降低分辨率；低模式仍太慢则暂停。照片使用实际分辨率。提高分辨率不会修正校准。</string>
     <string name="bird_eye_quality_reduced">360 处理太慢或内存不足，已降低分辨率。详细信息见诊断报告。</string>
     <string name="msg_record_profile_restart">相机选择已更改。请退出并重新打开应用后再录像。</string>
+    <string name="dev_camera_display_title">相机与显示屏工具</string>
+    <string name="dev_camera_display_summary">仅驻车使用：批量保存相机画面、显示编号测试卡；导出至 ZeekrShortcutApp/Developer</string>
+    <string name="dev_camera_display_help">请保持 P 挡，先停止录像并关闭原厂相机。\n\n相机导出会暂时释放本应用的正常画面，为每个可用的 Camera2 ID 保存一张未经校正的图像，以及尺寸和错误报告；无法获取未公开的原厂视频流。\n\n显示屏识别会发送持续 10 秒的编号测试卡。导出的 PNG 是我们发送的测试卡，不是原厂画面的截图。请记下 HUD、仪表或后排屏幕上出现的编号。不会更改相机映射或 HUD 设置。\n\n文件保存至所选存储的 ZeekrShortcutApp/Developer。</string>
+    <string name="dev_camera_export">导出全部相机画面</string>
+    <string name="dev_display_identify">识别显示屏并导出测试卡</string>
+    <string name="dev_probe_stop">停止</string>
+    <string name="dev_probe_back">返回</string>
 </resources>

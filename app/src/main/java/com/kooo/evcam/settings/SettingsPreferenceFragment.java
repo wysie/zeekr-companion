@@ -1275,6 +1275,8 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
      * 「这里有东西但你用不了」，而这些本来就不该出现在普通用户的设置里。</p>
      */
     private void bindDeveloper() {
+        onClick("pref_camera_display_tools", pref -> startActivity(new android.content.Intent(
+                requireContext(), com.kooo.evcam.developer.CameraDisplayToolsActivity.class)));
         // 这里原来先找一个 key 为 cat_developer 的分类，找不到就整个返回 ——
         // 而 0.21.0 把分区改成嵌套 PreferenceScreen 之后，这个 key 就不存在了。
         // 于是下面四个入口一个都没接上，点了毫无反应，也不报错。
