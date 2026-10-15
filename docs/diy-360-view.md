@@ -7,14 +7,14 @@ is on `feature/diy-360-view`, for integration into the fork's `main`.
 
 ## Use
 
-This prototype is now restricted to **parked calibration**, not driving or parking assistance. A connected vehicle interface must report P; unknown gear or a known contradictory native speed blocks it. On the main live camera screen, tap **360°**. Tap **Four cameras** to return to
+This is an **experimental, uncalibrated view**. A connected vehicle interface is required, but preview and calibration do not require P or a particular speed. Reverse and factory-camera takeover still take priority. On the main live camera screen, tap **360°**. Tap **Four cameras** to return to
 the usual preview. This is a manual, session-only display mode and is off at
 launch. It does not automatically open on reversing or signalling. It is not
 an overlay or HUD output. In the surround + cabin layout, only the surround
 pane changes. Side windows, Super mirror and recordings retain their settings.
 
 Hold the **360° / Four cameras** button to open **Calibrate 360 view**. Select
-the physical camera to adjust. Calibration controls require reported P and close when that condition is lost or the screen turns off. Changes save automatically and update the preview;
+the physical camera to adjust. Calibration controls require a connected vehicle interface and an active screen; they close on interface loss or screen-off. Changes save automatically and update the preview;
 **Reset all** resets only this prototype's calibration. The calibration is also
 included in Diagnostics exports. Reset does not affect any other feature.
 

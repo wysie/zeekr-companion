@@ -5,8 +5,7 @@ choices instead of the original fixed 320×480 output discussed below. Slow
 readback/render or allocation failure now reduces resolution, pausing at Low if
 necessary. The first native copy remains uninterruptible. Higher-resolution
 memory/copy speed and recording continuity remain untested on the 009; see
-[current bounds and behavior](diy-360-view.md#resolution). Parked-only and
-factory/stale guards remain in force; increased detail does not establish calibration.
+[current bounds and behavior](diy-360-view.md#resolution). Factory/stale guards remain in force; increased detail does not establish calibration.
 
 Reviewed baseline: `3900b51e3b41216800042ab4209c5a9883d22564`
 (2.11.17-personal-alpha). Corrections are on `feature/diy-360-safety` for
@@ -14,7 +13,9 @@ integration into `main`. Existing upstream PR heads remain unchanged.
 
 **Outcome: real display-safety defects were found and fixed. This is not a
 vehicle safety certification. The DIY stitched view remains an uncalibrated,
-parked-only calibration tool.**
+experimental calibration tool.**
+
+Current-policy update (2026-10-15): the original P-only correction described below is historical. The owner requested its removal from DIY 360 preview/calibration and developer tools. No gear/speed eligibility check remains; connected-interface, factory priority, hidden/screen-off, stale-image and resource checks remain.
 
 ## Findings and corrections
 
@@ -91,4 +92,4 @@ calibration/reset, copy timing diagnostics and return to normal preview. Verify
 source loss and recovery, then factory camera priority and transition out of P
 while remaining stationary. Check simultaneous recording and each screen/HUD
 mode before considering any driving use of the existing side-camera features.
-The DIY view stays parked-only pending accurate calibration and further review.
+The DIY view remains uncalibrated. The P-only preview/calibration gate was removed at the owner’s request on 2026-10-15; factory priority, lifecycle, freshness and performance guards remain.

@@ -378,3 +378,21 @@ Presentation placement and HUD routing await the owner's vehicle test. Existing
 PR #17/#19 heads remain unchanged; no owner diagnostics or images are published.
 
 Release validation: 1,294 JVM tests, signed release assembly and vital release lint pass. Native Camera2 and Presentation behavior remain untested on the car.
+
+
+## Gear/speed gate removal (2026-10-15, vehicle test pending)
+
+At the owner's explicit request, remove the P-only/speed restriction from the
+Developer camera scan, display identification, DIY 360 preview and all calibration
+controls (including resolution, sliders, source/mirror selection and reset).
+Changing P to D/N or losing a gear/speed reading alone no longer closes these tools
+or blanks the DIY preview. Connected vehicle interface is still required. Reverse
+continues to suppress the DIY picture, and known factory-camera activity,
+screen-off/hidden state and stale-frame/resource checks retain priority. Camera
+scanning still refuses recording/photos and waits for confirmed native closure.
+
+The earlier dated parked-only instructions above describe previous releases.
+For the next vehicle check, confirm D/N and unknown gear do not independently
+block the tools or calibration, then verify factory-camera takeover, closing the
+page and screen-off still cancel/hide as appropriate. No change was made to
+firmware behavior or the app's general foreground/background lifecycle.
