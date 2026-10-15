@@ -1105,4 +1105,14 @@
     <string name="bird_eye_popup_reset">Reset popup size and position</string>
     <string name="bird_eye_calibration_reset">Reset calibration and quality</string>
     <string name="bird_eye_popup_rejected">360° popup closed: the camera cannot support this extra window. Other camera outputs take priority.</string>
+    <string name="set_hud_side_overlay_title">HUD picture above the car\'s HUD information (experimental)</string>
+    <string name="set_hud_side_overlay_summary">When on, the picture uses a higher window layer and may cover the navigation and lane icons. If the head unit refuses it, the screen pop-up is used instead. Turn it off if it does not help. Off by default</string>
+    <string name="set_hud_side_contrast_title">HUD picture contrast (%)</string>
+    <string name="set_hud_side_contrast_summary">Higher makes the dark parts darker, so the picture does not wash out on the HUD. 100 is the camera\'s own picture</string>
+    <string name="set_hud_side_night_title">HUD picture brightness at night (%)</string>
+    <string name="set_hud_side_night_summary">Applied on top of the opacity above while the car is in night mode. 100 turns it off</string>
+    <string name="set_hud_side_fade_title">HUD picture edge fade (%)</string>
+    <string name="set_hud_side_fade_summary">How far the edges fade to black, as a share of the shorter side. 0 is a hard edge. Black does not light up on a HUD, so the fade blends into the road</string>
+    <string name="set_hud_side_follow_title">Follow indicator side on HUD</string>
+    <string name="set_hud_side_follow_summary">On: left signal on the left, right signal on the right; the position slider sets distance from that edge. Off: fixed position measured from the left.</string>
 </resources>
