@@ -576,5 +576,34 @@ Check factory-camera takeover/return and recording files around the transition.
 Export Diagnostics if a feed or recording fails to return: upstream's new
 camera history, cabin-close coupling and error/buffer counters are included.
 
-The public Ferix source recheck is documented in ferix-feature-ports.md; no
-additional feature work was accessible beyond our existing ports.
+The initial Ferix source request failed; a repeat succeeded. The correction and
+new CAMCORDER port details are documented in ferix-feature-ports.md.
+
+
+## Ferix 2.12.5 follow-ups (2026-10-15, 009 check pending)
+
+CAMCORDER became accessible on retry; previous notes describing it as unavailable
+were corrected. Ports through `d6193888` add customize-value signal scanning,
+shared-pipeline service retention during rapid theme changes, opt-in HUD picture
+controls/indicator-side placement/experimental overlay and popup/HUD fades.
+Existing saved settings and fork defaults are retained; Ferix's personal defaults
+and factory-camera bypass are excluded. See ferix-feature-ports.md for source
+commits, adaptation details and exclusions.
+
+1,377 JVM tests, Android debug lint and signed build passed. Six native API 32
+tests passed using a disposable emulator with synthetic buffers and owned
+secondary displays. Both ordinary Presentation and overlay windows remained on
+the explicitly selected test display; mirrored HUD placement, night opacity,
+fade/cancellation, waiting grace, new progression on side switches and the
+existing 360 popup regression passed. This does not identify or validate the
+physical 009 HUD. Factory takeover and stale-frame guards remain in the code.
+
+On the 009, check repeated left/right activation, close then cancel/re-signal,
+instant-ready on/off, factory takeover, startup/stall covers and recording
+continuity. Check rapid day/night changes while a window and recording are
+active. For HUD experiments keep the 009 mapping independent, first try the
+normal Presentation path, then explicitly try the overlay if needed; it can
+cover factory HUD information and should be disabled if unhelpful. Contrast,
+night dimming, edge fade and indicator-side positioning are individually opt-in.
+Export Diagnostics after failures. The scanner's new C: callbacks improve
+coverage but do not establish a blind-spot warning or factory stitched video feed.

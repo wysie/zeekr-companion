@@ -2,8 +2,17 @@ package com.kooo.evcam.zeekr;
 
 import com.kooo.evcam.R;
 
+import android.animation.Animator;
+import android.animation.AnimatorListenerAdapter;
+import android.animation.ObjectAnimator;
+import android.view.View;
 import android.content.Context;
 import android.graphics.Canvas;
+import android.graphics.Paint;
+import android.graphics.LinearGradient;
+import android.graphics.PorterDuff;
+import android.graphics.PorterDuffXfermode;
+import android.graphics.Shader;
 import android.graphics.Matrix;
 import android.graphics.PixelFormat;
 import android.graphics.RectF;
@@ -69,6 +78,8 @@ public class SideViewPopupView extends ViewGroup {
     };
     private final RectF sourceRect = new RectF();
     private final RectF destRect = new RectF();
+    private static final PorterDuffXfermode DST_OUT = new PorterDuffXfermode(PorterDuff.Mode.DST_OUT);
+    private final Paint fadePaint = new Paint();
     private final FisheyeMesh mesh = new FisheyeMesh();
     private final FisheyeMesh.Painter paintTexture = this::drawTextureOnce;
 
@@ -81,6 +92,12 @@ public class SideViewPopupView extends ViewGroup {
     private int windowStartY;
     private boolean multiTouchGesture;
     private final int dragSlop;
+    protected static final float IDLE_ALPHA = 0.02f;
+    private static final long FADE_IN_MS = 130L;
+    private static final long FADE_OUT_MS = 160L;
+    private ObjectAnimator fade;
+    /** 正在淡出：{@link #visible} 已经是 false（逻辑上收了），窗口要露着直到淡完。 */
+    private boolean fadingOut;
     private CompositeStreamGeometry.Plan plan;
     protected int lane = LaneCycle.LEFT;
     private boolean straighten;
@@ -211,8 +228,7 @@ public class SideViewPopupView extends ViewGroup {
         }
         visible = false;
         restoreExpanded();
-        applyVisibility(false);
-        update();
+        hideWithFade();
     }
 
     /** 整个拿掉。 */
@@ -220,6 +236,7 @@ public class SideViewPopupView extends ViewGroup {
         if (!attached) {
             return;
         }
+        abortFade();
         try {
             windowManager.removeView(this);
         } catch (Exception e) {
@@ -254,40 +271,130 @@ public class SideViewPopupView extends ViewGroup {
 
     protected void attachAt(int side, boolean show) {
         boolean sideChanged = side != lane;
+        boolean wasShowing = visible;
         lane = side;
+        if (sideChanged) {
+            // Require new source progression before revealing the newly selected crop.
+            frameFreshness.reset();
+            startup.request(false, false, android.os.SystemClock.uptimeMillis());
+        }
         if (attached) {
-            boolean visibilityChanged = show != visible;
             visible = show;
-            float previousAlpha = params.alpha;
-            int previousFlags = params.flags;
-            applyVisibility(show);
-            if (sideChanged) {
-                place();
-            }
-            if (sideChanged || visibilityChanged || previousAlpha != params.alpha || previousFlags != params.flags) {
-                update();
-            }
-            if (sideChanged) {
-                invalidate();
-            }
+            if (sideChanged) place();
+            if (show && (!wasShowing || sideChanged)) reveal(wasShowing && !sideChanged);
+            else if (!show && wasShowing) hideWithFade();
+            else { applyVisibility(show); update(); }
+            invalidate();
             return;
         }
-        params = new WindowManager.LayoutParams(
-                1, 1,
-                Build.VERSION.SDK_INT >= Build.VERSION_CODES.O
-                        ? WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY
-                        : WindowManager.LayoutParams.TYPE_PHONE,
-                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE,
-                PixelFormat.TRANSLUCENT);
+        params = new WindowManager.LayoutParams(1, 1,
+                WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE, PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.TOP | Gravity.START;
+        setAlpha(IDLE_ALPHA);
+        visible = show;
         applyVisibility(show);
         place();
         try {
             windowManager.addView(this, params);
             attached = true;
-            visible = show;
+            if (show && startup.revealed()) startFade(IDLE_ALPHA, 1f, FADE_IN_MS, null);
         } catch (Exception e) {
+            visible = false;
             AppLog.e(TAG, "侧视窗添加失败", e);
+        }
+    }
+
+    // ------------------------------------------------------------------ 淡入淡出
+
+    /** 窗口露在屏幕上：显示中，或还在淡出。备着（窗口全透明）时是 false。 */
+    protected final boolean windowShown() {
+        return visible || fadingOut;
+    }
+
+    /** 窗口露出来（不透明、接点击）。HUD 那块窗口换成自己的做法。 */
+    protected void windowUp() {
+        applyVisibility(true);
+        update();
+    }
+
+    /** 窗口完全收起（全透明、点击穿过去）。HUD 那块窗口换成自己的做法。 */
+    protected void windowDown() {
+        applyVisibility(false);
+        update();
+    }
+
+    /**
+     * 拨亮：窗口露出来，画面从近乎透明淡入。
+     *
+     * @param continueFromCurrent 淡出到一半又要显示、而且还是同一边：从现在的透明度接着往上淡
+     */
+    protected void reveal(boolean continueFromCurrent) {
+        fadingOut = false;
+        float from = continueFromCurrent ? Math.max(getAlpha(), IDLE_ALPHA) : IDLE_ALPHA;
+        cancelFade();
+        setAlpha(from);   // 窗口露出来之前先定好，第一帧就是淡入的起点
+        windowUp();
+        if (params == null || startup.revealed()) startFade(from, 1f, FADE_IN_MS, null);
+    }
+
+    /** 收起：画面淡出，淡完才让窗口全透明（调用前 {@link #visible} 已经是 false）。 */
+    protected void hideWithFade() {
+        startup.request(false, false, android.os.SystemClock.uptimeMillis());
+        if (params != null && params.alpha == 0f) {
+            abortFade();
+            windowDown();
+            return;
+        }
+        fadingOut = true;
+        if (params != null) params.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
+        startFade(getAlpha(), IDLE_ALPHA, FADE_OUT_MS, () -> {
+            fadingOut = false;
+            if (!visible && attached) {
+                windowDown();
+            }
+        });
+    }
+
+    /** 立刻停掉淡入淡出，画面回到「没显示」的透明度（窗口拿掉、重建之前）。 */
+    protected void abortFade() {
+        cancelFade();
+        fadingOut = false;
+        setAlpha(IDLE_ALPHA);
+    }
+
+    private void startFade(float from, float to, long durationMs, Runnable whenDone) {
+        cancelFade();
+        setAlpha(from);
+        final ObjectAnimator animator = ObjectAnimator.ofFloat(this, View.ALPHA, from, to);
+        animator.setDuration(durationMs);
+        animator.addListener(new AnimatorListenerAdapter() {
+            private boolean canceled;
+
+            @Override
+            public void onAnimationCancel(Animator a) {
+                canceled = true;
+            }
+
+            @Override
+            public void onAnimationEnd(Animator a) {
+                if (fade == animator) {
+                    fade = null;
+                }
+                if (!canceled && whenDone != null) {
+                    whenDone.run();
+                }
+            }
+        });
+        fade = animator;
+        animator.start();
+    }
+
+    private void cancelFade() {
+        ObjectAnimator running = fade;
+        fade = null;
+        if (running != null) {
+            running.cancel();
         }
     }
 
@@ -302,8 +409,8 @@ public class SideViewPopupView extends ViewGroup {
     private void applyVisibility(boolean show) {
         startup.request(show, hasLivePicture(), android.os.SystemClock.uptimeMillis());
         boolean reveal = startup.revealed();
-        params.alpha = reveal ? 1f : 0f;
-        if (reveal) {
+        params.alpha = reveal || fadingOut ? 1f : 0f;
+        if (reveal && visible) {
             params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         } else {
             params.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
@@ -321,6 +428,7 @@ public class SideViewPopupView extends ViewGroup {
         if (startup.advance(hasLivePicture(), android.os.SystemClock.uptimeMillis())) {
             applyVisibility(visible);
             update();
+            startFade(IDLE_ALPHA, 1f, FADE_IN_MS, null);
             invalidate();
         }
     }
@@ -480,6 +588,7 @@ public class SideViewPopupView extends ViewGroup {
     }
 
     @Override protected void onDetachedFromWindow() {
+        abortFade();
         freshnessHandler.removeCallbacks(freshnessTick);
         clearFrames();
         super.onDetachedFromWindow();
@@ -510,7 +619,11 @@ public class SideViewPopupView extends ViewGroup {
             if (showControls()) drawChild(canvas, controls, getDrawingTime());
             return;
         }
-        int save = SideViewRotation.begin(canvas, appConfig.getSidePopupRotation(lane), width, height, readMirrored());
+        int save = canvas.save();
+        Paint tone = pictureTone();
+        float fade = HudEdgeFade.widthPx(edgeFadePercent(), width, height);
+        if (tone != null || fade > 0f) canvas.saveLayer(0f, 0f, width, height, tone);
+        int inner = SideViewRotation.begin(canvas, appConfig.getSidePopupRotation(lane), width, height, readMirrored());
         if (straighten) {
             framing.configure(viewFov, yaw, pitch, lane, (float) width / height);
             // 虚拟相机转过去（往后、往上）再拉直，见 SideViewProjection
@@ -538,6 +651,8 @@ public class SideViewPopupView extends ViewGroup {
             canvas.concat(drawMatrix);
             drawChild(canvas, textureView, getDrawingTime());
         }
+        canvas.restoreToCount(inner);
+        if (fade > 0f) drawEdgeFade(canvas, width, height, fade);
         canvas.restoreToCount(save);
         if (!textureView.isAvailable() || !frameFreshness.fresh(android.os.SystemClock.uptimeMillis())) {
             drawStaleCover(canvas, width, height);
@@ -551,7 +666,26 @@ public class SideViewPopupView extends ViewGroup {
         if (showControls()) drawChild(canvas, controls, getDrawingTime());
     }
 
+    private void drawEdgeFade(Canvas canvas, int width, int height, float fade) {
+        final int opaque = 0xFF000000;
+        final int clear = 0x00000000;
+        fadePaint.setXfermode(DST_OUT);
+        fadePaint.setShader(new LinearGradient(0f, 0f, fade, 0f, opaque, clear, Shader.TileMode.CLAMP));
+        canvas.drawRect(0f, 0f, fade, height, fadePaint);
+        fadePaint.setShader(new LinearGradient(width, 0f, width - fade, 0f, opaque, clear, Shader.TileMode.CLAMP));
+        canvas.drawRect(width - fade, 0f, width, height, fadePaint);
+        fadePaint.setShader(new LinearGradient(0f, 0f, 0f, fade, opaque, clear, Shader.TileMode.CLAMP));
+        canvas.drawRect(0f, 0f, width, fade, fadePaint);
+        fadePaint.setShader(new LinearGradient(0f, height, 0f, height - fade, opaque, clear, Shader.TileMode.CLAMP));
+        canvas.drawRect(0f, height - fade, width, height, fadePaint);
+        fadePaint.setShader(null);
+        fadePaint.setXfermode(null);
+    }
+
     private void drawTextureOnce(Canvas canvas) {
         drawChild(canvas, textureView, getDrawingTime());
     }
+    /** Optional HUD-only image treatment; labels and stale covers stay outside it. */
+    protected Paint pictureTone() { return null; }
+    protected int edgeFadePercent() { return 0; }
 }

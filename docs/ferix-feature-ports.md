@@ -44,19 +44,46 @@ The port keeps current ChannelScheduler declarations, an independent SIDE_HUD ou
 Display matching requires a public presentation-capable, on display identified by the known 7X size or a HUD name, excludes the primary display and instrument cluster, and rejects ambiguous candidates. The source's id-3 fallback is deliberately omitted because display IDs on the 009 have not been identified. Diagnostics report the inventory and selection. Unavailable/failed HUD output falls back to current screen behavior. No 009 HUD has been tested.
 
 
-## Public source recheck — 2026-10-15
+## Source access correction — 2026-10-15
 
-The old `FerixzTanz/CAMCORDER` URL no longer resolves. GitHub currently lists
-[FerixzTanz/zeekr-shortcut-car](https://github.com/FerixzTanz/zeekr-shortcut-car)
-with main at `8993f37fd538901e3d80719d1b83997c9e1de12f`, an ancestor of dts88 main.
-Its public `turn-signal-side-view`, `ui-details` and
-`claude/compassionate-goldwasser-1ff252` branches contain no newer feature work
-than the side-camera and upstream UI/GPU work already included in this fork.
-The current repository has no listed pull requests. This does not establish
-whether unavailable/private work exists.
+An initial GitHub API/Git request returned not found for CAMCORDER. A repeat
+request succeeded: [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER)
+is public, with main at `d6193888b3fa86465ab82ec4fc232f0b9a15959e` (2.12.5).
+The separately public `FerixzTanz/zeekr-shortcut-car` is an older fork and is
+not the source of the latest CAMCORDER changes. The earlier unavailability
+conclusion was incorrect. Original source links remain valid.
 
-The last fetched CAMCORDER main, `f93ad7d` (2.12.0), is retained locally as
-`archive/ferix-camcorder-2.12.0`; its HUD implementation and token correction
-were already adapted here. No additional Ferix code was imported in the
-upstream 2.11.6 integration. Historical source URLs and hashes remain in NOTICE
-for attribution even where the original repository is unavailable.
+
+## CAMCORDER 2.12.1–2.12.5 follow-ups — 2026-10-15
+
+Integrated source main `d6193888b3fa86465ab82ec4fc232f0b9a15959e` through
+separate fork branches, with original source authorship/credit retained:
+
+| Branch | Imported work and adaptations |
+| --- | --- |
+| `feature/ferix-scan-callbacks` | `945ee4ed`: customize function values as C: entries and callback shapes; retain the fork's bounded queue and cap shapes at 128 |
+| `fix/ferix-shared-pipeline` | `57797edd`: find the shared pipeline during rapid Activity recreation; current upstream already retains camera ownership, so adapt the lookup to foreground/relay service retention |
+| `feature/ferix-hud-refinements` | PR #15, `6218413c`, `3ea2c9b1`, `d6193888`: contrast, night dimming, edge fade, optional left/right placement, display-window-context overlay; retain current defaults, 009 mapping and current scheduler |
+| `feature/ferix-side-transitions` | `3176bae5`: 130/160 ms popup/HUD fades, low nonzero hidden view alpha; retain 750 ms startup grace, fresh frame progression on side switches, immediate factory detach and cancellation guards |
+
+New HUD picture defaults are neutral: contrast 100%, night brightness 100%,
+edge fade 0%. Follow indicator side and the experimental overlay are off until
+enabled under Settings → Blind spot camera. The fixed-position path and all
+previous saved settings remain valid. The overlay uses TYPE_APPLICATION_OVERLAY
+through a display-specific window context on Android 11+, with the normal
+Presentation path on older versions. Refused HUD output retains screen fallback.
+
+Not imported: `e992d000` owner-specific defaults (including automatic launch,
+recording behaviour, geometry and default output/mirroring); HUD bypass of
+factory 360/park-assist signals (`830f2d0d` and part of PR #15); replacement
+README/versioning; the separate old camera-lifecycle branch. Our current dts88
+2.11.6 scheduler is newer than that lifecycle base and remains authoritative.
+HUD already has an independent zero speed threshold here; physical factory
+camera arbitration still takes priority for every output. The new controls and
+emulator results do not establish working video projection on the 009.
+
+Validation: 1,377 JVM tests, Android debug lint and the signed build passed.
+Six native Android tests passed on the disposable API 32 emulator: screen-popup
+startup/fade/side switch/cancellation, normal and overlay HUD windows on owned
+secondary displays (including placement and night alpha), plus the 360 popup
+regression. These are synthetic display/frame tests, not head-unit evidence.

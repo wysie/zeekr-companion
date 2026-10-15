@@ -80,12 +80,6 @@ The turn-signal side-view feature and projection tests were contributed by
 [FerixzTanz in PR #4](https://github.com/dts88/zeekr-shortcut-car/pull/4), then adapted
 to the current camera scheduler. They remain covered by the repository's GPL-3.0 license.
 
-The historical Ferix source repository was `FerixzTanz/CAMCORDER`. On 2026-10-15
-that URL was unavailable; the currently public
-[FerixzTanz/zeekr-shortcut-car](https://github.com/FerixzTanz/zeekr-shortcut-car)
-is an older upstream fork. Historical source hashes and links below are retained
-for provenance; the imported code and original credit remain in this repository.
-
 ## Phone sharing improvements
 
 Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).
@@ -136,3 +130,36 @@ FerixzTanz (Felix Tan)/CAMCORDER feature contributions. The retained optional
 PayNow number **9271 6786** is explicitly attributed to **dts88**, not the fork
 maintainer. Upstream 2.11.4-alpha (`e4d0e0d`) is merged without rewriting upstream
 or existing contribution history.
+
+## CAMCORDER scanner follow-up
+
+Customize-value callbacks and callback-shape reporting are adapted from
+[FerixzTanz/CAMCORDER 945ee4ed](https://github.com/FerixzTanz/CAMCORDER/commit/945ee4ed160bb8d91ca5e54411bab2ffa68cf3d3).
+The fork retains its bounded event queue and caps reported callback shapes.
+
+## CAMCORDER rapid theme-change fix
+
+The shared pipeline lookup and tests are adapted from
+[FerixzTanz/CAMCORDER 57797edd](https://github.com/FerixzTanz/CAMCORDER/commit/57797edd4b52c1aa2ee554d5eea6adf589e066e3).
+Current upstream already keeps camera ownership outside the Activity; this port
+uses the lookup to retain foreground/relay services during rapid recreation.
+
+## CAMCORDER HUD refinements
+
+Contrast, night dimming, edge fade, indicator-side geometry and optional HUD
+overlay windows are adapted from [Ferix PR #15](https://github.com/FerixzTanz/CAMCORDER/pull/15)
+and subsequent commits through [d6193888](https://github.com/FerixzTanz/CAMCORDER/commit/d6193888b3fa86465ab82ec4fc232f0b9a15959e).
+Source feature commits include `3fa7005e`, `3262e896`, `5b625ed9`, `4520dc05`,
+`e67dfddd`, `6218413c`, `3ea2c9b1` and `d6193888`. The port retains the fork's
+009 mapping, freshness guards and current scheduler. New picture treatments and
+indicator-side positioning are opt-in; Ferix's owner-specific defaults and
+factory-view bypass are not imported.
+
+## CAMCORDER side-window transitions
+
+Popup/HUD fades and hidden-view alpha are adapted from
+[FerixzTanz/CAMCORDER 3176bae5](https://github.com/FerixzTanz/CAMCORDER/commit/3176bae5)
+and HUD side-switch follow-up `6218413c`. The port retains shared screen-popup
+placement, startup grace, stale covers, close dismissal and immediate factory
+handover; switching sides requires new source progression. Native regressions
+use synthetic buffers and disposable secondary displays, not vehicle cameras.

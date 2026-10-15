@@ -137,6 +137,20 @@ public class AppConfig {
     private static final String KEY_HUD_SIDE_OPACITY = "hud_side_opacity";  // 不透明度
     // 左右翻转，像门上的后视镜：后面来的车从画面外侧进来。HUD 默认翻（和后视镜一样读），主屏默认不翻（LaneWatch 的读法）
     private static final String KEY_HUD_SIDE_MIRROR = "hud_side_mirror";
+    private static final String KEY_HUD_SIDE_OVERLAY = "hud_side_overlay";
+    private static final String KEY_HUD_SIDE_FOLLOW = "hud_side_follow";
+    private static final String KEY_HUD_SIDE_CONTRAST = "hud_side_contrast";
+    private static final String KEY_HUD_SIDE_NIGHT = "hud_side_night";
+    private static final String KEY_HUD_SIDE_FADE = "hud_side_fade";
+    public static final int HUD_SIDE_MIN_CONTRAST_PERCENT = 100;
+    public static final int HUD_SIDE_MAX_CONTRAST_PERCENT = 300;
+    public static final int HUD_SIDE_DEFAULT_CONTRAST_PERCENT = 100;
+    public static final int HUD_SIDE_MIN_NIGHT_PERCENT = 20;
+    public static final int HUD_SIDE_MAX_NIGHT_PERCENT = 100;
+    public static final int HUD_SIDE_DEFAULT_NIGHT_PERCENT = 100;
+    public static final int HUD_SIDE_MIN_FADE_PERCENT = 0;
+    public static final int HUD_SIDE_MAX_FADE_PERCENT = 40;
+    public static final int HUD_SIDE_DEFAULT_FADE_PERCENT = 0;
     public static final int HUD_SIDE_MIN_SIZE_PERCENT = 30;
     public static final int HUD_SIDE_MAX_SIZE_PERCENT = 100;
     public static final int HUD_SIDE_DEFAULT_SIZE_PERCENT = 74;
@@ -1678,6 +1692,11 @@ public class AppConfig {
                 .remove(KEY_HUD_SIDE_VERTICAL)
                 .remove(KEY_HUD_SIDE_OPACITY)
                 .remove(KEY_HUD_SIDE_MIRROR)
+                .remove(KEY_HUD_SIDE_OVERLAY)
+                .remove(KEY_HUD_SIDE_FOLLOW)
+                .remove(KEY_HUD_SIDE_CONTRAST)
+                .remove(KEY_HUD_SIDE_NIGHT)
+                .remove(KEY_HUD_SIDE_FADE)
                 .remove(KEY_SIDE_POPUP_MIN_SPEED)
                 .remove(KEY_SIDE_POPUP_STRAIGHTEN)
                 .remove(KEY_SIDE_POPUP_FOV)
@@ -1933,6 +1952,49 @@ public class AppConfig {
         prefs.edit().putInt(KEY_HUD_SIDE_OPACITY,
                 Math.max(HUD_SIDE_MIN_OPACITY_PERCENT, Math.min(100, percent))).apply();
     }
+
+    public boolean isHudSideOverlay() {
+        return prefs.getBoolean(KEY_HUD_SIDE_OVERLAY, false);
+    }
+
+    public void setHudSideOverlay(boolean on) {
+        prefs.edit().putBoolean(KEY_HUD_SIDE_OVERLAY, on).apply();
+    }
+
+    public int getHudSideContrastPercent() {
+        int v = prefs.getInt(KEY_HUD_SIDE_CONTRAST, HUD_SIDE_DEFAULT_CONTRAST_PERCENT);
+        return Math.max(HUD_SIDE_MIN_CONTRAST_PERCENT, Math.min(HUD_SIDE_MAX_CONTRAST_PERCENT, v));
+    }
+
+    public void setHudSideContrastPercent(int percent) {
+        prefs.edit().putInt(KEY_HUD_SIDE_CONTRAST,
+                Math.max(HUD_SIDE_MIN_CONTRAST_PERCENT, Math.min(HUD_SIDE_MAX_CONTRAST_PERCENT, percent))).apply();
+    }
+
+    /** 车上是夜间模式时，HUD 画面在不透明度的基础上再调到这个比例，20..100；100 不调暗。 */
+    public int getHudSideNightPercent() {
+        int v = prefs.getInt(KEY_HUD_SIDE_NIGHT, HUD_SIDE_DEFAULT_NIGHT_PERCENT);
+        return Math.max(HUD_SIDE_MIN_NIGHT_PERCENT, Math.min(HUD_SIDE_MAX_NIGHT_PERCENT, v));
+    }
+
+    public void setHudSideNightPercent(int percent) {
+        prefs.edit().putInt(KEY_HUD_SIDE_NIGHT,
+                Math.max(HUD_SIDE_MIN_NIGHT_PERCENT, Math.min(HUD_SIDE_MAX_NIGHT_PERCENT, percent))).apply();
+    }
+
+    /** HUD 上画面四边渐隐到黑的宽度，占短边的百分比，0..40；0 是原来的硬边。 */
+    public int getHudSideFadePercent() {
+        int v = prefs.getInt(KEY_HUD_SIDE_FADE, HUD_SIDE_DEFAULT_FADE_PERCENT);
+        return Math.max(HUD_SIDE_MIN_FADE_PERCENT, Math.min(HUD_SIDE_MAX_FADE_PERCENT, v));
+    }
+
+    public void setHudSideFadePercent(int percent) {
+        prefs.edit().putInt(KEY_HUD_SIDE_FADE,
+                Math.max(HUD_SIDE_MIN_FADE_PERCENT, Math.min(HUD_SIDE_MAX_FADE_PERCENT, percent))).apply();
+    }
+
+    public boolean isHudSideFollowSignal() { return prefs.getBoolean(KEY_HUD_SIDE_FOLLOW, false); }
+    public void setHudSideFollowSignal(boolean on) { prefs.edit().putBoolean(KEY_HUD_SIDE_FOLLOW, on).apply(); }
 
     public boolean isLicensePlateEnabled() {
         return prefs.getBoolean(KEY_LICENSE_PLATE_ENABLED, false);
