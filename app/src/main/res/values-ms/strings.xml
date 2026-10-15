@@ -250,8 +250,8 @@
 
     <!-- Pilihan tetapan -->
     <string name="opt_mode_auto">Automatik (disyorkan)</string>
-    <string name="opt_model_zeekr">Zeekr 7X (sekeliling)</string>
-    <string name="opt_model_zeekr_multi">Zeekr 7X (sekeliling + kabin depan dan belakang)</string>
+    <string name="opt_model_zeekr">Zeekr (sekeliling)</string>
+    <string name="opt_model_zeekr_multi">Zeekr (sekeliling + kabin depan dan belakang)</string>
 
     <!-- Gesaan dan dialog tetapan -->
     <string name="msg_stream_changed">Profil strim ditetapkan kepada “%1$s”. Berkuat kuasa selepas apl dimulakan semula.</string>
@@ -614,8 +614,8 @@
     <string name="record_waiting_cameras">Menunggu kamera</string>
     <string name="record_waiting_detail">Disambung semula secara automatik apabila tersedia</string>
     <!-- 配置名只做中英两种：马来文界面也用英文名 -->
-    <string name="status_profile_composite">Zeekr 7X (sekeliling)</string>
-    <string name="status_profile_composite_multi">Zeekr 7X (sekeliling + kabin depan dan belakang)</string>
+    <string name="status_profile_composite">Zeekr (sekeliling)</string>
+    <string name="status_profile_composite_multi">Zeekr (sekeliling + kabin depan dan belakang)</string>
     <string name="status_fps">≤%1$s fps</string>
     <string name="status_bitrate_very_low">Kadar bit sangat rendah</string>
     <string name="status_bitrate_low">Kadar bit rendah</string>
@@ -1060,4 +1060,12 @@
     <string name="dev_display_identify">Kenal pasti paparan dan eksport kad</string>
     <string name="dev_probe_stop">Henti</string>
     <string name="dev_probe_back">Kembali</string>
+    <string name="vehicle_name_title">Nama kenderaan</string>
+    <string name="vehicle_name_auto">Auto</string>
+    <string name="vehicle_name_generic">Zeekr</string>
+    <string name="vehicle_name_009">Zeekr 009</string>
+    <string name="vehicle_name_7x">Zeekr 7X</string>
+    <string name="vehicle_name_summary">Dipaparkan sebagai %1$s. Auto menggunakan nama model peranti; pilih secara manual jika perlu. Hanya menukar label.</string>
+    <string name="vehicle_profile_surround">%1$s (sekeliling)</string>
+    <string name="vehicle_profile_cabins">%1$s (sekeliling + kabin depan dan belakang)</string>
 </resources>

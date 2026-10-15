@@ -268,8 +268,8 @@
 
     <!-- 设置里的枚举选项 -->
     <string name="opt_mode_auto">自动（推荐）</string>
-    <string name="opt_model_zeekr">极氪7X（环视）</string>
-    <string name="opt_model_zeekr_multi">极氪7X（环视 + 前后座舱）</string>
+    <string name="opt_model_zeekr">极氪（环视）</string>
+    <string name="opt_model_zeekr_multi">极氪（环视 + 前后座舱）</string>
 
     <!-- 设置界面里的提示与对话框 -->
     <string name="msg_stream_changed">视频流配置已改为「%1$s」，重启应用后生效</string>
@@ -622,8 +622,8 @@
     <string name="record_unavailable_detail">未检测到 U 盘</string>
     <string name="record_waiting_cameras">等待摄像头</string>
     <string name="record_waiting_detail">恢复后自动继续</string>
-    <string name="status_profile_composite">极氪7X（环视）</string>
-    <string name="status_profile_composite_multi">极氪7X（环视 + 前后座舱）</string>
+    <string name="status_profile_composite">极氪（环视）</string>
+    <string name="status_profile_composite_multi">极氪（环视 + 前后座舱）</string>
     <string name="status_fps">≤%1$s fps</string>
     <string name="status_bitrate_very_low">极低码率</string>
     <string name="status_bitrate_low">低码率</string>
@@ -1070,4 +1070,12 @@
     <string name="dev_display_identify">识别显示屏并导出测试卡</string>
     <string name="dev_probe_stop">停止</string>
     <string name="dev_probe_back">返回</string>
+    <string name="vehicle_name_title">车辆名称</string>
+    <string name="vehicle_name_auto">自动</string>
+    <string name="vehicle_name_generic">极氪</string>
+    <string name="vehicle_name_009">极氪 009</string>
+    <string name="vehicle_name_7x">极氪 7X</string>
+    <string name="vehicle_name_summary">显示为 %1$s。自动识别使用设备报告的车型名称；无法识别时可手动选择。仅更改显示名称。</string>
+    <string name="vehicle_profile_surround">%1$s（环视）</string>
+    <string name="vehicle_profile_cabins">%1$s（环视 + 前后座舱）</string>
 </resources>

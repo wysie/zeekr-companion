@@ -495,3 +495,20 @@ The initial single-buffer test did not advance: the UI callback can precede
 RenderThread latching, and Canvas buffers in this emulator reported timestamp 0.
 The final test uses continuous EGL presentation timestamps, like a video producer;
 app freshness rules are unchanged. This is emulator evidence, not 009 validation.
+
+
+## Vehicle display name (2026-10-15, 009 check pending)
+
+The owner's 009 Diagnostics report Android Build.MODEL=Pixel 3a, device=sargo and
+a generic Zeekr DHU build. The existing 7X display text names the shared camera
+profile and does not establish the physical car. Settings → Interface → Vehicle
+name now offers Auto (default), Zeekr 009 and Zeekr 7X. Auto only accepts explicit
+known model names in Android model/device/product; missing, generic, spoofed or
+contradictory values fall back to Zeekr. Select Zeekr 009 manually on this firmware.
+
+Builtin recording-profile choices, profile editor heading and the main/settings
+status line use the resolved localized name. Custom profile names are unchanged.
+Legacy zeekr_7x/zeekr_7x_multi IDs remain stable for stored profile and migration
+compatibility. This cosmetic setting never chooses cameras, calibration or HUD
+displays; the existing explicit 009 HUD option remains separate. Diagnostics
+record the selection and displayed name alongside raw Android metadata.

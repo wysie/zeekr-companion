@@ -961,6 +961,8 @@ public final class DiagnosticsCollector {
         try {
             AppConfig cfg = new AppConfig(context);
             sb.append("车型: ").append(cfg.getCarModel()).append('\n');
+            sb.append("Vehicle display name: ").append(com.kooo.evcam.ui.VehicleLabels.name(context))
+                    .append("; selection=").append(cfg.getVehicleNameMode()).append('\n');
             sb.append("摄像头数量: ").append(cfg.getCameraCount()).append('\n');
             // 帧率、码率、分段、每一路的尺寸都在配置里，整份摆出来比逐项抄一遍准
             sb.append(new com.kooo.evcam.profile.ProfileStore(context).current()).append('\n');

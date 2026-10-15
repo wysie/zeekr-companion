@@ -83,6 +83,8 @@ public final class DiagnosticsJson {
         meta.put("manufacturer", Build.MANUFACTURER);
         meta.put("model", Build.MODEL);
         meta.put("device", Build.DEVICE);
+        meta.put("vehicle_name_mode", new com.kooo.evcam.AppConfig(context).getVehicleNameMode());
+        meta.put("vehicle_display_name", com.kooo.evcam.ui.VehicleLabels.name(context));
         try {
             PackageManager pm = context.getPackageManager();
             meta.put("app_version",

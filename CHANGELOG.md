@@ -9,7 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
-Nothing yet.
+- Add Auto/009/7X vehicle display names for builtin profiles and status, with generic Zeekr fallback and independent camera/HUD configuration.
 
 ## [2.11.31-personal-alpha] - 2026-10-15
 

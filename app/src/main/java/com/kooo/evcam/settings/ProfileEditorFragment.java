@@ -603,10 +603,10 @@ public class ProfileEditorFragment extends Fragment {
      */
     String profileName() {
         if (Profile.PRESET_COMPOSITE.equals(profile.id)) {
-            return getString(R.string.opt_model_zeekr);
+            return com.kooo.evcam.ui.VehicleLabels.profile(requireContext(), false);
         }
         if (Profile.PRESET_COMPOSITE_MULTI.equals(profile.id)) {
-            return getString(R.string.opt_model_zeekr_multi);
+            return com.kooo.evcam.ui.VehicleLabels.profile(requireContext(), true);
         }
         return profile.name.isEmpty() ? profile.id : profile.name;
     }
