@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.26-personal-alpha] - 2026-10-15
+
 - Honor individual camera roles for cabin-only and Surround + Rear cabin profiles instead of assuming every one-camera selection is Surround.
 - Show a restart instruction before recording with unapplied channel changes, preventing repeated empty-plan start failures.
 
