@@ -32,6 +32,10 @@ release numbers remain independent of upstream.
 
 ## Additions in this fork
 
+- **Settings layout fixes:** camera cards reserve space for their switches; long names/custom badges wrap instead of hiding controls. Camera/quality cards stack in narrower panes, option buttons wrap at equal heights, and Diagnostics actions can grow with text. The main action column scrolls when too short to fit. Changing settings categories clears stale nested titles/Back history. See [native layout review](docs/settings-layout-review.md).
+
+- **Fresh-install permission handling:** startup requests camera/storage access used by the app and no longer blocks on the undeclared, unused microphone permission. The Developer permissions page omits that unavailable permission.
+
 - **Camera and display research tools:** Settings → Developer → Camera and display tools provides an on-demand batch snapshot of every available Camera2 ID, plus a numbered 10-second test for public presentation displays. Images, generated display cards and JSON reports go under **ZeekrShortcutApp/Developer**. Both require a connected vehicle interface with recording stopped and factory camera closed; neither checks gear or speed. The scan temporarily closes this app’s normal feeds and retains exclusive ownership until native closure is confirmed; saved camera/HUD settings stay unchanged. These tools cannot screenshot factory displays or expose private factory video buffers. See [instructions and limits](docs/developer-camera-display-tools.md).
 
 - **Independent camera selection:** Surround, Front cabin and Rear cabin are opened according to their individual profile switches, including cabin-only profiles. Exit and reopen after changing switches; recording shows an explicit restart message while saved channel choices differ from the live pipeline.
