@@ -1051,6 +1051,10 @@ public class MainActivity extends AppCompatActivity {
         if (recordButtonUi == null || recordingCoordinator.view() != RecordingCoordinator.View.IDLE) {
             return;
         }
+        if (recordingCoordinator.isWaitingForStorage()) {
+            recordButtonUi.setState(com.kooo.evcam.ui.RecordButtonUi.State.WAITING_STORAGE);
+            return;
+        }
         // 只读快照，不碰盘；还没探测过时先按能录画，探测完监听器会再画一次
         com.kooo.evcam.storage.StorageState.Snapshot storage = com.kooo.evcam.storage.StorageState.current();
         recordButtonUi.setState(!storage.known || storage.available
@@ -2310,6 +2314,12 @@ public class MainActivity extends AppCompatActivity {
      * 那比写内置存储糟得多。自动路径改用一条 Toast 提示。</p>
      */
     private void confirmInternalStorageThen(Runnable onProceed) {
+        // USB requests wait in the coordinator. Developer mode alone never grants fallback,
+        // and an explicit fallback opt-in still gets the USB startup grace period.
+        if (new AppConfig(this).isUsingExternalSdCard()) {
+            onProceed.run();
+            return;
+        }
         if (!StorageHelper.willRecordToInternal(this)) {
             onProceed.run();
             return;
@@ -2342,12 +2352,13 @@ public class MainActivity extends AppCompatActivity {
         }
         lastRecordButtonClickTime = currentTime;
         
-        if (isRecording) {
+        if (isRecording || recordingCoordinator.isWaiting()) {
             // 用户手动停止：这一趟里没有任何一条路可以再自动开起来（RecordingIntent），
             // 协调器收到 USER 也不会自动接回
             RecordingIntent.current().noteUserStopped();
             AppLog.d(TAG, "用户手动停止录制，这一趟不再自动开始");
             recordingCoordinator.stop(RecordingStops.Reason.USER);
+            renderRecordState();
         } else {
             // 用户手动开始：「停过」的记录作废，前面接回失败的额度也清掉
             RecordingIntent.current().noteUserStarted();
@@ -2478,6 +2489,7 @@ public class MainActivity extends AppCompatActivity {
 
         @Override
         public void onRecordingRefused(String reason) {
+            refreshRecordAvailability();
             // 自动录制会定时重试，同一条理由不必每次都弹一遍 ——
             // 那会变成一串关不掉的提示，反而盖住真正该看的东西
             if (reason != null && reason.equals(lastRefusalShown)) {

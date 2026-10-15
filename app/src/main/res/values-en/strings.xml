@@ -1149,4 +1149,9 @@
     <string name="menu_image_rendering">Image &amp; rendering</string>
     <string name="menu_camera_research">Camera research &amp; diagnostics</string>
     <string name="menu_maintenance">Maintenance</string>
+    <string name="dev_usb_internal_fallback_title">Allow internal storage fallback</string>
+    <string name="dev_usb_internal_fallback_summary">Off by default: wait for USB. On: allow internal fallback after 10 seconds at recording start, or if USB fails while recording. Does not move active files. Direct Internal storage and Relay write are separate.</string>
+    <string name="msg_wait_usb_before_internal">Waiting up to 10 seconds for USB before using internal storage.</string>
+    <string name="record_waiting_usb">Waiting for USB</string>
+    <string name="record_cancel_usb_wait">Tap to cancel waiting</string>
 </resources>

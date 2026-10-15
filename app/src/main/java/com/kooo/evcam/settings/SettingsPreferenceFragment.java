@@ -1352,6 +1352,11 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     // ------------------------------------------------------------------ 原「高级」，现在在开发者选项里
 
     private void bindAdvanced() {
+        bindSwitch("pref_usb_internal_fallback", appConfig.isUsbInternalFallbackEnabled(), enabled -> {
+            appConfig.setUsbInternalFallbackEnabled(enabled);
+            StorageHelper.clearCache();
+            com.kooo.evcam.storage.StorageState.refresh(requireContext(), "usb-fallback-setting");
+        });
         bindEnum("pref_recording_mode", SettingsRegistry.RECORDING_MODE,
                 appConfig.getRecordingMode(), value -> appConfig.setRecordingMode(value),
                 this::showRecordingModeSummary);

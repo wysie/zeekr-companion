@@ -134,6 +134,9 @@ public class SettingsNavigationAndroidTest {
                 select(shell, "screen_developer");
                 assertNotNull(page(shell).findPreference("pref_recording_mode"));
                 assertNotNull(page(shell).findPreference("pref_camera_display_tools"));
+                SwitchPreferenceCompat fallback = page(shell).findPreference("pref_usb_internal_fallback");
+                assertNotNull(fallback);
+                assertEquals(config.isUsbInternalFallbackEnabled(), fallback.isChecked());
                 select(shell, "screen_recording");
                 assertNotNull(page(shell).findPreference("pref_screen_off_keep_recording"));
             });

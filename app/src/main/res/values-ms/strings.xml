@@ -1126,4 +1126,9 @@
     <string name="menu_image_rendering">Imej &amp; pemaparan</string>
     <string name="menu_camera_research">Penyelidikan kamera &amp; diagnostik</string>
     <string name="menu_maintenance">Penyelenggaraan</string>
+    <string name="dev_usb_internal_fallback_title">Benarkan sandaran storan dalaman</string>
+    <string name="dev_usb_internal_fallback_summary">Mati secara lalai: tunggu USB. Hidup: benarkan storan dalaman selepas 10 saat semasa mula rakaman, atau jika USB gagal semasa merakam. Fail aktif tidak dipindahkan. Pilihan Storan dalaman dan Penulisan geganti berasingan.</string>
+    <string name="msg_wait_usb_before_internal">Menunggu USB sehingga 10 saat sebelum menggunakan storan dalaman.</string>
+    <string name="record_waiting_usb">Menunggu USB</string>
+    <string name="record_cancel_usb_wait">Ketik untuk batal menunggu</string>
 </resources>

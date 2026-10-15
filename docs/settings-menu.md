@@ -16,7 +16,7 @@ add navigation depth; their native Back button returns to their parent.
 | Floating button | Enable; tap/hold actions; size, opacity and timer appearance; lock position; reset. |
 | Interface | Language, vehicle display name, action side, recording statistics, reduced motion, vehicle panel; main preview/photo/video correction method and field of view. |
 | System | App startup, Diagnostics, system/vehicle information, developer-mode enable with warning. |
-| Developer options | Recording internals: pipeline, H.264, wake lock and duration. Image/rendering: adjustments/reset and preview/playback GPU methods. Camera research: mapping, camera/display tools and batch exports, raw frames, signal scanner, camera-app logging, permissions. Maintenance: repair recordings, archive. |
+| Developer options | Recording internals: allow internal storage fallback (off by default), pipeline, H.264, wake lock and duration. Image/rendering: adjustments/reset and preview/playback GPU methods. Camera research: mapping, camera/display tools and batch exports, raw frames, signal scanner, camera-app logging, permissions. Maintenance: repair recordings, archive. |
 | Updates | Check for updates, include beta releases. |
 
 ## Blind spot child pages
@@ -62,3 +62,13 @@ The former “HUD above factory information” experiment has been removed. Stor
 `hud_side_overlay` values are ignored. Normal HUD output, optional 009 display
 mapping and factory-view coexistence remain available for investigation; working
 HUD video on the owner’s 009 has not been established.
+
+## USB fallback permission
+
+Developer mode alone no longer enables internal fallback. The Developer recording
+internals switch defaults off even on upgrades. USB recording requests wait for
+a writable drive; the main record button shows Waiting for USB and allows
+cancellation. If fallback is explicitly on, startup waits ten seconds before
+allowing internal storage. In-recording internal failover is gated too. Direct
+Internal storage and Relay write remain independent explicit choices. Changes do
+not relocate an active file; stop/start recording to re-evaluate its destination.

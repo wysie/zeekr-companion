@@ -42,8 +42,8 @@ public final class StorageState {
         /** 录像盘根目录；null = 没有 U 盘。 */
         public final File root;
         /**
-         * 按当前设置算出来的录像目录。没有 U 盘时：开发者选项开着是内置存储上的那个，
-         * 关着是 null（没有地方可存，{@code StorageHelper.footageRoot}）。
+         * 按当前设置算出来的录像目录。没有 U 盘时：显式允许 USB 回退时是内置存储上的那个，
+         * 否则是 null（没有地方可存，{@code StorageHelper.footageRoot}）。
          */
         public final File videoDir;
         /**
@@ -56,7 +56,7 @@ public final class StorageState {
         public final long freeBytes;
         /** 此刻能不能开录、拍照（和拒录、拒拍用的是同一个判断）。 */
         public final boolean available;
-        /** 选的是 U 盘、此刻没检测到：能录的话（开发者选项放行）落在内置存储上。 */
+        /** 选的是 U 盘、此刻没检测到：能录的话（显式允许回退）落在内置存储上。 */
         public final boolean sdFellBack;
         /** 此刻挂着的盘，黑匣子那种写法。 */
         public final String mounts;

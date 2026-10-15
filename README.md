@@ -36,6 +36,8 @@ release numbers remain independent of upstream.
 
 ## Additions in this fork
 
+- **Explicit USB-to-internal fallback:** Developer mode alone no longer permits fallback. Settings → Developer options → Recording internals → Allow internal storage fallback is off by default, including upgrades. A requested recording waits for usable USB; the main button shows Waiting for USB / Tap to cancel. With fallback explicitly enabled, recording starts give USB 10 seconds first. Mid-recording internal failover also requires this opt-in. Direct Internal storage selection and Relay write remain separate choices.
+
 - **Grouped settings:** retain the familiar main categories, with Blind spot camera → Image & framing / Popup window / HUD picture, and Recording & photos → Stamps & driving information. Screen-off recording now lives under Recording & photos. HUD and Developer tools have task-based headings; saved feature values and defaults are retained. See [settings map](docs/settings-menu.md).
 
 - **Settings layout fixes:** camera cards reserve space for their switches; long names/custom badges wrap instead of hiding controls. Camera/quality cards stack in narrower panes, option buttons wrap at equal heights, and Diagnostics actions can grow with text. The main action column scrolls when too short to fit. Changing settings categories clears stale nested titles/Back history. See [native layout review](docs/settings-layout-review.md).
@@ -220,6 +222,30 @@ do not change recordings. Each defaults to 0°; camera orientation needs on-car 
 **Reset side-view settings** restores the default aim, speed threshold, display mode, timing,
 size and saved position. **Reset Super mirror settings** restores its window, view and switching
 modes, including camera labels shared with the side popup. The side-view reset includes all HUD tuning but leaves shared labels intact. Both reset actions are available while the feature is off and preserve its on/off state.
+
+### USB startup and storage fallback
+
+With USB selected and **Allow internal storage fallback** off (default), an existing
+recording request waits for a writable USB drive instead of using head-unit storage.
+Detection runs in the background every two seconds for the first two minutes,
+then every 30 seconds. Recording starts when a refresh finds the drive ready,
+provided the original request is still permitted. Press **Waiting for USB → Tap
+to cancel** to withdraw it; USB insertion alone does not create a recording request.
+
+Under **Developer options → Recording internals**, explicitly enabling fallback
+allows internal recording after a ten-second USB wait at recording start. If a
+USB drive fails during an active recording, internal storage is offered to the
+recorder only with this option enabled; other usable USB volumes retain their
+existing priority. The internal-recording notification remains when fallback
+actually happens. A fallback preference change controls new starts and future
+failovers; it does not move or stop a file already being written internally.
+Stop and restart recording if you need the current destination re-evaluated.
+
+The choice is developer-gated and saved independently of enabling Developer mode.
+Directly selecting **Storage → Storage location → Internal storage**, and explicitly
+enabling **Relay write**, retain their existing separate developer permissions.
+Old internal recordings are not deleted or migrated; with fallback off, select
+Internal storage explicitly in Developer mode to browse them when USB is absent.
 
 ### Playback
 

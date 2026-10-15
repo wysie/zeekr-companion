@@ -737,3 +737,31 @@ The GPU 360 renderer is not implemented. GPU live straightening remains
 experimental and incompatible with the main 360 renderer. No working HUD
 video on the owner’s 009 is established, and the pending Ferix scanner/night
 contrast changes are not part of this build.
+
+## Explicit USB fallback and waiting (2026-10-16)
+
+Developer mode no longer implicitly permits USB-to-internal fallback. New and
+existing installs get a separate false-by-default `usb_internal_fallback` option
+under Developer recording internals. It gates media destinations and the
+recorder's last-resort internal failover. Explicitly selecting Internal storage
+or enabling Relay write keeps its independent developer restriction.
+
+USB starts reuse the existing background disk-wait polling (2 s for two minutes,
+then 30 s). Only an allowed pending recording request may proceed when USB is
+ready. Opted-in fallback waits ten seconds first; healthy USB starts immediately.
+Space-cleanup callbacks retain the elapsed grace until recording actually starts.
+The current opt-in is checked again after asynchronous storage probing. The
+main record button exposes storage waiting and allows cancellation, retaining
+the existing one-second double-tap guard and manual-stop rules.
+
+Changing the permission does not move or stop an active internal file; stop/start
+to re-evaluate it. Existing files are retained. The original internal-fallback
+notice remains for genuine fallback. No automatic recording switch is enabled
+by this change, and no USB mount/vehicle timing is claimed from emulator tests.
+
+Validation: 1,383 JVM tests, debug lint and signed assembly pass. Eight native
+API 32 tests pass: USB policy/gating/direct-internal/relay cases, real manual
+record-button waiting and cancellation with USB absent, settings navigation and
+menu capture. Inspected the new developer row and grey wait state. USB arrival
+and ten-second boundaries/reset are covered by pure state tests; physical 009
+mounting/recording/failover timing remains to be tested.

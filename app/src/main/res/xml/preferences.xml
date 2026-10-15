@@ -608,6 +608,10 @@
         <PreferenceCategory
             android:key="group_dev_recording"
             android:title="@string/menu_recording_internals">
+            <SwitchPreferenceCompat
+                android:key="pref_usb_internal_fallback"
+                android:title="@string/dev_usb_internal_fallback_title"
+                android:summary="@string/dev_usb_internal_fallback_summary" />
             <ListPreference
                 android:key="pref_recording_mode"
                 android:title="@string/set_recording_mode_title"

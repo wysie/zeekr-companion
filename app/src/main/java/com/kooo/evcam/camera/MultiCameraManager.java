@@ -1827,7 +1827,7 @@ public class MultiCameraManager {
             return dirs;
         }
         StorageHelper.clearCache();
-        File internal = StorageHelper.isInternalStorageAllowed()
+        File internal = StorageHelper.isUsbInternalFallbackAllowed(context)
                 ? Environment.getExternalStorageDirectory() : null;
         for (File root : FallbackVolumes.rank(StorageHelper.mountedVolumes(), config.getCustomSdCardPath(),
                 deadVolumes, StorageHelper::getAvailableSpace, internal)) {
