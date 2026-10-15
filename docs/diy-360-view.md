@@ -190,4 +190,6 @@ geometry and factory-camera guards remain. The UI-thread TextureView readback
 and CPU stitcher remain, so this is not a GPU renderer or factory feed. Higher
 targets can increase load; delivered performance on the 009 is still unverified.
 Diagnostics include captureIntervalMs and presentationGapMs alongside copy/render
-times. Check these and concurrent recording at each quality setting.
+times. The last measured presentation gap remains available after leaving the
+preview, and is reset on a new activation or quality change. Check these and
+concurrent recording at each quality setting.

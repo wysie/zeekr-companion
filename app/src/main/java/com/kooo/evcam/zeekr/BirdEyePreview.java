@@ -115,6 +115,7 @@ final class BirdEyePreview {
         requestedQuality = activeQuality = selected;
         qualityFallbacks = 0; qualityReason = "none"; slow = false;
         lastReadbackMs = lastRenderMs = lastLookupMs = 0;
+        lastPresentedAt = lastPresentationGapMs = -1;
         if (plan != null) size = BirdEyeQuality.resolve(selected, plan.frameWidth, plan.frameHeight);
     }
     private void downgrade(String reason) {
@@ -125,6 +126,7 @@ final class BirdEyePreview {
             AppLog.w("BirdEyePreview", "360 paused at Low: " + reason);
         } else {
             activeQuality = BirdEyeQuality.lower(activeQuality); qualityFallbacks++;
+            lastPresentationGapMs = -1;
             size = BirdEyeQuality.resolve(activeQuality, plan.frameWidth, plan.frameHeight);
             AppLog.w("BirdEyePreview", "360 resolution fallback: requested=" + requestedQuality
                     + " active=" + activeQuality + " source=" + size.sourceWidth + "x" + size.sourceHeight
@@ -149,7 +151,7 @@ final class BirdEyePreview {
     private void invalidatePicture() {
         revision++; displayedAt = -1; displayedIdentity = null; freshness.reset();
         copiedIdentity = null; copiedTimestamp = 0;
-        lastPresentedAt = lastPresentationGapMs = -1;
+        lastPresentedAt = -1; // Retain the last measured gap for Diagnostics after leaving preview.
         owner.invalidate();
     }
     private void refreshSafety() {
