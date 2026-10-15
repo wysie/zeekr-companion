@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.37-personal-alpha] - 2026-10-15
+
 - Add a three-way Super mirror relationship for side cameras: use its window, show both, or temporarily hide it while the separate popup is visible; preserve existing choices.
 - Keep playback actions aligned and readable with content-sized, equal-height rows that wrap instead of clipping long labels.
 

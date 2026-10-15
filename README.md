@@ -178,8 +178,7 @@ pop-up is used. **When Super mirror is active → Show both windows** keeps the 
 alongside the separate popup. **Hide during popup** instead hides the mirror only
 once the independent popup becomes visible, retaining its own shape and size.
 The mirror returns when that popup closes, finishes fading out, is dismissed with
-X or is detached for factory/screen takeover. Hidden startup/prewarming and HUD-only
-output without a screen popup does not hide it. This never changes the mirror enable switch, saved camera,
+X or is detached for factory/screen takeover. Hidden startup/prewarming and a HUD picture without a screen popup do not hide it. This never changes the mirror enable switch, saved camera,
 position or size. Existing replacement/on and alongside/off selections are preserved;
 reset restores Use its window. Hiding keeps the mirror feed attached and does not
 free an output slot. Both windows share the existing surround camera stream; the side
@@ -391,3 +390,6 @@ off-UI timer. This reduces dependence on UI timer delivery; whole-process or ven
 power-service stalls can still exceed software timing expectations. Automatic UI
 recovery waits while a known reverse/factory-camera/parking-assist view is active;
 unknown vendor flags cannot prove that a factory view is absent.
+
+The [menu review](docs/menu-review-2026-10-15.md) records implemented layout fixes
+and proposed navigation cleanup; the proposed regrouping is not active in the app.

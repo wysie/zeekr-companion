@@ -668,3 +668,22 @@ fade completion, immediate detach, unchanged mirror enablement, retained identic
 SurfaceTexture and reset semantics, without opening any vehicle camera. On-car
 checks still need all three modes with screen-only/HUD-only/both, X then re-signal,
 factory takeover, mirror manually stopped/started and app backgrounding.
+
+## 2.11.37 combined verification
+
+The temporary-mirror-hide choice and wrapping photo/video actions are combined on
+main. Final checks passed: 1,380 JVM tests; 13 native tests (four popup lifecycle,
+three settings layout, two playback layout, two HUD window, one DIY popup and one
+menu review); Android debug lint; and signed release assembly. Native menu captures
+cover ten initial settings viewports and nested HUD, with a final confirmation of
+the new three-way choice and light/dark playback. Layout tests cover all three
+languages, two font scales, row resizing and RTL/photo controls. No 009 testing
+is claimed. Signing identity is unchanged; versionCode is 320.
+
+Use Settings → Blind spot camera → When Super mirror is active → Hide during
+popup. Verify both indicator sides, X then cancel/re-signal, auto close delay,
+factory takeover, HUD-only without a screen popup, and mirror manually restarted
+while the popup is visible. The normal mirror must return with its previous size,
+position and lane, and its enabled setting must not change. Hidden mirror output
+still consumes its usual camera surface. Menu regrouping is a documented proposal,
+not a change to the shipped navigation.

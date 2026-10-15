@@ -1098,7 +1098,7 @@
     <string name="set_developer_mode_title">启用开发者模式</string>
     <string name="set_developer_mode_summary">警告：试验性功能和排查工具可能影响相机、录制和存储。全新安装默认关闭；重启和更新后保留选择。关闭后隐藏开发者选项，其设置不再生效，已保存的值不会删除。部分更改需重启应用。</string>
     <string name="set_side_mirror_mode_title">超级后视镜开启时</string>
-    <string name="set_side_mirror_mode_summary">选择在后视镜中显示侧视、同时显示两个窗口，或在独立侧视窗口显示时暂时隐藏后视镜。仅 HUD 输出时不隐藏。</string>
+    <string name="set_side_mirror_mode_summary">选择在后视镜中显示侧视、同时显示两个窗口，或在独立侧视窗口显示时暂时隐藏后视镜。仅显示 HUD 画面时不隐藏。</string>
     <string name="set_side_mirror_replace">使用超级后视镜窗口</string>
     <string name="set_side_mirror_both">同时显示两个窗口</string>
     <string name="set_side_mirror_hide">侧视弹窗显示时隐藏后视镜</string>

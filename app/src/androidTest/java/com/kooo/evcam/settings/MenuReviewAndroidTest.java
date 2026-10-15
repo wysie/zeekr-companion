@@ -22,6 +22,11 @@ public class MenuReviewAndroidTest {
                 .grantRuntimePermission(target.getPackageName(), permission);
         target.getSharedPreferences("app_config", Context.MODE_PRIVATE).edit().putBoolean("first_launch", false)
                 .putBoolean("language_chosen", true).putBoolean("rail_side_chosen", true).commit();
+        com.kooo.evcam.AppConfig config = new com.kooo.evcam.AppConfig(target);
+        boolean oldSideEnabled = config.isSidePopupEnabled();
+        int oldMirrorMode = config.getSidePopupMirrorMode();
+        boolean confirmation = InstrumentationRegistry.getArguments().getBoolean("menuReviewConfirmation", false)
+                || "true".equals(InstrumentationRegistry.getArguments().getString("menuReviewConfirmation"));
         boolean developer = DeveloperMode.isUnlocked();
         DeveloperMode.setEnabled(target, true);
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
@@ -32,13 +37,29 @@ public class MenuReviewAndroidTest {
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, shell).commitNow();
                 shell.getChildFragmentManager().executePendingTransactions();
             });
-            for (String section : new String[]{"recording", "storage", "rearview", "blind_spot_camera", "bird_eye",
-                    "floating", "interface", "system", "developer", "update"}) {
+            String[] sections = confirmation ? new String[]{"blind_spot_camera"} : new String[]{"recording", "storage", "rearview", "blind_spot_camera", "bird_eye",
+                    "floating", "interface", "system", "developer", "update"};
+            for (String section : sections) {
                 scenario.onActivity(activity -> {
+                    if ("blind_spot_camera".equals(section)) {
+                        config.setSidePopupEnabled(true);
+                        config.setSidePopupMirrorMode(com.kooo.evcam.zeekr.SidePopupMirrorMode.HIDE);
+                    }
                     ref.get().showSection("screen_"+section);
                     ref.get().getChildFragmentManager().executePendingTransactions();
                 });
                 capture("menu-"+section+".png");
+                if (confirmation && "blind_spot_camera".equals(section)) {
+                    scenario.onActivity(activity -> {
+                        SettingsPreferenceFragment detail = (SettingsPreferenceFragment) ref.get().getChildFragmentManager().findFragmentById(R.id.settings_detail);
+                        androidx.preference.ListPreference mode = detail.findPreference("pref_side_popup_mirror_mode");
+                        org.junit.Assert.assertEquals("2", mode.getValue());
+                        org.junit.Assert.assertEquals(3, mode.getEntries().length);
+                        detail.onDisplayPreferenceDialog(mode);
+                    });
+                    capture("menu-mirror-options.png");
+                    androidx.test.espresso.Espresso.pressBack();
+                }
             }
             scenario.onActivity(activity -> {
                 ref.get().openDetail(SettingsPreferenceFragment.forSection("sub_side_hud"), target.getString(R.string.set_sub_hud_title));
@@ -51,7 +72,19 @@ public class MenuReviewAndroidTest {
                 activity.findViewById(R.id.timeline_lock).setVisibility(View.VISIBLE);
             });
             capture("menu-playback.png");
-        } finally { DeveloperMode.setEnabled(target, developer); }
+            if (confirmation) {
+                scenario.onActivity(activity -> activity.getDelegate().setLocalNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES));
+                scenario.onActivity(activity -> {
+                    activity.setContentView(R.layout.activity_timeline_player);
+                    activity.findViewById(R.id.timeline_lock).setVisibility(View.VISIBLE);
+                });
+                capture("menu-playback-dark.png");
+            }
+        } finally {
+            DeveloperMode.setEnabled(target, developer);
+            config.setSidePopupEnabled(oldSideEnabled);
+            config.setSidePopupMirrorMode(oldMirrorMode);
+        }
     }
     private void capture(String name) throws Exception {
         InstrumentationRegistry.getInstrumentation().getUiAutomation().waitForIdle(150, 2000);
