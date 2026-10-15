@@ -1026,8 +1026,8 @@
     <string name="set_hud_side_size_summary">The width follows from the shape below</string>
     <string name="set_hud_side_shape_title">HUD picture shape (width ÷ height, %)</string>
     <string name="set_hud_side_shape_summary">100 is square; higher is wider</string>
-    <string name="set_hud_side_left_title">Position across the HUD (%)</string>
-    <string name="set_hud_side_left_summary">0 is the left, 100 the right</string>
+    <string name="set_hud_side_left_title">HUD horizontal position (%)</string>
+    <string name="set_hud_side_left_summary">Fixed: 0 is left, 100 is right. With Follow indicator side: 0 is the signalling edge, 50 is centre.</string>
     <string name="set_hud_side_vertical_title">Height on the HUD (%)</string>
     <string name="set_hud_side_vertical_summary">0 is the top, 100 the bottom</string>
     <string name="set_hud_side_opacity_title">HUD picture opacity (%)</string>
