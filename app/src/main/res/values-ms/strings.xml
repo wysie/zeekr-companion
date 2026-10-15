@@ -1046,7 +1046,7 @@
     <string name="msg_record_profile_restart">Pilihan kamera berubah. Keluar dan buka semula aplikasi untuk menggunakannya sebelum merakam.</string>
     <string name="dev_camera_display_title">Alat kamera dan paparan</string>
     <string name="dev_camera_display_summary">Petikan kamera dan ujian paparan bernombor; eksport ke ZeekrShortcutApp/Developer</string>
-    <string name="dev_camera_display_help">Hentikan rakaman dan tutup kamera kilang dahulu.\n\nEksport kamera menyimpan satu imej tanpa pembetulan bagi setiap ID Camera2 yang tersedia, bersama saiz dan ralat. Paparan biasa aplikasi dilepaskan sementara. Aliran kilang peribadi tidak dapat diakses.\n\nPengenalpastian paparan menghantar kad bernombor selama 10 saat. PNG yang dieksport ialah kad ujian kami, bukan tangkapan skrin kandungan kilang. Catat nombor yang muncul pada HUD, kluster atau skrin belakang. Pemetaan kamera dan tetapan HUD tidak diubah.\n\nFail: ZeekrShortcutApp/Developer pada storan dipilih.</string>
+    <string name="dev_camera_display_help">Hentikan rakaman dan tutup kamera kilang dahulu.\n\nEksport kamera menyimpan satu imej tanpa pembetulan bagi setiap ID Camera2 yang tersedia, bersama saiz dan ralat. Paparan biasa aplikasi dilepaskan sementara. Aliran kilang peribadi tidak dapat diakses.\n\nPengenalpastian paparan bermula dengan kad besar pada skrin utama. Sahkan kad itu, kemudian uji satu paparan sekunder pada satu masa sehingga 30 saat. Rekod tempat nombor muncul, atau bahawa ia tidak kelihatan. PNG yang dieksport ialah kad yang dijana, bukan tangkapan skrin. Pemetaan kamera dan tetapan HUD tidak diubah.\n\nFail: ZeekrShortcutApp/Developer pada storan dipilih.</string>
     <string name="dev_camera_export">Eksport semua suapan kamera</string>
     <string name="dev_display_identify">Kenal pasti paparan dan eksport kad</string>
     <string name="dev_probe_stop">Henti</string>
@@ -1131,4 +1131,32 @@
     <string name="msg_wait_usb_before_internal">Menunggu USB sehingga 10 saat sebelum menggunakan storan dalaman.</string>
     <string name="record_waiting_usb">Menunggu USB</string>
     <string name="record_cancel_usb_wait">Ketik untuk batal menunggu</string>
+
+    <string name="dev_display_main_title">Semakan skrin utama</string>
+    <string name="dev_display_main_help">Sahkan bahawa kad DISPLAY 0 yang besar di bawah kelihatan sebelum menguji skrin lain.</string>
+    <string name="dev_display_main_confirm">Saya nampak DISPLAY 0</string>
+    <string name="dev_display_main_not_seen">Kad tidak kelihatan</string>
+    <string name="dev_display_choose_title">Pilih paparan untuk diuji</string>
+    <string name="dev_display_choose_help">Uji satu paparan pada satu masa. Nombornya tidak mengenal pasti skrin fizikal. Rekod hanya perkara yang anda nampak.</string>
+    <string name="dev_display_test_target">Uji paparan %1$d · %2$d × %3$d</string>
+    <string name="dev_display_last_result">Pemerhatian terakhir: %1$s</string>
+    <string name="dev_display_no_secondary">Tiada paparan sekunder awam yang dihidupkan tersedia.</string>
+    <string name="dev_display_finish">Selesai dan simpan</string>
+    <string name="dev_display_secondary_title">Periksa skrin lain</string>
+    <string name="dev_display_secondary_help">Cari DISPLAY %1$d pada HUD cermin depan, kluster instrumen atau skrin lain. Pilih tempat kad muncul, atau Tidak kelihatan, kemudian simpan. Halaman ini menunjukkan kawalan, bukan kad sasaran.</string>
+    <string name="dev_display_observation">Di manakah kad muncul?</string>
+    <string name="dev_display_save_observation">Simpan pemerhatian</string>
+    <string name="dev_display_countdown">Masa berbaki: %1$d saat</string>
+    <string name="dev_display_timed_out">Masa tamat; keterlihatan belum disahkan</string>
+    <string name="dev_display_show_failed">Tetingkap tidak dapat dibuka</string>
+    <string name="dev_display_unconfirmed">Keterlihatan belum disahkan</string>
+    <string-array name="dev_display_observations">
+        <item>Pilih pemerhatian</item>
+        <item>HUD cermin depan</item>
+        <item>Kluster instrumen</item>
+        <item>Skrin belakang / penumpang</item>
+        <item>Skrin utama</item>
+        <item>Skrin lain</item>
+        <item>Tidak kelihatan</item>
+    </string-array>
 </resources>

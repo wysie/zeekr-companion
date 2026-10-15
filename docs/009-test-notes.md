@@ -765,3 +765,25 @@ record-button waiting and cancellation with USB absent, settings navigation and
 menu capture. Inspected the new developer row and grey wait state. USB arrival
 and ten-second boundaries/reset are covered by pure state tests; physical 009
 mounting/recording/failover timing remains to be tested.
+
+## Display identification visibility follow-up, 16 October 2026
+
+Owner supplied CameraScan and DisplayTest exports through 2.11.38 and reported no
+numbered card on the windscreen or cluster, and possibly none on the main screen.
+Old reports only establish that Presentation.show returned. The old main marker
+was below the controls in a ScrollView, at most 320×140 pixels, and cleared after
+ten seconds; physical visibility was not established.
+
+The follow-up requires confirmation of a large main-screen marker before any
+secondary test, offers one selected display at a time with a larger 30-second
+marker, and records explicit owner observations separately from Android window
+and layout results. Timeout/cancellation remain unconfirmed. Existing recording,
+factory-camera, screen and lifecycle cancellation rules remain. Vehicle HUD
+visibility still requires an on-car observation; a successful emulator virtual
+display does not establish the physical destination of 009 displays 2 or 3.
+
+Validation for this follow-up: 1,383 JVM tests and debug lint passed. Three native
+Android regressions cover primary-card confirmation/decline, an owned virtual
+secondary display with explicit Not seen, repeated-window cancellation and the
+real 30-second main-card timeout. Main/secondary controls were inspected in day
+and night themes. These are emulator checks, not on-vehicle HUD validation.
