@@ -15,6 +15,29 @@ import org.junit.Test;
  * 没有停的原因，也就没有接回、没有额度。</p>
  */
 public class RecordingStopsTest {
+    @Test public void internalFallbackWaitsForUsbAndFreshRequestsGetAFreshGrace() {
+        RecordingStops.DiskWait wait = new RecordingStops.DiskWait();
+        long began = 100_000L;
+        assertFalse(wait.internalFallbackReady(began));
+        wait.refused(began);
+        assertFalse(wait.internalFallbackReady(began + 9_999L));
+        assertTrue(wait.internalFallbackReady(began + 10_000L));
+        assertEquals(10_000L, wait.ready(began + 10_000L));
+        assertFalse(wait.internalFallbackReady(began + 20_000L));
+        wait.refused(began + 30_000L);
+        wait.cancel();
+        assertFalse(wait.internalFallbackReady(began + 60_000L));
+    }
+
+    @Test public void usbArrivalEndsTheWaitWithoutSpendingTheFallbackGrace() {
+        RecordingStops.DiskWait wait = new RecordingStops.DiskWait();
+        wait.refused(100_000L);
+        assertEquals(2_000L, wait.ready(102_000L));
+        assertFalse(wait.waiting());
+        wait.refused(120_000L);
+        assertFalse(wait.internalFallbackReady(129_999L));
+        assertTrue(wait.internalFallbackReady(130_000L));
+    }
 
     /** 存储一类的整次停照旧自动接回（大纲 §7 第 3 问，2026-10-11）：收拾完、查过盘就重开，不等环视。 */
     @Test

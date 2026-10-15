@@ -1136,4 +1136,9 @@
     <string name="menu_image_rendering">画面与渲染</string>
     <string name="menu_camera_research">相机研究与诊断</string>
     <string name="menu_maintenance">维护</string>
+    <string name="dev_usb_internal_fallback_title">允许回退到内置存储</string>
+    <string name="dev_usb_internal_fallback_summary">默认关闭：等待 U 盘。开启后，开始录制先等 10 秒才允许内置回退；录制中 U 盘失效也允许回退。不搬移正在写入的文件。直接选择内置存储和中转写入为独立选项。</string>
+    <string name="msg_wait_usb_before_internal">正在等待 U 盘，10 秒后才允许使用内置存储。</string>
+    <string name="record_waiting_usb">等待 U 盘</string>
+    <string name="record_cancel_usb_wait">点击取消等待</string>
 </resources>

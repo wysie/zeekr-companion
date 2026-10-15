@@ -47,7 +47,7 @@ import java.util.Locale;
  */
 public final class RecordButtonUi {
 
-    public enum State { IDLE, UNAVAILABLE, PREPARING, RECORDING, WAITING }
+    public enum State { IDLE, UNAVAILABLE, WAITING_STORAGE, PREPARING, RECORDING, WAITING }
 
     private static final long MORPH_MS = 220;
     private static final long PULSE_MS = 600;
@@ -161,11 +161,12 @@ public final class RecordButtonUi {
             hint.setVisibility(next == State.RECORDING || next == State.WAITING ? View.VISIBLE : View.GONE);
         }
         int description = next == State.IDLE ? R.string.record_start
+                : next == State.WAITING_STORAGE ? R.string.record_cancel_usb_wait
                 : next == State.UNAVAILABLE ? R.string.record_unavailable
                 : R.string.record_stop;
         root.setContentDescription(context.getString(description));
         if (dotShape != null) {
-            dotShape.setColor(color(next == State.UNAVAILABLE || next == State.WAITING
+            dotShape.setColor(color(next == State.UNAVAILABLE || next == State.WAITING || next == State.WAITING_STORAGE
                     ? R.color.text_tertiary : R.color.recording));
         }
         switch (next) {
@@ -200,6 +201,7 @@ public final class RecordButtonUi {
                 setDetail(context.getString(R.string.record_waiting_detail));
                 break;
             case UNAVAILABLE:
+            case WAITING_STORAGE:
                 stopPulse();
                 setIndeterminate(false);
                 if (ring != null) {
@@ -207,8 +209,9 @@ public final class RecordButtonUi {
                 }
                 morphTo(0f, animate);
                 backgroundTo(R.color.sunken, animate);
-                setTitle(R.string.record_unavailable);
-                setDetail(context.getString(R.string.record_unavailable_detail));
+                setTitle(next == State.WAITING_STORAGE ? R.string.record_waiting_usb : R.string.record_unavailable);
+                setDetail(context.getString(next == State.WAITING_STORAGE
+                        ? R.string.record_cancel_usb_wait : R.string.record_unavailable_detail));
                 break;
             case IDLE:
             default:

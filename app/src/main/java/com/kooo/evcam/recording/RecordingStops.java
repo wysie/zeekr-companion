@@ -209,6 +209,8 @@ public final class RecordingStops {
         public static final long FAST_EVERY_MS = 2_000L;
         /** 从第一次拒起，查得勤的那一段多长。 */
         public static final long FAST_FOR_MS = 120_000L;
+        /** An explicitly enabled internal fallback still gives USB time to mount first. */
+        public static final long INTERNAL_FALLBACK_GRACE_MS = 10_000L;
 
         /** 这一次等盘从什么时候起（第一次因为盘不能用拒的那一刻，elapsedRealtime）；0 = 没在等盘。 */
         private long since;
@@ -251,6 +253,10 @@ public final class RecordingStops {
         /** 在等盘。 */
         public boolean waiting() {
             return since != 0;
+        }
+
+        public boolean internalFallbackReady(long now) {
+            return since != 0 && now - since >= INTERNAL_FALLBACK_GRACE_MS;
         }
     }
 

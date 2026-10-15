@@ -70,6 +70,7 @@ public class AppConfig {
     private static final String KEY_SIGNAL_SCAN = "signal_scan";                  // 信号普查：挂全部功能号记变化（开发者选项）
     private static final String KEY_SIGNAL_SCAN_SINCE = "signal_scan_since";      // 这一次普查从什么时候开始（墙钟毫秒）
     private static final String KEY_GPU_FISHEYE_PREVIEW = "gpu_fisheye_preview";  // 预览鱼眼校正走 GPU 逐像素（开发者选项）
+    private static final String KEY_USB_INTERNAL_FALLBACK = "usb_internal_fallback";
     private static final String KEY_GPU_FISHEYE_VIDEO = "gpu_fisheye_video";      // 视频回看鱼眼校正走 GPU 逐像素（开发者选项）
     private static final String KEY_CAMERA_HOLDER_SUSPECTS = "camera_holder_suspects";  // 记录可能占用摄像头的应用（开发者选项）
     private static final String KEY_PHOTO_FISHEYE_FOV = "photo_fisheye_fov";      // 图片回看的校正视野
@@ -723,6 +724,7 @@ public class AppConfig {
                 KEY_RAW_FRAME_DUMP,                   // 拍照另存原始整帧 → 关
                 KEY_SIGNAL_SCAN,                      // 信号普查 → 关
                 KEY_GPU_FISHEYE_PREVIEW,              // 预览鱼眼校正走 GPU → 关
+                KEY_USB_INTERNAL_FALLBACK,            // USB loss never implicitly permits internal writes
                 KEY_GPU_FISHEYE_VIDEO,                // 视频回看鱼眼校正走 GPU → 关
                 KEY_CAMERA_HOLDER_SUSPECTS,           // 记录可能占用摄像头的应用 → 关
                 KEY_PHOTO_VIA_JPEG,                   // 拍照使用 JPEG 输出 → 开（关着时主界面在后台拍不到画面）
@@ -1024,6 +1026,15 @@ public class AppConfig {
      */
     public boolean isGpuFisheyePreview() {
         return readBoolean(KEY_GPU_FISHEYE_PREVIEW, false);
+    }
+
+    /** Developer mode alone must not grant internal fallback when USB is selected. */
+    public boolean isUsbInternalFallbackEnabled() {
+        return readBoolean(KEY_USB_INTERNAL_FALLBACK, false);
+    }
+
+    public void setUsbInternalFallbackEnabled(boolean enabled) {
+        prefs.edit().putBoolean(KEY_USB_INTERNAL_FALLBACK, enabled).apply();
     }
 
     public void setGpuFisheyePreview(boolean on) {

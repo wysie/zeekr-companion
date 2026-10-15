@@ -164,7 +164,7 @@ public class StorageHelper {
     
     /**
      * 检测是否发生了U盘回退
-     * 即：用户选择了U盘存储，但U盘不可用 —— 开发者选项开着时实际落在内置存储上，关着时没有地方可存（{@link #footageRoot}）
+     * 即：用户选择了U盘存储，但U盘不可用 —— 显式允许回退时实际落在内置存储上，否则没有地方可存（{@link #footageRoot}）
      * @param context 上下文
      * @return true 如果发生了回退
      */
@@ -427,23 +427,22 @@ public class StorageHelper {
      * 影像（录像、照片）放在哪个盘上 —— 只有这一处决定（项目所有者 2026-10-06：不允许存到内置存储）。
      *
      * <p>规则只有一条：设定的 U 盘；没有 U 盘（或者选的就是内置存储，那只有开发者选得了）时，
-     * 开发者选项开着（{@link #isInternalStorageAllowed}）才落在内置存储上，否则返回 null ——
+     * 只有显式开启 USB 回退（{@link #isUsbInternalFallbackAllowed}）才落在内置存储上，否则返回 null ——
      * 没有地方可存，不退到内置存储。</p>
      *
      * <p>录像、照片、锁定清单、开发者选项里的整帧另存，目录都从这里来，拿到 null 就不写；
      * 开录和拍照之前先问 {@link #isRecordingStorageAvailable}（同一条规则），不录、不拍。
-     * 回放、存储页读的也是这个目录，拿到 null 就是「这里什么都没有」；存在内置存储上的
-     * （开发者选项开着时录、拍的），打开开发者选项照常能看。</p>
+     * 回放、存储页读的也是这个目录，拿到 null 就是「这里什么都没有」；存在内置存储上的影像，可在开发者模式下明确选择内置存储查看。</p>
      */
     private static File footageRoot(Context context, boolean useExternalSd) {
         if (useExternalSd) {
             // U盘的公共目录（U盘/ZeekrShortcutApp/Videos 或 U盘/ZeekrShortcutApp/Photos）
             File sdCardRoot = getExternalSdCardRoot(context);
-            if (sdCardRoot != null) {
+            if (sdCardRoot != null && hasExternalSdCard(context)) {
                 return sdCardRoot;
             }
         }
-        if (!isInternalStorageAllowed()) {
+        if (!(useExternalSd ? isUsbInternalFallbackAllowed(context) : isInternalStorageAllowed())) {
             return null;
         }
         if (useExternalSd) {
@@ -492,29 +491,37 @@ public class StorageHelper {
      * 所以它不是一个弹窗能放行的选择，而是默认就不给。</p>
      *
      * <p>选过的「内置存储」在开发者选项关着时本来就按 U 盘算（{@code AppConfig.getStorageLocation}）；
-     * 这里管的是选 U 盘、盘却不在时，录像、照片能不能退到内置存储上存（{@link #footageRoot}），
+     * USB 缺失时能否回退另由 {@link #isUsbInternalFallbackAllowed} 控制；这里仅管明确选择内置存储，
      * 以及设置里那一项能不能选、录制器换盘时最后一站。</p>
      */
     public static boolean isInternalStorageAllowed() {
         return com.kooo.evcam.settings.DeveloperMode.isUnlocked();
     }
 
+    /** Separate opt-in for missing/unusable USB; explicit Internal storage and relay are independent. */
+    public static boolean isUsbInternalFallbackAllowed(Context context) {
+        return context != null && isInternalStorageAllowed()
+                && new AppConfig(context).isUsbInternalFallbackEnabled();
+    }
+
     /**
-     * 现在有没有地方存录像、照片：有 U 盘，或者开发者选项放行了内置存储（{@link #footageRoot} 的那条规则）。
+     * 现在有没有地方存录像、照片：有可用 U 盘，或者明确选择/允许了内置存储（{@link #footageRoot} 的那条规则）。
      *
      * <p>拒录（{@code RecordingCoordinator}）、拍照入口的拒拍（{@code MultiCameraManager.takePhoto}）
      * 和录制键的「不可用」状态问的是同一件事，所以只有这一处判断 —— 各写一遍，
      * 迟早出现「按钮说能录、按下去说不能」。</p>
      */
     public static boolean isRecordingStorageAvailable(Context context) {
-        return !willRecordToInternal(context) || isInternalStorageAllowed();
+        if (context == null) return false;
+        if (!new AppConfig(context).isUsingExternalSdCard()) return isInternalStorageAllowed();
+        return hasExternalSdCard(context) || isUsbInternalFallbackAllowed(context);
     }
 
     /**
      * 录像实际上会不会落在内置存储上。
      *
      * <p>两种情况都算：选的就是内置存储（开发者选项开着时才算数），或者选了 U 盘但盘不在
-     * （开发者选项开着时会回退到内置，见 {@link #footageRoot}）。</p>
+     * （显式开启 USB 回退时才允许内置，见 {@link #footageRoot}）。</p>
      *
      * <p>后一种尤其值得提醒 —— 用户以为在写 U 盘，实际在写车机闪存，
      * 而这是个不声不响就发生的降级。</p>
@@ -527,7 +534,7 @@ public class StorageHelper {
             return true;
         }
         // 选了 U 盘但盘不在，走的是 footageRoot 里那条回退分支
-        return isSdCardFallback(context);
+        return isSdCardFallback(context) && isUsbInternalFallbackAllowed(context);
     }
 
     public static File getExternalSdCardRoot(Context context) {

@@ -5,6 +5,7 @@ import android.os.Handler;
 import android.os.Looper;
 
 import com.kooo.evcam.AppConfig;
+import com.kooo.evcam.StorageHelper;
 import com.kooo.evcam.AppLog;
 import com.kooo.evcam.CameraForegroundService;
 import com.kooo.evcam.R;
@@ -447,6 +448,10 @@ public final class RecordingCoordinator {
     /** 在等开录：查盘、等 U 盘插上、等上一次停录收拾完、等相机管线建出来。 */
     public boolean isWaiting() {
         return pending != null;
+    }
+
+    public boolean isWaitingForStorage() {
+        return pending != null && diskWait.waiting();
     }
 
     /**
@@ -1183,22 +1188,28 @@ public final class RecordingCoordinator {
         }
         // 正常模式下不往内置存储录：行车记录是一直在写的，而车机闪存换不了。
         // 判断放在这里，所有入口才是同一个答案（以前只有按按钮那条路拦得住）
-        if (!storage.available) {
+        // Recheck the opt-in after the asynchronous snapshot: it may have been revoked meanwhile.
+        if (!storage.available || (storage.sdFellBack && !StorageHelper.isUsbInternalFallbackAllowed(context))) {
             refused(why, context.getString(R.string.msg_refuse_no_external), true);
+            return;
+        }
+        if (storage.sdFellBack && !diskWait.internalFallbackReady(android.os.SystemClock.elapsedRealtime())) {
+            refused(why, context.getString(R.string.msg_wait_usb_before_internal), true);
+            return;
+        }
+        // 开录前先确认写得下：以前不查，盘满时照常开录，第一笔数据写不进去，按钮就卡在「正在准备」
+        if (checkStorage && !ensureRoomToStart(storage, cameras, why)) {
             return;
         }
         // 在等 U 盘的，等到了（项目所有者 2026-10-13「U 盘一可用就开录」）：等了多久写一行。只说盘能用了，不说开录 ——
         // 下面还要查写不写得下（盘满了拒的不进黑匣子），开没开看后面「录像意图开」那一行
         long waitedForDisk = diskWait.ready(android.os.SystemClock.elapsedRealtime());
         if (waitedForDisk >= 0) {
-            BlackBox.noteImportant("U 盘能用了：开录（" + why + "）等了 " + String.format(Locale.US, "%.1f",
+            BlackBox.noteImportant((storage.sdFellBack ? "USB wait expired; opted-in internal fallback: " : "USB ready: ")
+                    + "start (" + why + ") waited " + String.format(Locale.US, "%.1f",
                     waitedForDisk / 1000f) + " 秒（盘不能用时头 " + (RecordingStops.DiskWait.FAST_FOR_MS / 60_000)
                     + " 分钟每 " + (RecordingStops.DiskWait.FAST_EVERY_MS / 1000) + " 秒查一次）；此刻挂着的盘："
                     + storage.mounts);
-        }
-        // 开录前先确认写得下：以前不查，盘满时照常开录，第一笔数据写不进去，按钮就卡在「正在准备」
-        if (checkStorage && !ensureRoomToStart(storage, cameras, why)) {
-            return;
         }
         // 从这里起算「在录」（开录中）：录像意图开了，到这一步才清掉「等」
         lifecycle.begin();
@@ -1320,6 +1331,7 @@ public final class RecordingCoordinator {
      */
     private void refused(Why why, String reason, boolean noDisk) {
         long now = android.os.SystemClock.elapsedRealtime();
+        if (!noDisk) diskWait.cancel();
         if (!(noDisk && diskWait.refused(now))) {
             notifyRefused(reason);
         }
