@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.40-personal-alpha] - 2026-10-16
+
 - Make display identification require a visible main-screen confirmation, test one larger secondary marker at a time for 30 seconds, and export explicit physical-screen observations separately from Android window results.
 - Correct the Storage port note: USB-C for the 009, USB-A for the 7X; remove the blanket Type-C power-loss and USB-A failover claims.
 
