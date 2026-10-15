@@ -380,7 +380,7 @@ PR #17/#19 heads remain unchanged; no owner diagnostics or images are published.
 Release validation: 1,294 JVM tests, signed release assembly and vital release lint pass. Native Camera2 and Presentation behavior remain untested on the car.
 
 
-## Gear/speed gate removal (2026-10-15, vehicle test pending)
+## 2.11.28: gear/speed gate removal (2026-10-15, vehicle test pending)
 
 At the owner's explicit request, remove the P-only/speed restriction from the
 Developer camera scan, display identification, DIY 360 preview and all calibration

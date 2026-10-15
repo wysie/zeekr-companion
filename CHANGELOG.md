@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.28-personal-alpha] - 2026-10-15
+
 - Remove P-only/speed restrictions from developer camera/display tools and DIY 360 preview/calibration; retain factory priority, interface/lifecycle, freshness and resource checks.
 
 ## [2.11.27-personal-alpha] - 2026-10-15
