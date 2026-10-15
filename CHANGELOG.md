@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.29-personal-alpha] - 2026-10-15
+
 - Follow Android system day/night mode for side-camera popup controls, arrow badges and camera labels, including Super mirror and theme changes while open; retain dark-backed HUD badges.
 
 ## [2.11.28-personal-alpha] - 2026-10-15

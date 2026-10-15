@@ -398,7 +398,7 @@ page and screen-off still cancel/hide as appropriate. No change was made to
 firmware behavior or the app's general foreground/background lifecycle.
 
 
-## System-theme camera controls (vehicle check pending)
+## 2.11.29: system-theme camera controls (vehicle check pending)
 
 The owner's factory screenshots show light popup controls in the light system UI
 and dark controls in the dark UI. The fork used fixed dark control, label and
