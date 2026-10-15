@@ -28,6 +28,7 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/vehicle-name-labels` | Cosmetic Auto/009/7X vehicle names, conservative Android-name detection and generic fallback; camera profile IDs and HUD mapping stay independent |
 | `feature/side-view-system-theme` | System day/night styling for popup and mirror controls/labels, with live configuration repaint and retained HUD backing |
 | `feature/side-view-mirroring` | Fork side-camera horizontal flip, including mirror replacement; existing PR heads preserved |
+| `integration/upstream-2.11.6` | Upstream camera closure ordering and diagnostic updates, retaining optional fork outputs and original contribution heads |
 | `integration/upstream-about` | Upstream 2.11.4 integration and fork-only About attribution; existing PR heads preserved |
 | `review/project-safety` | Whole-project audit and recording, storage, sharing, update, privacy and lifecycle corrections; based on combined main |
 | `feature/diy-360-safety` | Camera safety review fixes: readback validation and shared stale-frame guards; based on main |

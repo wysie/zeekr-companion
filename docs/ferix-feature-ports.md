@@ -42,3 +42,21 @@ Ported from Ferix PR #14, implementation becbfe10c6c9c1ebd1840245d68791c051c96c6
 The port keeps current ChannelScheduler declarations, an independent SIDE_HUD output/holder, factory-camera priority, screen mirror replacement, labels, rotation, framing protection, close/reset behavior and recording. HUD output shares the current preview stream and yields first on session failure; it does not use the source's obsolete direct camera-open/rebuild calls. Screen is the default output; HUD mirroring defaults on and screen mirroring off.
 
 Display matching requires a public presentation-capable, on display identified by the known 7X size or a HUD name, excludes the primary display and instrument cluster, and rejects ambiguous candidates. The source's id-3 fallback is deliberately omitted because display IDs on the 009 have not been identified. Diagnostics report the inventory and selection. Unavailable/failed HUD output falls back to current screen behavior. No 009 HUD has been tested.
+
+
+## Public source recheck — 2026-10-15
+
+The old `FerixzTanz/CAMCORDER` URL no longer resolves. GitHub currently lists
+[FerixzTanz/zeekr-shortcut-car](https://github.com/FerixzTanz/zeekr-shortcut-car)
+with main at `8993f37fd538901e3d80719d1b83997c9e1de12f`, an ancestor of dts88 main.
+Its public `turn-signal-side-view`, `ui-details` and
+`claude/compassionate-goldwasser-1ff252` branches contain no newer feature work
+than the side-camera and upstream UI/GPU work already included in this fork.
+The current repository has no listed pull requests. This does not establish
+whether unavailable/private work exists.
+
+The last fetched CAMCORDER main, `f93ad7d` (2.12.0), is retained locally as
+`archive/ferix-camcorder-2.12.0`; its HUD implementation and token correction
+were already adapted here. No additional Ferix code was imported in the
+upstream 2.11.6 integration. Historical source URLs and hashes remain in NOTICE
+for attribution even where the original repository is unavailable.

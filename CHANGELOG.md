@@ -11,6 +11,11 @@ commit message, not here.
 
 Nothing yet.
 
+## [2.11.34-personal-alpha] - 2026-10-15
+
+- Merge dts88 2.11.6-alpha: briefly release surround before planned cabin closure to avoid longer surround stalls, then reopen requested outputs.
+- Include upstream cabin-close coupling, camera history and frame-failure diagnostics while retaining fork recording, developer exports, side/HUD and 360 outputs.
+
 ## [2.11.33-personal-alpha] - 2026-10-15
 
 - Add a dedicated 360° camera settings section and an independent draggable/resizable popup with expand/close, saved layout, shared calibration/quality and stitched photos.
@@ -122,6 +127,19 @@ Nothing yet.
   under Settings → Blind spot camera; adjustable speed threshold, field of view, aim and placement.
 - With Super mirror on, signalling temporarily switches its existing window to the side camera;
   afterwards it restores the previous camera, framing and position, including a docked window.
+## [2.11.6-alpha] - 2026-10-15
+
+- When the cabin cameras are released while the surround view is open, the surround view now closes briefly first and reopens after the cabins have closed.
+- Diagnostics: the report counts these surround view reopens.
+
+## [2.11.5-alpha] - 2026-10-15
+
+- Diagnostics only; camera behaviour unchanged.
+- A camera session where the camera never started a frame is labelled as a camera-side failure.
+- Each cabin close while the surround view is open is logged with the surround view's last frame and re-checked after 1 and 30 seconds.
+- The report shows how many times each camera was opened since the head unit last reset it, and the surround view's side of cabin closes.
+- Keeps the last stall reports; logs the first run after an install.
+
 
 ## [2.11.4-alpha] - 2026-10-14
 

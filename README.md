@@ -9,7 +9,7 @@ and license details are in [NOTICE.md](NOTICE.md).
 
 Special thanks to [FerixzTanz (Felix Tan)](https://github.com/FerixzTanz) for
 [the original turn-signal side-camera implementation](https://github.com/dts88/zeekr-shortcut-car/pull/4)
-and the features ported from his [CAMCORDER project](https://github.com/FerixzTanz/CAMCORDER).
+and the features ported from his [former CAMCORDER project](https://github.com/FerixzTanz/zeekr-shortcut-car).
 Our side-camera work builds on his contribution; phone sharing, signal scanning,
 hard-braking locks, clip export, driver recording, turn arrows and UI refinements
 also include his project's work. Original authorship and source links are retained
@@ -25,9 +25,13 @@ The in-app About page identifies wysie’s fork and links separately to this for
 dts88’s original project and Ferix’s CAMCORDER contributions. Its optional PayNow
 tip, **9271 6786**, goes to **dts88, the original author**.
 
-The combined fork includes upstream **2.11.4-alpha** (`e4d0e0d`), including cabin
+The combined fork includes upstream **2.11.6-alpha** (`c448fec`), including cabin
 camera recovery, serialized camera actions, scheduler-managed photos/exit and
-camera step diagnostics. `upstream-main` tracks that unmodified source; personal
+camera step diagnostics. Planned cabin-camera closure now briefly closes the
+surround camera first, then reopens it if still requested. Upstream reports about
+0.5–1 second of surround interruption, a new recording segment and a brief mirror
+interruption; timing on the 009 remains unverified. Diagnostics now include cabin-close
+coupling, persisted camera history and capture-failure/buffer-loss details. `upstream-main` tracks that unmodified source; personal
 release numbers remain independent of upstream.
 
 ## Additions in this fork
@@ -64,7 +68,11 @@ release numbers remain independent of upstream.
 - **Optional camera labels:** identify the displayed camera in Super mirror and
   the side window. Super mirror also has a defaults reset.
 
-The following additions are adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER), with source credit in [NOTICE.md](NOTICE.md):
+The following additions were adapted from FerixzTanz's former CAMCORDER repository,
+with source credit in [NOTICE.md](NOTICE.md). As checked on 2026-10-15, the old URL
+is unavailable; his currently public [zeekr-shortcut-car fork](https://github.com/FerixzTanz/zeekr-shortcut-car)
+has no additional feature changes beyond the work already incorporated here.
+Historical source commits are recorded in [port notes](docs/ferix-feature-ports.md).
 
 - **Phone sharing fixes and diagnostics:** reachable network addresses, transfer status and HEAD/compression fixes. Android timeout reports still need device verification.
 - **Read-only vehicle signal scanner:** an opt-in Developer option for finding unmapped signals, including possible blind-spot warnings; automatically stops after three hours or when Developer options are locked.

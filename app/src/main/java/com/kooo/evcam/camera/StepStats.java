@@ -11,14 +11,17 @@ import java.util.function.Function;
  * 相机步骤统计（项目所有者 2026-10-14：「识别前后座舱摄像头被卡住的原因或者统计」，2.11.4 R2）：调度每结束一步记一条
  * （{@link Entry}，一行文字，存在应用目录里，最近 {@link #MAX} 条，跨进程留着 —— {@code StepLog}），诊断报告
  * 「2.3.3 相机步骤统计」照它分组数（{@link #tally}、{@link #groupBy}、{@link #cabinClosesBySurround}）。
+ * 2.11.5 起还记关座舱时环视那一条（{@link Move#COUPLE}，{@link #surroundAfterCloses}）、丢了之后那一次关和救援重开时关旧设备
+ * （{@link CloseKind}）、环视那一台是车机重新初始化后第几台（{@link #lineageBucket}）。2.11.6 起关座舱前先关环视之后环视开回来的那一步
+ * 带着那一趟（{@link Entry#surroundFirstMs}，{@link #surroundFirstReopens}）。
  *
  * <h3>为什么</h3>
  *
  * <p>2.11 以来座舱开了 40 次、2 次 15 秒没画面（都是后座舱、都是哨兵开着），环视 18 次里 3 次（都是哨兵关着）。
  * 哨兵、主界面在不在前、离我们上一次关它多久、是不是车机刚放开它，样本太少又互相纠缠，每一次都是事后从几份黑匣子里拼出来的，
  * 拼错过（9 次「不知道」其实都是哨兵关）。这里每一步当场记下结果和那一刻的这几样，报告里直接分组数：哪一种情形下没画面多，
- * 一眼看得出来，样本攒够了再谈原因。备选方案「关座舱时先短暂关环视」要比的（座舱关的时候环视在不在出画面，关得慢不慢、
- * 之后那一次开有没有画面）也在这里（R3，只记录）。</p>
+ * 一眼看得出来，样本攒够了再谈原因。「关座舱时先短暂关环视」要比的（座舱关的时候环视在不在出画面，关得慢不慢、
+ * 之后那一次开有没有画面）也在这里（R3；2.11.6 起照做，项目所有者 2026-10-15 定，环视关着那一组从此有了数）。</p>
  *
  * <p>只用 ASCII 的「键=值」，空格分开；读不懂的键跳过、坏行整行跳过：以后加字段，旧的行照样读。纯 Java（{@code StepStatsTest}），
  * 不写中文 —— 句子在 DiagnosticsCollector 里拼。</p>
@@ -31,19 +34,40 @@ public final class StepStats {
     /** 「关得慢」：超过这么久。 */
     public static final long SLOW_CLOSE_MS = 1_000L;
 
+    /**
+     * 关座舱之后环视「断了」：关完 30 秒里最长断帧到这么久（{@link Move#COUPLE}，2.11.5 第 D3 项）。平常关座舱时环视断帧不到 0.2 秒；
+     * 断了的那几次（10-13 23:59、10-14 21:52）都是 8 秒以上、救援接手。1 秒在两者之间，断了多久照记。
+     */
+    public static final long SURROUND_STALL_MS = 1_000L;
+
     /** 行首的版本记号。 */
     static final String VERSION = "v1";
 
     private StepStats() {
     }
 
-    /** 哪一种动作：开、救援里的重开、救援里的重建、改输出、关。 */
+    /**
+     * 哪一种动作：开、救援里的重开、救援里的重建、改输出、关；再加关座舱时环视那一条（{@link #COUPLE}：不是一步，
+     * 是一次关座舱、环视开着，关完 30 秒量的环视；{@link Entry#key} 是环视，{@link Entry#ms} 是那 30 秒里环视最长断帧）。
+     */
     public enum Move {
         OPEN,
         REOPEN,
         REBUILD,
         APPLY,
-        CLOSE
+        CLOSE,
+        COUPLE
+    }
+
+    /**
+     * 关的是哪一种（{@link Entry#closeKind}，2.11.5 第 D3 项）：没有这一项的是计划里的关（没人要、保持到点、熄屏放开、熄屏、车机要睡、退出）。
+     * 这两种以前不进统计 —— 救环视时关旧设备卡 4.5–5.8 秒、丢了之后那一次关卡 5–8 秒，统计里一次都看不到。
+     */
+    public enum CloseKind {
+        /** 丢了之后那一次关（被断开 —— 车机拿走 —— 或者报错）。 */
+        LOSS,
+        /** 救援重开时关旧设备。 */
+        REOPEN
     }
 
     /** 结果。 */
@@ -57,7 +81,11 @@ public final class StepStats {
         /** 关完了（{@link Entry#ms} 是关了多久）。 */
         CLOSED,
         /** 关到点还没关完。 */
-        CLOSE_TIMED_OUT
+        CLOSE_TIMED_OUT,
+        /** 关座舱时环视那一条：关完 30 秒里环视没断（最长断帧不到 {@link #SURROUND_STALL_MS}）。 */
+        STEADY,
+        /** 关座舱时环视那一条：环视断了（{@link Entry#ms} 是断了多久；我们中途救了它的，量到救那一刻）。 */
+        STALLED
     }
 
     /** 一步。数都是毫秒；-1 = 没有 / 不知道。 */
@@ -106,6 +134,34 @@ public final class StepStats {
         /** 这一步里环视最长断帧、会话动没动（1 / 0 / -1）：关座舱那一步才量。 */
         public final long surroundGapMs;
         public final int surroundChanged;
+        /** 关的是哪一种（{@link CloseKind}）；计划里的关、别的动作是 null。 */
+        public final CloseKind closeKind;
+        /**
+         * 环视那一台是车机重新初始化后第几台（2.11.5 第 D1 项）：环视自己开的那一步是这一步开的那一台，座舱的一步、关座舱时环视那一条是
+         * 那时开着的环视；-1 = 不知道。{@link #lineageReset} 是那一台开的时候上一次重置（{@code BOOT}、{@code TAKEN}、{@code CAME_BACK}），
+         * null = 从记录开始数的（第几台不可信）。
+         */
+        public final int lineage;
+        public final String lineageReset;
+        /** 关座舱时环视那一条：关的几路（{@code left,back}）、为什么关（{@code DARK_RELEASE}，丢了的写丢的那一下）。 */
+        public final String closedKeys;
+        public final String closeWhy;
+        /** 关座舱时环视那一条：环视最后一帧比关完晚多少毫秒（负数 = 关完之前就停了，量的是关完 30 秒那一刻）；{@link Long#MIN_VALUE} = 不知道。 */
+        public final long lastResultMs;
+        /** 关座舱时环视那一条：关完 1 秒那一次看，关完以后环视出没出过画面（1 / 0 / -1）。 */
+        public final int deliveredAfter;
+        /** 关座舱时环视那一条：那 30 秒里我们自己动了环视（{@code RESCUE}、{@code CLOSE}…），量到那一刻（开始关以后多少毫秒）；没有是 null / -1。 */
+        public final String ours;
+        public final long oursAtMs;
+        /** 点火此刻的样子（{@code ACC}、{@code ON}、{@code DRIVING}，认不出的写十六进制）；读不到是 null。 */
+        public final String ignition;
+        /**
+         * 关座舱前先关环视之后环视开回来的那一步（2.11.6，{@link #surroundFirstReopens}）：从开始关环视到这一步开始多久；
+         * 别的步是 -1。环视断了多久 = 它 + 出画面用的时间（{@link #surroundFirstGapMs}）。
+         */
+        public final long surroundFirstMs;
+        /** 同上：那一趟里座舱那一步关了多久（最慢的一路；到点没关完是那一步的封顶）；座舱没关、别的步是 -1。 */
+        public final long surroundFirstCabinMs;
 
         public Entry(Builder b) {
             this.at = b.at;
@@ -137,6 +193,42 @@ public final class StepStats {
             this.surround = b.surround;
             this.surroundGapMs = b.surroundGapMs;
             this.surroundChanged = b.surroundChanged;
+            this.closeKind = b.closeKind;
+            this.lineage = b.lineage;
+            this.lineageReset = b.lineageReset;
+            this.closedKeys = b.closedKeys;
+            this.closeWhy = b.closeWhy;
+            this.lastResultMs = b.lastResultMs;
+            this.deliveredAfter = b.deliveredAfter;
+            this.ours = b.ours;
+            this.oursAtMs = b.oursAtMs;
+            this.ignition = b.ignition;
+            this.surroundFirstMs = b.surroundFirstMs;
+            this.surroundFirstCabinMs = b.surroundFirstCabinMs;
+        }
+
+        /** 这一步是关座舱前先关环视之后环视开回来的那一步（2.11.6）。 */
+        public boolean afterSurroundFirst() {
+            return surroundFirstMs >= 0;
+        }
+
+        /** 关座舱前先关环视那一趟环视断了多久（从开始关环视到它又出画面）；不是那一步、开回来没出画面是 -1。 */
+        public long surroundFirstGapMs() {
+            return afterSurroundFirst() && result == Result.FRAMED && ms >= 0 ? surroundFirstMs + ms : -1;
+        }
+
+        /**
+         * 配好以来相机回了什么算哪一种（{@link SessionCounts.Kind} 的名字）：照存下的数按今天的规矩重算（{@link SessionCounts#classify}，
+         * 2.11.5 第 D0 项 —— 2.11.4 存下的「我们的输出接不住」有几条其实是 HAL 一帧没开始），存下的数不全的照存下的名字；没有是 null。
+         */
+        public String kind() {
+            if (counts == null || "NOT_CONFIGURED".equals(counts)) {
+                return counts;
+            }
+            if (starts < 0 || results < 0 || failures < 0 || lost < 0) {
+                return counts;
+            }
+            return SessionCounts.classify(true, starts, results, failures, lost).name();
         }
 
         /** 是不是开设备的那一种（开、重开）。 */
@@ -178,6 +270,20 @@ public final class StepStats {
             put(sb, "sur", surround);
             put(sb, "sg", surroundGapMs);
             put(sb, "sc", surroundChanged);
+            put(sb, "ck", closeKind == null ? null : closeKind.name());
+            put(sb, "sl", lineage);
+            put(sb, "slr", lineageReset);
+            put(sb, "cc", closedKeys);
+            put(sb, "cw", closeWhy);
+            if (lastResultMs != Long.MIN_VALUE) {
+                sb.append(" lr=").append(lastResultMs);
+            }
+            put(sb, "a1", deliveredAfter);
+            put(sb, "our", ours);
+            put(sb, "ourms", oursAtMs);
+            put(sb, "ign", ignition);
+            put(sb, "sfs", surroundFirstMs);
+            put(sb, "sfc", surroundFirstCabinMs);
             return sb.toString();
         }
 
@@ -225,6 +331,18 @@ public final class StepStats {
         String surround;
         long surroundGapMs = -1;
         int surroundChanged = -1;
+        CloseKind closeKind;
+        int lineage = -1;
+        String lineageReset;
+        String closedKeys;
+        String closeWhy;
+        long lastResultMs = Long.MIN_VALUE;
+        int deliveredAfter = -1;
+        String ours;
+        long oursAtMs = -1;
+        String ignition;
+        long surroundFirstMs = -1;
+        long surroundFirstCabinMs = -1;
 
         public Builder step(long at, String key, String cameraId, Move move, Result result, long ms) {
             this.at = at;
@@ -302,6 +420,48 @@ public final class StepStats {
             return this;
         }
 
+        public Builder closeKind(CloseKind kind) {
+            this.closeKind = kind;
+            return this;
+        }
+
+        /** 环视那一台是第几台（0 及以下 = 不知道，不写）、那一台开的时候上一次重置（null = 从记录开始数的）。 */
+        public Builder lineage(int ordinal, String reset) {
+            this.lineage = ordinal > 0 ? ordinal : -1;
+            this.lineageReset = ordinal > 0 ? reset : null;
+            return this;
+        }
+
+        /**
+         * 关座舱时环视那一条（{@link Move#COUPLE}）：关的几路、为什么关、环视最后一帧比关完晚多少（{@link Long#MIN_VALUE} 不知道）、
+         * 关完 1 秒那一次看到的（1 / 0 / -1）、我们中途动了环视的那一步和它的时刻（没有是 null / -1）。
+         */
+        public Builder coupling(List<String> closed, String why, long lastResultMs, int deliveredAfter, String ours,
+                                long oursAtMs) {
+            this.closedKeys = closed == null || closed.isEmpty() ? null : String.join(",", closed);
+            this.closeWhy = why;
+            this.lastResultMs = lastResultMs;
+            this.deliveredAfter = deliveredAfter;
+            this.ours = ours;
+            this.oursAtMs = ours == null ? -1 : oursAtMs;
+            return this;
+        }
+
+        public Builder ignition(String ignition) {
+            this.ignition = ignition;
+            return this;
+        }
+
+        /**
+         * 关座舱前先关环视之后环视开回来的那一步（2.11.6）：从开始关环视到这一步开始多久、座舱那一步关了多久；不是那一步都给 -1。
+         * 开始那一刻不知道（负数）的不记，座舱那一项也跟着不记。
+         */
+        public Builder surroundFirst(long startMs, long cabinMs) {
+            this.surroundFirstMs = startMs >= 0 ? startMs : -1;
+            this.surroundFirstCabinMs = startMs >= 0 && cabinMs >= 0 ? cabinMs : -1;
+            return this;
+        }
+
         public Entry build() {
             return new Entry(this);
         }
@@ -359,6 +519,20 @@ public final class StepStats {
             b.surround = values.get("sur");
             b.surroundGapMs = number(values, "sg");
             b.surroundChanged = (int) number(values, "sc");
+            String closeKind = values.get("ck");
+            b.closeKind = closeKind == null ? null : CloseKind.valueOf(closeKind);
+            b.lineage = (int) number(values, "sl");
+            b.lineageReset = values.get("slr");
+            b.closedKeys = values.get("cc");
+            b.closeWhy = values.get("cw");
+            String lastResult = values.get("lr");
+            b.lastResultMs = lastResult == null ? Long.MIN_VALUE : Long.parseLong(lastResult);
+            b.deliveredAfter = (int) number(values, "a1");
+            b.ours = values.get("our");
+            b.oursAtMs = number(values, "ourms");
+            b.ignition = values.get("ign");
+            b.surroundFirstMs = number(values, "sfs");
+            b.surroundFirstCabinMs = number(values, "sfc");
         } catch (IllegalArgumentException e) {
             return null;   // 名字认不出（以后的版本加了新的动作 / 结果）、数坏了：整行不要
         }
@@ -451,9 +625,28 @@ public final class StepStats {
         return groups;
     }
 
-    /** 相机、动作：{@code back OPEN}。 */
+    /** 相机、动作：{@code back OPEN}；丢了之后那一次关、救援重开时关旧设备单算一组：{@code front CLOSE:REOPEN}。 */
     public static String laneMove(Entry e) {
-        return e.key + " " + e.move.name();
+        return e.key + " " + e.move.name() + (e.closeKind == null ? "" : ":" + e.closeKind.name());
+    }
+
+    /** 一步（开、救、改、关）；关座舱时环视那一条（{@link Move#COUPLE}）不是。 */
+    public static boolean isStep(Entry e) {
+        return e.move != Move.COUPLE;
+    }
+
+    /**
+     * 环视那一台是不是车机重新初始化后的第一台（2.11.5 第 D1 项）：{@code lineage:first}、{@code lineage:later}；
+     * 第几台是从记录开始数的（没见过重置）{@code lineage:?}；这一条没有环视那一台（环视关着、2.11.5 之前记的）是 null，不算进哪一组。
+     */
+    public static String lineageBucket(Entry e) {
+        if (e.lineage <= 0) {
+            return null;
+        }
+        if (e.lineageReset == null) {
+            return "lineage:?";
+        }
+        return e.lineage == 1 ? "lineage:first" : "lineage:later";
     }
 
     /** 哨兵模式：{@code sentry:0}、{@code sentry:1}、{@code sentry:2}，读不到 {@code sentry:?}。 */
@@ -471,6 +664,7 @@ public final class StepStats {
      * 这一次进程里没关过 {@code close:none}。
      */
     public static String sinceCloseBucket(Entry e) {
+        // 2.11.5 起「我们上一次关它」跨进程算（同一次开机里，CameraHistory）：close:none 是没有关过它的记录
         long ms = e.sinceCloseMs;
         if (ms < 0) {
             return "close:none";
@@ -507,7 +701,7 @@ public final class StepStats {
         return CameraSlots.KEY_CABIN_FRONT.equals(e.key) ? 2 : 3;
     }
 
-    /** 关座舱时环视那一组的比较（R3：关座舱时先短暂关环视，备选方案之一，只记录）。 */
+    /** 关座舱时环视那一组的比较（R3：关座舱时先短暂关环视；2.11.6 起照做，用不了相机时、计划外的关照旧在环视旁边关）。 */
     public static final class CloseComparison {
         /** 这一组座舱关的那几步。 */
         public final List<Entry> closes = new ArrayList<>();
@@ -525,7 +719,8 @@ public final class StepStats {
         Map<String, CloseComparison> groups = new LinkedHashMap<>();
         for (int i = 0; i < entries.size(); i++) {
             Entry e = entries.get(i);
-            if (e.move != Move.CLOSE || CameraSlots.KEY_SURROUND.equals(e.key)) {
+            // 只比计划里的关：丢了之后那一次关、救援重开时关旧设备（2.11.5 起也记）不是这个方案会动的那一种
+            if (e.move != Move.CLOSE || e.closeKind != null || CameraSlots.KEY_SURROUND.equals(e.key)) {
                 continue;
             }
             String group = e.surround == null ? "?" : e.surround;
@@ -553,6 +748,94 @@ public final class StepStats {
             }
         }
         return groups;
+    }
+
+    /** 关座舱之后环视那一组（{@link #surroundAfterCloses}）：几次关座舱、环视断了几次、断得最长的那一次多久。 */
+    public static final class SurroundAfterClose {
+        public int closes;
+        public int stalled;
+        /** 断了的那几次里最长的；没断过是 -1。 */
+        public long longestMs = -1;
+    }
+
+    /**
+     * 关座舱时环视那几条（{@link Move#COUPLE}）数一组：几次、环视关完 30 秒里断了几次（{@link Result#STALLED}）、最长的那一次多久
+     * （项目所有者 2026-10-15 批准，2.11.5 第 D3 项：备选方案「关座舱时先短暂关环视」要比的那一边 —— 以前只数座舱下一次开，看不见环视）。
+     * 别的条跳过。
+     */
+    public static SurroundAfterClose surroundAfterCloses(List<Entry> entries) {
+        SurroundAfterClose t = new SurroundAfterClose();
+        for (Entry e : entries) {
+            if (e.move != Move.COUPLE) {
+                continue;
+            }
+            t.closes++;
+            if (e.result == Result.STALLED) {
+                t.stalled++;
+                t.longestMs = Math.max(t.longestMs, e.ms);
+            }
+        }
+        return t;
+    }
+
+    /**
+     * 关座舱前先关环视之后环视开回来的那几次（{@link #surroundFirstReopens}，2.11.6）：几次、出画面 / 没画面 / 出错；出画面用了多久、
+     * 环视断了多久（从开始关环视到它又出画面）的中位、最长；中间座舱那一步关得慢（超过 {@link #SLOW_CLOSE_MS}）的几次、其中开回来没出画面的几次。
+     */
+    public static final class SurroundFirstReopens {
+        public int count;
+        public int framed;
+        public int noFrames;
+        public int errors;
+        /** 出了画面的那几次：开回来出第一帧用了多久、环视断了多久；没有是 -1。 */
+        public long frameMedianMs = -1;
+        public long frameMaxMs = -1;
+        public long gapMedianMs = -1;
+        public long gapMaxMs = -1;
+        /** 中间座舱那一步关得慢的几次；其中开回来没出画面（没画面、出错）的几次。 */
+        public int slowCabins;
+        public int slowCabinsDark;
+    }
+
+    /**
+     * 关座舱前先关环视之后环视开回来的那几步数一组（项目所有者 2026-10-15 定，2.11.6）：这条规矩的代价（环视断了多久）和风险
+     * （开回来没画面 —— 座舱关卡住之后紧接着开环视以前 2 次都黑了，看中间座舱那一步关得慢不慢）都在这里。别的条跳过。
+     */
+    public static SurroundFirstReopens surroundFirstReopens(List<Entry> entries) {
+        SurroundFirstReopens t = new SurroundFirstReopens();
+        List<Long> frames = new ArrayList<>();
+        List<Long> gaps = new ArrayList<>();
+        for (Entry e : entries) {
+            if (!e.afterSurroundFirst()) {
+                continue;
+            }
+            t.count++;
+            boolean framed = e.result == Result.FRAMED;
+            if (framed) {
+                t.framed++;
+                frames.add(e.ms);
+                gaps.add(e.surroundFirstGapMs());
+            } else if (e.result == Result.NO_FRAMES) {
+                t.noFrames++;
+            } else if (e.result == Result.ERROR) {
+                t.errors++;
+            }
+            if (e.surroundFirstCabinMs > SLOW_CLOSE_MS) {
+                t.slowCabins++;
+                if (!framed) {
+                    t.slowCabinsDark++;
+                }
+            }
+        }
+        if (!frames.isEmpty()) {
+            Collections.sort(frames);
+            Collections.sort(gaps);
+            t.frameMedianMs = frames.get((frames.size() - 1) / 2);
+            t.frameMaxMs = frames.get(frames.size() - 1);
+            t.gapMedianMs = gaps.get((gaps.size() - 1) / 2);
+            t.gapMaxMs = gaps.get(gaps.size() - 1);
+        }
+        return t;
     }
 
     /** 值里不许有空格和等号（读的时候按它们切）：换成下划线。 */

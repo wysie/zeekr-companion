@@ -105,12 +105,68 @@ public class DiagnosticsCollectorTest {
         assertTrue("最近的在前", text.indexOf("前座舱 开 → 出画面") < text.indexOf("后座舱 关 → 关了"));
     }
 
+    /**
+     * 2.11.5（项目所有者 2026-10-15 批准，第 D0、D1、D3 项）：关座舱时环视那一条单独数（不算步数），按环视是不是第一台、主界面在不在前分开；
+     * 丢了之后那一次关单算一行；存下的「我们的输出接不住」里开始 0 的照今天的规矩写成 HAL 只回了错误；环视那一台是第几台写在那一步后面。
+     */
+    @Test
+    public void stepStatisticsSplitTheSurroundSideByLineageAndMainScreen() {
+        java.util.List<com.kooo.evcam.camera.StepStats.Entry> entries = java.util.Arrays.asList(
+                com.kooo.evcam.camera.StepStats.parse("v1 t=1000 k=front c=2 m=OPEN r=NO_FRAMES ms=15000"
+                        + " cnt=STARVING st=0 res=0 fail=2 lost=1 sl=5 slr=CAME_BACK"),
+                com.kooo.evcam.camera.StepStats.parse("v1 t=2000 k=front c=2 m=CLOSE r=CLOSED ms=5798 ck=LOSS err=DEVICE_ERROR:4"),
+                com.kooo.evcam.camera.StepStats.parse("v1 t=3000 k=front c=2 m=COUPLE r=STALLED ms=8121 fg=0 sl=5"
+                        + " slr=CAME_BACK cc=back,left cw=DARK_RELEASE lr=-35 a1=0 our=RESCUE ourms=8100 ign=ACC"),
+                com.kooo.evcam.camera.StepStats.parse("v1 t=4000 k=front c=2 m=COUPLE r=STEADY ms=100 fg=0 sl=1"
+                        + " slr=TAKEN cc=back,left cw=DARK_RELEASE lr=29900 a1=1"));
+        String text = DiagnosticsCollector.stepStatsText(entries);
+        assertTrue(text, text.startsWith("最近 2 步（最多 200 步，跨进程留着）："));
+        assertTrue(text, text.contains("  环视 关（丢了之后）：1 次：关 1 次，用时中位 5.8 秒、最长 5.8 秒，超过 1 秒 1 次\n"));
+        assertTrue(text, text.contains("  环视 开 · 环视不是第一台：1 次：出画面 0、没画面 1、出错 0\n"));
+        assertTrue(text, text.contains("    一共：2 次：断了 1 次，最长 8.1 秒\n"));
+        assertTrue(text, text.contains("    环视不是第一台 · 主界面在后台：1 次：断了 1 次，最长 8.1 秒\n"));
+        assertTrue(text, text.contains("    环视是车机重新初始化后的第一台 · 主界面在后台：1 次：断了 0 次\n"));
+        assertTrue(text, text.contains("环视 开 → 15 秒没画面（相机 HAL 没出过一帧，只回了错误（失败 2、丢缓冲 1）：开始 0、结果 0、失败 2、丢缓冲 1）"));
+        assertTrue(text, text.contains("、环视第 5 台（重置：它在相机服务里没了又回来）"));
+        assertTrue(text, text.contains("关座舱时环视最近 10 次（新的在前）：\n"));
+        assertTrue(text, text.contains("关 前座舱、后座舱（DARK_RELEASE）：环视断了 8.1 秒（只量到关开始后第 8.1 秒：那时我们在救它）"
+                + "；最后一帧在关完前 35 ms；关完 1 秒后没出过画面；环视第 5 台（重置：它在相机服务里没了又回来）；主界面后台；点火 ACC"));
+        assertTrue("新的在前", text.indexOf("环视没断（最长断帧 0.1 秒）") < text.indexOf("环视断了 8.1 秒（"));
+        assertFalse("关座舱时环视那一条不进最近 30 步", text.substring(text.indexOf("最近 30 步"),
+                text.indexOf("关座舱时环视最近 10 次")).contains("关座舱时"));
+    }
+
+    /**
+     * 2.11.6（项目所有者 2026-10-15 定：关座舱前先关环视）：环视开回来的那几次单独一组 —— 出画面 / 没画面 / 出错、出画面用时、环视断了多久、
+     * 中间座舱关得慢的几次；那一步自己那一行带着这一趟。座舱的关记「环视关着」，进「关座舱时先短暂关环视」那一组。没有的时候也有一句。
+     */
+    @Test
+    public void stepStatisticsCountTheSurroundFirstReopens() {
+        java.util.List<com.kooo.evcam.camera.StepStats.Entry> none = java.util.Collections.singletonList(
+                com.kooo.evcam.camera.StepStats.parse("v1 t=1000 k=left c=1 m=CLOSE r=CLOSED ms=220 sur=STREAMING"));
+        String empty = DiagnosticsCollector.stepStatsText(none);
+        assertTrue(empty, empty.contains("  关座舱前先关环视之后环视开回来（2.11.6 起）：还没有\n"));
+        java.util.List<com.kooo.evcam.camera.StepStats.Entry> entries = java.util.Arrays.asList(
+                com.kooo.evcam.camera.StepStats.parse("v1 t=1000 k=front c=2 m=CLOSE r=CLOSED ms=150"),
+                com.kooo.evcam.camera.StepStats.parse("v1 t=1100 k=left c=1 m=CLOSE r=CLOSED ms=140 sur=CLOSED"),
+                com.kooo.evcam.camera.StepStats.parse("v1 t=1200 k=front c=2 m=OPEN r=FRAMED ms=230 sfs=290 sfc=140"),
+                com.kooo.evcam.camera.StepStats.parse(
+                        "v1 t=2000 k=front c=2 m=OPEN r=NO_FRAMES ms=15000 sfs=6500 sfc=6200"));
+        String text = DiagnosticsCollector.stepStatsText(entries);
+        assertTrue(text, text.contains("  关座舱前先关环视之后环视开回来（2.11.6 起）：2 次：出画面 1、没画面 1、出错 0"
+                + "；出画面用时中位 0.2 秒、最长 0.2 秒；环视断了（从开始关环视到又出画面）中位 0.5 秒、最长 0.5 秒"
+                + "；中间座舱关得慢（超过 1 秒）1 次，其中开回来没出画面 1 次\n"));
+        assertTrue(text, text.contains("环视 开 → 出画面 0.2 秒（关座舱前先关环视之后开回来：开始关环视后 0.3 秒开，"
+                + "座舱关了 0.1 秒，环视断了 0.5 秒）"));
+        assertTrue(text, text.contains("  环视关着：1 次：关 1 次"));
+    }
+
     @Test
     public void everyStepBucketHasItsOwnText() {
         java.util.Set<String> seen = new java.util.HashSet<>();
         for (String bucket : new String[]{"sentry:0", "sentry:1", "sentry:2", "sentry:?", "main:yes", "main:no",
                 "main:?", "close:none", "close:<3", "close:3-6", "close:6-30", "close:>30", "release:yes",
-                "release:no"}) {
+                "release:no", "lineage:first", "lineage:later", "lineage:?"}) {
             String text = DiagnosticsCollector.bucketText(bucket);
             assertFalse(bucket + " 没有翻成中文", text.equals(bucket));
             assertTrue(bucket + " 和别的写得一样", seen.add(text));

@@ -80,6 +80,12 @@ The turn-signal side-view feature and projection tests were contributed by
 [FerixzTanz in PR #4](https://github.com/dts88/zeekr-shortcut-car/pull/4), then adapted
 to the current camera scheduler. They remain covered by the repository's GPL-3.0 license.
 
+The historical Ferix source repository was `FerixzTanz/CAMCORDER`. On 2026-10-15
+that URL was unavailable; the currently public
+[FerixzTanz/zeekr-shortcut-car](https://github.com/FerixzTanz/zeekr-shortcut-car)
+is an older upstream fork. Historical source hashes and links below are retained
+for provenance; the imported code and original credit remain in this repository.
+
 ## Phone sharing improvements
 
 Ported and adapted from [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER).

@@ -542,3 +542,39 @@ release/recovery and simultaneous recording. A rejected extra output must close
 only the optional 360 view with an explanatory message. Existing factory/reverse
 and freshness guards remain; there is no P-only restriction or boot/indicator
 autostart. Exit stops the service. README and workflow describe the new controls.
+
+
+## Upstream 2.11.6 integration (2026-10-15, 009 check pending)
+
+Merged dts88 `c448fec0a300deafc00a38a4e93f266e65a6f16f` (2.11.6-alpha),
+including 2.11.5 diagnostics and planned surround-before-cabin closure. Fork
+recording-origin checks, enabled-channel selection, exclusive developer lease,
+side/HUD/360 holders and optional-output priority remain present. Existing
+upstream contribution branches are unchanged.
+
+When cabin outputs are released after their hold expires, upstream now closes
+surround first, closes the cabins, and reopens surround if still requested.
+Upstream reports approximately 0.5–1 second of surround interruption and a new
+recording segment; this is upstream feedback, not a timing measurement on the
+009. Added regressions exercise that full cycle for each fork window holder
+(360, indicator popup, HUD) alongside surround recording, checking that both
+outputs return, declarations stay intact, and no rescue attempt is counted.
+
+Validation: 1,354 JVM tests passed with no skips/failures, Android debug lint
+passed, and the signed 2.11.34-personal-alpha APK (versionCode 317) built.
+The signing certificate remains SHA-256
+`a40da80a59d170caa950cf15c18c454d47a39b26989d8b640ecd745ba71bf5dc`.
+Full debug lint initially flagged the intentionally English/Chinese-only About
+file for missing Malay translations; a file-scoped MissingTranslation annotation
+now records that established fallback policy without suppressing other resources.
+No Android UI or head-unit tests were run for this integration.
+
+On the 009, check recording start/stop with the selected channels, minimise with
+Super mirror or an optional camera window active after using cabin previews,
+and check that a short planned surround interruption returns automatically.
+Check factory-camera takeover/return and recording files around the transition.
+Export Diagnostics if a feed or recording fails to return: upstream's new
+camera history, cabin-close coupling and error/buffer counters are included.
+
+The public Ferix source recheck is documented in ferix-feature-ports.md; no
+additional feature work was accessible beyond our existing ports.
