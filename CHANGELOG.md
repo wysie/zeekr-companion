@@ -11,6 +11,13 @@ commit message, not here.
 
 Nothing yet.
 
+## [2.11.35-personal-alpha] - 2026-10-15
+
+- Port Ferix HUD contrast, night brightness, edge fade, optional indicator-side placement and experimental display-context overlay controls, retaining existing defaults and factory priority.
+- Add popup/HUD fades while preserving startup grace, requiring fresh frame progression on side switches and cancelling detached animations.
+- Include customize-value signal callbacks and shared-pipeline service retention during rapid theme changes.
+- Correct the earlier CAMCORDER source-availability notes after a successful retry.
+
 ## [2.11.34-personal-alpha] - 2026-10-15
 
 - Merge dts88 2.11.6-alpha: briefly release surround before planned cabin closure to avoid longer surround stalls, then reopen requested outputs.
