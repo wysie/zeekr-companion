@@ -366,6 +366,11 @@
                 android:summary="@string/set_hud_side_mirror_summary" />
 
             <SwitchPreferenceCompat
+                android:key="pref_hud_during_factory"
+                android:title="@string/set_hud_during_factory_title"
+                android:summary="@string/set_hud_during_factory_summary" />
+
+            <SwitchPreferenceCompat
                 android:key="pref_hud_side_overlay"
                 android:title="@string/set_hud_side_overlay_title"
                 android:summary="@string/set_hud_side_overlay_summary" />

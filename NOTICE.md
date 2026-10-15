@@ -163,3 +163,10 @@ and HUD side-switch follow-up `6218413c`. The port retains shared screen-popup
 placement, startup grace, stale covers, close dismissal and immediate factory
 handover; switching sides requires new source progression. Native regressions
 use synthetic buffers and disposable secondary displays, not vehicle cameras.
+
+## Configurable HUD coexistence
+
+Opt-in HUD coexistence with centre-screen factory camera views adapts
+[FerixzTanz/CAMCORDER 830f2d0d](https://github.com/FerixzTanz/CAMCORDER/commit/830f2d0d).
+This fork keeps the behaviour off by default and keeps reverse, screen output,
+shared-camera ownership and lifecycle guards independent of the option.
