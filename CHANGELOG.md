@@ -9,7 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
-Nothing yet.
+- Correct the Storage port note: USB-C for the 009, USB-A for the 7X; remove the blanket Type-C power-loss and USB-A failover claims.
 
 ## [2.11.39-personal-alpha] - 2026-10-16
 
