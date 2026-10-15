@@ -348,3 +348,31 @@ Validate Front-only, Rear-only, Surround + Rear and normal Surround playback/pho
 manual recording while parked. Changing channel switches in a running session must
 show the restart instruction instead of repeatedly reporting generic start failure.
 The supplied PNG was Balanced; select Full explicitly for the next quality comparison.
+
+
+## Pending: developer camera and display tools
+
+The owner requested a batch alternative to switching camera IDs individually,
+and HUD identification as well. The new Developer page captures one representative
+image per available Camera2 ID and exports numbered cards for public presentation
+displays. Neither discovers private factory buffers or screenshots the HUD.
+
+Park in P, stop recording and close the factory camera. In Settings → Developer →
+Camera and display tools, run **Export all camera feeds** once. Wait for the saved
+path; export the whole `ZeekrShortcutApp/Developer/CameraScan_…` directory, including
+`report.json` and any skipped/error results. Profile switches and camera mappings
+should remain unchanged; confirm normal preview and manual recording recover
+afterward. Press Stop once during a second scan and confirm it closes cleanly.
+
+Run **Identify displays and export cards** separately. Note the numbered card seen
+on each physical screen/HUD, including a card unexpectedly appearing on the main
+screen or no card visible. Check automatic dismissal after 10 seconds and Stop.
+Export `Developer/DisplayTest_…` alongside these observations; its PNGs show the
+cards offered, not proof of actual physical routing. Repeat only while parked;
+leaving the page, factory-camera activation, screen-off or loss of P cancels the
+test based on the available vehicle readings.
+
+JVM checks cover the exclusive lease, delayed closure, channel close ordering,
+YUV stride/offset packing and allocation bounds. Native stream combinations,
+Presentation placement and HUD routing await the owner's vehicle test. Existing
+PR #17/#19 heads remain unchanged; no owner diagnostics or images are published.

@@ -11,6 +11,11 @@ public final class StorageLayout {
     public static final String VIDEOS = "Videos";
     public static final String PHOTOS = "Photos";
     public static final String LOGS = "Logs";
+    public static final String DEVELOPER = "Developer";
+
+    public static File developerDirectory(File volume) {
+        return volume == null ? null : new File(new File(volume, ROOT), DEVELOPER);
+    }
 
     public enum Kind { VIDEO, PHOTO, LOG }
 

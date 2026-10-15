@@ -32,9 +32,11 @@ release numbers remain independent of upstream.
 
 ## Additions in this fork
 
+- **Camera and display research tools:** Settings → Developer → Camera and display tools provides an on-demand batch snapshot of every available Camera2 ID, plus a numbered 10-second test for public presentation displays. Images, generated display cards and JSON reports go under **ZeekrShortcutApp/Developer**. Both require a connected vehicle in P with recording stopped and factory camera closed. The scan temporarily closes this app’s normal feeds and retains exclusive ownership until native closure is confirmed; saved camera/HUD settings stay unchanged. These tools cannot screenshot factory displays or expose private factory video buffers. See [instructions and limits](docs/developer-camera-display-tools.md).
+
 - **Independent camera selection:** Surround, Front cabin and Rear cabin are opened according to their individual profile switches, including cabin-only profiles. Exit and reopen after changing switches; recording shows an explicit restart message while saved channel choices differ from the live pipeline.
 
-- **One app folder:** new recordings, photos and exported diagnostics go under **ZeekrShortcutApp/Videos**, **Photos** and **Logs** on selected storage. Playback, protection, storage accounting and cleanup also support older EVCam folders without moving existing files. See [storage layout](docs/app-storage-folders.md).
+- **One app folder:** new recordings, photos and exported diagnostics go under **ZeekrShortcutApp/Videos**, **Photos**, **Logs** and on-demand **Developer** exports on selected storage. Playback, protection, storage accounting and cleanup also support older EVCam folders without moving existing files. See [storage layout](docs/app-storage-folders.md).
 
 - **Recording and transfer integrity:** verified USB/archive copies preserve both files on collisions; relay buffers use private files instead of disposable Android cache. Failed protection-list replacement keeps the old list; developer repair first retains a verified original backup. See the [whole-project review](docs/project-safety-review.md) for fixes and remaining limits.
 - **Camera freshness guards:** Main surround/cabin previews, Super mirror, side popup and HUD cover stalled pictures after 500 ms without advancing texture timestamps, checked at 100 ms intervals. Reopened textures require new frame progression; missing geometry stays covered. These software guards still need on-car timing checks. See the [camera safety review](docs/camera-safety-review.md).

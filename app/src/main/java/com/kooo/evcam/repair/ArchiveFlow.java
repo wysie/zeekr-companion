@@ -142,6 +142,9 @@ public final class ArchiveFlow {
                     else plan.logs += count;
                 }
             }
+            plan.logs += collect(plan,
+                    com.kooo.evcam.storage.StorageLayout.developerDirectory(source),
+                    com.kooo.evcam.storage.StorageLayout.developerDirectory(target), true);
             // Live private session logs are copied, not moved, into the exported Logs folder.
             plan.logs += collect(plan, new File(activity.getFilesDir(), "logs"),
                     new File(com.kooo.evcam.storage.StorageLayout.directory(target,

@@ -3109,6 +3109,9 @@ public class MultiCameraManager {
         }
 
         @Override
+        public boolean developerProbe() { return CameraNeeds.current().developerProbe(); }
+
+        @Override
         public boolean headUnitSleeps() {
             return CameraNeeds.current().headUnitSleeps();
         }
@@ -3740,6 +3743,8 @@ public class MultiCameraManager {
                     return "退出";
                 case SLEEP:
                     return "车机要睡";
+                case DEVELOPER_PROBE:
+                    return "开发者相机导出";
                 case SCREEN_OFF:
                     return "熄屏";
                 case DARK_RELEASE:
@@ -5085,6 +5090,9 @@ public class MultiCameraManager {
 
     private final Runnable photoTick = this::stepPhoto;
 
+    /** Includes the asynchronous storage check before PHOTO is claimed. Main thread. */
+    public boolean developerPhotoBusy() { return photoJob != null; }
+
     /**
      * 拍一张 —— 主界面的拍照键、悬浮按钮都走这里。
      *
@@ -5104,6 +5112,7 @@ public class MultiCameraManager {
             mainHandler.post(() -> takePhoto(callback));
             return true;
         }
+        if (CameraNeeds.current().developerProbe()) return false;
         if (photoJob != null) {
             AppLog.d(TAG, "上一张还在拍，这一次不接");
             return false;

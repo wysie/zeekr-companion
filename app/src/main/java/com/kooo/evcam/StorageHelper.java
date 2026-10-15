@@ -326,6 +326,12 @@ public class StorageHelper {
         return getStorageDir(footageRoot(context, useExternalSd), PHOTO_DIR_NAME, StorageLayout.ROOT);
     }
 
+    /** Camera/display research files use the selected footage volume, never playback/cleanup. */
+    public static File getDeveloperDir(Context context) {
+        return getStorageDir(footageRoot(context, new AppConfig(context).isUsingExternalSdCard()),
+                StorageLayout.DEVELOPER, StorageLayout.ROOT);
+    }
+
     /**
      * 获取日志存储目录（导出的诊断报告）。
      *

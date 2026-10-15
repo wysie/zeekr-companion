@@ -189,6 +189,7 @@ public final class ChannelScheduler {
 
         /** 车机要睡（{@link CameraNeeds#headUnitSleeps}）。哪个线程都能调。 */
         boolean headUnitSleeps();
+        default boolean developerProbe() { return false; }
 
         /** 录像要哪几路：这一次录像的计划。 */
         Set<String> recordPlan();
@@ -976,6 +977,12 @@ public final class ChannelScheduler {
      */
     private static final Map<ChannelScheduler, Long> WINDING = new ConcurrentHashMap<>();
 
+    /** Strict native closure check for the developer lease; no elapsed-time bypass. Main thread. */
+    public static boolean allCamerasClosedEverywhere() {
+        for (ChannelScheduler scheduler : LIVE) if (!scheduler.allClosed()) return false;
+        return true;
+    }
+
     /**
      * 有没有哪一份调度正在为退出、车机要睡按次序关相机，还没关完。谁读它：新实例开相机之前（换车型时，见大纲 §6 风险 10），
      * 退出的最后一步（MainActivity.finishExit），熄屏录制放唤醒锁之前（ScreenOffRecording 经 {@link #whenClosedEverywhere}
@@ -1626,6 +1633,10 @@ public final class ChannelScheduler {
         } else {
             sleepNoticedAt.set(0);
             w.sleepSince = 0;
+        }
+        if (w.developerProbe != host.developerProbe()) {
+            w.developerProbe = host.developerProbe();
+            w.needsVersion++;
         }
         w.exitSince = exitAt;
         // 自己也在为退出、车机要睡关：不等另一份 —— 关不用谁放行。等的话两份同时在关时（换车型后紧接着退出）互相等，
@@ -2438,6 +2449,8 @@ public final class ChannelScheduler {
                 return "exit";
             case SLEEP:
                 return "head-unit-sleeps";
+            case DEVELOPER_PROBE:
+                return "developer-camera-export";
             case SCREEN_OFF:
                 return "screen-off";
             case DARK_RELEASE:
@@ -2777,7 +2790,7 @@ public final class ChannelScheduler {
      * 车机要睡被亮屏清掉了：手上没有关在途就拿掉。
      */
     private boolean updateWinding(long now) {
-        boolean winding = w.exitSince != 0 || w.sleepSince != 0;
+        boolean winding = ChannelRules.winding(w);
         if (winding) {
             if (allClosed()) {
                 WINDING.remove(this);
@@ -2788,7 +2801,7 @@ public final class ChannelScheduler {
         }
         ChannelRules.Step step = w.step;
         // 这一轮读过之后才发布的（监听在别的线程上叫）不拿掉：下一轮就看得到
-        if ((step == null || step.move != ChannelRules.Move.CLOSE) && exitAt == 0 && !host.headUnitSleeps()) {
+        if ((step == null || step.move != ChannelRules.Move.CLOSE) && exitAt == 0 && !host.headUnitSleeps() && !host.developerProbe()) {
             WINDING.remove(this);
         }
         return false;

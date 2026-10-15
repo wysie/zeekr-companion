@@ -413,6 +413,11 @@ public final class RecordingCoordinator {
         return lifecycle.isRecording();
     }
 
+    /** Pending starts, stopping and recovery also prevent an exclusive developer scan. Main thread. */
+    public boolean busyForDeveloperProbe() {
+        return !lifecycle.isIdle() || pending != null || resumeHold.claims(false);
+    }
+
     /**
      * 录像要的几样此刻该不该拿着：在录（{@link #isRecording}），或者存储一类整次停之后判了自动接回、还没开起来
      * （{@link RecordingStops.ResumeHold}，大纲 §7 第 8 问）。
@@ -597,6 +602,10 @@ public final class RecordingCoordinator {
      * <p>黑着不开的那一下只在「这一趟要录」真的变了时记一行（C9：恢复每 5 分钟例行来一次，不然一夜几十行）。</p>
      */
     public void request(Why why) {
+        if (CameraNeeds.current().developerProbe()) {
+            if (why == Why.USER) notifyRefused("Camera export is running. Stop it before recording.");
+            return;
+        }
         if (!startAllowed(why)) {
             BlackBox.noteImportant("Recording request blocked by settings or manual stop: " + why);
             return;

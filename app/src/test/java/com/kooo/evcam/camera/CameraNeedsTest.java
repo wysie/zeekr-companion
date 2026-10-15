@@ -16,6 +16,22 @@ public class CameraNeedsTest {
 
     private final CameraNeeds needs = new CameraNeeds();
 
+    @Test public void developerLeaseRejectsPhotosRecordingAndSecondProbeWithoutLosingClaims() {
+        needs.claim(CameraNeeds.Holder.PHOTO);
+        assertFalse(needs.tryBeginDeveloperProbe());
+        needs.release(CameraNeeds.Holder.PHOTO);
+        needs.claim(CameraNeeds.Holder.RECORDING);
+        assertFalse(needs.tryBeginDeveloperProbe());
+        needs.release(CameraNeeds.Holder.RECORDING);
+        needs.claim(CameraNeeds.Holder.MIRROR);
+        assertTrue(needs.tryBeginDeveloperProbe());
+        assertFalse(needs.tryBeginDeveloperProbe());
+        assertTrue(needs.isHeld(CameraNeeds.Holder.MIRROR));
+        needs.endDeveloperProbe();
+        assertFalse(needs.developerProbe());
+        assertTrue(needs.isHeld(CameraNeeds.Holder.MIRROR));
+    }
+
     @Test
     public void nobodyWantsItToBeginWith() {
         assertFalse(needs.heldByAnyone());

@@ -155,6 +155,11 @@
             android:theme="@style/Theme.Cam"
             android:exported="false" />
 
+        <activity android:name=".developer.CameraDisplayToolsActivity"
+            android:label="@string/dev_camera_display_title"
+            android:theme="@style/Theme.Cam" android:screenOrientation="landscape"
+            android:exported="false" />
+
         <!-- 关于与致谢：说明本应用两个功能来源及其许可证 -->
         <activity
             android:name=".zeekr.AboutActivity"

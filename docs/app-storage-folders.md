@@ -11,7 +11,8 @@ ZeekrShortcutApp/
 ├── Photos/
 │   ├── 360/              experimental stitched PNG + calibration TXT
 │   └── Raw/              developer raw JPEG + TXT
-└── Logs/                 exported diagnostics JSON
+├── Logs/                 exported diagnostics JSON
+└── Developer/            on-demand camera scans and display test cards + JSON
 ```
 
 No automatic migration or bulk copy runs during upgrade. Old recordings/photos in
@@ -23,13 +24,13 @@ the new folder; those recovered entries are kept as manual protection. The exist
 automatic cleanup applies the existing rules across both. No limit still means no
 automatic deletion. Locks are respected while the protection option is enabled.
 Nested raw/360 captures, exported clips and repair backups retain their existing
-exclusion from ordinary playback and automatic cleanup.
+exclusion from ordinary playback and automatic cleanup. Developer exports are also excluded.
 
 Older diagnostics remain in `Download/EVCam_Log`; old exported clips remain in
 `DCIM/EVCam_Clips`. These can still be accessed directly on the drive. Send to phone
 uses the actual selected file path, so legacy playback files remain shareable.
 Developer repair checks both recording layouts. Developer archive scans both layouts
-and preserves their relative paths and lock lists on the target volume, avoiding
+and the Developer folder, preserving their relative paths and lock lists on the target volume, avoiding
 merging equal filenames or losing their protection metadata.
 
 Live session logs and relay buffers stay in app-private storage for reliable

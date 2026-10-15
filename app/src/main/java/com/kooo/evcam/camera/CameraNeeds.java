@@ -69,6 +69,24 @@ public final class CameraNeeds {
 
     /** 车机要睡，见 {@link #headUnitSleeps}。 */
     private boolean headUnitSleeps;
+    private boolean developerProbe;
+
+    /** Exclusive runtime lease. Saved camera claims/settings remain intact. */
+    public boolean tryBeginDeveloperProbe() {
+        synchronized (this) {
+            if (developerProbe || holders.contains(Holder.RECORDING) || holders.contains(Holder.PHOTO)) return false;
+            developerProbe = true;
+        }
+        notifyChanged();
+        return true;
+    }
+
+    public synchronized boolean developerProbe() { return developerProbe; }
+
+    public void endDeveloperProbe() {
+        synchronized (this) { developerProbe = false; }
+        notifyChanged();
+    }
 
     /**
      * 登记表变了（或者「车机要睡」变了）谁来看：当前管理器的通道调度（{@link ChannelScheduler}）—— 只叫醒它，自己不判。
