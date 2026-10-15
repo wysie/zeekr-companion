@@ -1087,4 +1087,9 @@
     <string name="set_hud_during_factory_summary">Mati secara lalai. Mengekalkan kamera sisi HUD sahaja semasa 360 kilang, tetingkap kamera atau bantuan parkir. Undur masih menyembunyikannya; paparan skrin tetap mengalah. Perkakasan kamera bersama boleh mengganggu suapan. Tidak memaksa akses kamera.</string>
     <string name="set_developer_mode_title">Dayakan mod pembangun</string>
     <string name="set_developer_mode_summary">Amaran: ciri eksperimen dan alat penyelesaian masalah boleh menjejaskan kamera, rakaman dan storan. Mati pada pemasangan baharu; pilihan dikekalkan selepas mula semula dan kemas kini. Mematikannya menyembunyikan pilihan pembangun dan menyahaktifkan tetapannya tanpa memadam nilai tersimpan. Sesetengah perubahan memerlukan aplikasi dimulakan semula.</string>
+    <string name="set_side_mirror_mode_title">Apabila Cermin super aktif</string>
+    <string name="set_side_mirror_mode_summary">Guna tetingkap cermin, papar kedua-dua tetingkap, atau sembunyikan cermin semasa pop timbul sisi kelihatan. Output HUD sahaja tidak menyembunyikannya.</string>
+    <string name="set_side_mirror_replace">Guna tetingkap Cermin super</string>
+    <string name="set_side_mirror_both">Papar kedua-dua tetingkap</string>
+    <string name="set_side_mirror_hide">Sembunyikan cermin semasa pop timbul</string>
 </resources>

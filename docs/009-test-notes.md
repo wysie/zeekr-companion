@@ -648,3 +648,23 @@ existing tablet layout. Initial captures ran before the compositor presented the
 new screen; capture now waits for the visible target and presentation settling.
 Screenshots are emulator-only and are not committed. Hardware coexistence still
 requires the 009 test described above.
+
+## Separate side popup temporarily hiding Super mirror (vehicle checks pending)
+
+Settings → Blind spot camera → When Super mirror is active offers Use its window
+(default), Show both windows, and Hide during popup. Old boolean selections map
+to the first two choices. Reset removes the new hide key and restores replacement.
+
+Only the actual separate window presentation hides the mirror: initial transparent
+prewarming/startup and HUD-only output leave it visible. Fade-out completes before
+it returns. X, immediate detach/factory takeover, service stop and mode changes
+restore the mirror. An attached but transparent, untouchable mirror keeps its
+texture, camera claim, saved lane/layout and enabled setting. This does not free a
+hardware output slot. A newly started mirror checks the currently presented popup.
+
+Two new JVM policy tests and four native popup tests passed on the disposable
+API32 emulator. The new native test checks delayed reveal, transparent prewarming,
+fade completion, immediate detach, unchanged mirror enablement, retained identical
+SurfaceTexture and reset semantics, without opening any vehicle camera. On-car
+checks still need all three modes with screen-only/HUD-only/both, X then re-signal,
+factory takeover, mirror manually stopped/started and app backgrounding.

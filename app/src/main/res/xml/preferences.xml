@@ -251,11 +251,15 @@
             android:summary="@string/set_side_hud_note"
             android:selectable="false" />
 
-        <SwitchPreferenceCompat
-            android:key="pref_side_popup_replace_mirror"
+        <ListPreference
+            android:key="pref_side_popup_mirror_mode"
             android:dependency="pref_side_popup"
-            android:title="@string/set_side_popup_replace_mirror_title"
-            android:summary="@string/set_side_popup_replace_mirror_summary" />
+            android:title="@string/set_side_mirror_mode_title" />
+
+        <Preference
+            android:key="pref_side_popup_mirror_mode_note"
+            android:summary="@string/set_side_mirror_mode_summary"
+            android:selectable="false" />
 
         <SwitchPreferenceCompat
             android:key="pref_side_popup_mirror"

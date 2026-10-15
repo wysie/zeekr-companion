@@ -111,6 +111,12 @@ public class RearViewMirrorService extends Service {
         return instance != null;
     }
 
+    /** Presentation only: never changes the enabled setting, camera claim, lane or saved layout. */
+    public static void setHiddenForSidePopup(boolean hidden) {
+        RearViewMirrorService svc = instance;
+        if (svc != null && svc.mirrorView != null) svc.mirrorView.setHiddenForSidePopup(hidden);
+    }
+
     public static int sideViewLane() {
         RearViewMirrorService svc = instance;
         return svc != null && svc.mirrorView != null
@@ -214,6 +220,7 @@ public class RearViewMirrorService extends Service {
         return "mirror: showing=" + view.isShowing()
                 + " windowVisibility=" + view.getWindowVisibility()
                 + " shown=" + view.isShown()
+                + " hiddenForSidePopup=" + view.isHiddenForSidePopup()
                 + " docked=" + view.isDocked()
                 + " size=" + view.getWidth() + "x" + view.getHeight()
                 + " textureAvailable=" + tv.isAvailable()
@@ -352,6 +359,7 @@ public class RearViewMirrorService extends Service {
                 });
         mirrorView.setResumeAction(() -> rebindNow(true));
         mirrorView.setDockListener(this::onDockChanged);
+        mirrorView.setHiddenForSidePopup(SideViewPopupService.hidesSuperMirror());
         mirrorView.show();
         takeBackKeptCanvas();
         startWatchdog();

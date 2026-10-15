@@ -59,7 +59,8 @@ release numbers remain independent of upstream.
   camera scheduler and has its own settings section.
 - **Super mirror integration:** temporarily show the signalling side's camera in
   the existing mirror, then restore the previous view; alternatively, show a
-  separate side-camera window alongside it.
+  separate side-camera window alongside it or temporarily hide the mirror while
+  that popup is visible.
 - **Side-window controls and tuning:** shared left/right placement, drag and pinch
   resizing, temporary expand/close controls, per-side image rotation, defaults
   reset, and automatic framing adjustment to avoid black patches at extreme aim
@@ -168,12 +169,19 @@ This setting does not alter recordings.
 
 Enable **Settings → Blind spot camera → Automatic blind spot camera** (off by default). Above the configured
 speed threshold (default 30 km/h), signalling shows the camera on that side. When Super mirror is
-on and **Use Super mirror when active** is enabled (default), it temporarily shows the side camera in
+on and **When Super mirror is active → Use its window** is selected (default), it temporarily shows the side camera in
 the same window and restores the previous camera,
 framing and position after the signal ends and the configured close delay. A docked mirror is
 brought into view temporarily and docks again afterwards. With Super mirror off, a separate
-pop-up is used. Turn **Use Super mirror when active** off to keep the mirror and show a separate
-side window alongside it. Both windows share the existing surround camera stream; the side
+pop-up is used. **When Super mirror is active → Show both windows** keeps the mirror
+alongside the separate popup. **Hide during popup** instead hides the mirror only
+once the independent popup becomes visible, retaining its own shape and size.
+The mirror returns when that popup closes, finishes fading out, is dismissed with
+X or is detached for factory/screen takeover. Hidden startup/prewarming and HUD-only
+output do not hide it. This never changes the mirror enable switch, saved camera,
+position or size. Existing replacement/on and alongside/off selections are preserved;
+reset restores Use its window. Hiding keeps the mirror feed attached and does not
+free an output slot. Both windows share the existing surround camera stream; the side
 window has its own output and does not replace the mirror output. Reverse, factory 360, factory
 side view and park assist take precedence.
 
