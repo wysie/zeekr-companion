@@ -1115,4 +1115,6 @@
     <string name="set_hud_side_fade_summary">How far the edges fade to black, as a share of the shorter side. 0 is a hard edge. Black does not light up on a HUD, so the fade blends into the road</string>
     <string name="set_hud_side_follow_title">Follow indicator side on HUD</string>
     <string name="set_hud_side_follow_summary">On: left signal on the left, right signal on the right; the position slider sets distance from that edge. Off: fixed position measured from the left.</string>
+    <string name="set_hud_during_factory_title">Keep HUD side camera during factory views (experimental)</string>
+    <string name="set_hud_during_factory_summary">Off by default. Keeps only the HUD side camera during factory 360, camera pop-ups or parking assist. Reverse still hides it; screen views still yield. Shared camera hardware may interrupt the feed. This does not force camera access.</string>
 </resources>

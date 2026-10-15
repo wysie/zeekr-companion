@@ -30,6 +30,8 @@ public final class SideViewDecision {
         public Integer turnSignal;
         public Boolean hazard;
         public String gear;
+        /** Only the explicitly opted-in HUD ignores centre-screen view signals. Reverse always wins. */
+        public boolean yieldToScreenViews = true;
         public Boolean stock360Shown;
         public Boolean stockPopupShown;
         public Boolean parkAssistOn;
@@ -38,6 +40,22 @@ public final class SideViewDecision {
         public int minSpeedKmh;
         /** 此刻已经弹着的是哪一路（{@link LaneCycle#LEFT} / {@link LaneCycle#RIGHT}），没弹是 {@link #NONE}。 */
         public int showing = NONE;
+    }
+
+    /** Build a separate HUD input without changing centre-screen policy or saved speed thresholds. */
+    public static Input forHud(Input screen, int showing, boolean duringFactoryViews) {
+        Input hud = new Input();
+        hud.turnSignal = screen.turnSignal;
+        hud.hazard = screen.hazard;
+        hud.gear = screen.gear;
+        hud.stock360Shown = screen.stock360Shown;
+        hud.stockPopupShown = screen.stockPopupShown;
+        hud.parkAssistOn = screen.parkAssistOn;
+        hud.speedKmh = screen.speedKmh;
+        hud.minSpeedKmh = 0;
+        hud.showing = showing;
+        hud.yieldToScreenViews = !duringFactoryViews;
+        return hud;
     }
 
     /**
@@ -81,9 +99,9 @@ public final class SideViewDecision {
     /** 原厂有画面在屏幕上（或马上要有）：倒车、360、原厂弹窗、泊车辅助。 */
     public static boolean factoryViewActive(Input in) {
         return "R".equals(in.gear)
-                || Boolean.TRUE.equals(in.stock360Shown)
-                || Boolean.TRUE.equals(in.stockPopupShown)
-                || Boolean.TRUE.equals(in.parkAssistOn);
+                || (in.yieldToScreenViews && (Boolean.TRUE.equals(in.stock360Shown)
+                        || Boolean.TRUE.equals(in.stockPopupShown)
+                        || Boolean.TRUE.equals(in.parkAssistOn)));
     }
 
     /**

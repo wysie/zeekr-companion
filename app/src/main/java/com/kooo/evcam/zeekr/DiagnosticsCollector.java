@@ -948,6 +948,7 @@ public final class DiagnosticsCollector {
         sb.append("HUD candidate: ").append(hud == null ? "none" : hud.getDisplayId()).append("; output=")
                 .append(hudConfig.getSideOutput()).append("; screenMirrored=").append(hudConfig.isSidePopupMirrored())
                 .append("; selection=").append(hudConfig.isZeekr009HudEnabled() ? "009 display 3 (1280x640)" : "auto")
+                .append("; duringFactoryViews=").append(hudConfig.isHudDuringFactoryViews())
                 .append("; hudMirrored=").append(hudConfig.isHudSideMirrored()).append("; window=")
                 .append(SideViewHudPanel.lastState()).append('\n');
         sb.append("可交互（isInteractive）: ").append(DisplayWatch.interactiveNow() ? "是" : "否").append('\n');

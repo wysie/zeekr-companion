@@ -268,7 +268,7 @@ public class SideViewPopupService extends Service {
         boolean suppressed = dismissal.suppress(in.turnSignal, in.hazard);
 
         boolean blocked = ScreenState.dark() || !Telemetry.get().carLinkConnected();
-        if (blocked || SideViewDecision.factoryViewActive(in)) {
+        if (blocked) {
             lastReady = false;
             RearViewMirrorService.clearSideView();
             detachPopup();
@@ -279,14 +279,27 @@ public class SideViewPopupService extends Service {
         if (output == AppConfig.SIDE_OUTPUT_SCREEN) dropHud();
         boolean hudOn = output != AppConfig.SIDE_OUTPUT_SCREEN && hudOutput().available();
         if (hudOn) {
-            SideViewDecision.Input hudIn = inputFrom(r, s, 0, hud.showingLane());
-            hudOn = hud.update(suppressed ? SideViewDecision.NONE : SideViewDecision.decide(hudIn),
-                    suppressed, !suppressed && appConfig.isSidePopupInstant() && SideViewDecision.shouldStayReady(hudIn),
-                    suppressed ? 0 : appConfig.getSidePopupCloseDelayMs());
-            hud.followIndicator(indicator);
-            hud.setNight(Integer.valueOf(Signal.NIGHT).equals(r.code(Signal.DAY_NIGHT)));
+            SideViewDecision.Input hudIn = SideViewDecision.forHud(in, hud.showingLane(),
+                    appConfig.isHudDuringFactoryViews());
+            if (SideViewDecision.factoryViewActive(hudIn)) {
+                // Includes reverse regardless of the setting. Withdraw hidden ready outputs too.
+                hud.detach();
+            } else {
+                hudOn = hud.update(suppressed ? SideViewDecision.NONE : SideViewDecision.decide(hudIn),
+                        suppressed, !suppressed && appConfig.isSidePopupInstant() && SideViewDecision.shouldStayReady(hudIn),
+                        suppressed ? 0 : appConfig.getSidePopupCloseDelayMs());
+                hud.followIndicator(indicator);
+                hud.setNight(Integer.valueOf(Signal.NIGHT).equals(r.code(Signal.DAY_NIGHT)));
+            }
         } else if (hud != null) {
             hud.detach();
+        }
+        // The opt-in changes only HUD visibility; screen fallback never covers a factory view.
+        if (SideViewDecision.factoryViewActive(in)) {
+            lastReady = false;
+            RearViewMirrorService.clearSideView();
+            detachPopup();
+            return;
         }
         if (!SideViewOutputRouting.screenWanted(output, hudOn)) {
             lastReady = false;
@@ -346,20 +359,6 @@ public class SideViewPopupService extends Service {
             readyExpiryScheduled = true;
             handler.postDelayed(readyExpired, READY_GRACE_MS);
         }
-    }
-
-    private SideViewDecision.Input inputFrom(Readings r, VehicleState s, int minSpeed, int showing) {
-        SideViewDecision.Input in = new SideViewDecision.Input();
-        in.turnSignal = s.turnSignal;
-        in.hazard = s.hazard;
-        in.gear = r.text(Signal.GEAR);
-        in.stock360Shown = r.bool(Signal.STOCK_360);
-        in.stockPopupShown = r.bool(Signal.STOCK_POPUP);
-        in.parkAssistOn = r.bool(Signal.PARK_ASSIST);
-        in.speedKmh = s.speedKmh;
-        in.minSpeedKmh = minSpeed;
-        in.showing = showing;
-        return in;
     }
 
     private SideViewHudOutput hudOutput() {

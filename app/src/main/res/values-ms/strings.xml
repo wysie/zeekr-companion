@@ -1092,4 +1092,6 @@
     <string name="set_hud_side_fade_summary">Jarak tepi memudar ke hitam, sebagai peratusan sisi yang lebih pendek. 0 ialah tepi keras. Warna hitam tidak menyala pada HUD, jadi pudaran menyatu dengan jalan</string>
     <string name="set_hud_side_follow_title">Ikut sisi isyarat pada HUD</string>
     <string name="set_hud_side_follow_summary">Hidup: isyarat kiri di kiri, kanan di kanan; peluncur kedudukan mengukur jarak dari tepi itu. Mati: kedudukan tetap diukur dari kiri.</string>
+    <string name="set_hud_during_factory_title">Kekalkan kamera sisi HUD semasa paparan kilang (eksperimen)</string>
+    <string name="set_hud_during_factory_summary">Mati secara lalai. Mengekalkan kamera sisi HUD sahaja semasa 360 kilang, tetingkap kamera atau bantuan parkir. Undur masih menyembunyikannya; paparan skrin tetap mengalah. Perkakasan kamera bersama boleh mengganggu suapan. Tidak memaksa akses kamera.</string>
 </resources>

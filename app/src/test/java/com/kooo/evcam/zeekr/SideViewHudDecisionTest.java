@@ -47,4 +47,41 @@ public class SideViewHudDecisionTest {
         hazard.hazard = true;
         assertEquals(SideViewDecision.NONE, SideViewDecision.decide(hazard));
     }
+    @Test public void coexistenceIsHudOnlyAndIncludesAllScreenFactorySignals() {
+        for (int bit = 1; bit < 8; bit++) {
+            SideViewDecision.Input screen = leftSignalAt(10f, 0);
+            screen.stock360Shown = (bit & 1) != 0;
+            screen.stockPopupShown = (bit & 2) != 0;
+            screen.parkAssistOn = (bit & 4) != 0;
+            assertEquals(SideViewDecision.NONE, SideViewDecision.decide(screen));
+            assertEquals(SideViewDecision.NONE, SideViewDecision.decide(
+                    SideViewDecision.forHud(screen, SideViewDecision.NONE, false)));
+            assertEquals(LaneCycle.LEFT, SideViewDecision.decide(
+                    SideViewDecision.forHud(screen, SideViewDecision.NONE, true)));
+            assertEquals("HUD policy cannot mutate screen policy", SideViewDecision.NONE,
+                    SideViewDecision.decide(screen));
+        }
+    }
+
+    @Test public void reverseAndHazardsStillHideOptedInHudAndNeverKeepItReady() {
+        SideViewDecision.Input screen = leftSignalAt(5f, 30);
+        screen.stock360Shown = true;
+        screen.gear = "R";
+        SideViewDecision.Input hud = SideViewDecision.forHud(screen, LaneCycle.LEFT, true);
+        assertEquals(SideViewDecision.NONE, SideViewDecision.decide(hud));
+        org.junit.Assert.assertFalse(SideViewDecision.shouldStayReady(hud));
+        screen.gear = "D"; screen.hazard = true;
+        assertEquals(SideViewDecision.NONE, SideViewDecision.decide(
+                SideViewDecision.forHud(screen, LaneCycle.LEFT, true)));
+    }
+
+    @Test public void disablingCoexistenceImmediatelySuppressesAnAlreadyShownHud() {
+        SideViewDecision.Input screen = leftSignalAt(20f, 30);
+        screen.stock360Shown = true;
+        assertEquals(LaneCycle.LEFT, SideViewDecision.decide(
+                SideViewDecision.forHud(screen, LaneCycle.LEFT, true)));
+        assertEquals(SideViewDecision.NONE, SideViewDecision.decide(
+                SideViewDecision.forHud(screen, LaneCycle.LEFT, false)));
+        assertEquals("Screen speed threshold retained", 30, screen.minSpeedKmh);
+    }
 }
