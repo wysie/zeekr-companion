@@ -1128,6 +1128,12 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
 
     private void bindInterface() {
         bindLanguage();
+        bindEnum("pref_vehicle_name", SettingsRegistry.VEHICLE_NAME, appConfig.getVehicleNameMode(),
+                appConfig::setVehicleNameMode, () -> {
+                    Preference pref = findPreference("pref_vehicle_name");
+                    if (pref != null) pref.setSummary(getString(R.string.vehicle_name_summary,
+                            com.kooo.evcam.ui.VehicleLabels.name(requireContext())));
+                });
         // 回到主界面时生效（MainActivity.showRecordingInterface 会按它重新摆一次）。
         // 在这里选过，首次启动就不必再问
         bindSegmented("pref_rail_side", SettingsRegistry.ACTION_RAIL_SIDE,
@@ -1620,6 +1626,9 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
      *
      */
     private String[] localizedNames(SettingSpec spec) {
+        if (spec == SettingsRegistry.CAR_MODEL) return new String[] {
+                com.kooo.evcam.ui.VehicleLabels.profile(requireContext(), false),
+                com.kooo.evcam.ui.VehicleLabels.profile(requireContext(), true)};
         String[] names = spec.displayNames();
         int[] res = spec.nameResIds();
         for (int i = 0; i < names.length; i++) {

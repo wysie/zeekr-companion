@@ -463,6 +463,11 @@
             android:title="@string/set_language_title"
             android:summary="%s" />
 
+        <ListPreference
+            android:key="pref_vehicle_name"
+            android:title="@string/vehicle_name_title"
+            app:useSimpleSummaryProvider="false" />
+
         <!-- 两个选项：摆在行里点一次，不弹框 -->
         <com.kooo.evcam.settings.SegmentedPreference
             android:key="pref_rail_side"

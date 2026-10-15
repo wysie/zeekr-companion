@@ -1188,6 +1188,10 @@ public class AppConfig {
         writeEnum(SettingsRegistry.CAR_MODEL, carModel);
         AppLog.d(TAG, "车型设置: " + carModel);
     }
+
+    public String getVehicleNameMode() { return readEnum(SettingsRegistry.VEHICLE_NAME); }
+
+    public void setVehicleNameMode(String mode) { writeEnum(SettingsRegistry.VEHICLE_NAME, mode); }
     
     /**
      * 获取车型

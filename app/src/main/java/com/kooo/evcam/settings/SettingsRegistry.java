@@ -44,8 +44,15 @@ public final class SettingsRegistry {
      */
     public static final SettingSpec CAR_MODEL = SettingSpec.of(
             "car_model", "车型", "zeekr_7x",
-            entry("zeekr_7x", "极氪7X（环视合成流）", R.string.opt_model_zeekr),
-            entry("zeekr_7x_multi", "极氪7X（环视 + 前后座舱）", R.string.opt_model_zeekr_multi));
+            entry("zeekr_7x", "极氪（环视合成流）", R.string.opt_model_zeekr),
+            entry("zeekr_7x_multi", "极氪（环视 + 前后座舱）", R.string.opt_model_zeekr_multi));
+
+    /** Cosmetic vehicle identity, deliberately independent of the stream-profile selector. */
+    public static final SettingSpec VEHICLE_NAME = SettingSpec.of(
+            "vehicle_name_mode", "车辆名称", "auto",
+            entry("auto", "自动", R.string.vehicle_name_auto),
+            entry("009", "极氪 009", R.string.vehicle_name_009),
+            entry("7x", "极氪 7X", R.string.vehicle_name_7x));
 
     /**
      * 界面语言。
@@ -90,6 +97,7 @@ public final class SettingsRegistry {
     public static final List<SettingSpec> ALL = Collections.unmodifiableList(Arrays.asList(
             RECORDING_MODE,
             CAR_MODEL,
+            VEHICLE_NAME,
             LANGUAGE,
             FISHEYE_PROJECTION,
             ACTION_RAIL_SIDE));

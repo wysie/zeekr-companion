@@ -250,8 +250,8 @@
 
     <!-- Enumerated setting options -->
     <string name="opt_mode_auto">Automatic (recommended)</string>
-    <string name="opt_model_zeekr">Zeekr 7X (surround)</string>
-    <string name="opt_model_zeekr_multi">Zeekr 7X (surround + front and rear cabin)</string>
+    <string name="opt_model_zeekr">Zeekr (surround)</string>
+    <string name="opt_model_zeekr_multi">Zeekr (surround + front and rear cabin)</string>
 
     <!-- Settings prompts and dialogs -->
     <string name="msg_stream_changed">Stream profile set to “%1$s”. Takes effect after restarting the app.</string>
@@ -624,8 +624,8 @@
     <string name="record_unavailable_detail">No USB drive</string>
     <string name="record_waiting_cameras">Waiting for cameras</string>
     <string name="record_waiting_detail">Resumes automatically when available</string>
-    <string name="status_profile_composite">Zeekr 7X (surround)</string>
-    <string name="status_profile_composite_multi">Zeekr 7X (surround + front and rear cabin)</string>
+    <string name="status_profile_composite">Zeekr (surround)</string>
+    <string name="status_profile_composite_multi">Zeekr (surround + front and rear cabin)</string>
     <string name="status_fps">≤%1$s fps</string>
     <string name="status_bitrate_very_low">Very low bitrate</string>
     <string name="status_bitrate_low">Low bitrate</string>
@@ -1083,4 +1083,12 @@
     <string name="dev_display_identify">Identify displays and export cards</string>
     <string name="dev_probe_stop">Stop</string>
     <string name="dev_probe_back">Back</string>
+    <string name="vehicle_name_title">Vehicle name</string>
+    <string name="vehicle_name_auto">Auto</string>
+    <string name="vehicle_name_generic">Zeekr</string>
+    <string name="vehicle_name_009">Zeekr 009</string>
+    <string name="vehicle_name_7x">Zeekr 7X</string>
+    <string name="vehicle_name_summary">Shown as %1$s. Auto uses reported model names; choose manually if needed. This changes labels only.</string>
+    <string name="vehicle_profile_surround">%1$s (surround)</string>
+    <string name="vehicle_profile_cabins">%1$s (surround + front and rear cabin)</string>
 </resources>

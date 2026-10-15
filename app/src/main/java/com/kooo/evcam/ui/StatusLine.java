@@ -85,10 +85,10 @@ public final class StatusLine {
         try {
             Profile profile = new com.kooo.evcam.profile.ProfileStore(context).current();
             if (Profile.PRESET_COMPOSITE.equals(profile.id)) {
-                return context.getString(R.string.status_profile_composite);
+                return VehicleLabels.profile(context, false);
             }
             if (Profile.PRESET_COMPOSITE_MULTI.equals(profile.id)) {
-                return context.getString(R.string.status_profile_composite_multi);
+                return VehicleLabels.profile(context, true);
             }
             String name = profile.name;
             return name == null ? "" : name.trim();

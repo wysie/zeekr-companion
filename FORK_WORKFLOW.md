@@ -25,6 +25,7 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/developer-camera-display-tools` | Batch Camera2 snapshots and numbered public-display identification, with exclusive native camera closure and Developer-folder exports |
 | `fix/profile-camera-selection` | Honor individual enabled channels, cabin-only previews and recording; reject unapplied channel changes with a restart instruction |
 | `fix/automatic-recording-permission` | Recording request origin, current-setting checks and opt-in driver-start defaults; existing PR heads preserved |
+| `feature/vehicle-name-labels` | Cosmetic Auto/009/7X vehicle names, conservative Android-name detection and generic fallback; camera profile IDs and HUD mapping stay independent |
 | `feature/side-view-system-theme` | System day/night styling for popup and mirror controls/labels, with live configuration repaint and retained HUD backing |
 | `feature/side-view-mirroring` | Fork side-camera horizontal flip, including mirror replacement; existing PR heads preserved |
 | `integration/upstream-about` | Upstream 2.11.4 integration and fork-only About attribution; existing PR heads preserved |
