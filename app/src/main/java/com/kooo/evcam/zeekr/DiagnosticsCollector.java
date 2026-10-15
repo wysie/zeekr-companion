@@ -81,6 +81,7 @@ public final class DiagnosticsCollector {
         timings.run("displays", () -> appendDisplays(sb, context));
         timings.run("DIY 360", () -> {
             sb.append("## DIY 360 prototype\n").append(FourLaneContainer.describeAttached()).append('\n');
+            sb.append("360 popup: ").append(BirdEyePopupService.describe()).append('\n');
             sb.append("Last 360 state (including after leaving preview): ").append(BirdEyePreview.lastDescription()).append('\n');
             sb.append("Manual calibration (defaults are estimates): ")
                     .append(new org.json.JSONObject(new BirdEyeConfig(context).preferences.getAll()).toString())

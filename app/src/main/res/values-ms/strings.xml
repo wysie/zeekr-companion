@@ -1050,7 +1050,7 @@
     <string name="bird_eye_quality_low">Rendah — paling pantas</string>
     <string name="bird_eye_quality_balanced">Seimbang — lalai</string>
     <string name="bird_eye_quality_full">Penuh — resolusi pratonton asal</string>
-    <string name="bird_eye_quality_note">Seimbang menghasilkan pratonton lebih jelas. Penuh menyalin bingkai langsung yang tersedia (hingga 8 MP), sehingga 3 fps. Penyalinan atau rendering perlahan, atau kekurangan memori, menurunkan resolusi untuk sesi ini; Rendah berhenti jika masih terlalu perlahan. Foto menggunakan resolusi aktif. Resolusi tidak membetulkan penentukuran.</string>
+    <string name="bird_eye_quality_note">Seimbang menghasilkan pratonton lebih jelas. Penuh menyalin bingkai langsung yang tersedia (hingga 8 MP), sehingga 5 fps. Penyalinan atau rendering perlahan, atau kekurangan memori, menurunkan resolusi untuk sesi ini; Rendah berhenti jika masih terlalu perlahan. Foto menggunakan resolusi aktif. Resolusi tidak membetulkan penentukuran.</string>
     <string name="bird_eye_quality_reduced">Resolusi 360 diturunkan kerana pemprosesan perlahan atau memori terhad. Butiran terdapat dalam Diagnostics.</string>
     <string name="msg_record_profile_restart">Pilihan kamera berubah. Keluar dan buka semula aplikasi untuk menggunakannya sebelum merakam.</string>
     <string name="dev_camera_display_title">Alat kamera dan paparan</string>
@@ -1068,4 +1068,18 @@
     <string name="vehicle_name_summary">Dipaparkan sebagai %1$s. Auto menggunakan nama model peranti; pilih secara manual jika perlu. Hanya menukar label.</string>
     <string name="vehicle_profile_surround">%1$s (sekeliling)</string>
     <string name="vehicle_profile_cabins">%1$s (sekeliling + kabin depan dan belakang)</string>
+    <string name="bird_eye_section">Kamera 360°</string>
+    <string name="bird_eye_experimental">DIY 360° eksperimen</string>
+    <string name="bird_eye_section_note">Menggunakan empat suapan sekeliling dengan penentukuran manual. Penjajaran dan jarak masih anggaran. Kamera kilang diberi keutamaan.</string>
+    <string name="bird_eye_display_title">Butang 360° membuka</string>
+    <string name="bird_eye_display_main">Skrin utama</string>
+    <string name="bird_eye_display_popup">Tetingkap timbul</string>
+    <string name="bird_eye_popup_button">Popup 360°</string>
+    <string name="bird_eye_popup_open">Buka popup 360°</string>
+    <string name="bird_eye_popup_close">Tutup popup 360°</string>
+    <string name="bird_eye_popup_summary">Seret untuk gerak, cubit untuk ubah saiz, atau gunakan butang besar dan tutup. Kekal terbuka apabila aplikasi diminimumkan; tidak dibuka secara automatik semasa but atau isyarat.</string>
+    <string name="bird_eye_popup_size">Ketinggian popup (%)</string>
+    <string name="bird_eye_popup_reset">Tetapkan semula saiz dan kedudukan popup</string>
+    <string name="bird_eye_calibration_reset">Tetapkan semula penentukuran dan kualiti</string>
+    <string name="bird_eye_popup_rejected">Popup 360° ditutup: kamera tidak menyokong tetingkap tambahan ini. Output kamera lain diberi keutamaan.</string>
 </resources>

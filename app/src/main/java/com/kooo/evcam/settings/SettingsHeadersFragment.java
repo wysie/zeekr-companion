@@ -173,6 +173,7 @@ public class SettingsHeadersFragment extends PreferenceFragmentCompat {
             case "screen_rearview":
                 return R.drawable.ic_rearview;
             case "screen_blind_spot_camera":
+            case "screen_bird_eye":
                 return R.drawable.ic_camera;
             case "screen_floating":
                 return R.drawable.ic_floating;

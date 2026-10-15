@@ -398,6 +398,25 @@
     </PreferenceScreen>
 
     <!-- ==================== 悬浮窗 ==================== -->
+    <PreferenceScreen android:key="screen_bird_eye" android:title="@string/bird_eye_section">
+        <Preference android:key="pref_bird_note" android:title="@string/bird_eye_experimental"
+            android:summary="@string/bird_eye_section_note" android:selectable="false" />
+        <ListPreference android:key="pref_bird_display" android:title="@string/bird_eye_display_title"
+            app:useSimpleSummaryProvider="false" />
+        <Preference android:key="pref_bird_open" android:title="@string/bird_eye_popup_open"
+            android:summary="@string/bird_eye_popup_summary" />
+        <Preference android:key="pref_bird_close" android:title="@string/bird_eye_popup_close" />
+        <ListPreference android:key="pref_bird_quality" android:title="@string/bird_eye_quality"
+            app:useSimpleSummaryProvider="false" />
+        <Preference android:key="pref_bird_quality_note" android:summary="@string/bird_eye_quality_note"
+            android:selectable="false" />
+        <SeekBarPreference android:key="pref_bird_popup_size" android:title="@string/bird_eye_popup_size"
+            app:showSeekBarValue="true" />
+        <Preference android:key="pref_bird_reset_layout" android:title="@string/bird_eye_popup_reset" />
+        <Preference android:key="pref_bird_calibrate" android:title="@string/bird_eye_calibrate" />
+        <Preference android:key="pref_bird_reset_calibration" android:title="@string/bird_eye_calibration_reset" />
+    </PreferenceScreen>
+
     <PreferenceScreen
         android:key="screen_floating"
         android:title="@string/set_section_floating">

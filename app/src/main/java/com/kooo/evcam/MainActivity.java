@@ -2557,6 +2557,7 @@ public class MainActivity extends AppCompatActivity {
         OverlayCoordinator.onActivityDestroyed(this);
         com.kooo.evcam.zeekr.RearViewMirrorService.stop(this);
         com.kooo.evcam.zeekr.SideViewPopupService.stop(this);
+        com.kooo.evcam.zeekr.BirdEyePopupService.stop(this);
 
         // 释放持续唤醒锁
         WakeUpHelper.releasePersistentWakeLock();
@@ -2751,7 +2752,26 @@ public class MainActivity extends AppCompatActivity {
      * 拍照键：交给相机层的拍照入口（悬浮按钮走的也是它）。
      * 提示按真实结果说 —— 以前按下就弹「已保存」，不管拍没拍到。
      */
+    public boolean openBirdEyePopup() {
+        if (!WakeUpHelper.hasOverlayPermission(this)) {
+            WakeUpHelper.requestOverlayPermission(this); return false;
+        }
+        leaveBirdEyeMain();
+        return com.kooo.evcam.zeekr.BirdEyePopupService.start(this);
+    }
+
+    public void leaveBirdEyeMain() {
+        if (compositeContainer != null && compositeContainer.getDisplayMode()
+                == com.kooo.evcam.zeekr.FourLaneContainer.DisplayMode.BIRD_EYE) compositeContainer.showGrid(false);
+        updateCompositeLabels();
+    }
+
     private void takePicture() {
+        if (com.kooo.evcam.zeekr.BirdEyePopupService.isRunning()) {
+            com.kooo.evcam.zeekr.BirdEyePhoto.save(this, com.kooo.evcam.zeekr.BirdEyePopupService.photo(),
+                    com.kooo.evcam.zeekr.BirdEyePopupService.describe());
+            return;
+        }
         if (compositeContainer != null && compositeContainer.getDisplayMode()
                 == com.kooo.evcam.zeekr.FourLaneContainer.DisplayMode.BIRD_EYE) {
             com.kooo.evcam.zeekr.BirdEyePhoto.save(this, compositeContainer.birdEyePhoto(),
@@ -3251,6 +3271,10 @@ public class MainActivity extends AppCompatActivity {
         com.google.android.material.button.MaterialButton birdEye = findViewById(R.id.btn_bird_eye);
         if (birdEye != null) {
             birdEye.setOnClickListener(v -> {
+                if (new com.kooo.evcam.zeekr.BirdEyeWindowConfig(this).popup()) {
+                    openBirdEyePopup(); return;
+                }
+                com.kooo.evcam.zeekr.BirdEyePopupService.stop(this);
                 if (expandedPreview != null) {
                     expandAnimator.finishNow();
                     finishCollapse(false);
@@ -3456,7 +3480,8 @@ public class MainActivity extends AppCompatActivity {
             boolean enabled = compositeContainer.getDisplayMode()
                     == com.kooo.evcam.zeekr.FourLaneContainer.DisplayMode.BIRD_EYE;
             birdEye.setSelected(enabled);
-            birdEye.setText(enabled ? R.string.bird_eye_back : R.string.bird_eye_button);
+            birdEye.setText(enabled ? R.string.bird_eye_back : new com.kooo.evcam.zeekr.BirdEyeWindowConfig(this).popup()
+                    ? R.string.bird_eye_popup_button : R.string.bird_eye_button);
         }
         boolean grid = compositeContainer.getDisplayMode()
                 == com.kooo.evcam.zeekr.FourLaneContainer.DisplayMode.GRID;

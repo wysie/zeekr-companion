@@ -143,10 +143,19 @@ public final class ChannelRules {
         SIDE_POPUP,
         /** Independent side-camera HUD output. */
         SIDE_HUD,
+        /** Lowest-priority optional DIY 360 canvas. */
+        BIRD_EYE,
         /** 录制器的输入 SurfaceTexture：录制器停放、重新备好都是同一个，所以停录后它能留在会话里。 */
         RECORD,
         /** 不显示的出帧口：只用来补位 —— 一路要出帧、会话里却没有一个活着的输出能出帧时才加。 */
         SINK
+    }
+
+    /** Optional previews yield before JPEG, mirrors and recording on configuration failure. */
+    public static Out optionalPreviewToDrop(Set<Out> built) {
+        for (Kind kind : new Kind[]{Kind.BIRD_EYE, Kind.SIDE_HUD, Kind.SIDE_POPUP})
+            for (Out out : built) if (out.kind == kind) return out;
+        return null;
     }
 
     /**
@@ -1201,6 +1210,7 @@ public final class ChannelRules {
                 return isSurround(lane);
             case SIDE_POPUP:
             case SIDE_HUD:
+            case BIRD_EYE:
                 return w.screenOn && isSurround(lane);
             default:
                 return true;
@@ -1310,6 +1320,8 @@ public final class ChannelRules {
                         && isSurround(lane);
             case SIDE_HUD:
                 return w.screenOn && w.holders.contains(CameraNeeds.Holder.SIDE_HUD) && isSurround(lane);
+            case BIRD_EYE:
+                return w.screenOn && w.holders.contains(CameraNeeds.Holder.BIRD_EYE) && isSurround(lane);
             case RECORD:
                 return w.holders.contains(CameraNeeds.Holder.RECORDING) && w.recordPlan.contains(lane.key);
             default:

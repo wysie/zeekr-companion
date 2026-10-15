@@ -243,14 +243,14 @@ public class ChannelRulesTest {
             claim(holder);
             assertFalse(holder + "：熄屏时后座舱谁都不要", ChannelRules.wanted(w, rear));
             assertFalse(holder + "：熄屏时前座舱谁都不要", ChannelRules.wanted(w, front));
-            assertEquals(holder + "：环视照它自己的规矩", holder != Holder.PREVIEW && holder != Holder.SIDE_POPUP && holder != Holder.SIDE_HUD,
+            assertEquals(holder + "：环视照它自己的规矩", holder != Holder.PREVIEW && holder != Holder.SIDE_POPUP && holder != Holder.SIDE_HUD && holder != Holder.BIRD_EYE,
                     ChannelRules.wanted(w, surround));
         }
         w.screenOn = true;
         for (Holder holder : Holder.values()) {
             w.holders.clear();
             claim(holder);
-            assertEquals(holder + "：亮屏照登记表", holder != Holder.MIRROR && holder != Holder.SIDE_POPUP && holder != Holder.SIDE_HUD,
+            assertEquals(holder + "：亮屏照登记表", holder != Holder.MIRROR && holder != Holder.SIDE_POPUP && holder != Holder.SIDE_HUD && holder != Holder.BIRD_EYE,
                     ChannelRules.wanted(w, rear));
             assertFalse(ChannelRules.releasedByDark(w, rear));
         }
