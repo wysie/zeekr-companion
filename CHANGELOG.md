@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+Nothing yet.
+
+## [2.11.39-personal-alpha] - 2026-10-16
+
 - Make USB-to-internal fallback a separate off-by-default Developer option, including recorder failover; give USB 10 seconds before an explicitly allowed startup fallback.
 - Keep pending USB recordings waiting for a ready drive and show a cancellable Waiting for USB state on the main record button; retain the notice when internal fallback actually occurs.
 
