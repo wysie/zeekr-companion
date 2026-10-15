@@ -99,3 +99,16 @@ The setting does not force camera access or change Camera2 ownership, scheduler
 contention handling, lifecycle or stale-frame guards. Busy hardware may prevent
 video; this remains unverified on the 009. Resetting blind spot settings disables
 this option. Diagnostics include its effective value.
+
+## Retired HUD window-layer experiment — 2026-10-16
+
+Following Ferix 2.13.0 (`92c611852dd8cad2ac0607b32da4869def6e5152`), remove
+the higher-layer switch, renderer path and its routing-rebuild state. His 7X
+test reported factory graphics still covering the camera picture. The earlier
+port and native overlay tests above are historical; they established window
+creation on synthetic displays, not precedence over factory graphics. Existing
+`hud_side_overlay` preferences are ignored. Ordinary Presentation output keeps
+the fork’s non-touchable/full-size window, freshness covers and transitions.
+009 mapping, fallback, factory coexistence and all other output defaults remain.
+Night contrast and scanner restart fixes have not been imported in this change.
+Working HUD video on the owner’s 009 remains unresolved.

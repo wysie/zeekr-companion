@@ -170,3 +170,9 @@ Opt-in HUD coexistence with centre-screen factory camera views adapts
 [FerixzTanz/CAMCORDER 830f2d0d](https://github.com/FerixzTanz/CAMCORDER/commit/830f2d0d).
 This fork keeps the behaviour off by default and keeps reverse, screen output,
 shared-camera ownership and lifecycle guards independent of the option.
+
+The experimental higher HUD layer was subsequently removed following
+[Ferix CAMCORDER 92c61185](https://github.com/FerixzTanz/CAMCORDER/commit/92c611852dd8cad2ac0607b32da4869def6e5152)
+and his reported 7X test. This fork retains ordinary Presentation output and its
+independent 009 mapping/factory-view coexistence. That report does not validate
+HUD video on the 009.

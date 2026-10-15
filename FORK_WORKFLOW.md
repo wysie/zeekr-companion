@@ -29,6 +29,7 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/vehicle-name-labels` | Cosmetic Auto/009/7X vehicle names, conservative Android-name detection and generic fallback; camera profile IDs and HUD mapping stay independent |
 | `feature/side-view-system-theme` | System day/night styling for popup and mirror controls/labels, with live configuration repaint and retained HUD backing |
 | `feature/side-view-mirroring` | Fork side-camera horizontal flip, including mirror replacement; existing PR heads preserved |
+| `fix/remove-hud-overlay` | Remove the unsuccessful higher HUD window layer while retaining ordinary HUD routing and 009 research settings |
 | `feature/settings-menu-organisation` | Task-based settings navigation and live manual 360 popup switch, preserving saved configuration and existing PR heads |
 | `feature/side-popup-hide-mirror` | Three-way mirror relationship with presentation-driven temporary hiding and retained mirror surface/settings |
 | `feature/hud-factory-coexistence` | Off-by-default HUD coexistence with factory centre-screen views, keeping reverse, screen output and hardware arbitration independent |

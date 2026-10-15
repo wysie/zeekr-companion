@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Remove the experimental above-factory-HUD window layer; retain ordinary HUD output, 009 display mapping and factory-view coexistence.
+
 - Group settings by task, with blind-spot Image & framing / Popup window pages, recording stamps subpage, grouped HUD/Developer controls and screen-off recording under Recording & photos.
 - Replace separate 360 popup Open/Close actions with a live Show 360° popup switch, synchronised with service closure and retaining manual-only startup.
 - Expose shared camera labels from blind-spot settings and clarify reset scopes, developer-mode help and raw-photo export paths.

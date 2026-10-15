@@ -94,6 +94,11 @@ public class SettingsNavigationAndroidTest {
                 for (String[] child : children) {
                     open(shell, child[0]);
                     assertNotNull(page(shell).findPreference(child[1]));
+                    if ("sub_side_hud".equals(child[0])) {
+                        assertNull(page(shell).findPreference("pref_hud_side_overlay"));
+                        assertNotNull(page(shell).findPreference("pref_hud_zeekr_009"));
+                        assertNotNull(page(shell).findPreference("pref_hud_during_factory"));
+                    }
                     back(shell);
                     assertEquals("screen_blind_spot_camera", shell.currentSection());
                     assertEquals(0, shell.getChildFragmentManager().getBackStackEntryCount());
