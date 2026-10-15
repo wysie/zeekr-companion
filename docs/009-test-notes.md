@@ -420,3 +420,13 @@ minimum contrast over black/white video exceeds 11:1 for button icons, 8:1 for
 label text and 3.8:1 for arrows in either theme. Native rendering and live theme
 switching await the owner's 009 check; no native screenshot verification was
 available during this change. Existing upstream PR heads remain unchanged.
+
+
+## Fresh-install permission correction (2026-10-15)
+
+Native API 32 emulator testing found startup repeatedly requesting RECORD_AUDIO
+although the manifest does not declare it and the app has no audio recorder.
+The ungrantable permission led MainActivity to finish after permission setup.
+Remove that stale request and the Developer microphone-permission row, without
+adding microphone access. Existing car installations may receive different OEM
+permission treatment; this finding is reproduced on a fresh emulator install.

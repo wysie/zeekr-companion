@@ -9,7 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
-Nothing yet.
+- Stop requesting the undeclared, unused microphone permission that could close a fresh install during permission setup.
 
 ## [2.11.29-personal-alpha] - 2026-10-15
 
