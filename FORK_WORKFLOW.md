@@ -43,6 +43,7 @@ The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
 | `feature/diy360-popup` | Dedicated 360 settings and manual overlay, with shared renderer/calibration, independent saved layout and lowest-priority camera surface |
 | `feature/diy360-cadence` | Faster bounded CPU preview pacing at unchanged resolution, duplicate-frame readback avoidance and presentation timing diagnostics |
 | `feature/diy360-refinement` | Bilinear preview sampling and fresh stitched-photo/calibration exports; geometric calibration remains unresolved |
+| `fix/diy360-seam-ghosting` | Narrow body-corner joins to reduce duplicate imagery, with raw-frame offline reproduction; estimated lens/mount geometry remains unresolved |
 | `feature/app-storage-folders` | Unified public app folder with legacy playback, per-directory protection and combined cleanup; no automatic migration |
 | `feature/diy360-resolution` | Sharper default and native-size preview-copy option, bounded allocation/performance fallback and retained quality diagnostics |
 | `feature/night-ui` | Ferix night palette and floating-button styling |

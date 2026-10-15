@@ -9,7 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
-Nothing yet.
+- Reduce DIY 360 double images by limiting camera blending to narrow diagonal joins at the body corners; estimated lens/mount geometry remains uncalibrated.
 
 ## [2.11.36-personal-alpha] - 2026-10-15
 

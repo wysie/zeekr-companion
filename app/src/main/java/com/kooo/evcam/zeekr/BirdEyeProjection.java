@@ -7,6 +7,28 @@ package com.kooo.evcam.zeekr;
 public final class BirdEyeProjection {
     private BirdEyeProjection() {}
 
+    /** Full feather width perpendicular to the diagonal joining two body edges, in metres.
+     * Keep overlap local: averaging uncalibrated views over whole corners doubles markings.
+     */
+    static final double SEAM_WIDTH = .20;
+
+    /** Physical camera roles are front/rear/left/right; source lane assignment is independent.
+     * A diagonal extends out from each body corner. Only a narrow corridor uses both views.
+     * This partitions observed pixels; it does not correct inaccurate lens or mount geometry.
+     */
+    static double regionWeight(int camera, double x, double y, Calibration calibration) {
+        double sideDistance = Math.abs(x) - calibration.width / 2;
+        double endDistance = Math.abs(y) - calibration.length / 2;
+        double t = .5 + (endDistance - sideDistance) / (SEAM_WIDTH * Math.sqrt(2));
+        t = Math.max(0, Math.min(1, t));
+        double endWeight = t * t * (3 - 2 * t);
+        if (camera == 0) return y > 0 ? endWeight : 0;
+        if (camera == 1) return y < 0 ? endWeight : 0;
+        if (camera == 2) return x < 0 ? 1 - endWeight : 0;
+        if (camera == 3) return x > 0 ? 1 - endWeight : 0;
+        throw new IllegalArgumentException("Invalid camera role");
+    }
+
     public static final class Camera {
         public final int lane;
         public final double x, y, height, yaw, pitch, roll, fov, cx, cy;
@@ -69,7 +91,8 @@ public final class BirdEyeProjection {
             return Math.abs(x) <= width / 2 && Math.abs(y) <= length / 2;
         }
         public String describe() {
-            StringBuilder result = new StringBuilder("length=").append(length).append(" width=")
+            StringBuilder result = new StringBuilder("projection=equidistant seam=body-corner-diagonal feather=")
+                    .append(SEAM_WIDTH).append("m (estimated calibration)\nlength=").append(length).append(" width=")
                     .append(width).append(" margin=").append(margin).append(" (metres)\n");
             for (int i = 0; i < cameras.length; i++) {
                 Camera c = cameras[i];
@@ -83,7 +106,7 @@ public final class BirdEyeProjection {
         }
     }
 
-    /** Precomputed source pixel addresses and normalized blend for each output pixel.
+    /** Precomputed source pixel addresses and narrow seam blend for each output pixel.
      * All four lanes come from one delivered buffer. This does not prove that their
      * sensor exposures are synchronized or that each individual camera is advancing.
      */
@@ -111,10 +134,12 @@ public final class BirdEyeProjection {
                     double x = (col + .5 - width / 2.0) * metresPerPixel;
                     if (calibration.insideCar(x, y)) continue;
                     int at = row * width + col;
-                    double a = 0, b = 0;
-                    for (Camera camera : calibration.cameras) {
-                        double weight = camera.project(x, y, uv);
-                        if (weight <= 0) continue;
+                    double a = 0, b = 0, fallbackWeight = 0;
+                    int fallbackAddress = -1, fallbackFraction = 0;
+                    for (int role = 0; role < calibration.cameras.length; role++) {
+                        Camera camera = calibration.cameras[role];
+                        double confidence = camera.project(x, y, uv);
+                        if (confidence <= 0) continue;
                         CompositeStreamGeometry.Lane lane = plan.lane(camera.lane);
                         // Clamp to pixel centres INSIDE this lane, never a separator or neighbour.
                         int minX = Math.max(0, (int) Math.ceil(lane.u0 * sourceWidth));
@@ -128,6 +153,13 @@ public final class BirdEyeProjection {
                         int sx = (int) Math.floor(px), sy = (int) Math.floor(py);
                         int fraction = (int) ((px - sx) * 256) | (int) ((py - sy) * 256) << 8;
                         int address = sy * sourceWidth + sx;
+                        // If the intended camera has no lens coverage, use an actually observed
+                        // alternative, without clamping an invalid ray or blending in black.
+                        if (confidence > fallbackWeight) {
+                            fallbackWeight = confidence; fallbackAddress = address; fallbackFraction = fraction;
+                        }
+                        double weight = regionWeight(role, x, y, calibration);
+                        if (weight <= 0) continue;
                         if (weight > a) {
                             b = a; second[at] = first[at]; secondFraction[at] = firstFraction[at];
                             a = weight; first[at] = address; firstFraction[at] = fraction;
@@ -135,6 +167,7 @@ public final class BirdEyeProjection {
                             b = weight; second[at] = address; secondFraction[at] = fraction;
                         }
                     }
+                    if (a <= 0) { first[at] = fallbackAddress; firstFraction[at] = fallbackFraction; }
                     mix[at] = a > 0 ? (int) Math.round(255 * b / (a + b)) : 0;
                 }
             }
@@ -146,8 +179,8 @@ public final class BirdEyeProjection {
             for (int i = 0; i < first.length; i++) {
                 if (first[i] < 0) { output[i] = 0xff000000; continue; }
                 int a = sample(source, first[i], firstFraction[i], sourceWidth);
-                int b = second[i] < 0 ? a : sample(source, second[i], secondFraction[i], sourceWidth);
                 int wb = mix[i], wa = 255 - wb;
+                int b = second[i] < 0 || wb == 0 ? a : sample(source, second[i], secondFraction[i], sourceWidth);
                 int r = (((a >> 16) & 255) * wa + ((b >> 16) & 255) * wb + 127) / 255;
                 int g = (((a >> 8) & 255) * wa + ((b >> 8) & 255) * wb + 127) / 255;
                 int blue = ((a & 255) * wa + (b & 255) * wb + 127) / 255;

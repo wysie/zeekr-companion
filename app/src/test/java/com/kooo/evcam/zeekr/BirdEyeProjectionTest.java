@@ -101,11 +101,62 @@ public class BirdEyeProjectionTest {
         assertEquals(0xff000000, output[46 * 60 + 30]);
     }
     @Test public void seamBlendsCameraColoursWithoutBlackDarkening() {
-        int colour = renderColours(1280, 5140)[5 * 60 + 56];
+        // x=1.95,y=3.55: exactly on the front/right diagonal from the body corner.
+        int colour = renderColours(1280, 5140)[10 * 60 + 49];
         assertEquals(255, (colour >>> 16) & 255);
         assertTrue(((colour >>> 8) & 255) > 0);
         assertTrue(((colour >>> 8) & 255) < 255);
         assertEquals(0, colour & 255);
+    }
+    @Test public void outsideNarrowJoinOnlyOneCameraContributes() {
+        int[] image = renderColours(1280, 5140);
+        // Previously all corner overlap was mixed, doubling displaced markings well away from a join.
+        assertEquals(0xffff0000, image[5 * 60 + 49]); // Front side of front/right join.
+        assertEquals(0xffffff00, image[15 * 60 + 49]); // Right side of the same join.
+        assertEquals(0xff00ff00, image[86 * 60 + 10]);
+        assertEquals(0xff0000ff, image[76 * 60 + 10]);
+    }
+    @Test public void joinsAreSymmetricNormalizedAndAnchoredAtBodyCorners() {
+        BirdEyeProjection.Calibration c = defaults();
+        for (int sx : new int[]{-1, 1}) for (int sy : new int[]{-1, 1}) {
+            double x = sx * 2, y = sy * 3.6;
+            int end = sy > 0 ? 0 : 1, side = sx < 0 ? 2 : 3;
+            assertEquals(.5, BirdEyeProjection.regionWeight(end, x, y, c), 1e-8);
+            assertEquals(.5, BirdEyeProjection.regionWeight(side, x, y, c), 1e-8);
+            for (double offset : new double[]{-.3, -.05, 0, .05, .3}) {
+                double sum = 0;
+                for (int role = 0; role < 4; role++) {
+                    double weight = BirdEyeProjection.regionWeight(role, x, y + sy * offset, c);
+                    assertTrue(weight >= 0 && weight <= 1);
+                    sum += weight;
+                }
+                assertEquals(1, sum, 1e-8);
+            }
+            assertEquals(1, BirdEyeProjection.regionWeight(end, x, y + sy * .3, c), 0);
+            assertEquals(1, BirdEyeProjection.regionWeight(side, x, y - sy * .3, c), 0);
+        }
+        BirdEyeProjection.Calibration longer = new BirdEyeProjection.Calibration(6, 2, 2, c.cameras);
+        assertEquals(.5, BirdEyeProjection.regionWeight(0, 2, 4, longer), 1e-8);
+    }
+    @Test public void seamUsesPhysicalRoleAfterLaneAssignmentsAreSwapped() {
+        BirdEyeProjection.Camera[] cameras = defaults().cameras.clone();
+        BirdEyeProjection.Camera front = cameras[0], right = cameras[3];
+        cameras[0] = new BirdEyeProjection.Camera(3, front.x, front.y, front.height,
+                front.yaw, front.pitch, front.roll, front.fov, front.cx, front.cy, false);
+        cameras[3] = new BirdEyeProjection.Camera(0, right.x, right.y, right.height,
+                right.yaw, right.pitch, right.roll, right.fov, right.cx, right.cy, false);
+        int[] output = renderSolidLanes(new BirdEyeProjection.Calibration(5.2, 2, 2, cameras),
+                new int[]{0xffff0000, 0xff00ff00, 0xff0000ff, 0xffffff00});
+        assertEquals(0xffffff00, output[5 * 60 + 49]);
+        assertEquals(0xffff0000, output[15 * 60 + 49]);
+    }
+    @Test public void missingPreferredLensCoverageFallsBackToAnObservedCamera() {
+        BirdEyeProjection.Camera[] cameras = defaults().cameras.clone();
+        // Front camera turned away. The still-visible right camera must fill this point alone.
+        cameras[0] = camera(0, 0, 2.6, 180, false);
+        int[] output = renderSolidLanes(new BirdEyeProjection.Calibration(5.2, 2, 2, cameras),
+                new int[]{0xffff0000, 0xff00ff00, 0xff0000ff, 0xffffff00});
+        assertEquals(0xffffff00, output[5 * 60 + 49]);
     }
     @Test public void squashedHalFramesUseSameNormalizedLaneMapping() {
         assertArrayEquals(renderColours(1280, 5140), renderColours(1600, 900));
@@ -124,6 +175,18 @@ public class BirdEyeProjectionTest {
         }
         new BirdEyeProjection.Map(defaults(), plan, w, h, 60, 92).render(pixels, output);
         for (int colour : output) assertNotEquals(0xffff00ff, colour);
+        return output;
+    }
+    private int[] renderSolidLanes(BirdEyeProjection.Calibration c, int[] colours) {
+        CompositeStreamGeometry.Plan plan = CompositeStreamGeometry.analyse("surround-test", 1280, 5140);
+        int[] pixels = new int[1280 * 5140], output = new int[60 * 92];
+        java.util.Arrays.fill(pixels, 0xffff00ff);
+        for (int i = 0; i < 4; i++) {
+            CompositeStreamGeometry.Lane lane = plan.lane(i);
+            for (int y = lane.y; y < lane.y + lane.height; y++)
+                java.util.Arrays.fill(pixels, y * 1280, (y + 1) * 1280, colours[i]);
+        }
+        new BirdEyeProjection.Map(c, plan, 1280, 5140, 60, 92).render(pixels, output);
         return output;
     }
     @Test(expected = IllegalArgumentException.class) public void nanCalibrationCannotGenerateAnImage() {

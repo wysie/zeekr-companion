@@ -102,8 +102,14 @@ frame at the selected resolution/cadence, respecting the detected normalized lan
 and separators. No new Camera2 surface, session or vehicle control is opened.
 
 A single background-priority worker precomputes a lookup mapping each output ground point through
-the camera pose and equidistant lens. It chooses the two strongest valid views
-and blends their normalized confidence weights. It produces the selected output size,
+the camera pose and equidistant lens. Front/rear and side regions meet on diagonals
+extending from the vehicle body corners. Only a 20 cm corridor perpendicular to
+each diagonal blends the adjacent views, using a smooth normalized feather.
+Outside it, one camera supplies the pixel. If the intended camera has no valid
+lens coverage, the strongest actually observed alternative supplies the pixel;
+if no camera covers it, it remains black. Physical roles remain independent of
+source-lane assignments. This reduces broad ghosting but cannot align incorrect
+projections; a misplaced curb can still jump across a join. It produces the selected output size,
 scaled with uniform metres per pixel, and draws a masked vehicle outline with
 its front indicated. Ground beyond the lens or behind a camera is rejected;
 unobserved areas remain black rather than stretching source edges or inventing
@@ -225,3 +231,33 @@ conditions clear while its explicit runtime request remains active. Closing/X or
 Exit ends that request. The prototype remains uncalibrated; there is no P-only
 or speed eligibility rule. System-themed corner controls reuse the side popup’s
 48 dp controls. Loading/status notices wrap in the narrower window.
+
+## Road comparison and local seam follow-up (2026-10-15)
+
+The owner's same-location road comparison shows curved/discontinuous road
+markings in DIY output versus straighter factory imagery. These are geometric
+errors, not evidence of damaged cameras. The current model assumes identical
+equidistant lenses and estimated mounts; no factory lens/pose calibration is
+available. No replacement 009 calibration has been inferred from phone photos.
+
+The previous confidence blend mixed two differently projected views across large
+corner areas. Narrow body-corner joins now reduce the area containing double
+images. The shared main/popup renderer and stitched exports use the same rule;
+calibration values, image orientation, quality and capture cadence are unchanged.
+Calibration descriptions identify the seam algorithm and width for future exports.
+
+`tools/BirdEyeRawFixture.java` reproduces the actual renderer from an original
+1280×5140 raw composite with the exported 4 px separator geometry and default
+calibration. Compile against the Android debug Java classes after
+`:app:compileDebugJavaWithJavac`, then run on the desktop with headless AWT.
+Compare before/after at identical source/output sizes. Owner images and outputs
+remain private and are not included in the repository. The supplied daytime
+frame shows less duplicated imagery around joins, but curb alignment and the
+projected bumper remain incorrect. A narrow feather can make a geometric jump
+more conspicuous. This is a partial compositing improvement, not a factory-quality
+calibration or proof that nearby objects have correct positions.
+
+A proper geometric fit needs original uncorrected lanes plus reliable ground
+correspondences (known-position targets, or a rectified same-position factory
+ground view). Fit lens and camera poses against them and check another scene;
+changing the car graphic or blending more heavily cannot repair that fit.

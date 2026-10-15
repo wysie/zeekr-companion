@@ -648,3 +648,26 @@ existing tablet layout. Initial captures ran before the compositor presented the
 new screen; capture now waits for the visible target and presentation settling.
 Screenshots are emulator-only and are not committed. Hardware coexistence still
 requires the 009 test described above.
+
+## Road comparison: narrow DIY joins (2026-10-15, vehicle checks pending)
+
+The owner's same-position road photos show curved/doubled markings in DIY output
+and a straighter factory ground view. Tested a narrower 20 cm diagonal feather
+through the actual renderer, with the supplied daytime 1280×5140 raw frame and
+one earlier night raw frame, using the recorded default calibration. Broad ghost
+images at joins are reduced; ground alignment, stretched objects and the projected
+front bumper remain incorrect. Phone screenshots do not establish a replacement
+lens/mount calibration. No calibration defaults were changed.
+
+The shared main/popup renderer now uses one physical camera outside the narrow
+join, normalized adjacent-camera blending inside it, and an observed-coverage
+fallback when the intended lens cannot see a point. No valid coverage stays
+black. Existing separator exclusion and incomplete-copy rejection remain.
+
+Validation: 1,382 JVM tests passed, including role/lane swapping, all four join
+symmetries, pure-camera regions outside the feather and absent-primary coverage.
+Debug lint and signed release assembly passed. Reproduced the synthetic ground
+fixture and private day/night raw captures on the desktop; these are not car
+performance or geometric-accuracy tests. This branch is not included in the
+published 2.11.36 APK. On-car review must check for more visible discontinuities
+at the now narrower joins; a seam change cannot repair erroneous geometry.
