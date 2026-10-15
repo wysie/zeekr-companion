@@ -9,7 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
-Nothing yet.
+- Keep playback actions aligned and readable with content-sized, equal-height rows that wrap instead of clipping long labels.
 
 ## [2.11.36-personal-alpha] - 2026-10-15
 

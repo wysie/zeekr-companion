@@ -60,6 +60,7 @@ release numbers remain independent of upstream.
 - **Super mirror integration:** temporarily show the signalling side's camera in
   the existing mirror, then restore the previous view; alternatively, show a
   separate side-camera window alongside it.
+- **Playback controls:** video and photo action buttons size to their labels, keep equal heights within each row, and wrap to another row when space is tight. “Send to phone” remains aligned and fully readable without shrinking the text.
 - **Side-window controls and tuning:** shared left/right placement, drag and pinch
   resizing, temporary expand/close controls, per-side image rotation, defaults
   reset, and automatic framing adjustment to avoid black patches at extreme aim
