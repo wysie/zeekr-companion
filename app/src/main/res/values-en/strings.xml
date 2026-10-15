@@ -1019,7 +1019,7 @@
     <string name="set_side_output_hud">HUD</string>
     <string name="set_side_output_both">Screen and HUD</string>
     <string name="set_sub_hud_title">HUD picture</string>
-    <string name="set_sub_hud_summary">Display selection, size, position and opacity on the HUD</string>
+    <string name="set_sub_hud_summary">Display, overlay layer, placement, contrast, night brightness and edge fade</string>
     <string name="set_hud_zeekr_009_title">Zeekr 009 HUD</string>
     <string name="set_hud_zeekr_009_summary">Use the 009 mapping for display 3 at 1280×640. Experimental: check the windscreen while parked; turn this off if the image appears on another screen. If unavailable, the screen view is used.</string>
     <string name="set_hud_side_size_title">HUD picture height (% of HUD height)</string>
