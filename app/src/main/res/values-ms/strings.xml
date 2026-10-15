@@ -742,15 +742,6 @@
     </plurals>
 
     <!-- Buka pilihan pembangun -->
-    <string name="dev_unlock_hint">Kata laluan</string>
-    <string name="dev_unlock_title">Pilihan pembangun</string>
-    <string name="dev_unlock_msg">Ciri yang belum siap dan alat penyelesaian masalah. Ia kekal hidup sehingga anda ketik Safety notice sekali lagi.</string>
-    <string name="dev_unlocked">Pilihan pembangun dihidupkan</string>
-    <string name="dev_wrong_password">Kata laluan salah</string>
-    <string name="dev_lock_title">Matikan pilihan pembangun</string>
-    <string name="dev_lock_msg">Jika dimatikan, pilihan pembangun disembunyikan dan ciri di dalamnya berhenti berfungsi. Untuk menghidupkannya semula, ketik Safety notice sekali lagi dan masukkan kata laluan.</string>
-    <string name="dev_lock_confirm">Matikan</string>
-    <string name="dev_locked">Pilihan pembangun dimatikan</string>
 
     <!-- Pemberitahuan -->
     <string name="notif_recording_title">Merakam</string>
@@ -1009,7 +1000,7 @@
     <string name="set_hud_side_vertical_summary">0 ialah atas, 100 ialah bawah</string>
     <string name="set_hud_side_opacity_title">Kelegapan gambar HUD (%)</string>
     <string name="set_hud_side_opacity_summary">Lebih rendah lebih pudar. Warna hitam memang tidak menyala pada HUD</string>
-    <string name="set_side_hud_note">HUD masih eksperimen pada 009. Jika tidak tersedia, paparan skrin digunakan. HUD mengabaikan ambang kelajuan; kamera asal dan undur tetap diutamakan.</string>
+    <string name="set_side_hud_note">HUD masih eksperimen pada 009. Jika tidak tersedia, paparan skrin digunakan. HUD tiada ambang kelajuan. Paparan kilang menyembunyikannya secara lalai; pilihan bersama eksperimen ada dalam Gambar HUD. Undur sentiasa menyembunyikannya dan output skrin tetap mengalah.</string>
 
     <!-- DIY ground-plane 360 prototype -->
     <string name="bird_eye_button">360°</string>
@@ -1094,4 +1085,6 @@
     <string name="set_hud_side_follow_summary">Hidup: isyarat kiri di kiri, kanan di kanan; peluncur kedudukan mengukur jarak dari tepi itu. Mati: kedudukan tetap diukur dari kiri.</string>
     <string name="set_hud_during_factory_title">Kekalkan kamera sisi HUD semasa paparan kilang (eksperimen)</string>
     <string name="set_hud_during_factory_summary">Mati secara lalai. Mengekalkan kamera sisi HUD sahaja semasa 360 kilang, tetingkap kamera atau bantuan parkir. Undur masih menyembunyikannya; paparan skrin tetap mengalah. Perkakasan kamera bersama boleh mengganggu suapan. Tidak memaksa akses kamera.</string>
+    <string name="set_developer_mode_title">Dayakan mod pembangun</string>
+    <string name="set_developer_mode_summary">Amaran: ciri eksperimen dan alat penyelesaian masalah boleh menjejaskan kamera, rakaman dan storan. Mati pada pemasangan baharu; pilihan dikekalkan selepas mula semula dan kemas kini. Mematikannya menyembunyikan pilihan pembangun dan menyahaktifkan tetapannya tanpa memadam nilai tersimpan. Sesetengah perubahan memerlukan aplikasi dimulakan semula.</string>
 </resources>

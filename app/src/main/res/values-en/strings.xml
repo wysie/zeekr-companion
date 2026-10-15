@@ -760,15 +760,6 @@
     <!-- Look before saving a profile -->
 
     <!-- Developer options unlock -->
-    <string name="dev_unlock_hint">Password</string>
-    <string name="dev_unlock_title">Developer options</string>
-    <string name="dev_unlock_msg">Unfinished features and troubleshooting tools. They stay on until you tap Safety notice again.</string>
-    <string name="dev_unlocked">Developer options on</string>
-    <string name="dev_wrong_password">Wrong password</string>
-    <string name="dev_lock_title">Turn off developer options</string>
-    <string name="dev_lock_msg">When off, developer options are hidden and the features in them stop working. To turn them back on, tap Safety notice again and enter the password.</string>
-    <string name="dev_lock_confirm">Turn off</string>
-    <string name="dev_locked">Developer options off</string>
 
     <!-- Notifications -->
     <string name="notif_recording_title">Recording</string>
@@ -1032,7 +1023,7 @@
     <string name="set_hud_side_vertical_summary">0 is the top, 100 the bottom</string>
     <string name="set_hud_side_opacity_title">HUD picture opacity (%)</string>
     <string name="set_hud_side_opacity_summary">Lower is fainter. Black does not light up on a HUD anyway</string>
-    <string name="set_side_hud_note">HUD is experimental on the 009. If unavailable, the screen view is used. The HUD ignores the speed threshold; factory cameras and reverse still take priority.</string>
+    <string name="set_side_hud_note">HUD is experimental on the 009. If unavailable, the screen view is used. HUD has no speed threshold. Factory views hide it by default; HUD picture offers an experimental coexistence option. Reverse always hides it, and screen output still yields.</string>
 
     <!-- DIY ground-plane 360 prototype -->
     <string name="bird_eye_button">360°</string>
@@ -1117,4 +1108,6 @@
     <string name="set_hud_side_follow_summary">On: left signal on the left, right signal on the right; the position slider sets distance from that edge. Off: fixed position measured from the left.</string>
     <string name="set_hud_during_factory_title">Keep HUD side camera during factory views (experimental)</string>
     <string name="set_hud_during_factory_summary">Off by default. Keeps only the HUD side camera during factory 360, camera pop-ups or parking assist. Reverse still hides it; screen views still yield. Shared camera hardware may interrupt the feed. This does not force camera access.</string>
+    <string name="set_developer_mode_title">Enable developer mode</string>
+    <string name="set_developer_mode_summary">Warning: experimental features and troubleshooting tools can affect cameras, recording and storage. Off on new installs; stays as selected across restarts and updates. Turning it off hides Developer options and disables their settings without erasing saved values. Some changes require restarting the app.</string>
 </resources>

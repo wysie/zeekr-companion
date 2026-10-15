@@ -752,15 +752,6 @@
     <!-- 保存配置前看一眼 -->
 
     <!-- 开发者选项解锁 -->
-    <string name="dev_unlock_hint">密码</string>
-    <string name="dev_unlock_title">开发者选项</string>
-    <string name="dev_unlock_msg">包含未完成的功能和排查工具。开启后将一直保持，再次点击「安全须知」可关闭。</string>
-    <string name="dev_unlocked">开发者选项已开启</string>
-    <string name="dev_wrong_password">密码错误</string>
-    <string name="dev_lock_title">关闭开发者选项</string>
-    <string name="dev_lock_msg">关闭后，开发者选项将隐藏，其中的功能停止生效。如需重新开启，再次点击「安全须知」并输入密码。</string>
-    <string name="dev_lock_confirm">关闭</string>
-    <string name="dev_locked">开发者选项已关闭</string>
 
     <!-- 通知 -->
     <string name="notif_recording_title">正在录制</string>
@@ -1019,7 +1010,7 @@
     <string name="set_hud_side_vertical_summary">0 贴顶，100 贴底</string>
     <string name="set_hud_side_opacity_title">HUD 画面不透明度（%）</string>
     <string name="set_hud_side_opacity_summary">越低越淡。HUD 上黑色本来就不亮</string>
-    <string name="set_side_hud_note">HUD 功能尚未在 009 上验证。不可用时回退到主屏。HUD 不受速度门槛限制，但仍优先使用原厂摄像头和倒车画面。</string>
+    <string name="set_side_hud_note">HUD 功能尚未在 009 上验证。不可用时回退到主屏。HUD 不受速度门槛限制。默认在原厂画面显示时隐藏；可在 HUD 画面中开启试验性共存选项。倒车时仍隐藏，主屏侧视仍让位。</string>
 
     <!-- DIY ground-plane 360 prototype -->
     <string name="bird_eye_button">360°</string>
@@ -1104,4 +1095,6 @@
     <string name="set_hud_side_follow_summary">开启后左灯靠左、右灯靠右。关闭时保持固定位置；左右位置滑块按左边计算。</string>
     <string name="set_hud_during_factory_title">原厂画面显示时保留 HUD 侧视（试验性）</string>
     <string name="set_hud_during_factory_summary">默认关闭。原厂 360、相机弹窗或泊车辅助显示时，仅保留 HUD 侧视。倒车时仍关闭；主屏侧视仍让位。共用相机硬件可能中断画面，不会强制获取相机。</string>
+    <string name="set_developer_mode_title">启用开发者模式</string>
+    <string name="set_developer_mode_summary">警告：试验性功能和排查工具可能影响相机、录制和存储。全新安装默认关闭；重启和更新后保留选择。关闭后隐藏开发者选项，其设置不再生效，已保存的值不会删除。部分更改需重启应用。</string>
 </resources>
