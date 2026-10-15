@@ -130,3 +130,9 @@ FerixzTanz (Felix Tan)/CAMCORDER feature contributions. The retained optional
 PayNow number **9271 6786** is explicitly attributed to **dts88**, not the fork
 maintainer. Upstream 2.11.4-alpha (`e4d0e0d`) is merged without rewriting upstream
 or existing contribution history.
+
+## CAMCORDER scanner follow-up
+
+Customize-value callbacks and callback-shape reporting are adapted from
+[FerixzTanz/CAMCORDER 945ee4ed](https://github.com/FerixzTanz/CAMCORDER/commit/945ee4ed160bb8d91ca5e54411bab2ffa68cf3d3).
+The fork retains its bounded event queue and caps reported callback shapes.
