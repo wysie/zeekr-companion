@@ -36,9 +36,9 @@ default when unset; Reset all restores it. For the owner's 1280×5140 stream:
 
 | Mode | Readback | Stitched output | Maximum rate |
 | --- | --- | --- | --- |
-| Low | 256×1028 | 320×480 | 5 fps |
-| Balanced (default) | 512×2056 | 640×960 | 5 fps |
-| Full | 1280×5140 | 960×1440 | about 3 fps |
+| Low | 256×1028 | 320×480 | about 15 fps |
+| Balanced (default) | 512×2056 | 640×960 | 10 fps |
+| Full | 1280×5140 | 960×1440 | 5 fps |
 
 The source aspect ratio, including separators, is retained. Full requests the
 available live preview at its native dimensions, bounded to 8 million pixels
@@ -174,3 +174,20 @@ calibrated replacement from this dark scene alone. Side-popup screen rotations
 should not be blindly substituted for the optical pose parameters. Defaults are
 retained until useful ground correspondences or measurements support a fit.
 Sampling/export improvements therefore do not resolve the geometric mismatch.
+
+## Preview pacing follow-up (2026-10-15)
+
+The owner's 2.11.25 Diagnostics retained a 4 ms readback and 18 ms render at
+Balanced after leaving the preview. That sample is not a sustained benchmark,
+but the old 200 ms interval itself limited Balanced to 5 fps. New target
+intervals are 67/100/200 ms at Low/Balanced/Full with unchanged image dimensions.
+A deadline-based timer and worker-completion wakeup avoid another fixed 100 ms
+poll after work. Busy/blocked paths retain 100 ms checks, and overdue work has
+a 16 ms backoff. Unchanged producer timestamps skip duplicate readback/render.
+
+Only one frame can be in flight; existing memory/timing downgrade, source expiry,
+geometry and factory-camera guards remain. The UI-thread TextureView readback
+and CPU stitcher remain, so this is not a GPU renderer or factory feed. Higher
+targets can increase load; delivered performance on the 009 is still unverified.
+Diagnostics include captureIntervalMs and presentationGapMs alongside copy/render
+times. Check these and concurrent recording at each quality setting.

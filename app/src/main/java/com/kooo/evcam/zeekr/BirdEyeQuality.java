@@ -28,6 +28,6 @@ public final class BirdEyeQuality {
         int sh = Math.max(1, (int) Math.floor(nativeHeight * factor));
         return new Size(sw, sh, quality == FULL ? 960 : quality == BALANCED ? 640 : 320,
                 quality == FULL ? 1440 : quality == BALANCED ? 960 : 480,
-                quality == FULL ? 333 : 200);
+                quality == FULL ? 200 : quality == BALANCED ? 100 : 67);
     }
 }
