@@ -430,3 +430,31 @@ The ungrantable permission led MainActivity to finish after permission setup.
 Remove that stale request and the Developer microphone-permission row, without
 adding microphone access. Existing car installations may receive different OEM
 permission treatment; this finding is reproduced on a fresh emulator install.
+
+
+## Settings layout review (2026-10-15, vehicle follow-up pending)
+
+The owner supplied a photo of the Surround switch clipped by its long card name.
+An API 32 tablet emulator at 2560×1600 reproduced that exact clipping. Camera
+names/custom badges now share a weighted column independently of the full-size
+switch. Quality badges move below their titles. Cards stack when the content
+pane is narrow, with margins reset when changing between row and column layouts.
+Shared segmented options wrap instead of truncating one line and use equal-height
+48 dp targets; Diagnostics actions can grow. The main action rail scrolls when
+shorter than its content. Switching from an editor to another category clears its
+nested history so the section title and Back/menu button match the visible page.
+
+Three real Android instrumentation checks pass at font scale 1.3: long Surround
+name + custom badge leaves the complete switch accessible; card rows reflow wide
+→ narrow → wide without shifted margins; long option labels wrap, stay aligned
+and deliver selection, with disabled controls remaining disabled. Native UI
+screens were inspected at 2560×1600 and 1920×1200. MainActivity retains its existing
+1.2 font override; the instrumentation tests use independent 1.3-scale contexts
+rather than claiming a system font setting overrides that existing behavior.
+
+These checks establish Android layout/interaction, not vehicle camera, USB or HUD
+compatibility. Please confirm on the 009 that every card switch is fully visible,
+long option labels and diagnostics buttons align, the category title is correct
+after leaving the editor, and Settings remains reachable in a shortened app window.
+The unidentified button in the owner's recollection cannot be identified with
+certainty without seeing that page. No owner photos/diagnostics are published.
