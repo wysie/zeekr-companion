@@ -52,6 +52,7 @@ release numbers remain independent of upstream.
   resizing, temporary expand/close controls, per-side image rotation, defaults
   reset, and automatic framing adjustment to avoid black patches at extreme aim
   angles. High angles can substantially narrow the visible area.
+- **System day/night camera controls:** side-popup buttons, turn-arrow badges and camera labels use light surfaces/dark icons by day and dark surfaces/light icons at night. Super mirror uses the same themed labels and side controls. Open windows repaint when Android reports a theme change; no separate switch is needed. This follows Android’s reported `uiMode`, so firmware that does not publish its factory theme may differ. The projected HUD keeps its dark-backed badges. Camera pixels and recordings are unaffected.
 - **Optional side-camera mirroring:** flip the image in the popup or Super mirror replacement; off by default, with recordings unchanged.
 - **Experimental HUD side camera:** adapted from Ferix PR #14; choose Screen, HUD or both, with separate HUD mirroring and layout controls. An opt-in Zeekr 009 mapping targets display 3 at 1280×640; physical output and camera availability on the 009 remain unverified.
 - **Optional camera labels:** identify the displayed camera in Super mirror and

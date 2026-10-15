@@ -2,6 +2,7 @@ package com.kooo.evcam.zeekr;
 
 import android.content.Context;
 import android.content.res.ColorStateList;
+import android.content.res.Configuration;
 import android.graphics.drawable.GradientDrawable;
 import android.graphics.drawable.RippleDrawable;
 import android.view.Gravity;
@@ -35,13 +36,26 @@ final class SideViewControls extends FrameLayout {
         button.setScaleType(android.widget.ImageView.ScaleType.CENTER_INSIDE);
         int padding = getResources().getDimensionPixelSize(R.dimen.side_control_padding);
         button.setPadding(padding, padding, padding, padding);
+        applyTheme(button);
+        button.setOnClickListener(view -> action.run());
+        return button;
+    }
+
+    private void applyTheme(ImageButton button) {
+        button.setImageTintList(ColorStateList.valueOf(
+                getResources().getColor(R.color.side_control_icon, null)));
         GradientDrawable background = new GradientDrawable();
         background.setColor(getResources().getColor(R.color.side_control_background, null));
         background.setCornerRadius(getResources().getDimension(R.dimen.side_control_radius));
         button.setBackground(new RippleDrawable(ColorStateList.valueOf(
                 getResources().getColor(R.color.side_control_pressed, null)), background, null));
-        button.setOnClickListener(view -> action.run());
-        return button;
+    }
+
+    @Override protected void onConfigurationChanged(Configuration configuration) {
+        super.onConfigurationChanged(configuration);
+        // These service-owned windows survive Activity recreation. Repaint without touching cameras.
+        for (int i = 0; i < getChildCount(); i++) applyTheme((ImageButton) getChildAt(i));
+        invalidate();
     }
 
     private void addButton(ImageButton button, int gravity) {
