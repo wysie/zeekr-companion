@@ -122,6 +122,84 @@ public class SideViewFramingTest {
         }
     }
 
+    @Test
+    public void ownerRolledViewUsesMoreSourceCoverageThanFittingThenCoverZooming() {
+        SideViewFraming old = frame(94, 50, 15, LaneCycle.LEFT, 1);
+        double oldTangent = Math.tan(Math.toRadians(old.effectiveFovDegrees()) / 2)
+                / SideViewRotation.coverScale(30, 500, 500);
+        SideViewFraming now = new SideViewFraming();
+        now.configure(94, 50, 15, LaneCycle.LEFT, 1, 30);
+        double newTangent = Math.tan(Math.toRadians(now.effectiveFovDegrees()) / 2);
+        assertTrue("Avoid needless enlargement of the same source pixels", newTangent > oldTangent * 1.1);
+        assertTrue(now.effectiveFovDegrees() <= 94);
+        assertValidGrid(now, 64);
+        float[] before = new float[2], after = new float[2];
+        old.sourcePoint(.5f, .5f, before);
+        now.sourcePoint(.5f, .5f, after);
+        assertArrayEquals("Keep aim centred on the same ray", before, after, .000001f);
+    }
+
+    @Test
+    public void rolledViewsStayInTheirOwnLaneAcrossWindowShapesAndExtremeAim() {
+        for (int lane : new int[]{LaneCycle.LEFT, LaneCycle.RIGHT}) {
+            for (int roll : new int[]{-90, -30, 30, 90}) {
+                for (float aspect : new float[]{.2f, 1, 3, 5}) {
+                    for (float back : new float[]{-80, 0, 50, 80}) {
+                        for (float up : new float[]{-60, 15, 60}) {
+                            SideViewFraming frame = new SideViewFraming();
+                            frame.configure(130, back, up, lane, aspect, roll);
+                            assertTrue(frame.effectiveFovDegrees() > 0);
+                            assertValidGrid(frame, 32);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    @Test
+    public void rollMatchesDisplayDirectionAndUsesPhysicalAspectBeforeMirroring() {
+        SideViewFraming frame = new SideViewFraming();
+        frame.configure(60, 0, 0, LaneCycle.LEFT, 2, 90);
+        float[] actual = new float[2], expected = new float[2];
+        frame.sourcePoint(1, .5f, actual);
+        // Clockwise display roll makes the right edge sample above the original
+        // centre. Width is twice height: that ray is one full half-width above it.
+        SideViewProjection.sourcePoint(.5f, -.5f, 60, 0, 0, LaneCycle.LEFT, 2, expected, 0);
+        assertArrayEquals(expected, actual, .000001f);
+        assertTrue(actual[1] < .5f);
+    }
+
+    @Test
+    public void oppositeRollAndAimRemainSymmetricAndRollInvalidatesTheFit() {
+        SideViewFraming left = new SideViewFraming(), right = new SideViewFraming();
+        left.configure(94, 50, 15, LaneCycle.LEFT, 3, 30);
+        right.configure(94, 50, 15, LaneCycle.RIGHT, 3, -30);
+        assertEquals(left.effectiveFovDegrees(), right.effectiveFovDegrees(), .0001);
+        float[] l = new float[2], r = new float[2];
+        for (int row = 0; row <= 16; row++) {
+            for (int col = 0; col <= 16; col++) {
+                left.sourcePoint(col / 16f, row / 16f, l);
+                right.sourcePoint(1 - col / 16f, row / 16f, r);
+                assertEquals(1, l[0] + r[0], .000001f);
+                assertEquals(l[1], r[1], .000001f);
+            }
+        }
+        assertFalse(left.configure(94, 50, 15, LaneCycle.LEFT, 3, 30));
+        assertTrue(left.configure(94, 50, 15, LaneCycle.LEFT, 3, 0));
+        assertFalse(left.configure(94, 50, 15, LaneCycle.LEFT, 3));
+        assertTrue(left.configure(94, 50, 15, LaneCycle.LEFT, 3, 100));
+        assertFalse(left.configure(94, 50, 15, LaneCycle.LEFT, 3, 90));
+    }
+
+    @Test
+    public void biggerWindowsGetFinerStraighteningWithoutUnboundedCanvasWork() {
+        assertEquals(10, SideViewFraming.meshDivisions(300, 300));
+        assertEquals(10, SideViewFraming.meshDivisions(500, 500));
+        assertEquals(16, SideViewFraming.meshDivisions(800, 800));
+        assertEquals(16, SideViewFraming.meshDivisions(2000, 400));
+    }
+
     private static void assertValidGrid(SideViewFraming frame, int n) {
         float[][] points = new float[(n + 1) * (n + 1)][2];
         for (int r = 0; r <= n; r++) {

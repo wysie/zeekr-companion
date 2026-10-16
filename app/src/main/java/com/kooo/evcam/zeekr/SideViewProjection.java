@@ -76,6 +76,11 @@ public final class SideViewProjection {
             double x = (u * 2.0 - 1.0) * t;
             double aspect = Float.isFinite(aspectRatio) && aspectRatio > 0f ? aspectRatio : 1.0;
             double y = (v * 2.0 - 1.0) * t / aspect;
+            mapPlane(x, y, out, offset);
+        }
+
+        /** Already aspect-corrected and rolled virtual-camera plane. */
+        void mapPlane(double x, double y, float[] out, int offset) {
             double z = 1.0;
 
             // 先往上（绕 x 轴，朝 −y 转），再往后（绕 y 轴，朝车尾那一边转）

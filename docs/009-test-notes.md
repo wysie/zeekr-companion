@@ -947,3 +947,44 @@ ID/zone and unsigned byte preservation, immutable byte/numeric snapshots, explic
 64-byte truncation, empty arrays and malformed/unrelated callback rejection.
 Callback return values continue through the existing type-aware proxy defaults.
 Actual callback contents and warning correlation still require another car scan.
+
+## Side-camera quality — 2026-10-16, next build
+
+The owner asked to prioritise camera quality before publishing the next release.
+Branch `fix/side-camera-quality` fits the corrected image's roll together with
+its final window shape. Previously an upright, already-fitted image was rotated
+and cover-scaled again. Corrected popup/HUD and Super mirror replacement now
+sample the rolled virtual-camera plane directly; horizontal mirroring remains
+outside this mapping, before labels/controls. Uncorrected rotation is unchanged.
+Aim and saved settings are retained; the FOV can still narrow to avoid sampling
+outside its own lane. This is not new lens calibration or a higher-resolution
+camera request. DIY 360 and recording pixels are unchanged.
+
+Using the owner's latest original raw composite, FOV 94°, rear 50°, up 15° and
+left roll +30° in a square window: the old fit was 80.5474° followed by a 1.3660×
+cover scale, yielding a final horizontal FOV of 63.6183°. The direct fit yields
+70.1029°, approximately 13.11% more virtual-plane width at the same centre ray.
+This measures reduced cropping, not recovered sensor resolution. Same-frame
+private ideal-projection images are in
+`artifacts/side-camera-quality/framing-comparison.jpg` (not a vehicle screenshot).
+
+The side correction mesh remains 10×10 in small windows and scales with displayed
+size up to 16×16 (at 800 px), bounded at 256 Canvas draws instead of an unbounded
+increase. For an 800×800 output at those settings, comparing Android-style
+four-point cell homographies with the exact Java projection gives 95th percentile
+source-coordinate error of 1.5431 native lane pixels at 10×10 and 0.6039 at 16×16;
+maximum 1.9508 vs 0.7649. This measures geometric approximation only, not on-car
+FPS or optical sharpness. Small-window mesh density does not change.
+
+Validation: 1,416 JVM tests, debug lint and signed release build pass. Two native
+Android Canvas tests render an encoded packed strip through the actual mesh and
+rotation helper: all pixels stay opaque and in the selected lane, mapped colours
+match expected rays, and left/right, final mirroring, high rear aim and square,
+wide and tall shapes are covered. Vehicle sharpness, smoothness while recording
+and physical HUD output still need owner testing. Existing upstream PR heads are
+unchanged. These changes require a subsequent build; published 2.11.43-beta.1
+remains unchanged.
+
+The four existing native popup startup tests also pass: transparent frame drain,
+fresh-side reveal, delayed waiting/cancellation, fade/reactivation and temporary
+Super mirror hiding/restoration. The release signing certificate is retained.

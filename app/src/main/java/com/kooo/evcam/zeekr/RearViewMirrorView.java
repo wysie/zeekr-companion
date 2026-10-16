@@ -669,7 +669,8 @@ public class RearViewMirrorView extends ViewGroup {
 
         if (sideView.active()) {
             int sideSave = SideViewRotation.begin(canvas,
-                    appConfig.getSidePopupRotation(sideView.lane()), width, height, appConfig.isSidePopupMirrored());
+                    sideStraighten ? 0 : appConfig.getSidePopupRotation(sideView.lane()),
+                    width, height, appConfig.isSidePopupMirrored());
             drawSideView(canvas, width, height);
             canvas.restoreToCount(sideSave);
             if (!frozen && appConfig.isRearViewCameraLabelEnabled()) {
@@ -1308,10 +1309,10 @@ public class RearViewMirrorView extends ViewGroup {
         int lane = sideView.displayLane(laneIndex);
         if (sideStraighten) {
             sideFraming.configure(sideFov, sideYaw, sidePitch, lane,
-                    (float) width / Math.max(1, height));
+                    (float) width / Math.max(1, height), appConfig.getSidePopupRotation(lane));
             RearViewGeometry.ShaderRects r = RearViewGeometry.toShaderRects(
                     plan, lane, RearViewGeometry.Viewport.full());
-            mesh.prepare(FisheyeProjection.MESH_DIVISIONS,
+            mesh.prepare(SideViewFraming.meshDivisions(width, height),
                     r.laneOffsetX * width, r.laneOffsetY * height,
                     r.laneScaleX * width, r.laneScaleY * height, sideMap);
             mesh.draw(canvas, 0f, 0f, width, height, paintTexture);
