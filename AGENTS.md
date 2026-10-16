@@ -2,7 +2,9 @@
 
 - `main` is the combined installable fork. `upstream-main` tracks dts88's
   unmodified `upstream/main` and is updated by fast-forward only. `personal-build`
-  is a historical snapshot; new combined work belongs on `main`.
+  is a historical snapshot; new combined work belongs on `main`. `ferix-main`
+  similarly tracks unmodified `ferix/main`; import selected Ferix changes through
+  feature/integration branches and preserve attribution.
 - Start independent upstream contributions from `upstream/main` or
   `upstream-main`. Keep unrelated features, personal version numbers and updater
   configuration out of their PR branches. Preserve existing PR heads unless the

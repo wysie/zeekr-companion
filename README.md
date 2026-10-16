@@ -119,8 +119,9 @@ mirror replacement on my 009; other changes still need on-car verification. See
 with other models and firmware versions is not established.
 
 **Clone `main` and build APKs from `main`.** It contains the combined installable
-fork; `upstream-main` tracks dts88's unmodified code. Individual contribution
-branches remain separate so useful changes can be proposed upstream. See
+fork; `upstream-main` tracks dts88's unmodified code, and `ferix-main` tracks
+Ferix's unmodified CAMCORDER source. Individual contribution branches stay separate;
+see the [submitted upstream PRs](docs/upstream-contributions.md). See
 [Fork workflow](FORK_WORKFLOW.md) for the branch layout. Whenever a feature is
 added or changed, update this README with its behavior, settings and limitations.
 
@@ -291,7 +292,8 @@ This page does not cover that.
 
 The fork retains the original application ID and public test signing key so its
 APK can update an existing installation signed with that key. In-app update checks
-point to this fork. The signing **private key** is public, so someone else can create
+query [wysie/zeekr-shortcut-car releases](https://github.com/wysie/zeekr-shortcut-car/releases).
+The beta setting adds beta releases; alpha releases stay excluded. The signing **private key** is public, so someone else can create
 Android-accepted updates with the same identity. It does not establish that an APK
 came from this maintainer. A private-key migration needs a separate installation/update
 plan; the existing identity is retained for compatibility. The updater now requires

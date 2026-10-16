@@ -1,11 +1,14 @@
 # Fork workflow
 
-The remotes are `origin` (wysie's fork) and `upstream` (dts88's repository).
+The remotes are `origin` (wysie's fork), `upstream` (dts88's repository), and
+`ferix` (FerixzTanz/CAMCORDER).
 
 | Branch | Purpose |
 | --- | --- |
 | `main` | Combined installable fork: completed features, fork version numbers, update source and build configuration |
 | `upstream-main` | Unmodified dts88 code; tracks `upstream/main` and updates by fast-forward only |
+| `ferix-main` | Unmodified CAMCORDER code; tracks `ferix/main` and updates by fast-forward only |
+| `contrib/01-*` through `contrib/11-*` | Independent upstream contributions; each starts directly from dts88 main, with no fork versions or updater configuration |
 | `feature/turn-signal-side-view` | One complete side-view feature: PR #4 port, independent Blind spot camera settings, temporary mirror view, Use Super mirror when active option, independent popup and pinch resizing |
 | `feature/camera-labels` | Optional camera labels, developed separately from side-view display modes |
 | `personal-build` | Historical snapshot before promotion to `main`; no new feature integration or build triggers |
@@ -90,6 +93,14 @@ git switch -c feature/my-change
 A dependent feature can start from its prerequisite feature branch. Keep personal
 version numbers and updater configuration on `main`. Fork-only work can start from
 `main`; do not use that branch as the base for an independent upstream PR.
+The [upstream contribution index](docs/upstream-contributions.md) records the submitted
+PRs and their validation. Preserve these published heads unless updating that PR.
+
+Fetch Ferix into `ferix/main`, then fast-forward `ferix-main`; import selected changes
+through separate feature/integration branches, preserving attribution. Do not merge
+personal fork changes into either source tracker. Updating a tracker does not update
+the combined APK until those changes are explicitly integrated into `main`.
+
 For a combined build:
 
 ```sh
