@@ -12,6 +12,7 @@ import android.view.TextureView;
 import android.view.View;
 
 import com.kooo.evcam.AppLog;
+import com.kooo.evcam.AppConfig;
 import com.kooo.evcam.R;
 import com.kooo.evcam.telemetry.Readings;
 import com.kooo.evcam.telemetry.Signal;
@@ -35,6 +36,7 @@ final class BirdEyePreview {
     private String qualityReason = "none";
     private final View owner;
     private final BirdEyeConfig config;
+    private final BirdEyeVehicleOverlay vehicleOverlay = new BirdEyeVehicleOverlay();
     private final Handler main = new Handler(Looper.getMainLooper());
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
     private final android.text.TextPaint noticePaint = new android.text.TextPaint(Paint.ANTI_ALIAS_FLAG);
@@ -118,6 +120,8 @@ final class BirdEyePreview {
             calibration = null;
             AppLog.w("BirdEyePreview", "Invalid calibration: " + error.getMessage());
         }
+        vehicleOverlay.prepare(owner.getResources(), calibration != null && BirdEyeVehicleOverlay.use009(
+                calibration.imageFitted(), new AppConfig(owner.getContext()).is009CameraMappingEnabled()));
     }
     private void resetQuality(boolean force) {
         int selected = config.quality();
@@ -364,14 +368,16 @@ final class BirdEyePreview {
         double mpp = Math.max((c.width + 2 * c.margin) / size.outputWidth, (c.length + 2 * c.margin) / size.outputHeight);
         float carW = (float) (c.width / mpp * scale), carH = (float) (c.length / mpp * scale);
         car.set(width / 2f - carW / 2, height / 2f - carH / 2, width / 2f + carW / 2, height / 2f + carH / 2);
-        paint.setColor(0xff292b30); paint.setStyle(Paint.Style.FILL);
-        canvas.drawRoundRect(car, 10 * scale, 10 * scale, paint);
-        paint.setColor(0xffdedee2); paint.setStyle(Paint.Style.STROKE); paint.setStrokeWidth(2 * scale);
-        canvas.drawRoundRect(car, 10 * scale, 10 * scale, paint);
-        paint.setStyle(Paint.Style.FILL); paint.setColor(Color.WHITE);
-        paint.setTextAlign(Paint.Align.CENTER);
-        paint.setTextSize(Math.min(18 * owner.getResources().getDisplayMetrics().scaledDensity, Math.max(1, carW / 3)));
-        canvas.drawText(owner.getContext().getString(R.string.bird_eye_front), width / 2f, car.top + carH * .2f, paint);
+        if (!vehicleOverlay.draw(canvas, car)) {
+            paint.setColor(0xff292b30); paint.setStyle(Paint.Style.FILL);
+            canvas.drawRoundRect(car, 10 * scale, 10 * scale, paint);
+            paint.setColor(0xffdedee2); paint.setStyle(Paint.Style.STROKE); paint.setStrokeWidth(2 * scale);
+            canvas.drawRoundRect(car, 10 * scale, 10 * scale, paint);
+            paint.setStyle(Paint.Style.FILL); paint.setColor(Color.WHITE);
+            paint.setTextAlign(Paint.Align.CENTER);
+            paint.setTextSize(Math.min(18 * owner.getResources().getDisplayMetrics().scaledDensity, Math.max(1, carW / 3)));
+            canvas.drawText(owner.getContext().getString(R.string.bird_eye_front), width / 2f, car.top + carH * .2f, paint);
+        }
         if (!fresh) {
             drawNotice(canvas, owner.getContext().getString(blockText(block)), width, height / 2f);
         }
