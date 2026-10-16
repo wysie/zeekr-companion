@@ -316,12 +316,15 @@ final class SideViewHudOutput {
 
             @Override
             public boolean onSurfaceTextureDestroyed(SurfaceTexture st) {
+                MultiCameraManager owner = boundManager != null ? boundManager
+                        : CameraManagerHolder.getInstance().getCameraManager();
+                boolean kept = MultiCameraManager.keepAuxiliaryCanvas(owner, ChannelRules.Kind.SIDE_HUD, st);
                 if (panel == created) created.clearFrames();
                 // 只放自己这一块：旧窗口的画面晚一步销毁时，别把新窗口接上的相机摘掉
                 if (st == boundTexture || boundTexture == null) {
                     unbindCamera();
                 }
-                return true;
+                return !kept;
             }
 
             @Override

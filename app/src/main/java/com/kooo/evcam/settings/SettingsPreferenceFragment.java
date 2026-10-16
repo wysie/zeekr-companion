@@ -170,6 +170,11 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     // ------------------------------------------------------------------ 录制
 
     private void bindRecording() {
+        bindSwitch("pref_009_camera_mapping", appConfig.is009CameraMappingEnabled(), on -> {
+            appConfig.set009CameraMappingEnabled(on);
+            toast(getString(R.string.msg_009_mapping_restart));
+        });
+
         bindCarModel();
 
         // 相机与视频流的参数（每一路的三条流、每一格的摆法）都在下面这个
@@ -818,6 +823,11 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                     appConfig.setHudSideContrastPercent(value);
                     com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
                 });
+        bindSlider("pref_hud_side_contrast_night", AppConfig.HUD_SIDE_MIN_CONTRAST_PERCENT,
+                AppConfig.HUD_SIDE_MAX_CONTRAST_PERCENT, appConfig.getHudSideContrastNightPercent(), "%", value -> {
+                    appConfig.setHudSideContrastNightPercent(value);
+                    com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+                });
         bindSlider("pref_hud_side_night", AppConfig.HUD_SIDE_MIN_NIGHT_PERCENT,
                 AppConfig.HUD_SIDE_MAX_NIGHT_PERCENT, appConfig.getHudSideNightPercent(), "%", value -> {
                     appConfig.setHudSideNightPercent(value);
@@ -1202,6 +1212,10 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     // ------------------------------------------------------------------ 界面
 
     private void bindInterface() {
+        onClick("pref_image_adjust", pref -> {
+            if (getActivity() instanceof MainActivity) ((MainActivity) getActivity()).showImageAdjustPanel();
+        });
+
         bindLanguage();
         bindEnum("pref_vehicle_name", SettingsRegistry.VEHICLE_NAME, appConfig.getVehicleNameMode(),
                 appConfig::setVehicleNameMode, () -> {
@@ -1367,28 +1381,6 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         bindScreenOffWakeHours();
         bindSwitch("pref_force_h264", appConfig.isForceH264Encoding(),
                 value -> appConfig.setForceH264Encoding(value));
-
-        // 画面调节：打开调节窗口（MainActivity 管着它，退出设置也还在），同时开启画面调节、套上存着的参数。
-        // 窗口开没开成由 MainActivity 说：没有悬浮窗权限、相机还没好时它自己提示
-        onClick("pref_image_adjust", pref -> {
-            if (getActivity() instanceof MainActivity) {
-                MainActivity main = (MainActivity) getActivity();
-                appConfig.setImageAdjustEnabled(true);
-                main.setImageAdjustEnabled(true);
-                main.showImageAdjustFloatingWindow();
-            }
-        });
-
-        onClick("pref_image_adjust_reset", pref -> {
-            if (getActivity() instanceof MainActivity) {
-                com.kooo.evcam.camera.ImageAdjustManager manager =
-                        ((MainActivity) getActivity()).getImageAdjustManager();
-                if (manager != null) {
-                    manager.resetToDefault();
-                    toast(getString(R.string.msg_adjust_reset));
-                }
-            }
-        });
 
         onClick("pref_camera_mapping", pref -> {
             if (getContext() != null) {

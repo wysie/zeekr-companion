@@ -75,6 +75,11 @@ import java.util.Set;
  * 一直就是这么做的，两个回看界面现在是同一套结构。</p>
  */
 public class PhotoPlaybackActivity extends AppCompatActivity {
+    public static final String EXTRA_GROUP_PREFIX = "photo_storage_key";
+    private FilmstripAdapter<PhotoGroup> filmstrip;
+    private androidx.recyclerview.widget.RecyclerView filmstripView;
+    private String requestedGroup;
+
 
     // UI 组件
     private RecyclerView photoList;
@@ -147,6 +152,17 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
         setContentView(R.layout.activity_photo_playback);
 
         initViews();
+        requestedGroup = savedInstanceState == null ? getIntent().getStringExtra(EXTRA_GROUP_PREFIX) : null;
+        filmstripView = findViewById(R.id.media_filmstrip);
+        filmstrip = new FilmstripAdapter<>(new FilmstripAdapter.Binder<PhotoGroup>() {
+            public File thumbnail(PhotoGroup group) { return group.getThumbnailFile(); }
+            public boolean isVideo(PhotoGroup group) { return false; }
+            public String label(PhotoGroup group) { return group.getFormattedTime(); }
+        });
+        filmstrip.setOnPick((group, index) -> loadPhotoGroup(group));
+        filmstripView.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this,
+                androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false));
+        filmstripView.setAdapter(filmstrip);
         setupListeners();
         setupTapToExpand();
         updatePhotoList();
@@ -516,6 +532,11 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
      */
     private void loadPhotoGroup(PhotoGroup group) {
         this.currentGroup = group;
+        if (filmstrip != null) {
+            int index = filmstrip.items().indexOf(group);
+            filmstrip.setCurrent(index);
+            if (index >= 0) filmstripView.smoothScrollToPosition(index);
+        }
         noSelectionHint.setVisibility(View.GONE);
         multiViewLayout.setVisibility(View.VISIBLE);
         controlsLayout.setVisibility(View.VISIBLE);
@@ -736,45 +757,9 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
         adapter.setLockedNames(lockedPhotos);
         updateLockButton();
 
-        Map<String, PhotoGroup> groupMap = new HashMap<>();
-        for (File dir : dirs) {
-            File[] files = dir.listFiles(file -> file.isFile() && (
-                    file.getName().toLowerCase(java.util.Locale.US).endsWith(".jpg")
-                    || file.getName().toLowerCase(java.util.Locale.US).endsWith(".jpeg")
-                    || file.getName().toLowerCase(java.util.Locale.US).endsWith(".png")));
-            if (files == null) continue;
-            for (File file : files) {
-                String timestamp = PhotoGroup.extractTimestampPrefix(file.getName());
-                String key = dir.getAbsolutePath() + "/" + timestamp;
-                PhotoGroup group = groupMap.get(key);
-                if (group == null) {
-                    group = new PhotoGroup(timestamp);
-                    groupMap.put(key, group);
-                }
-                group.addFile(file);
-            }
-        }
-
-        // 转为列表并排序（最新的在前）
-        List<PhotoGroup> allGroups = new ArrayList<>(groupMap.values());
-        Collections.sort(allGroups, (g1, g2) -> g2.getCaptureTime().compareTo(g1.getCaptureTime()));
-
-        // 第二步：按日期分组
-        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        Map<String, DateSection<PhotoGroup>> dateSectionMap = new LinkedHashMap<>();
-        
-        for (PhotoGroup group : allGroups) {
-            String dateString = dateFormat.format(group.getCaptureTime());
-            DateSection<PhotoGroup> section = dateSectionMap.get(dateString);
-            if (section == null) {
-                section = new DateSection<>(dateString, group.getCaptureTime());
-                dateSectionMap.put(dateString, section);
-            }
-            section.addItem(group);
-        }
-
-        // 日期分组已按日期排序（LinkedHashMap 保持插入顺序，而 allGroups 已排序）
-        dateSections.addAll(dateSectionMap.values());
+        dateSections.addAll(PhotoScan.scan(dirs));
+        List<PhotoGroup> allGroups = new ArrayList<>();
+        for (DateSection<PhotoGroup> section : dateSections) allGroups.addAll(section.getItems());
 
         // 更新UI
         if (dateSections.isEmpty()) {
@@ -787,7 +772,12 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
 
         adapter.buildFlattenedList();
         adapter.notifyDataSetChanged();
-        reloadShownGroup(shown);
+        if (filmstrip != null) {
+            filmstrip.setItems(allGroups);
+            filmstripView.setVisibility(allGroups.isEmpty() ? View.GONE : View.VISIBLE);
+        }
+        reloadShownGroup(requestedGroup != null ? requestedGroup : shown);
+        requestedGroup = null;
     }
 
     /**
@@ -929,6 +919,7 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
                         exitMultiSelectMode();
                         showEmptyState();
                     }
+                    updatePhotoList();
                 })
                 .setNegativeButton(R.string.action_cancel, null));
     }

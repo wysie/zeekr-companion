@@ -101,7 +101,12 @@ public final class BirdEyePopupService extends Service {
             next.texture.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
                 public void onSurfaceTextureAvailable(SurfaceTexture st, int w, int h) { if (view == next) bind(st); }
                 public void onSurfaceTextureSizeChanged(SurfaceTexture st, int w, int h) { restoreBuffer(st); }
-                public boolean onSurfaceTextureDestroyed(SurfaceTexture st) { if (bound == st) unbind(); return true; }
+                public boolean onSurfaceTextureDestroyed(SurfaceTexture st) {
+                    MultiCameraManager owner = manager != null ? manager : CameraManagerHolder.getInstance().getCameraManager();
+                    boolean kept = MultiCameraManager.keepAuxiliaryCanvas(owner,
+                            com.kooo.evcam.camera.ChannelRules.Kind.BIRD_EYE, st);
+                    if (bound == st) unbind(); return !kept;
+                }
                 public void onSurfaceTextureUpdated(SurfaceTexture st) {
                     if (view != next) return;
                     if (camera != null) next.source(camera.getPreviewSize());

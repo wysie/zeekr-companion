@@ -7,8 +7,15 @@ Alpha sections: one line per change, what changed and nothing else. Beta and sta
 sections: written for users, reviewed before release. Why a change was made lives in the
 commit message, not here.
 
-## [Unreleased]
+## [2.11.41-personal-alpha] - 2026-10-16
 
+- Add Ferix’s date-grouped photo/video gallery and viewer filmstrips, retaining legacy folders, Send to phone and per-directory footage protection.
+- Move supported picture adjustments into an in-app panel under Interface, independent of Developer mode and overlay permission.
+
+- Add an opt-in 009 mapping based on exported images: surround 3, driver 2, no guessed second cabin; retain manual overrides and legacy filenames.
+- Make DIY 360 adapt capture cadence before reducing resolution, requiring sustained timing pressure instead of one slow readback.
+- Keep optional window textures alive until the camera session releases them, avoiding abandoned outputs during popup/HUD/360 teardown.
+- Preserve signal-scan data and its original limits across app restarts; add separate HUD night contrast from Ferix.
 - Sync dts88 main through the merged camera-label PR and its settings refinements; retain fork versioning, shared side labels and menu layout.
 
 ## [2.11.40-personal-alpha] - 2026-10-16

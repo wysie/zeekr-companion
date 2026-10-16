@@ -110,7 +110,15 @@ public class SettingsNavigationAndroidTest {
                 select(shell, "screen_rearview");
                 assertEquals(0, shell.getChildFragmentManager().getBackStackEntryCount());
                 SwitchPreferenceCompat mirrorLabel = page(shell).findPreference("pref_rearview_camera_label");
-                assertTrue(mirrorLabel.isChecked()); mirrorLabel.performClick();
+                assertTrue(mirrorLabel.isChecked());
+                // Merged upstream labels depend on the mirror's master switch.
+                boolean mirrorOn = config.isRearViewEnabled();
+                assertEquals(mirrorOn, mirrorLabel.isEnabled());
+                config.setRearViewEnabled(true);
+                ((SwitchPreferenceCompat) page(shell).findPreference("pref_rearview")).setChecked(true);
+                assertTrue(mirrorLabel.isEnabled());
+                mirrorLabel.performClick();
+                config.setRearViewEnabled(mirrorOn);
                 assertFalse(config.isRearViewCameraLabelEnabled());
                 select(shell, "screen_blind_spot_camera"); open(shell, "sub_side_image");
                 assertFalse(((SwitchPreferenceCompat) page(shell).findPreference("pref_side_camera_label")).isChecked());

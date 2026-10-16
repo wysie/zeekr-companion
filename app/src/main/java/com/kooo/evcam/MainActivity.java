@@ -135,7 +135,7 @@ public class MainActivity extends AppCompatActivity {
     private boolean hideMainAfterStart;
 
     private ImageAdjustManager imageAdjustManager;  // 亮度/降噪调节管理器
-    private ImageAdjustFloatingWindow imageAdjustFloatingWindow;  // 亮度/降噪调节悬浮窗
+    private com.kooo.evcam.ui.ImageAdjustPanel imageAdjustPanel;  // 亮度/降噪调节悬浮窗
     private int textureReadyCount = 0;  // 记录准备好的TextureView数量
     private boolean isRecording = false;  // 录制状态标志
     private boolean isInBackground = false;  // 是否在后台
@@ -1447,14 +1447,16 @@ public class MainActivity extends AppCompatActivity {
      * 正是绿屏、马赛克和卡顿的来源，所以整个界面换成了时间轴播放器。</p>
      */
     private void showPlaybackInterface() {
-        startActivity(new Intent(this, com.kooo.evcam.zeekr.TimelinePlayerActivity.class));
+        startActivity(new Intent(this, com.kooo.evcam.playback.GalleryActivity.class)
+                .putExtra(com.kooo.evcam.playback.GalleryActivity.EXTRA_TAB, "videos"));
     }
 
     /**
      * 显示图片回看界面（新版四宫格界面）
      */
     private void showPhotoPlaybackInterface() {
-        startActivity(new Intent(this, com.kooo.evcam.playback.PhotoPlaybackActivity.class));
+        startActivity(new Intent(this, com.kooo.evcam.playback.GalleryActivity.class)
+                .putExtra(com.kooo.evcam.playback.GalleryActivity.EXTRA_TAB, "photos"));
     }
 
 
@@ -2799,6 +2801,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onPause() {
         super.onPause();
+        if (imageAdjustPanel != null) imageAdjustPanel.dismiss();
         isInBackground = true;
         // 熄屏带来的暂停：那一刻系统已经不交互了（人切走、重建、关掉时还交互着）。熄屏广播后到时据此照样记「因熄屏退下去」
         android.os.PowerManager power = (android.os.PowerManager) getSystemService(Context.POWER_SERVICE);
@@ -3045,6 +3048,10 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handleBackNavigation() {
+        if (imageAdjustPanel != null && imageAdjustPanel.isShowing()) {
+            imageAdjustPanel.dismiss();
+            return;
+        }
         if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) {
             drawerLayout.closeDrawer(GravityCompat.START);
             return;
@@ -3180,60 +3187,18 @@ public class MainActivity extends AppCompatActivity {
         AppLog.d(TAG, "Image adjust enabled: " + enabled);
     }
     
-    /**
-     * 显示亮度/降噪调节悬浮窗
-     * 悬浮窗由 MainActivity 管理，这样即使退出设置页面也能保持显示
-     */
-    public void showImageAdjustFloatingWindow() {
-        // 检查悬浮窗权限
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && !android.provider.Settings.canDrawOverlays(this)) {
-            Toast.makeText(this, R.string.msg_need_overlay_adjust, Toast.LENGTH_SHORT).show();
-            Intent intent = new Intent(android.provider.Settings.ACTION_MANAGE_OVERLAY_PERMISSION,
-                    android.net.Uri.parse("package:" + getPackageName()));
-            startActivityForResult(intent, REQUEST_OVERLAY_PERMISSION);
-            return;
-        }
-        
+    /** Open supported picture controls inside the Activity, without overlay permission. */
+    public void showImageAdjustPanel() {
         if (imageAdjustManager == null) {
             Toast.makeText(this, R.string.msg_camera_not_ready_adjust, Toast.LENGTH_SHORT).show();
             return;
         }
-        
-        // 关闭之前的悬浮窗（如果有）
-        if (imageAdjustFloatingWindow != null && imageAdjustFloatingWindow.isShowing()) {
-            imageAdjustFloatingWindow.dismiss();
-        }
-        
-        // 创建并显示悬浮窗
-        imageAdjustFloatingWindow = new ImageAdjustFloatingWindow(this, imageAdjustManager);
-        imageAdjustFloatingWindow.setOnDismissListener(() -> {
-            AppLog.d(TAG, "Image adjust floating window dismissed");
-        });
-        imageAdjustFloatingWindow.show();
-        // 窗口真打开了才说「已打开」：没权限、摄像头没就绪各有自己的提示（上面两处）；
-        // show() 加不上窗口时只记日志不抛，所以问一下它
-        if (imageAdjustFloatingWindow.isShowing()) {
-            Toast.makeText(this, R.string.msg_adjust_opened, Toast.LENGTH_SHORT).show();
-        }
+        showRecordingInterface();
+        if (imageAdjustPanel != null) imageAdjustPanel.dismiss();
+        imageAdjustPanel = new com.kooo.evcam.ui.ImageAdjustPanel(
+                findViewById(android.R.id.content), imageAdjustManager, this::setImageAdjustEnabled);
+    }
 
-        AppLog.d(TAG, "Image adjust floating window shown");
-    }
-    
-    private static final int REQUEST_OVERLAY_PERMISSION = 1001;
-    
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        if (requestCode == REQUEST_OVERLAY_PERMISSION) {
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M && android.provider.Settings.canDrawOverlays(this)) {
-                // 权限已授予，打开悬浮窗
-                showImageAdjustFloatingWindow();
-            } else {
-                Toast.makeText(this, R.string.msg_overlay_denied, Toast.LENGTH_SHORT).show();
-            }
-        }
-    }
-    
     // ==================== 静态实例访问 ====================
     
     /**

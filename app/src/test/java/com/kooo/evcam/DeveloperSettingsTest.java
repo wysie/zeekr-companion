@@ -47,8 +47,6 @@ public class DeveloperSettingsTest {
         ROWS.put("pref_screen_off_recording", Arrays.asList("screen_off_recording"));
         ROWS.put("pref_screen_off_wake_hours", Arrays.asList("screen_off_wake_min"));
         // 画面调节的参数只在开着时用到，不按没存过算（理由见 DEVELOPER_KEYS）
-        ROWS.put("pref_image_adjust", Arrays.asList("image_adjust_enabled"));
-        ROWS.put("pref_image_adjust_reset", NONE);
         ROWS.put("pref_camera_mapping", Arrays.asList("zeekr_camera_override_front",
                 "zeekr_camera_override_back", "zeekr_camera_override_left"));
         ROWS.put("pref_permissions", NONE);
@@ -69,7 +67,7 @@ public class DeveloperSettingsTest {
 
     /** 普通设置：关着开发者选项也照常读。 */
     private static final List<String> ORDINARY = Arrays.asList(
-            "screen_off_keep_recording", "auto_start_recording", "footage_lock",
+            "screen_off_keep_recording", "auto_start_recording", "footage_lock", "image_adjust_enabled",
             "video_storage_limit_gb", "photo_storage_limit_gb", "custom_sd_card_path",
             "exposure_compensation", "awb_mode", "car_model");
 

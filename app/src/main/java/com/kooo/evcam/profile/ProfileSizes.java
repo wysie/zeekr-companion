@@ -202,7 +202,15 @@ public final class ProfileSizes {
         return null;
     }
 
-    private static String cameraIdFor(Context context, String role) {
+    public static String cameraIdFor(Context context, String role) {
+        com.kooo.evcam.AppConfig config = new com.kooo.evcam.AppConfig(context);
+        if (config.is009CameraMappingEnabled()) {
+            String key = cameraKeyForRole(role);
+            String manual = key == null ? null : config.getCameraOverride(key);
+            if (manual != null) return manual;
+            if (CameraProfile.ROLE_COMPOSITE.equals(role)) return "3";
+            return CameraProfile.ROLE_CABIN_1.equals(role) ? "2" : null;
+        }
         String composite = StreamLayoutTable.compositeCameraId();
         try {
             CameraManager manager =

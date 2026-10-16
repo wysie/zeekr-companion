@@ -440,9 +440,13 @@ public class SideViewPopupService extends Service {
 
             @Override
             public boolean onSurfaceTextureDestroyed(SurfaceTexture st) {
-                if (popup != null) popup.clearFrames();
-                unbindCamera();
-                return true;
+                MultiCameraManager owner = boundManager != null ? boundManager
+                        : CameraManagerHolder.getInstance().getCameraManager();
+                boolean kept = MultiCameraManager.keepAuxiliaryCanvas(owner,
+                        com.kooo.evcam.camera.ChannelRules.Kind.SIDE_POPUP, st);
+                if (popup != null && popup.getTextureView().getSurfaceTexture() == st) popup.clearFrames();
+                if (boundTexture == st) unbindCamera();
+                return !kept;
             }
 
             @Override

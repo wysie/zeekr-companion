@@ -176,3 +176,21 @@ The experimental higher HUD layer was subsequently removed following
 and his reported 7X test. This fork retains ordinary Presentation output and its
 independent 009 mapping/factory-view coexistence. That report does not validate
 HUD video on the 009.
+
+CAMCORDER follow-ups ported 2026-10-16: signal-scan append after restart
+([f56bd12c](https://github.com/FerixzTanz/CAMCORDER/commit/f56bd12c6f2267de8a9ef5b96399a23101a56840))
+and independent HUD night contrast
+([f3ade087](https://github.com/FerixzTanz/CAMCORDER/commit/f3ade087e9814984d4b0043c0d159c6e6e8bc380)),
+by FerixzTanz and contributors. The fork uses explicit scan-session identity, retains
+the saved deadline and line limit, and keeps neutral HUD defaults and current routing.
+
+
+The date-grouped gallery, thumbnails, filmstrip and in-app camera-adjustment rows
+are adapted from FerixzTanz’s merged CAMCORDER UI work
+([285f2b79](https://github.com/FerixzTanz/CAMCORDER/commit/285f2b79),
+main through [3f9c7e40](https://github.com/FerixzTanz/CAMCORDER/commit/3f9c7e40)).
+This fork retains its existing main screen, settings navigation, credits and
+password-free System developer toggle. Gallery adaptations preserve the fork’s
+legacy directories, path-qualified identities, guarded protection checks and
+existing timeline ownership rules. Picture controls use the existing camera
+manager, inside the Activity rather than a system overlay.

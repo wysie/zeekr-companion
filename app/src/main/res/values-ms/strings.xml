@@ -101,7 +101,7 @@
     <string name="set_force_h264_title">Paksa H.264</string>
     <string name="set_force_h264_summary">Menggunakan H.264 untuk semua kamera, mengatasi kodek setiap kamera dalam Edit profil strim</string>
     <string name="set_image_adjust_title">Pelarasan imej</string>
-    <string name="set_image_adjust_summary">Membuka tetingkap untuk melaras dedahan, imbangan putih, pengurangan hingar dan lain-lain secara langsung</string>
+    <string name="set_image_adjust_summary">Kawalan kamera yang disokong untuk semua saluran aktif, termasuk rakaman. Dibuka dalam aplikasi; perubahan digunakan apabila diaktifkan.</string>
     <string name="set_image_adjust_reset_title">Set semula pelarasan imej</string>
     <string name="set_camera_mapping_title">Pemetaan kamera</string>
     <string name="set_camera_mapping_summary">Pilih kamera bagi paparan sekeliling, kabin depan dan kabin belakang secara manual (penyelesaian masalah)</string>
@@ -1159,4 +1159,19 @@
         <item>Skrin lain</item>
         <item>Tidak kelihatan</item>
     </string-array>
+    <string name="set_hud_side_contrast_night_title">Kontras gambar HUD pada waktu malam</string>
+    <string name="set_hud_side_contrast_night_summary">Menggunakan kontras berasingan apabila kereta melaporkan mod malam. 100 mengekalkan gambar asal; nilai lebih tinggi boleh menyembunyikan butiran gelap.</string>
+    <string name="set_009_camera_mapping_title">Pemetaan kamera 009 (eksport disahkan)</string>
+    <string name="set_009_camera_mapping_summary">Mati secara lalai. Kamera 3 ialah Sekeliling dan 2 ialah Kamera pemandu. Slot tambahan kedua tidak dipetakan kecuali ditetapkan secara manual; kamera jalan 0/1 bukan kamera kabin. Berdasarkan satu eksport 009; keluar dan buka semula selepas menukar.</string>
+    <string name="msg_009_mapping_restart">Keluar dan buka semula aplikasi untuk menggunakan pemetaan kamera.</string>
+    <string name="slot_driver_camera">Kamera pemandu</string>
+    <string name="slot_road_front">Kamera jalan hadapan</string>
+    <string name="slot_road_rear">Kamera jalan belakang</string>
+    <string name="slot_additional_camera">Kamera tambahan (pemetaan manual)</string>
+<string name="msg_select_first">Pilih sesuatu dahulu</string>
+<string name="action_deselect_all">Nyahpilih semua</string>
+<string name="action_done">Selesai</string>
+<string name="action_select">Pilih</string>
+    <string name="adjust_enabled">Aktifkan pelarasan gambar</string>
+<string name="gallery_delete_result">%1$d dipadam · %2$d dilindungi · %3$d tidak dapat dipadam</string>
 </resources>

@@ -13,6 +13,10 @@
     <PreferenceScreen
         android:key="screen_recording"
         android:title="@string/set_section_recording">
+        <SwitchPreferenceCompat
+            android:key="pref_009_camera_mapping"
+            android:title="@string/set_009_camera_mapping_title"
+            android:summary="@string/set_009_camera_mapping_summary" />
         <PreferenceCategory
             android:key="group_recording_cameras"
             android:title="@string/menu_cameras">
@@ -359,6 +363,11 @@
                     android:summary="@string/set_hud_side_contrast_summary"
                     app:showSeekBarValue="true" />
                 <SeekBarPreference
+                    android:key="pref_hud_side_contrast_night"
+                    android:title="@string/set_hud_side_contrast_night_title"
+                    android:summary="@string/set_hud_side_contrast_night_summary"
+                    app:showSeekBarValue="true" />
+                <SeekBarPreference
                     android:key="pref_hud_side_night"
                     android:title="@string/set_hud_side_night_title"
                     android:summary="@string/set_hud_side_night_summary"
@@ -564,6 +573,10 @@
         <PreferenceCategory
             android:key="group_interface_correction"
             android:title="@string/menu_preview_playback">
+            <Preference
+                android:key="pref_image_adjust"
+                android:title="@string/set_image_adjust_title"
+                android:summary="@string/set_image_adjust_summary" />
             <ListPreference
                 android:key="pref_fisheye_projection"
                 android:title="@string/set_fisheye_projection_title" />
@@ -633,14 +646,8 @@
         <PreferenceCategory
             android:key="group_dev_rendering"
             android:title="@string/menu_image_rendering">
-            <Preference
-                android:key="pref_image_adjust"
-                android:title="@string/set_image_adjust_title"
-                android:summary="@string/set_image_adjust_summary" />
-            <Preference
-                android:key="pref_image_adjust_reset"
-                android:title="@string/set_image_adjust_reset_title" />
-            <SwitchPreferenceCompat
+
+<SwitchPreferenceCompat
                 android:key="pref_gpu_fisheye_preview"
                 android:title="@string/dev_gpu_fisheye_preview_title"
                 android:summary="@string/dev_gpu_fisheye_preview_summary" />

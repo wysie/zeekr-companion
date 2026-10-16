@@ -787,3 +787,46 @@ Android regressions cover primary-card confirmation/decline, an owned virtual
 secondary display with explicit Not seen, repeated-window cancellation and the
 real 30-second main-card timeout. Main/secondary controls were inspected in day
 and night themes. These are emulator checks, not on-vehicle HUD validation.
+
+
+## 2026-10-16 owner-export findings and merged follow-ups
+
+The later supplied camera snapshots show ID 0 looking forward through the
+windscreen, ID 1 rearward outside, ID 2 a monochrome driver view and ID 3 the
+four-camera surround stack. Android model metadata identifies Pixel 3a and cannot
+auto-identify the vehicle reliably. The new opt-in 009 preset therefore explicitly
+uses surround 3 / driver 2, leaves the second additional slot unmapped and retains
+manual overrides. This mapping is evidence for this owner’s export, not all 009s.
+
+Recorded containers and representative decoding checks succeeded, but the dump
+contains frame gaps. In one surround clip a roughly 2.17-second PTS gap coincides
+with withdrawal of preview/side-popup demand and later removal of dead outputs.
+The separate popup had been letting Android destroy its SurfaceTexture while the
+capture session could still reference it. Optional popup, HUD and 360 textures now
+use the scheduler’s retained-texture handover already used by preview/mirror,
+releasing only after the session relinquishes the output. Synthetic scheduler
+checks cover teardown, replacement and release ordering. This addresses a concrete
+lifecycle defect; recording continuity must be checked again on the vehicle.
+
+The 360 diagnostics show Balanced falling to Low after isolated 44–45 ms
+readbacks. Adaptive pacing now requires three consecutive slow frames, slows
+capture to at most a 250 ms interval first, and reduces resolution only if pressure
+continues. Thirty good frames gradually recover cadence. Memory failures still
+reduce allocation immediately, and stale-frame/factory/lifecycle covers remain.
+This improves resolution retention; the geometric calibration remains estimated.
+
+Merged source updates include scanner restart preservation, independent neutral
+night HUD contrast, date-grouped gallery/filmstrips and in-app picture controls.
+Physical HUD video is still unresolved. Older display show/layout success did not
+mean the owner saw a card; the improved release-40 guided test still needs feedback.
+
+
+Local validation for 2.11.41: 1,395 JVM tests pass, including scanner restart,
+optional-output scheduler handover, sustained-pressure cadence and explicit 009
+mapping cases. Native regression coverage passes for side-popup startup/freshness,
+360 window controls, ordinary HUD Presentation and independent day/night tone,
+settings navigation/merged label dependency, gallery folder identity and guarded
+lock-aware deletion, viewer deep links/filmstrip, and Activity-contained picture
+controls. Gallery/panel layouts were inspected in day and night themes, with one
+bounded correction batch for thumbnail captions and filmstrip label clipping.
+These checks use a disposable emulator and synthetic media/displays, not the car.

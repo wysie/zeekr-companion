@@ -31,6 +31,7 @@ final class BirdEyePreview {
     private int requestedQuality = BirdEyeQuality.BALANCED, activeQuality = BirdEyeQuality.BALANCED;
     private BirdEyeQuality.Size size = BirdEyeQuality.resolve(BirdEyeQuality.BALANCED, 1280, 5140);
     private int qualityFallbacks;
+    private final BirdEyePerformance performance = new BirdEyePerformance();
     private String qualityReason = "none";
     private final View owner;
     private final BirdEyeConfig config;
@@ -126,6 +127,7 @@ final class BirdEyePreview {
         lastReadbackMs = lastRenderMs = lastLookupMs = 0;
         lastPresentedAt = lastPresentationGapMs = -1;
         if (plan != null) size = BirdEyeQuality.resolve(selected, plan.frameWidth, plan.frameHeight);
+        performance.reset(size.intervalMs);
     }
     private void downgrade(String reason) {
         qualityReason = reason;
@@ -137,13 +139,14 @@ final class BirdEyePreview {
             activeQuality = BirdEyeQuality.lower(activeQuality); qualityFallbacks++;
             lastPresentationGapMs = -1;
             size = BirdEyeQuality.resolve(activeQuality, plan.frameWidth, plan.frameHeight);
+            performance.reset(size.intervalMs);
             AppLog.w("BirdEyePreview", "360 resolution fallback: requested=" + requestedQuality
                     + " active=" + activeQuality + " source=" + size.sourceWidth + "x" + size.sourceHeight
                     + " render=" + size.outputWidth + "x" + size.outputHeight + " reason=" + reason);
             android.widget.Toast.makeText(owner.getContext(), R.string.bird_eye_quality_reduced,
                     android.widget.Toast.LENGTH_LONG).show();
         }
-        nextCaptureAt = SystemClock.elapsedRealtime() + size.intervalMs;
+        nextCaptureAt = SystemClock.elapsedRealtime() + performance.interval();
         refreshSafety();
         noteState();
     }
@@ -186,7 +189,7 @@ final class BirdEyePreview {
                 + ", pictureAgeMs=" + (displayedAt < 0 ? -1 : now - displayedAt)
                 + ", readbackMs=" + lastReadbackMs
                 + ", renderMs=" + lastRenderMs + ", lookupMs=" + lastLookupMs
-                + ", captureIntervalMs=" + size.intervalMs + ", presentationGapMs=" + lastPresentationGapMs
+                + ", captureIntervalMs=" + performance.interval() + ", cadenceAdjustments=" + performance.adjustments() + ", presentationGapMs=" + lastPresentationGapMs
                 + ", qualityRequested=" + requestedQuality + ", qualityActive=" + activeQuality
                 + ", fallbacks=" + qualityFallbacks + ", qualityReason=" + qualityReason
                 + ", capture=" + size.sourceWidth + "x" + size.sourceHeight
@@ -219,7 +222,8 @@ final class BirdEyePreview {
         try {
             final BirdEyeQuality.Size frameSize = size;
             long began = SystemClock.elapsedRealtime();
-            nextCaptureAt = began + frameSize.intervalMs;
+            nextCaptureAt = began + performance.interval();
+            final long frameBegan = began;
             android.graphics.SurfaceTexture current = texture.getSurfaceTexture();
             long timestamp = current == null ? 0 : current.getTimestamp();
             // Do not pay for readback/blending twice when the producer has not advanced.
@@ -240,9 +244,6 @@ final class BirdEyePreview {
             source.eraseColor(Color.TRANSPARENT);
             Bitmap bitmap = texture.getBitmap(source);
             lastReadbackMs = SystemClock.elapsedRealtime() - began;
-            if (BirdEyeQuality.slow(lastReadbackMs, 0)) {
-                downgrade("readback " + lastReadbackMs + " ms"); return;
-            }
             if (bitmap == null || !texture.isAvailable() || texture.getSurfaceTexture() == null) {
                 invalidatePicture(); return;
             }
@@ -290,9 +291,11 @@ final class BirdEyePreview {
                     noteState();
                     if (memoryError) { downgrade("worker memory limit"); return; }
                     if (error != null) { reportFailure(error); return; }
-                    if (BirdEyeQuality.slow(0, lastRenderMs)) {
-                        downgrade("render " + lastRenderMs + " ms"); return;
+                    BirdEyePerformance.Action pressure = performance.observe(lastReadbackMs, lastRenderMs);
+                    if (pressure == BirdEyePerformance.Action.LOWER) {
+                        downgrade("sustained readback/render " + lastReadbackMs + "/" + lastRenderMs + " ms at 250ms cadence"); return;
                     }
+                    nextCaptureAt = Math.max(nextCaptureAt, frameBegan + performance.interval());
                     failureCount = 0;
                     // Keep a valid LUT even if its first construction took longer than the
                     // freshness budget. The next current frame can reuse it immediately.

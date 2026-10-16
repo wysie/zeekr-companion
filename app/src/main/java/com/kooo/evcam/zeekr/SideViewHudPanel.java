@@ -58,7 +58,7 @@ public class SideViewHudPanel extends SideViewPopupView {
     }
 
     private void readTone() {
-        int contrast = appConfig.getHudSideContrastPercent();
+        int contrast = night ? appConfig.getHudSideContrastNightPercent() : appConfig.getHudSideContrastPercent();
         if (HudPictureTone.isIdentity(contrast)) {
             tonePaint = null;
             return;
@@ -77,6 +77,7 @@ public class SideViewHudPanel extends SideViewPopupView {
     public void setNight(boolean night) {
         if (this.night != night) {
             this.night = night;
+            readTone(); invalidate();
             applyWindowAlpha();
         }
     }

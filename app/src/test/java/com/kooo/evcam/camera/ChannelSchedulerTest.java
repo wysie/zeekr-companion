@@ -1168,6 +1168,25 @@ public class ChannelSchedulerTest {
         assertTrue("座舱不受影响", rear.actions.isEmpty() && front.actions.isEmpty());
     }
 
+    @Test public void sidePopupTextureDoesNotInterruptRecordingWhenWindowCloses() { optionalTextureHandover(Kind.SIDE_POPUP, Holder.SIDE_POPUP); }
+    @Test public void hudTextureDoesNotInterruptRecordingWhenWindowCloses() { optionalTextureHandover(Kind.SIDE_HUD, Holder.SIDE_HUD); }
+    @Test public void birdEyeTextureDoesNotInterruptRecordingWhenWindowCloses() { optionalTextureHandover(Kind.BIRD_EYE, Holder.BIRD_EYE); }
+    private void optionalTextureHandover(Kind kind, Holder holder) {
+        Out old = new Out(kind, "optional-old");
+        host.plan(SUR); claim(Holder.RECORDING); claim(holder);
+        streaming(surround, old, recS); settle();
+        List<String> released = new ArrayList<>();
+        drop(holder); surround.declared.remove(old);
+        s.handOver(SUR, old, () -> released.add("old")); settle(); at(10_000);
+        assertTrue("Keep the live recording session intact", surround.actions.isEmpty());
+        assertTrue(released.isEmpty()); assertTrue(surround.drops.isEmpty());
+        Out replacement = new Out(kind, "optional-new"); declare(surround, replacement); claim(holder); settle();
+        assertEquals(1, surround.actions.size()); assertTrue(released.isEmpty());
+        at(10_300); configured(surround, replacement, recS); frame(surround); settle();
+        assertEquals(Arrays.asList("old"), released); at(15_000);
+        assertEquals(Arrays.asList("old"), released); assertTrue(surround.drops.isEmpty());
+    }
+
     /** 相机层自己丢的录像输出（会话配不上、消费者被收走）：当场告诉；别的输出不归录像管。 */
     @Test
     public void aRecordOutputTheCameraDroppedIsReportedAtOnce() {

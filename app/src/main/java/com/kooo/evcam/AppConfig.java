@@ -141,6 +141,7 @@ public class AppConfig {
     private static final String KEY_HUD_SIDE_MIRROR = "hud_side_mirror";
     private static final String KEY_HUD_DURING_FACTORY = "hud_during_factory_views";
     private static final String KEY_HUD_SIDE_FOLLOW = "hud_side_follow";
+    private static final String KEY_HUD_SIDE_CONTRAST_NIGHT = "hud_side_contrast_night";
     private static final String KEY_HUD_SIDE_CONTRAST = "hud_side_contrast";
     private static final String KEY_HUD_SIDE_NIGHT = "hud_side_night";
     private static final String KEY_HUD_SIDE_FADE = "hud_side_fade";
@@ -720,7 +721,6 @@ public class AppConfig {
                 KEY_FORCE_H264_ENCODING,              // 强制 H.264 → 关，各路按自己配置里的编码
                 KEY_SCREEN_OFF_RECORDING,             // 熄屏录制 → 关
                 KEY_SCREEN_OFF_WAKE_MINUTES,          // 熄屏录制的最长时长 → 默认（熄屏录制关着，用不到）
-                KEY_IMAGE_ADJUST_ENABLED,             // 画面调节 → 关
                 KEY_RAW_FRAME_DUMP,                   // 拍照另存原始整帧 → 关
                 KEY_SIGNAL_SCAN,                      // 信号普查 → 关
                 KEY_GPU_FISHEYE_PREVIEW,              // 预览鱼眼校正走 GPU → 关
@@ -999,6 +999,8 @@ public class AppConfig {
     }
 
     /** 这一次普查还能跑多久（进程重启后接着跑用）；没开或已经到点是 0。 */
+    public long signalScanSessionStartedAt() { return prefs.getLong(KEY_SIGNAL_SCAN_SINCE, 0L); }
+
     public long signalScanRemainingMs(long maxMs) {
         if (!isSignalScanEnabled()) {
             return 0L;
@@ -1214,6 +1216,10 @@ public class AppConfig {
         writeEnum(SettingsRegistry.CAR_MODEL, carModel);
         AppLog.d(TAG, "车型设置: " + carModel);
     }
+
+    /** Explicit vehicle mapping, independent of cosmetic naming and Developer mode. Restart to apply. */
+    public boolean is009CameraMappingEnabled() { return prefs.getBoolean("camera_mapping_009", false); }
+    public void set009CameraMappingEnabled(boolean on) { prefs.edit().putBoolean("camera_mapping_009", on).apply(); }
 
     public String getVehicleNameMode() { return readEnum(SettingsRegistry.VEHICLE_NAME); }
 
@@ -1708,6 +1714,7 @@ public class AppConfig {
                 .remove(KEY_HUD_DURING_FACTORY)
                 .remove(KEY_HUD_SIDE_FOLLOW)
                 .remove(KEY_HUD_SIDE_CONTRAST)
+                .remove(KEY_HUD_SIDE_CONTRAST_NIGHT)
                 .remove(KEY_HUD_SIDE_NIGHT)
                 .remove(KEY_HUD_SIDE_FADE)
                 .remove(KEY_SIDE_POPUP_MIN_SPEED)
@@ -1985,6 +1992,16 @@ public class AppConfig {
     public int getHudSideContrastPercent() {
         int v = prefs.getInt(KEY_HUD_SIDE_CONTRAST, HUD_SIDE_DEFAULT_CONTRAST_PERCENT);
         return Math.max(HUD_SIDE_MIN_CONTRAST_PERCENT, Math.min(HUD_SIDE_MAX_CONTRAST_PERCENT, v));
+    }
+
+    /** Neutral at night unless explicitly tuned; follows the same car night signal as brightness. */
+    public int getHudSideContrastNightPercent() {
+        return Math.max(HUD_SIDE_MIN_CONTRAST_PERCENT, Math.min(HUD_SIDE_MAX_CONTRAST_PERCENT,
+                prefs.getInt(KEY_HUD_SIDE_CONTRAST_NIGHT, 100)));
+    }
+    public void setHudSideContrastNightPercent(int value) {
+        prefs.edit().putInt(KEY_HUD_SIDE_CONTRAST_NIGHT,
+                Math.max(HUD_SIDE_MIN_CONTRAST_PERCENT, Math.min(HUD_SIDE_MAX_CONTRAST_PERCENT, value))).apply();
     }
 
     public void setHudSideContrastPercent(int percent) {

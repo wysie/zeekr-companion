@@ -119,7 +119,7 @@
     <string name="set_force_h264_title">强制 H.264</string>
     <string name="set_force_h264_summary">所有摄像头统一使用 H.264 编码，覆盖「编辑视频流配置」中各路的编码设置</string>
     <string name="set_image_adjust_title">画面调节</string>
-    <string name="set_image_adjust_summary">打开画面调节窗口，实时调整曝光、白平衡、降噪等参数</string>
+    <string name="set_image_adjust_summary">调节所有正在使用的相机，包括录像。在应用内打开；启用后应用参数。</string>
     <string name="set_image_adjust_reset_title">恢复画面调节默认值</string>
     <string name="set_camera_mapping_title">摄像头映射</string>
     <string name="set_camera_mapping_summary">手动指定环视、前座舱、后座舱各自使用的摄像头（用于排查）</string>
@@ -1169,4 +1169,19 @@
         <item>其他屏幕</item>
         <item>未看到</item>
     </string-array>
+    <string name="set_hud_side_contrast_night_title">HUD 夜间画面对比度</string>
+    <string name="set_hud_side_contrast_night_summary">车辆报告夜间模式时使用独立对比度。100 保留原画面，较高数值可能隐藏暗部细节。</string>
+    <string name="set_009_camera_mapping_title">009 相机映射（已核对导出）</string>
+    <string name="set_009_camera_mapping_summary">默认关闭。相机 3 为环视，2 为驾驶员相机；第二个附加槽位保持未映射，除非手动指定。车外道路相机 0/1 不是座舱相机。仅依据一台 009 导出；更改后退出并重新打开。</string>
+    <string name="msg_009_mapping_restart">请退出并重新打开应用以应用相机映射。</string>
+    <string name="slot_driver_camera">驾驶员相机</string>
+    <string name="slot_road_front">前方道路相机</string>
+    <string name="slot_road_rear">后方道路相机</string>
+    <string name="slot_additional_camera">附加相机（手动映射）</string>
+<string name="msg_select_first">请先选择</string>
+<string name="action_deselect_all">全不选</string>
+<string name="action_done">完成</string>
+<string name="action_select">选择</string>
+    <string name="adjust_enabled">启用画面调节</string>
+<string name="gallery_delete_result">已删除 %1$d · 已保护 %2$d · 无法删除 %3$d</string>
 </resources>

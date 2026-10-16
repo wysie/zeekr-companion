@@ -74,6 +74,16 @@ public final class CameraNames {
             if (role != null
                     && new com.kooo.evcam.profile.ProfileStore(context)
                             .current().camera(role) != null) {
+                com.kooo.evcam.AppConfig config = new com.kooo.evcam.AppConfig(context);
+                if (config.is009CameraMappingEnabled()) {
+                    String override = config.getCameraOverride(position);
+                    if ("back".equals(position) && (override == null || "2".equals(override))) return R.string.slot_driver_camera;
+                    if ("back".equals(position) || "left".equals(position)) {
+                        if ("0".equals(override)) return R.string.slot_road_front;
+                        if ("1".equals(override)) return R.string.slot_road_rear;
+                        return R.string.slot_additional_camera;
+                    }
+                }
                 return roleRes(role);
             }
         } catch (Exception ignored) {

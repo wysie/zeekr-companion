@@ -293,3 +293,17 @@ unchanged. Native tests cover EN/ZH/MS, both themes, 1.0/1.3 font scale, widths
 2026-10-16 fork HUD 清理：移除“盖在原厂 HUD 信息上”的试验开关与窗口路径。高级分组保留 009 映射和原厂画面共存；采用普通 Presentation，保留触控穿透、全尺寸、转场和新帧保护。旧开关值不再生效，009 HUD 输出仍未验证成功。
 
 2026-10-16 USB 等待：开发者录制分组新增默认关闭的内置回退开关。主录制按钮新增灰色“等待 U 盘 / 点击取消等待”状态，不显示录制计时与录制中颜色；点击取消通过原有手动停止路径撤销请求。复用现有字号、配色和按钮位置。
+
+
+## Fork integration — 2026-10-16
+
+Photos/Videos now open the merged Ferix thumbnail gallery with date headers and
+selection actions. Our existing viewers remain independent Activities and retain
+their list/actions, adding a bounded horizontal filmstrip. Main screen structure,
+menus and About credits stay unchanged. Gallery deletion uses the fork’s current
+storage identity and protection rules, not the source’s single-folder assumptions.
+Picture adjustments open in a scrollable Activity side panel with explicit enable,
+reset and close controls, using semantic day/night colours and existing setting rows.
+The panel closes on pause and handles Back before ordinary navigation; no overlay
+permission is requested. Unsupported controls are omitted. This replaces only the
+old adjustment window, not the main action rail with Ferix’s full tools design.
