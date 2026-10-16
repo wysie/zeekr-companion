@@ -1096,3 +1096,38 @@ Documentation-only update: README/settings notes now distinguish owner-confirmed
 physical display identity from unconfirmed live camera output. The published
 2.11.44-alpha.1 APK is unchanged; no new vehicle compatibility or HUD video test
 is claimed. Validation is a documentation diff check; no runtime code was changed.
+
+
+## Card-only confirmation and screen fallback — 2026-10-17
+
+The owner clarified that the visible HUD content was the **Display 3
+identification card**, not live side-camera video. Side-camera video still appears
+on the centre screen. This confirms the physical destination and static
+Presentation output, but not the live HUD camera path.
+
+Code comparison: DisplayIdentification opens a Presentation directly on the
+owner-selected display; it does not depend on the saved side-output destination
+or the Zeekr 009 HUD mapping. SideViewPopupService first requires HUD/Both output,
+and SideViewHudPanel.find applies the independent 009 mapping before creating
+the camera window. Camera-output rejection or repeated window failure can also
+fall back to the screen. Both paths require an on, public presentation display.
+
+The latest file currently available locally is the older
+zeekr_diagnostics_20261016_202138.json. Its display inventory lists ID 3,
+1280×640, ON, flags 0x8b, but its HUD status is:
+
+```
+HUD candidate: none; output=1; selection=auto; window=never
+```
+
+`output=1` means HUD, while `selection=auto` means the explicit 009 mapping was
+not enabled. The locator intentionally does not infer HUD identity from an
+anonymous 1280×640 display in automatic mode. This explains that older report's
+fallback; it is not evidence of the current switch state after upgrading.
+
+First establish whether Zeekr 009 HUD is enabled and Show side view on is HUD or
+Screen and HUD. If both are already set, obtain a fresh Diagnostics export right
+after an indicator attempt. Candidate selection, window creation/dismissal and
+HUD camera rejection/binding entries can distinguish the next failure stage.
+No display-role exclusions, factory/reverse priority, camera ownership or stale
+frame protections were relaxed on the basis of the static card test.
