@@ -7,10 +7,9 @@ Alpha sections: one line per change, what changed and nothing else. Beta and sta
 sections: written for users, reviewed before release. Why a change was made lives in the
 commit message, not here.
 
-## [2.11.44-alpha.1] - 2026-10-16
+## [2.11.44-alpha.1] - 2026-10-17
 
 - Add 009 / 7X / Auto / Outline vehicle illustrations with saved Green / White / Black colours to DIY 360 main/popup views and stitched photos; 7X projection still needs vehicle testing.
-
 - Replace Include beta releases with Stable / Beta / Alpha update channels; Alpha includes all three, Beta includes beta/stable, Stable includes stable only.
 - Preserve the existing beta preference on upgrade, default new installs to Stable and require explicit Alpha selection.
 - Include raw function-change notifications and bounded byte callback details in Developer signal scans; blind-spot warning triggers remain unverified.

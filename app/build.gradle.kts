@@ -37,8 +37,8 @@ android {
         //
         // 后缀默认就是 -alpha。只有项目拥有者明确说「这一版发 beta」时才用
         // -beta，而且<b>不会延续到下一版</b>——上一版是 beta 不是下一版也是 beta
-        // 的理由。检查更新只推 beta 和正式版，标错等于把一个没验证过的版本
-        // 推给一台正在用的车机。
+        // 的理由。检查更新遵循用户选择的 Stable / Beta / Alpha 渠道；
+        // 测试版本必须保留正确的后缀和 GitHub Pre-release 标记。
         versionCode = 327
         // wysie Edition keeps its own version sequence with machine-readable channel suffixes.
         versionName = "2.11.44-alpha.1"
