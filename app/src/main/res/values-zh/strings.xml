@@ -2,4 +2,10 @@
 <resources>
     <string name="upd_err_integrity">安装文件的 SHA-256 缺失或不匹配，已中止</string>
     <string name="dev_repair_backup_note">修复前的原始文件保存在录像目录的 repair-originals 子目录中。不会自动删除；空间不足时不会开始修复。</string>
+
+    <string name="bird_eye_car_colour">009 车身颜色</string>
+    <string name="bird_eye_car_green">绿色</string>
+    <string name="bird_eye_car_white">白色</string>
+    <string name="bird_eye_car_black">黑色</string>
+    <string name="bird_eye_car_colour_note">用于 009 图示，主界面、悬浮窗和 360 照片保持一致。仅改变外观，不影响相机或标定。</string>
 </resources>
