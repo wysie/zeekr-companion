@@ -1273,7 +1273,12 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         com.kooo.evcam.zeekr.BirdEyeWindowConfig window = new com.kooo.evcam.zeekr.BirdEyeWindowConfig(requireContext());
         com.kooo.evcam.zeekr.BirdEyeConfig config = new com.kooo.evcam.zeekr.BirdEyeConfig(requireContext());
         com.kooo.evcam.zeekr.BirdEyeAppearance appearance = new com.kooo.evcam.zeekr.BirdEyeAppearance(requireContext());
-        bindEnum("pref_bird_car_colour", SettingSpec.of("bird_car_colour", "009 car colour", "white",
+        bindEnum("pref_bird_car_model", SettingSpec.of("bird_car_model", "Vehicle illustration", "auto",
+                SettingSpec.entry("auto", "Auto", R.string.bird_eye_car_auto),
+                SettingSpec.entry("009", "009", R.string.vehicle_name_009),
+                SettingSpec.entry("7x", "7X", R.string.vehicle_name_7x),
+                SettingSpec.entry("outline", "Outline", R.string.bird_eye_car_outline)), appearance.model(), appearance::setModel);
+        bindEnum("pref_bird_car_colour", SettingSpec.of("bird_car_colour", "Car colour", "white",
                 SettingSpec.entry("green", "Green", R.string.bird_eye_car_green),
                 SettingSpec.entry("white", "White", R.string.bird_eye_car_white),
                 SettingSpec.entry("black", "Black", R.string.bird_eye_car_black)), appearance.colour(), appearance::setColour);

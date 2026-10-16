@@ -7,6 +7,13 @@ is on `feature/diy-360-view`, for integration into the fork's `main`.
 
 ## Use
 
+**Vehicle illustration:** Settings → 360° camera → Picture offers Auto, 009,
+7X or Generic outline, plus Green/White/Black colours. The choice is cosmetic,
+applies to main/popup/photos and survives calibration reset. Auto uses positive
+vehicle identity or the explicit 009 mapping/image-fit, otherwise an outline.
+7X artwork is available, but actual 7X projection/performance still need vehicle
+testing. Use Manual projection there; see [the evidence checklist](7x-360-validation.md).
+
 **009 image fit:** Settings → 360° camera → Calibration → Projection profile
 offers Manual (the existing default) and 009 image fit (experimental). The latter
 uses fitted ray/plane transforms for all four cameras rather than the generic
@@ -31,7 +38,7 @@ included in Diagnostics exports. Reset does not affect any other feature.
 While the 360 view is selected, the main photo action exports the currently
 fresh stitched preview as a PNG at the active resolution, with a companion calibration/state
 TXT, under **ZeekrShortcutApp/Photos/360** on the configured storage. It includes the
-vehicle illustration (009 mapping/image-fit) or generic outline, and experimental watermark. A blocked, hidden or stale view is
+selected 009/7X vehicle illustration or generic outline, and experimental watermark. A blocked, hidden or stale view is
 refused; it never saves an old retained image as a current capture. Compression
 and file writes run off the UI thread, with one save at a time and no queued
 snapshots. The dedicated subfolder is outside the ordinary photo-playback list.
