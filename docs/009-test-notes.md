@@ -830,3 +830,19 @@ lock-aware deletion, viewer deep links/filmstrip, and Activity-contained picture
 controls. Gallery/panel layouts were inspected in day and night themes, with one
 bounded correction batch for thumbnail captions and filmstrip label clipping.
 These checks use a disposable emulator and synthetic media/displays, not the car.
+
+## wysie Edition naming — 2026-10-16
+
+Version 2.11.42-alpha.1 / code 325 applies the edition name to launcher labels,
+main/navigation/About text, release titles and public APK/checksum names. Existing
+application ID, signing certificate and storage paths are retained. Historical
+release assets/tags are untouched.
+
+Validation: 1,399 JVM tests and full debug lint pass; signed release and debug builds
+pass. Three Python packaging tests cover channel/naming rules, tag/build mismatch
+rejection and exact staged bytes/checksum. Version tests cover legacy fork tags,
+installed personal versions, numeric prerelease ordering and mismatched GitHub
+pre-release flags. Emulator inspection verifies the main title and About page in
+the native UI, plus day/night main titles. APK inspection confirms version code
+325, the existing application ID and the same signing certificate as release 41.
+No new vehicle test is claimed; the existing 009 camera/HUD limitations remain.

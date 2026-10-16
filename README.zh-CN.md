@@ -1,6 +1,8 @@
-# 极氪即刻（车机版）
+# 极氪即刻 — wysie Edition
 
-这是 wysie 的个人分支，基于 [dts88 的原项目](https://github.com/dts88/zeekr-shortcut-car)，
+新标签采用 `vX.Y.Z-alpha.N`、`vX.Y.Z-beta.N` 或 `vX.Y.Z`；alpha 和 beta 在 GitHub 标记为预发布。应用 ID、签名及 `ZeekrShortcutApp` 存储目录保持兼容。
+
+wysie Edition 是 wysie 维护的个人定制分支，基于 [dts88 的原项目](https://github.com/dts88/zeekr-shortcut-car)，
 主要用于自己的极氪 009。原应用面向极氪 7X；本分支的新增功能和测试范围见
 [英文说明](README.md)。原项目及其贡献者、EVCam 作者和 FerixzTanz 的贡献均保留署名，
 详见 [来源与致谢](NOTICE.md)。本分支与原项目均非极氪官方产品。
@@ -88,7 +90,7 @@
   新的完整 APK 从 `main` 构建，发布标签指向对应的源代码提交。
   个人 Alpha 版本需要手动安装，不在应用内自动更新范围内。
 
-在发布页下载 `ZeekrShortcut-*.apk`，通过 App Lab 侧载安装。安装完成后请点左上角「返回」，
+在发布页下载 `ZeekrShortcut-wysie-<版本号>.apk`，通过 App Lab 侧载安装。安装完成后请点左上角「返回」，
 不要点「打开」，否则车机安装器会卡住，之后的安装或更新会失败。
 
 自行构建需要 JDK 17+ 与 Android SDK（compileSdk 36）：

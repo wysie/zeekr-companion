@@ -172,6 +172,8 @@
 
 ## 五、合规现状
 
+2026-10-16 wysie Edition：启动器、关于页、导航和主动作栏标识加入版本身份。动作栏标题保留原生字号，分两行并允许大字体换行，沿用已有滚动容器。
+
 2026-10-16 fork 显示屏识别：主屏测试卡覆盖工具页的内容区，确认、不可见、停止操作始终位于屏内；副屏按编号单独测试，中央 75% 范围显示大号标记，主屏保留观察位置选择、保存和停止。每次测试最多 30 秒，超时不推定可见或未看到。沿用语义日夜配色、原生控件和可换行等高操作行，不更改普通相机/HUD 输出。
 
 2026-10-15 fork 设置入口：系统页新增「启用开发者模式」原生开关与常驻警告，移除关于页隐藏密码入口。切换后立即刷新左栏开发者分类，保留当前系统页及既有选中样式；界面重建后按父页面保存的分类重新同步左栏高亮。HUD 子页新增默认关闭的原厂画面共存开关，摘要说明仅影响 HUD、倒车仍让位及硬件争用限制。沿用既有开关行、字号、配色和自动换行。
@@ -307,3 +309,11 @@ reset and close controls, using semantic day/night colours and existing setting 
 The panel closes on pause and handles Back before ordinary navigation; no overlay
 permission is requested. Unsupported controls are omitted. This replaces only the
 old adjustment window, not the main action rail with Ferix’s full tools design.
+
+## wysie Edition identity — 2026-10-16
+
+The combined fork's launcher/About identity is Zeekr Shortcut — wysie Edition
+(极氪即刻 — wysie Edition in Chinese). The action-rail title uses two explicit lines,
+with normal native title typography and room for wrapping at larger font scales.
+Its existing scroll container retains access to all controls. Colours, gestures and
+recording behaviour are unchanged. Independent upstream PR branches keep upstream names.

@@ -6,7 +6,7 @@
   MissingTranslation is ignored only for this intentionally English/Chinese-only file.
 -->
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en" tools:ignore="MissingTranslation">
-    <string name="about_tagline">wysie’s custom fork of Zeekr Shortcut by dts88, primarily for personal use on a ZEEKR 009. It includes experimental additions. For the original, more thoroughly tested version, use dts88’s releases.</string>
+    <string name="about_tagline">Zeekr Shortcut — wysie Edition is maintained by wysie and based on Zeekr Shortcut by dts88, primarily for personal use on a ZEEKR 009. It includes experimental additions. For the original, more thoroughly tested version, use dts88’s releases.</string>
     <string name="about_project_title">Projects and downloads</string>
     <string name="about_project_body">Use the links below for this custom fork or the original project. When reporting a fork issue, attach a report exported from Settings → System → Diagnostics.</string>
     <string name="about_storage_title">About USB drives</string>
@@ -21,7 +21,7 @@
     <string name="about_credits_evcam">Released under the GNU GPL v3.0 and based on EVCam by suyunkai, which provides the camera, recording and floating window foundations. As the GPL requires, the source code is public.</string>
     <string name="about_coffee_title">Support dts88</string>
     <string name="about_coffee_body">If you would like to tip dts88, the original author, PayNow to 9271 6786. This number belongs to dts88. Tips are voluntary and do not unlock features.</string>
-    <string name="about_link_fork_label">wysie’s custom fork — source and downloads</string>
+    <string name="about_link_fork_label">wysie Edition — source and downloads</string>
     <string name="about_link_upstream_label">dts88’s original project — more thoroughly tested builds</string>
     <string name="about_credits_ferix">Additional features are adapted from CAMCORDER by FerixzTanz (Felix Tan), including turn-signal side cameras, HUD and recording tools. Original contributor credit is retained.</string>
 </resources>

@@ -17,8 +17,8 @@ import os
 import re
 import sys
 
-APP_NAME = "Zeekr Shortcut (Car Version)"
-REPO = "https://github.com/dts88/zeekr-shortcut-car"
+APP_NAME = "Zeekr Shortcut — wysie Edition"
+REPO = "https://github.com/wysie/zeekr-shortcut-car"
 
 
 def changelog_section(version):
@@ -101,6 +101,14 @@ def main():
     out.append("")
 
     out.append("## Credits")
+    out.append("")
+    out.append("Maintained by **wysie**, primarily for personal use. Based on "
+               "[Zeekr Shortcut by dts88](https://github.com/dts88/zeekr-shortcut-car), "
+               "with credited features from [CAMCORDER by FerixzTanz](https://github.com/FerixzTanz/CAMCORDER).")
+    out.append("")
+    out.append("For the original, more thoroughly tested version, use "
+               "[dts88’s releases](https://github.com/dts88/zeekr-shortcut-car/releases). "
+               "Report wysie Edition issues in [this repository](" + REPO + "/issues).")
     out.append("")
     out.append("Released under **GPL-3.0**, based on "
                "[EVCam](https://github.com/suyunkai/EVCam) by suyunkai.")

@@ -6,7 +6,7 @@
 -->
 <!-- 中文界面用这一份 -->
 <resources>
-    <string name="about_tagline">这是 wysie 基于 dts88 的极氪即刻制作的个人定制分支，主要用于自己的 ZEEKR 009，包含实验性新增功能。如需原版及测试更充分的版本，请使用 dts88 发布的版本。</string>
+    <string name="about_tagline">极氪即刻 — wysie Edition 是 wysie 基于 dts88 的极氪即刻维护的个人定制分支，主要用于自己的 ZEEKR 009，包含实验性新增功能。如需原版及测试更充分的版本，请使用 dts88 发布的版本。</string>
     <string name="about_project_title">项目与下载</string>
     <string name="about_project_body">下方链接分别指向个人定制分支和原始项目。反馈本分支的问题时，请附上从「设置 → 系统 → 诊断信息」导出的报告。</string>
     <string name="about_storage_title">关于 U 盘</string>
@@ -21,7 +21,7 @@
     <string name="about_credits_evcam">本应用以 GNU GPL v3.0 发布，继承自 EVCam（作者 suyunkai）—— 相机、录制、悬浮窗这些基础部分来自它。按 GPL 的要求，本应用的源码同样公开。</string>
     <string name="about_coffee_title">支持原作者 dts88</string>
     <string name="about_coffee_body">如果想给原作者 dts88 打赏，可以 PayNow 到 9271 6786。该号码属于 dts88。打赏完全自愿，不影响任何功能。</string>
-    <string name="about_link_fork_label">wysie 的个人定制分支 — 源码与下载</string>
+    <string name="about_link_fork_label">wysie Edition — 源码与下载</string>
     <string name="about_link_upstream_label">dts88 的原始项目 — 测试更充分的版本</string>
     <string name="about_credits_ferix">部分新增功能改编自 FerixzTanz（Felix Tan）的 CAMCORDER 项目，包括转向侧视摄像头、HUD 和录制工具；保留原始贡献者的署名。</string>
 </resources>

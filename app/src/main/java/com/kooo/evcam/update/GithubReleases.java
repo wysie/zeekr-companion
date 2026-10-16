@@ -151,9 +151,9 @@ public final class GithubReleases {
                 if (candidate == null) {
                     continue;
                 }
-                boolean eligible = includeBeta
-                        ? VersionName.isBetaOrRelease(candidate.tagName)
-                        : VersionName.isRelease(candidate.tagName);
+                Object prerelease = release.opt("prerelease");
+                boolean eligible = prerelease instanceof Boolean
+                        && VersionName.isEligible(candidate.tagName, (Boolean) prerelease, includeBeta);
                 if (!eligible) {
                     // alpha 永远不推：那是开发过程里随手发的，不该盖到一台在用的车机上。
                     // 关了「接收 Beta 版」时 beta 也不推

@@ -7,6 +7,12 @@ Alpha sections: one line per change, what changed and nothing else. Beta and sta
 sections: written for users, reviewed before release. Why a change was made lives in the
 commit message, not here.
 
+## [2.11.42-alpha.1] - 2026-10-16
+
+- Name the app, About and releases Zeekr Shortcut — wysie Edition, retaining original-project and contributor credits.
+- Standardize release tags and APK/checksum names through one shared local/CI packaging script; reject tag/build mismatches.
+- Recognize historical fork tags and installed personal versions, compare numbered prereleases numerically, and require matching GitHub pre-release flags for beta/stable update offers; alpha remains manual.
+
 ## [2.11.41-personal-alpha] - 2026-10-16
 
 - Add Ferix’s date-grouped photo/video gallery and viewer filmstrips, retaining legacy folders, Send to phone and per-directory footage protection.
