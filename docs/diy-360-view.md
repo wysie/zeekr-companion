@@ -102,8 +102,13 @@ frame at the selected resolution/cadence, respecting the detected normalized lan
 and separators. No new Camera2 surface, session or vehicle control is opened.
 
 A single background-priority worker precomputes a lookup mapping each output ground point through
-the camera pose and equidistant lens. It chooses the two strongest valid views
-and blends their normalized confidence weights. It produces the selected output size,
+the camera pose and equidistant lens. Physical front/rear/left/right regions meet
+at diagonals extending from the vehicle corners. Only a 20 cm wide corridor
+perpendicular to each diagonal blends adjacent cameras; elsewhere a single
+valid camera supplies the image. Source lane swaps do not change these physical
+roles. If the preferred camera has no lens coverage, the strongest actually
+observed alternative supplies the pixel; if none does, it stays black. The join
+width is an estimated display choice, not a calibrated ground distance. It produces the selected output size,
 scaled with uniform metres per pixel, and draws a masked vehicle outline with
 its front indicated. Ground beyond the lens or behind a camera is rejected;
 unobserved areas remain black rather than stretching source edges or inventing
@@ -121,7 +126,13 @@ is hidden, stops when leaving 360 mode, and the worker closes on detachment.
 This assumes a flat ground plane and an approximate lens model, with no measured
 radial distortion coefficients or automatic target calibration yet. Tall objects
 can stretch or ghost at seams. Mounting errors can leave gaps or misalign nearby
-objects. The per-mode frame cap, readback overhead, actual texture orientation,
+objects. Owner raw-frame reproduction also shows bodywork projected ahead of the
+vehicle outline with the default front calibration. Narrow joins reduce broad
+double images but do not fix that projection. Hiding or stretching the band
+would not recover the ground concealed by the bodywork. The partial image-based
+front/rear fit remains offline; neither side has sufficient inspected reference
+correspondences for an independently checked fit. No fitted calibration is
+installed by this change. The per-mode frame cap, readback overhead, actual texture orientation,
 performance during recording, native layout and camera takeover/recovery need
 009 testing. This is an experimental calibration preview, not a factory-quality
 parking view or distance measurement.
@@ -134,7 +145,8 @@ not an import of Ferix's HUD or any third-party surround stitcher.
 
 `BirdEyeProjectionTest` covers optical-axis alignment, front/rear handedness,
 left/right headings, rotation/mirroring, invalid lens coverage, vehicle masking,
-correct camera colours, normalized seam blending, separator exclusion, squeezed
+correct camera colours, narrow seam blending, physical camera roles after lane
+swaps, observed-camera fallback, separator exclusion, squeezed
 HAL geometry, invalid calibration and mismatched buffer rejection.
 
 [BirdEyeFixture](../tools/BirdEyeFixture.java) generates four simulated fisheye
@@ -225,3 +237,11 @@ conditions clear while its explicit runtime request remains active. Closing/X or
 Exit ends that request. The prototype remains uncalibrated; there is no P-only
 or speed eligibility rule. System-themed corner controls reuse the side popup’s
 48 dp controls. Loading/status notices wrap in the narrower window.
+
+
+`BirdEyeRawFixture` renders a private original 1280×5140 composite through the
+actual Java renderer, using the exported four-pixel separator geometry. It makes
+local before/after verification possible without substituting a phone screenshot
+or a straightened image for raw camera pixels. Keep inputs and results private;
+the supplied 009 daytime comparison verifies reduced overlap, not calibration
+accuracy or ground distance. The front bodywork band remains a known limitation.

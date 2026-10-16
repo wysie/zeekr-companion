@@ -48,6 +48,7 @@ The remotes are `origin` (wysie's fork), `upstream` (dts88's repository), and
 | `integration/upstream-2.11.6` | Upstream camera closure ordering and diagnostic updates, retaining optional fork outputs and original contribution heads |
 | `integration/upstream-about` | Upstream 2.11.4 integration and fork-only About attribution; existing PR heads preserved |
 | `review/project-safety` | Whole-project audit and recording, storage, sharing, update, privacy and lifecycle corrections; based on combined main |
+| `fix/diy360-projection-repair` | Narrow DIY 360 joins with real-raw-frame reproduction; does not install a guessed/fitted calibration |
 | `feature/diy-360-safety` | Camera safety review fixes: readback validation and shared stale-frame guards; based on main |
 | `feature/diy-360-view` | Fork prototype of live ground-plane stitching, with independent manual calibration; based on main |
 | `feature/diy360-popup` | Dedicated 360 settings and manual overlay, with shared renderer/calibration, independent saved layout and lowest-priority camera surface |

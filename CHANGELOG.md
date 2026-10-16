@@ -7,6 +7,10 @@ Alpha sections: one line per change, what changed and nothing else. Beta and sta
 sections: written for users, reviewed before release. Why a change was made lives in the
 commit message, not here.
 
+## Unreleased
+
+- Limit DIY 360 blending to narrow body-corner joins, retaining valid-camera fallback and separator-safe sampling; estimated front/body geometry remains unresolved.
+
 ## [2.11.42-alpha.1] - 2026-10-16
 
 - Name the app, About and releases Zeekr Shortcut — wysie Edition, retaining original-project and contributor credits.

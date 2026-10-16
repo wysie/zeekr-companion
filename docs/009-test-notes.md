@@ -846,3 +846,31 @@ pre-release flags. Emulator inspection verifies the main title and About page in
 the native UI, plus day/night main titles. APK inspection confirms version code
 325, the existing application ID and the same signing certificate as release 41.
 No new vehicle test is claimed; the existing 009 camera/HUD limitations remain.
+
+
+## DIY 360 overlap repair — unreleased, 2026-10-16
+
+Owner confirms the road-scene screenshots use unchanged calibration defaults.
+The released renderer blends across whole overlapping corners, which can double
+misaligned lines; it also maps some bodywork from the raw front image into the
+ground ahead of the outline. These are separate problems. The renderer files
+were unchanged between releases 41 and 42.
+
+The overlap repair ports the existing `fix/diy360-seam-ghosting` implementation
+onto current main. Joins are 20 cm wide along body-corner diagonals and follow
+physical camera roles independently of lane assignment. Outside joins one valid
+view contributes; unavailable preferred views may use another valid camera, and
+unobserved pixels stay black. No camera lifecycle, recording, factory priority,
+freshness, quality, or calibration preference changes are included.
+
+The private original daytime 1280×5140 raw frame is rendered with old and new
+Java lookup code at the same output resolution. This checks the actual renderer,
+not an artistically edited screenshot. Narrow joins cannot correct the front
+bodywork band, mounting errors or lens calibration. Earlier image-derived
+front/rear transforms remain offline candidates; left/right fitting is unresolved.
+No factory-quality alignment or on-car test is claimed.
+
+Validation: 54 related 360/channel JVM tests pass, including 25 projection cases;
+the Android debug build passes. Actual old/new Java renders of the same private
+raw capture confirm reduced overlap ghosting and the remaining front band.
+This work is on `fix/diy360-projection-repair`; no release has been published.
