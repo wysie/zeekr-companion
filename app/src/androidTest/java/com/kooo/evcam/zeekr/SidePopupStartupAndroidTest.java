@@ -2,6 +2,7 @@ package com.kooo.evcam.zeekr;
 
 import android.content.Context;
 import android.graphics.Color;
+import android.graphics.Bitmap;
 import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
 import android.opengl.EGLConfig;
@@ -57,8 +58,15 @@ public class SidePopupStartupAndroidTest {
         EGLDisplay eglDisplay;
         EGLContext eglContext;
         EGLSurface eglSurface;
+        final int sourceWidth, sourceHeight;
 
         Fixture() throws Exception {
+            this(256, 1024);
+        }
+
+        Fixture(int sourceWidth, int sourceHeight) throws Exception {
+            this.sourceWidth = sourceWidth;
+            this.sourceHeight = sourceHeight;
             Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
             try (ParcelFileDescriptor fd = InstrumentationRegistry.getInstrumentation().getUiAutomation()
                     .executeShellCommand("appops set " + target.getPackageName() + " SYSTEM_ALERT_WINDOW allow");
@@ -73,13 +81,16 @@ public class SidePopupStartupAndroidTest {
             AtomicReference<SideViewPopupView> created = new AtomicReference<>();
             main(() -> {
                 SideViewPopupView popup = new SideViewPopupView(context, config);
-                popup.setSourceSize(new Size(256, 1024));
+                popup.setSourceSize(new Size(sourceWidth, sourceHeight));
                 popup.getTextureView().setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
                     @Override public void onSurfaceTextureAvailable(SurfaceTexture st, int w, int h) {
-                        st.setDefaultBufferSize(256, 1024);
+                        st.setDefaultBufferSize(sourceWidth, sourceHeight);
                         texture.set(st);
                     }
-                    @Override public void onSurfaceTextureSizeChanged(SurfaceTexture st, int w, int h) {}
+                    @Override public void onSurfaceTextureSizeChanged(SurfaceTexture st, int w, int h) {
+                        // Match the production service's restoreBufferSize on resize.
+                        st.setDefaultBufferSize(sourceWidth, sourceHeight);
+                    }
                     @Override public boolean onSurfaceTextureDestroyed(SurfaceTexture st) { return true; }
                     @Override public void onSurfaceTextureUpdated(SurfaceTexture st) {
                         popup.noteFrame();
@@ -133,6 +144,29 @@ public class SidePopupStartupAndroidTest {
             assertTrue(EGL14.eglSwapBuffers(eglDisplay, eglSurface));
         }
 
+        void fineHorizontalBars() {
+            if (producer == null) frame(Color.BLACK);
+            int[] dimensions = new int[1];
+            assertTrue(EGL14.eglQuerySurface(eglDisplay, eglSurface, EGL14.EGL_WIDTH, dimensions, 0));
+            assertEquals(sourceWidth, dimensions[0]);
+            assertTrue(EGL14.eglQuerySurface(eglDisplay, eglSurface, EGL14.EGL_HEIGHT, dimensions, 0));
+            assertEquals(sourceHeight, dimensions[0]);
+            GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+            GLES20.glClearColor(0, 0, 0, 1);
+            GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+            GLES20.glClearColor(1, 1, 1, 1);
+            // Four native rows white, four black. Reducing the whole strip to
+            // popup size before taking a lane cannot preserve this detail.
+            for (int y = 0; y < sourceHeight; y += 8) {
+                GLES20.glScissor(0, sourceHeight - y - 4, sourceWidth, 4);
+                GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            }
+            GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+            assertTrue(EGLExt.eglPresentationTimeANDROID(eglDisplay, eglSurface, System.nanoTime()));
+            assertTrue(EGL14.eglSwapBuffers(eglDisplay, eglSurface));
+        }
+
         @Override public void close() {
             if (producer != null) {
                 EGL14.eglMakeCurrent(eglDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT);
@@ -145,6 +179,63 @@ public class SidePopupStartupAndroidTest {
             main(view::detach);
             config.setSidePopupStraighten(oldStraighten);
             StreamLayoutTable.setCompositeCameraId(oldComposite);
+        }
+    }
+
+    @Test public void nativeStripDetailSurvivesCorrectedPopupCrop() throws Exception {
+        try (Fixture f = new Fixture(1280, 5140)) {
+            int oldFov = f.config.getSidePopupFov(), oldYaw = f.config.getSidePopupYaw();
+            int oldPitch = f.config.getSidePopupPitch(), oldRoll = f.config.getSidePopupRotation(LaneCycle.LEFT);
+            int oldSize = f.config.getSidePopupSizePercent();
+            boolean oldMirrored = f.config.isSidePopupMirrored();
+            try {
+                f.config.setSidePopupStraighten(true);
+                f.config.setSidePopupFov(90);
+                f.config.setSidePopupYaw(0);
+                f.config.setSidePopupPitch(0);
+                f.config.setSidePopupRotation(LaneCycle.LEFT, 0);
+                f.config.setSidePopupSizePercent(30);
+                f.config.setSidePopupMirrored(false);
+                main(() -> { f.view.applyConfig(); f.view.show(LaneCycle.LEFT); });
+                for (int i = 0; i < 15; i++) { f.fineHorizontalBars(); SystemClock.sleep(30); }
+                int[] rect = new int[4];
+                main(() -> {
+                    f.view.getLocationOnScreen(rect);
+                    rect[2] = f.view.getWidth(); rect[3] = f.view.getHeight();
+                    assertEquals(1f, f.view.getAlpha(), .001f);
+                });
+                Bitmap screenshot = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
+                assertNotNull(screenshot);
+                try {
+                    SideViewFraming map = new SideViewFraming();
+                    map.configure(90, 0, 0, LaneCycle.LEFT, (float) rect[2] / rect[3]);
+                    float[] uv = new float[2];
+                    int samples = 0, matched = 0, low = 255, high = 0;
+                    int x = rect[2] / 2;
+                    for (int y = rect[3] / 4; y < rect[3] * 3 / 4; y++) {
+                        map.sourcePoint((x + .5f) / rect[2], (y + .5f) / rect[3], uv);
+                        double row = 2572 + uv[1] * 1280;
+                        double phase = row % 8;
+                        // Stay away from transitions and bilinear edge samples.
+                        if (phase < 1 || phase > 7 || Math.abs(phase - 4) < 1) continue;
+                        int red = Color.red(screenshot.getPixel(rect[0] + x, rect[1] + y));
+                        low = Math.min(low, red); high = Math.max(high, red);
+                        if ((phase < 4 && red > 170) || (phase >= 4 && red < 85)) matched++;
+                        samples++;
+                    }
+                    android.util.Log.i("NativeSideSampling", "popup=" + rect[2] + "x" + rect[3]
+                            + " native=1280x5140 matched=" + matched + "/" + samples
+                            + " range=" + low + ".." + high);
+                    assertTrue("Need enough native-detail samples", samples > 40);
+                    assertTrue("Fine native bars must keep contrast", high - low > 160);
+                    assertTrue("Output must match native source rows, not a small intermediate copy",
+                            matched >= samples * .9);
+                } finally { screenshot.recycle(); }
+            } finally {
+                f.config.setSidePopupFov(oldFov); f.config.setSidePopupYaw(oldYaw);
+                f.config.setSidePopupPitch(oldPitch); f.config.setSidePopupRotation(LaneCycle.LEFT, oldRoll);
+                f.config.setSidePopupSizePercent(oldSize); f.config.setSidePopupMirrored(oldMirrored);
+            }
         }
     }
 

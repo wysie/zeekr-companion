@@ -988,3 +988,50 @@ remains unchanged.
 The four existing native popup startup tests also pass: transparent frame drain,
 fresh-side reveal, delayed waiting/cancellation, fade/reactivation and temporary
 Super mirror hiding/restoration. The release signing certificate is retained.
+
+## Native side-camera sampling audit — 2026-10-16
+
+Requested next check: determine whether a low-resolution intermediate is created
+before the blind-camera crop. No such application step was found. The owner's
+latest export reports a 1280×5140 composite and matching popup bind dimensions,
+with four 1280×1280 lanes. `SingleCamera.getPreviewBufferSize()` returns the
+selected preview size without a separate low-resolution override.
+`surfaceFor()` restores that size on the native SurfaceTexture, then creates a
+direct Surface for SIDE_POPUP, SIDE_HUD and MIRROR; only the main PREVIEW can use
+the optional PreviewDewarp pipe. The auxiliary outputs share a preview stream
+through OutputConfiguration. Their services also restore the native buffer size
+after TextureView layout/resize. Correction draws the texture under cell
+transforms; the screen path does not call getBitmap, JPEG decoding or the DIY
+360 preview readback/downscaling code.
+
+Android 12's [TextureView implementation](https://github.com/aosp-mirror/platform_frameworks_base/blob/android12-release/core/java/android/view/TextureView.java)
+draws a texture layer, and [DeferredLayerUpdater](https://github.com/aosp-mirror/platform_frameworks_base/blob/android12-release/libs/hwui/DeferredLayerUpdater.cpp)
+retains an image backed by the producer's hardware buffer separately from the
+view's layout dimensions. A small child layout alone therefore does not prove
+that the source was copied to a small bitmap before its parent transformation.
+
+Added `nativeStripDetailSurvivesCorrectedPopupCrop` to the native popup tests.
+It renders an EGL producer at 1280×5140, asserts the actual EGL dimensions, posts
+alternating four-row white/black bars with advancing timestamps, and captures the
+real hardware-accelerated production SideViewPopupView/TextureView/mesh result
+through UiAutomation. At 90° FOV, neutral aim/roll and mirroring off, a 444×444
+popup preserved contrast 0–255 and matched all 108/108 sampled native-row phases
+away from transitions. If the whole strip had first been shrunk to that popup
+size, the four-row detail would no longer retain that native-row correspondence.
+
+The fixture now restores buffer dimensions after resize, matching the production
+service. The first test attempt lacked that callback restoration and EGL
+correctly reported layout-sized buffers; this was a test-fixture mismatch, not
+evidence of a production downsampling bug. No production camera sizes, session
+outputs, source selection, settings defaults or render paths changed in this
+audit. Test artifacts remain private under artifacts/side-camera-native-sampling.
+
+Scope: this confirms the app's code path and the Android emulator's renderer.
+It cannot rule out undisclosed OEM sensor/ISP processing or a different vendor
+compositor. The exported 1280×1280 lane dimensions also do not prove that many
+pixels of optical detail. Tight fisheye crops still enlarge only a portion of
+that lane; matching factory image quality remains unverified.
+
+All five native popup tests and debug lint pass after the fixture update. The
+audit changes only tests and documentation; it adds no APK behaviour or new
+image-quality claim.

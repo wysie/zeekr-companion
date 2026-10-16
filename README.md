@@ -219,6 +219,13 @@ still be necessary. This uses the existing live feed; it does not increase its
 native resolution or establish factory-equivalent sharpness. With Straighten
 picture off, the existing crop/rotation behaviour is retained.
 
+The 009 export reports a 1280×5140 live composite with four 1280×1280 camera
+images. The side popup receives this same full-size buffer; the drawing path does
+not make a small preview bitmap before taking its camera crop. An Android
+emulator regression test confirms fine native-buffer detail survives the actual
+corrected popup path. This does not verify the optical resolution or internal
+processing of the factory camera hardware.
+
 **Show side view on** selects Screen (default), HUD, or Screen and HUD. Screen output still follows **Use Super mirror when active**. Automatic HUD selection needs an accessible, powered-on, public presentation display with the known 1440×480 HUD dimensions or an explicit HUD name. An unavailable or rejected HUD falls back to the screen behavior, preserving its opening-speed threshold.
 
 Under **HUD picture**, enable **Zeekr 009 HUD** to explicitly select display 3 only when its resolution is 1280×640. This option defaults off and is independent of the camera profile. The owner's 009 Diagnostics expose this anonymous display, but its physical destination and ability to show camera video remain unverified. With HUD or both outputs selected, check the result while parked and turn this option off if it appears on another screen. Private, non-presentation and explicitly named cluster/rear/passenger displays remain excluded; a missing matching display falls back to the screen. Changing the mapping releases the existing HUD window before selecting again. Reset side-camera settings restores automatic selection. Diagnostics include the selected mapping.
