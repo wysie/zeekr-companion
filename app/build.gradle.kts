@@ -39,9 +39,9 @@ android {
         // -beta，而且<b>不会延续到下一版</b>——上一版是 beta 不是下一版也是 beta
         // 的理由。检查更新只推 beta 和正式版，标错等于把一个没验证过的版本
         // 推给一台正在用的车机。
-        versionCode = 326
+        versionCode = 327
         // wysie Edition keeps its own version sequence with machine-readable channel suffixes.
-        versionName = "2.11.43-beta.1"
+        versionName = "2.11.44-alpha.1"
 
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
