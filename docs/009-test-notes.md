@@ -907,3 +907,43 @@ clipping. This is not a physical-car update or download/install test.
 
 The published 2.11.43-beta.1 APK is unchanged; these settings require a subsequent
 build. Source branch: feature/update-channels.
+
+
+## Blind-spot warning callback evidence — 2026-10-16, next build
+
+The owner’s 20:21 dump (2.11.42-alpha.1) discovers SDK constants for
+BLIND_SPOT_DETECTION_WARNING (0x28070200), A_PILLAR_BLIND_SPOT_WARNING
+(0x28085C00), and separate RCTA left/right warning IDs (0x23050200 / 0x23050300).
+These are discovery hints, not observed warning transitions. The export has no
+changing values for these warnings. BLIND_SPOT_ASSIST (0x28081600) initially reads
+zero; that is not a validated left/right alert. Whether the factory mirror warning
+actually activated during the scan is not yet known.
+
+The report confirms onFunctionChanged(Integer) and
+onBytesFunctionValueChanged(Integer,Integer,byte[]) callbacks occurred, but the
+old scanner kept only their method/type signatures. A payload capture gap is
+therefore confirmed; it is not proof that either callback carries blind warnings.
+
+The scanner now snapshots ordinary/custom numeric callbacks as before, plus N:
+notifications (function ID, timestamp, value=changed; no claimed state/side) and
+B: byte payloads (ID, zone, original length, up to 64 bytes as unsigned hex with
+explicit truncation). Payload strings are made before queuing so binder-owned
+arrays and mutable Number objects cannot change the saved value later. There are
+no new vehicle getter calls, writes or camera actions; existing 256-event queue,
+60,000-line, three-hour and filtered diagnostic-export limits remain. Events can
+be dropped or filtered under existing limits, so a missing export event does not
+prove the car has no such signal.
+
+Planned camera behavior, once a live left/right warning is actually decoded and
+validated: an independent off-by-default “Show camera on blind-spot warning”
+option, usable without an indicator. Factory/reverse priority and stale-signal
+handling must remain. Simultaneous sides, dismissal and warning-clear behavior
+need explicit policy before integration. No automatic blind-spot warning trigger
+is implemented by this logging change.
+
+Validation: 1,411 JVM tests, debug lint and the signed release build pass. New
+callback tests verify ID-only notifications without inventing alarm state/side,
+ID/zone and unsigned byte preservation, immutable byte/numeric snapshots, explicit
+64-byte truncation, empty arrays and malformed/unrelated callback rejection.
+Callback return values continue through the existing type-aware proxy defaults.
+Actual callback contents and warning correlation still require another car scan.

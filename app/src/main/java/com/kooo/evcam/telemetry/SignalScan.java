@@ -223,6 +223,9 @@ public final class SignalScan {
                 return;
             }
             write("# registered: " + register());
+            write("# callback evidence: N: = function-change notification (no state/side); "
+                    + "B: = raw byte payload (first " + ScanCallbacks.MAX_BYTES
+                    + " bytes, full length recorded); neither is a decoded blind-spot warning");
             sensor = EcarxSource.call(car, "getSensorManager");
             write("# sensors: " + (sensor == null ? "no sensor manager" : registerSensors()));
             write("# polling: " + startPolling());
@@ -605,14 +608,13 @@ public final class SignalScan {
         @Override
         public Object invoke(Object proxy, Method method, Object[] args) {
             final String name = method.getName();
-            final boolean plain = "onFunctionValueChanged".equals(name) && ScanCallbacks.isValue(args);
-            if (plain || ScanCallbacks.isCustomizeValue(name, args)) {
-                final int id = (Integer) args[0];
-                final int zone = (Integer) args[1];
-                final Number value = (Number) args[2];
+            final ScanCallbacks.Event event = ScanCallbacks.snapshot(name, args);
+            if (event != null) {
                 final long wall = System.currentTimeMillis();
-                postEvent(() -> onChange(wall, plain ? "" : "C:", id, zone, value));
-                return null;
+                postEvent(() -> logLine(wall, event.prefix + hex(event.id)
+                                + (event.zone != 0 ? "@" + hex(event.zone) : ""),
+                        event.value, names.get(event.id)));
+                return EcarxSource.proxyDefault(proxy, method, args, "SignalScan.Callback");
             }
             if (!ScanCallbacks.isObjectMethod(name)) {
                 final String shape = ScanCallbacks.shape(name, args);
@@ -658,11 +660,6 @@ public final class SignalScan {
         if (h == null || stopped || lines >= MAX_LINES || !pendingEvents.tryAcquire()) return;
         if (!h.post(() -> { try { event.run(); } finally { pendingEvents.release(); } }))
             pendingEvents.release();
-    }
-
-    /** @param prefix 普通的功能号回调是空，定制功能的值回调是 {@code C:}（和 {@code S:} {@code P:} 并列） */
-    private void onChange(long wall, String prefix, int id, int zone, Number value) {
-        logLine(wall, prefix + hex(id) + (zone != 0 ? "@" + hex(zone) : ""), String.valueOf(value), names.get(id));
     }
 
     /** 一行：时刻 车速 号 = 值 名字（报告按空格切，号里不能有空格）。 */

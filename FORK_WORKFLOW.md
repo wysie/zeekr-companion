@@ -9,6 +9,7 @@ The remotes are `origin` (wysie's fork), `upstream` (dts88's repository), and
 | `upstream-main` | Unmodified dts88 code; tracks `upstream/main` and updates by fast-forward only |
 | `ferix-main` | Unmodified CAMCORDER code; tracks `ferix/main` and updates by fast-forward only |
 | `contrib/01-*` through `contrib/11-*` | Independent upstream contributions; each starts directly from dts88 main, with no fork versions or updater configuration |
+| `fix/signal-scan-callback-details` | Read-only notification IDs/times and bounded byte payload evidence for blind-spot research; no automatic warning trigger |
 | `feature/update-channels` | Owner-selected Stable / Beta / Alpha update filtering, legacy switch migration and single-choice settings |
 | `feature/turn-signal-side-view` | One complete side-view feature: PR #4 port, independent Blind spot camera settings, temporary mirror view, Use Super mirror when active option, independent popup and pinch resizing |
 | `feature/camera-labels` | Optional camera labels, developed separately from side-view display modes |

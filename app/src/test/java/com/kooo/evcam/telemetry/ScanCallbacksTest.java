@@ -3,11 +3,63 @@ package com.kooo.evcam.telemetry;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.assertNull;
 
 import org.junit.Test;
 
 /** {@link ScanCallbacks}：普查要听得见「定制功能」的值回调 —— 有的号只从那里给值。 */
 public class ScanCallbacksTest {
+
+    @Test public void notificationRetainsFunctionIdWithoutInventingWarningStateOrSide() {
+        ScanCallbacks.Event e = ScanCallbacks.snapshot("onFunctionChanged", new Object[]{0x28070200});
+        assertEquals("N:", e.prefix);
+        assertEquals(0x28070200, e.id);
+        assertEquals(0, e.zone);
+        assertEquals("changed", e.value);
+    }
+
+    @Test public void bytesRetainZoneAndUnsignedPayloadAsAnImmutableSnapshot() {
+        byte[] bytes = {0, 1, (byte) 128, (byte) 255};
+        ScanCallbacks.Event e = ScanCallbacks.snapshot("onBytesFunctionValueChanged",
+                new Object[]{0x28070200, 4, bytes});
+        java.util.Arrays.fill(bytes, (byte) 0);
+        assertEquals("B:", e.prefix);
+        assertEquals(0x28070200, e.id);
+        assertEquals(4, e.zone);
+        assertEquals("bytes(len=4,hex=000180ff)", e.value);
+    }
+
+    @Test public void byteCaptureIsBoundedAndTruncationIsExplicit() {
+        byte[] bytes = new byte[4096];
+        java.util.Arrays.fill(bytes, (byte) 255);
+        ScanCallbacks.Event e = ScanCallbacks.snapshot("onBytesFunctionValueChanged", new Object[]{1, 0, bytes});
+        String expected = "bytes(len=4096,hex=" + new String(new char[128]).replace('\0', 'f') + ",truncated)";
+        assertEquals(expected, e.value);
+        assertEquals("bytes(len=0,hex=)", ScanCallbacks.snapshot("onBytesFunctionValueChanged",
+                new Object[]{1, 0, new byte[0]}).value);
+    }
+
+    @Test public void numericAndCustomizeEventsKeepTheirExistingPrefixesAndValues() {
+        java.util.concurrent.atomic.AtomicInteger value = new java.util.concurrent.atomic.AtomicInteger(7);
+        ScanCallbacks.Event plain = ScanCallbacks.snapshot("onFunctionValueChanged", new Object[]{3, 1, value});
+        value.set(8);
+        assertEquals("", plain.prefix);
+        assertEquals("7", plain.value);
+        assertEquals(1, plain.zone);
+        ScanCallbacks.Event custom = ScanCallbacks.snapshot("onCustomizeFunctionValueChanged", new Object[]{3, 0, 0.5f});
+        assertEquals("C:", custom.prefix);
+        assertEquals("0.5", custom.value);
+    }
+
+    @Test public void malformedOrUnrelatedCallbacksAreNotDecodedAsWarningEvidence() {
+        assertNull(ScanCallbacks.snapshot("onFunctionChanged", null));
+        assertNull(ScanCallbacks.snapshot("onFunctionChanged", new Object[]{1L}));
+        assertNull(ScanCallbacks.snapshot("onFunctionChanged", new Object[]{1, 2}));
+        assertNull(ScanCallbacks.snapshot("onBytesFunctionValueChanged", new Object[]{1, 0, null}));
+        assertNull(ScanCallbacks.snapshot("onBytesFunctionValueChanged", new Object[]{1, "left", new byte[1]}));
+        assertNull(ScanCallbacks.snapshot("onSupportedFunctionStatusChanged", new Object[]{1, 0, "supported"}));
+        assertNull(ScanCallbacks.snapshot("toString", null));
+    }
 
     @Test
     public void valueCallbacksAreIdZoneValue() {

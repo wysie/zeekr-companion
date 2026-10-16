@@ -12,7 +12,45 @@ package com.kooo.evcam.telemetry;
  */
 final class ScanCallbacks {
 
+    static final int MAX_BYTES = 64;
+
+    /** Immutable snapshot: binder-owned arrays and mutable Number objects must not escape. */
+    static final class Event {
+        final String prefix, value;
+        final int id, zone;
+        Event(String prefix, int id, int zone, String value) {
+            this.prefix = prefix; this.id = id; this.zone = zone; this.value = value;
+        }
+    }
+
     private ScanCallbacks() {
+    }
+
+    /** Capture raw evidence only. A notification is not an active warning, and byte bits
+     * have no left/right or alarm interpretation until correlated with the factory display.
+     * No getter calls, vehicle writes or camera actions are performed here.
+     */
+    static Event snapshot(String name, Object[] args) {
+        if (("onFunctionValueChanged".equals(name) || isCustomizeValue(name, args)) && isValue(args)) {
+            return new Event("onFunctionValueChanged".equals(name) ? "" : "C:",
+                    (Integer) args[0], (Integer) args[1], args[2].toString());
+        }
+        if ("onFunctionChanged".equals(name) && args != null && args.length == 1
+                && args[0] instanceof Integer) {
+            return new Event("N:", (Integer) args[0], 0, "changed");
+        }
+        if ("onBytesFunctionValueChanged".equals(name) && args != null && args.length == 3
+                && args[0] instanceof Integer && args[1] instanceof Integer && args[2] instanceof byte[]) {
+            byte[] bytes = (byte[]) args[2];
+            StringBuilder value = new StringBuilder("bytes(len=").append(bytes.length).append(",hex=");
+            for (int i = 0; i < Math.min(bytes.length, MAX_BYTES); i++) {
+                int b = bytes[i] & 255;
+                value.append(Character.forDigit(b >>> 4, 16)).append(Character.forDigit(b & 15, 16));
+            }
+            if (bytes.length > MAX_BYTES) value.append(",truncated");
+            return new Event("B:", (Integer) args[0], (Integer) args[1], value.append(')').toString());
+        }
+        return null;
     }
 
     /** (号, 区域, 值)：带值的回调都是这个形状。 */
