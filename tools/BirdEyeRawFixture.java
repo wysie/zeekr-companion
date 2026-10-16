@@ -15,7 +15,8 @@ import javax.imageio.ImageIO;
  */
 public final class BirdEyeRawFixture {
     public static void main(String[] args) throws Exception {
-        if (args.length != 2) throw new IllegalArgumentException("Supply raw composite and output PNG paths");
+        if (args.length < 2 || args.length > 3 || (args.length == 3 && !"--009-image-fit".equals(args[2])))
+            throw new IllegalArgumentException("Supply raw composite, output PNG and optionally --009-image-fit");
         BufferedImage raw = ImageIO.read(new File(args[0]));
         if (raw == null) throw new IllegalArgumentException("Input is not a readable image");
         // This tool explicitly expects a vertical original, not an ordinary photo or phone screenshot.
@@ -31,6 +32,7 @@ public final class BirdEyeRawFixture {
                 camera(0, 0, 2.6, 0), camera(1, 0, -2.6, 180),
                 camera(2, -1, 0, 270), camera(3, 1, 0, 90)};
         BirdEyeProjection.Calibration calibration = new BirdEyeProjection.Calibration(5.2, 2, 2, cameras);
+        if (args.length == 3) calibration = BirdEyeImageFit.zeekr009(new int[]{0,1,2,3}, 2);
         int width = 640, height = 960;
         int[] source = raw.getRGB(0, 0, raw.getWidth(), raw.getHeight(), null, 0, raw.getWidth());
         int[] output = new int[width * height];
@@ -41,8 +43,16 @@ public final class BirdEyeRawFixture {
         BufferedImage result = new BufferedImage(width, height, BufferedImage.TYPE_INT_ARGB);
         result.setRGB(0, 0, width, height, output, 0, width);
         Graphics2D g = result.createGraphics();
+        double mpp = Math.max(6.0 / width, 9.2 / height);
+        int carW = (int) Math.round(2 / mpp), carH = (int) Math.round(5.2 / mpp);
+        int left = (width - carW) / 2, top = (height - carH) / 2;
+        g.setColor(new Color(0x292b30)); g.fillRoundRect(left, top, carW, carH, 12, 12);
+        g.setColor(new Color(0xdedee2)); g.drawRoundRect(left, top, carW, carH, 12, 12);
+        g.setFont(new java.awt.Font(java.awt.Font.SANS_SERIF, java.awt.Font.PLAIN, 26));
+        g.drawString("Front", width / 2 - 32, top + 85);
+        g.setFont(new java.awt.Font(java.awt.Font.SANS_SERIF, java.awt.Font.PLAIN, 12));
         g.setColor(Color.WHITE);
-        g.drawString("OFFLINE / ESTIMATED GEOMETRY", 14, height - 16);
+        g.drawString(args.length == 3 ? "OFFLINE / EXPERIMENTAL 009 IMAGE FIT" : "OFFLINE / ESTIMATED GEOMETRY", 14, height - 16);
         g.dispose();
         ImageIO.write(result, "PNG", new File(args[1]));
     }

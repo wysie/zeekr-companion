@@ -477,6 +477,14 @@
         <PreferenceCategory
             android:key="group_bird_calibration"
             android:title="@string/menu_calibration">
+            <ListPreference
+                android:key="pref_bird_profile"
+                android:title="@string/bird_eye_profile"
+                app:useSimpleSummaryProvider="false" />
+            <Preference
+                android:key="pref_bird_profile_note"
+                android:summary="@string/bird_eye_profile_note"
+                android:selectable="false" />
             <Preference
                 android:key="pref_bird_calibrate"
                 android:title="@string/bird_eye_calibrate" />

@@ -12,6 +12,8 @@ public final class BirdEyeConfig {
     public int get(String key, int fallback) { return preferences.getInt(key, fallback); }
     public void set(String key, int value) { preferences.edit().putInt(key, value).apply(); }
     public int quality() { return BirdEyeQuality.normalize(get("quality", BirdEyeQuality.BALANCED)); }
+    public boolean imageFitted() { return get("projection_profile", 0) == 1; }
+    public void setImageFitted(boolean on) { set("projection_profile", on ? 1 : 0); }
     public static String key(int camera, String field) { return "camera_" + camera + "_" + field; }
     public void assignLane(int camera, int lane) {
         int[] previous = new int[4];
@@ -46,6 +48,11 @@ public final class BirdEyeConfig {
         double length = bounded("length", 520, 300, 650) / 100.0;
         double width = bounded("width", 200, 140, 260) / 100.0;
         double margin = bounded("margin", 200, 50, 400) / 100.0;
+        if (imageFitted()) {
+            int[] lanes = new int[4];
+            for (int i = 0; i < 4; i++) lanes[i] = bounded(key(i, "lane"), i, 0, 3);
+            return BirdEyeImageFit.zeekr009(lanes, Math.min(2, margin));
+        }
         BirdEyeProjection.Camera[] cameras = new BirdEyeProjection.Camera[4];
         int[] headings = {0, 180, 270, 90};
         for (int i = 0; i < 4; i++) {

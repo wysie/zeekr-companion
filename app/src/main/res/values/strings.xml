@@ -1187,4 +1187,10 @@
 <string name="action_select">选择</string>
     <string name="adjust_enabled">启用画面调节</string>
 <string name="gallery_delete_result">已删除 %1$d · 已保护 %2$d · 无法删除 %3$d</string>
+
+    <string name="bird_eye_profile">投影配置</string>
+    <string name="bird_eye_profile_manual">手动（估计默认值）</string>
+    <string name="bird_eye_profile_009">009 图像拟合（实验性）</string>
+    <string name="bird_eye_profile_note">基于 009 参考画面的实验性拟合，距离精度未验证。切换配置会保留手动校准值。</string>
+    <string name="bird_eye_profile_fitted_note">当前使用 009 图像拟合。可在此调整源画面、画质和视野边距。如需编辑镜头参数，请在 360 设置中选择手动。</string>
 </resources>

@@ -13,6 +13,7 @@ commit message, not here.
 - Preserve the existing beta preference on upgrade, default new installs to Stable and require explicit Alpha selection.
 - Include raw function-change notifications and bounded byte callback details in Developer signal scans; blind-spot warning triggers remain unverified.
 - Fit corrected side-camera rotation directly to the window to reduce unnecessary zoom; use finer correction for enlarged popup, mirror-replacement and HUD views.
+- Add an opt-in 009 image-fitted DIY 360 projection, shared by main preview, popup and stitched photos; retain manual settings and unverified distance accuracy.
 
 ## [2.11.43-beta.1] - 2026-10-16
 

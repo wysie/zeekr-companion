@@ -1035,3 +1035,37 @@ that lane; matching factory image quality remains unverified.
 All five native popup tests and debug lint pass after the fixture update. The
 audit changes only tests and documentation; it adds no APK behaviour or new
 image-quality claim.
+
+## 009 image-fitted 360 profile — 2026-10-16, next build
+
+The owner requested implementation using the new raw/factory reference pair,
+not another explanation of estimated geometry. `feature/009-image-fitted-360`
+adds an explicit profile selector under 360 camera → Calibration. Manual remains
+selected by default; choose 009 image fit (experimental) to apply the four fitted
+ray/plane matrices. Manual geometry is preserved. Sources/quality/margin remain
+editable; fixed fit geometry has no inactive physical-lens sliders. Reset returns
+to Manual. The 009 fit is not a 7X preset or measured distance calibration.
+
+All four cameras now have sufficient matches in the new reference (21 front,
+62 rear, 15 left, 27 right after 10 px deduplication); the offline fit passes
+holdouts and exactly reproduces the embedded matrices. An earlier 91-point
+reference set was not used for fitting. Per-camera median native-source alignment
+errors improved 65.50→7.89, 41.29→7.59, 60.82→10.38 and 151.50→3.61 pixels.
+Earlier left coverage is sparse and has a 77 px maximum residual. These are
+reference-image alignment statistics, not road-distance accuracy or a cross-scene
+safety validation. See docs/009-image-fit.md for assumptions and limits.
+
+The exact Java renderer reproduces the corrected front band and ground scale
+from the retained native frame. Private before/after/factory contact sheet:
+artifacts/009-360-fit-20261016/comparison.jpg. No owner images are embedded in
+source/APKs; each output samples the current live buffer. JVM regressions verify
+live pixels change, source-lane reassignment, lane separator bounds, invalid
+matrices/extents and improvement against the earlier capture.
+
+Validation: 1,421 JVM tests, 10 desktop fitter tests, debug lint and signed release
+build pass. Two native settings tests pass in each day/night theme, covering
+explicit confirmation, persistence/recreation, reset and preservation of manual
+values, lane assignments and quality. Native UI captures were inspected; the
+emulator's no-composite-stream toast reflects its lack of vehicle cameras and is
+not a 009 test failure. On-car use remains pending. No publication or upstream PR
+head changes are part of this feature.

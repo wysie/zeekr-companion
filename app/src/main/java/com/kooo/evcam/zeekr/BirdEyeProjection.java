@@ -77,26 +77,47 @@ public final class BirdEyeProjection {
         public final double length, width, margin;
         /** Physical role order: front, rear, left, right. Each role can select any source lane. */
         public final Camera[] cameras;
+        private final BirdEyeImageFit[] imageFits;
         public Calibration(double length, double width, double margin, Camera[] cameras) {
+            this(length, width, margin, cameras, null);
+        }
+        Calibration(double length, double width, double margin, Camera[] cameras, BirdEyeImageFit[] imageFits) {
             if (!finite(length, width, margin) || length <= 0 || width <= 0 || margin <= 0
                     || cameras == null || cameras.length != 4) throw new IllegalArgumentException("Invalid vehicle geometry");
             this.length = length; this.width = width; this.margin = margin;
             this.cameras = cameras.clone();
+            if (imageFits != null && imageFits.length != 4) throw new IllegalArgumentException("Four image fits required");
+            this.imageFits = imageFits == null ? null : imageFits.clone();
             boolean[] lanes = new boolean[4];
-            for (Camera camera : cameras) {
+            for (int i = 0; i < cameras.length; i++) {
+                Camera camera = cameras[i];
                 if (camera == null || lanes[camera.lane]) throw new IllegalArgumentException("Four distinct cameras required");
+                if (this.imageFits != null && (this.imageFits[i] == null || this.imageFits[i].role != i))
+                    throw new IllegalArgumentException("Image fit role mismatch");
                 lanes[camera.lane] = true;
             }
+        }
+        public boolean imageFitted() { return imageFits != null; }
+        double project(int role, double x, double y, double[] uv) {
+            return imageFits == null ? cameras[role].project(x, y, uv) : imageFits[role].project(x, y, uv);
         }
         public boolean insideCar(double x, double y) {
             return Math.abs(x) <= width / 2 && Math.abs(y) <= length / 2;
         }
         public String describe() {
             StringBuilder result = new StringBuilder("projection=equidistant seam=body-corner-diagonal feather=")
-                    .append(SEAM_WIDTH).append("m (estimated calibration)\nlength=").append(length).append(" width=")
-                    .append(width).append(" margin=").append(margin).append(" (metres)\n");
+                    .append(SEAM_WIDTH).append(imageFits == null ? "m (estimated calibration)\nlength=" : " reference units (image fit)\nlength=")
+                    .append(length).append(" width=").append(width).append(" margin=").append(margin)
+                    .append(imageFits == null ? " (metres)\n" : " (reference units)\n");
+            if (imageFits != null) result.append("profile=").append(BirdEyeImageFit.PROFILE)
+                    .append("; empirical image alignment, reference units are not measured distances\n");
             for (int i = 0; i < cameras.length; i++) {
                 Camera c = cameras[i];
+                if (imageFits != null) {
+                    result.append("camera ").append(i).append(": lane=").append(c.lane)
+                            .append(" rayToReferenceGround=").append(imageFits[i].describe()).append('\n');
+                    continue;
+                }
                 result.append("camera ").append(i).append(": lane=").append(c.lane)
                         .append(" mount=").append(c.x).append(',').append(c.y).append(',').append(c.height)
                         .append(" yaw/pitch/roll=").append(c.yaw).append('/').append(c.pitch).append('/').append(c.roll)
@@ -139,7 +160,7 @@ public final class BirdEyeProjection {
                     int fallbackAddress = -1, fallbackFraction = 0;
                     for (int role = 0; role < calibration.cameras.length; role++) {
                         Camera camera = calibration.cameras[role];
-                        double confidence = camera.project(x, y, uv);
+                        double confidence = calibration.project(role, x, y, uv);
                         if (confidence <= 0) continue;
                         CompositeStreamGeometry.Lane lane = plan.lane(camera.lane);
                         // Clamp to pixel centres INSIDE this lane, never a separator or neighbour.

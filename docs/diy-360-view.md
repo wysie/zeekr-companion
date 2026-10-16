@@ -7,6 +7,16 @@ is on `feature/diy-360-view`, for integration into the fork's `main`.
 
 ## Use
 
+**009 image fit:** Settings → 360° camera → Calibration → Projection profile
+offers Manual (the existing default) and 009 image fit (experimental). The latter
+uses fitted ray/plane transforms for all four cameras rather than the generic
+mount defaults. It applies to main/popup rendering and stitched-photo exports;
+manual lens values are retained. Its footprint/reference scale is fixed and its
+margin is limited to 0.5–2 reference units. Source assignments and quality remain
+adjustable. Reset returns to Manual. This improves image alignment against the
+owner's 009 references, but is not measured distance calibration or a 7X preset.
+See [evidence, reproduction and limits](009-image-fit.md).
+
 This is an **experimental, uncalibrated view**. A connected vehicle interface is required, but preview and calibration do not require P or a particular speed. Reverse and factory-camera takeover still take priority. On the main live camera screen, tap **360°**. Tap **Four cameras** to return to
 the usual preview. This is a manual, session-only display mode and is off at
 launch. It does not automatically open on reversing or signalling. It is not
