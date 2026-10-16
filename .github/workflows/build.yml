@@ -1,4 +1,4 @@
-name: Build fork APK
+name: Build wysie Edition APK
 
 on:
   push:
@@ -17,6 +17,8 @@ jobs:
     runs-on: ubuntu-latest
     outputs:
       version: ${{ steps.apk.outputs.version }}
+      title: ${{ steps.apk.outputs.title }}
+      prerelease: ${{ steps.apk.outputs.prerelease }}
 
     steps:
       - name: Checkout
@@ -42,6 +44,9 @@ jobs:
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
 
+      - name: Test release naming and packaging
+        run: python3 -m unittest discover -s .github/scripts -p 'test_*.py'
+
       # 纯 JVM 单元测试：合成流几何拆分与相机选择逻辑
       - name: Run unit tests
         run: ./gradlew :app:testDebugUnitTest --stacktrace
@@ -57,24 +62,23 @@ jobs:
       - name: Build release APK
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: Rename APK
+      - name: Stage wysie Edition APK
         id: apk
+        env:
+          RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
         run: |
           set -euo pipefail
-          SRC=$(find app/build/outputs/apk/release -name '*.apk' | head -1)
-          VERSION=$(grep -E '^[[:space:]]*versionName[[:space:]]*=' app/build.gradle.kts | head -1 | cut -d'"' -f2)
-          SHORT_SHA=$(git rev-parse --short HEAD)
-          OUT="ZeekrShortcut-${VERSION}-${SHORT_SHA}.apk"
-          cp "$SRC" "$OUT"
-          echo "path=$OUT" >> "$GITHUB_OUTPUT"
-          echo "version=$VERSION" >> "$GITHUB_OUTPUT"
-          ls -lh "$OUT"
+          ARGS=()
+          if [ -n "$RELEASE_TAG" ]; then ARGS+=(--tag "$RELEASE_TAG"); fi
+          python3 .github/scripts/package_release.py "${ARGS[@]}"
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ZeekrShortcut-apk
-          path: ${{ steps.apk.outputs.path }}
+          name: ZeekrShortcut-wysie-apk
+          path: |
+            ${{ steps.apk.outputs.path }}
+            ${{ steps.apk.outputs.checksum }}
           if-no-files-found: error
 
   publish:
@@ -89,7 +93,7 @@ jobs:
       - name: Download built APK
         uses: actions/download-artifact@v4
         with:
-          name: ZeekrShortcut-apk
+          name: ZeekrShortcut-wysie-apk
       # 打 tag 时自动发布 Release，车机/手机可直接下载安装
       # Release 正文由 CHANGELOG.md 里对应版本的小节自动生成，
       # 这样每个版本的说明就是它自己的改动，而不是每次都一样的模板。
@@ -107,10 +111,13 @@ jobs:
         if: startsWith(github.ref, 'refs/tags/v')
         uses: softprops/action-gh-release@v2
         with:
-          files: "*.apk"
+          files: |
+            *.apk
+            *.apk.sha256
           # 带后缀的（-alpha / -beta）是测试版；1.0.0 这种不带后缀的是正式版，显示为 Latest
-          prerelease: ${{ contains(needs.build.outputs.version, '-') }}
-          # 2026-09-29 起所有新版本一律不公开：建成草稿，只有仓库所有者能看到和下载
+          prerelease: ${{ needs.build.outputs.prerelease }}
+          # Review notes and validation before publishing the generated draft.
           draft: true
-          name: ${{ needs.build.outputs.version }}
+          name: ${{ needs.build.outputs.title }}
+          make_latest: false
           body_path: RELEASE_NOTES.md

@@ -113,7 +113,7 @@ bash ./gradlew :app:testDebugUnitTest assembleRelease
 
 The build workflow runs on pushes to `main` and `feature/**`, and on pull requests
 targeting `main`; its APK artifact is
-`ZeekrShortcut-apk`. Increment `versionCode` and update `versionName` before each new
+`ZeekrShortcut-wysie-apk`. Increment `versionCode` and update `versionName` before each new
 installable release. The existing signing key preserves update compatibility.
 
 Fetch dts88's updates into `upstream/main`, fast-forward `upstream-main`, and then
@@ -149,5 +149,15 @@ The seven port branches above are integrated into `main`. Independent ports star
 from `upstream/main`; arrows depend on `feature/turn-signal-side-view`. Existing
 PR #17 and #19 branches are unchanged. Source authorship and original commit links
 are recorded in port commits and `NOTICE.md`. See `docs/ferix-feature-ports.md`.
-New combined prereleases use `fork-…` tags pointing to `main`; older release tags
-and APK download URLs remain valid.
+New combined releases use `vX.Y.Z-alpha.N`, `vX.Y.Z-beta.N` or `vX.Y.Z` tags on
+`main`. Historical `fork-…` and `personal-build-…` release tags/downloads remain valid.
+
+## wysie Edition release naming
+
+- Display/release identity: **Zeekr Shortcut — wysie Edition** (Chinese: 极氪即刻 — wysie Edition).
+- Android `versionName`: `X.Y.Z-alpha.N`, `X.Y.Z-beta.N`, or stable `X.Y.Z`; increment `versionCode` for every installable release. Keep application ID and signing identity.
+- Git tag: exactly `v` plus the built `versionName`, e.g. `v2.11.42-alpha.1`. Do not rename existing tags or assets.
+- Public APK: `ZeekrShortcut-wysie-<versionName>.apk`, plus the matching `.apk.sha256`. Stage it locally with `python3 .github/scripts/package_release.py`; CI uses that same script and rejects a tag/version mismatch. Gradle's `app-release.apk` is an intermediate build output.
+- Release title: `Zeekr Shortcut — wysie Edition <versionName>`. Generate its body with `.github/scripts/release_notes.py`; retain dts88, FerixzTanz and EVCam credits.
+- The tag workflow creates a draft with canonical asset names. Review validation/notes, then publish alpha/beta with Pre-release on and Latest off. Stable uses Pre-release off; beta/stable require the owner's explicit release-channel decision. Alpha remains the default.
+- The updater reads this fork's releases, requires consistent pre-release flags/tags, excludes alpha/unknown channels, and compares historical fork tags/installed personal versions for migration. Upstream contribution branches retain upstream branding and release rules.

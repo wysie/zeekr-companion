@@ -1,4 +1,4 @@
-# Zeekr Shortcut (Car Version) — personal fork
+# Zeekr Shortcut — wysie Edition
 
 This is [wysie's personal fork](https://github.com/wysie/zeekr-shortcut-car) of
 [Zeekr Shortcut by dts88](https://github.com/dts88/zeekr-shortcut-car), maintained
@@ -124,6 +124,13 @@ Ferix's unmodified CAMCORDER source. Individual contribution branches stay separ
 see the [submitted upstream PRs](docs/upstream-contributions.md). See
 [Fork workflow](FORK_WORKFLOW.md) for the branch layout. Whenever a feature is
 added or changed, update this README with its behavior, settings and limitations.
+
+Release naming uses **Zeekr Shortcut — wysie Edition** for the app and release title,
+`vX.Y.Z-alpha.N` / `vX.Y.Z-beta.N` / `vX.Y.Z` for tags, and
+`ZeekrShortcut-wysie-X.Y.Z-alpha.N.apk` (or the matching beta/stable version) for downloads.
+Alpha/beta releases are marked Pre-release; alpha is never offered by the updater.
+Each release includes a `.apk.sha256` checksum. Existing release links, application ID,
+signing identity, settings and the `ZeekrShortcutApp` storage folders are retained.
 
 The original app is a surround-view dash cam for the ZEEKR 7X head unit. The
 remaining sections describe its functionality together with this fork's additions.
@@ -288,19 +295,19 @@ This page does not cover that.
 - **This personal fork:** download the desired APK from
   [this fork's releases](https://github.com/wysie/zeekr-shortcut-car/releases).
   New combined APKs are built from `main`; each release tag identifies its exact source commit.
-  Personal alpha builds are installed manually; they are excluded from the in-app updater.
+  Alpha builds are installed manually; they are excluded from the in-app updater.
 
 The fork retains the original application ID and public test signing key so its
 APK can update an existing installation signed with that key. In-app update checks
 query [wysie/zeekr-shortcut-car releases](https://github.com/wysie/zeekr-shortcut-car/releases).
-The beta setting adds beta releases; alpha releases stay excluded. The signing **private key** is public, so someone else can create
+The updater requires agreement between the tag and GitHub’s pre-release flag: stable tags have the flag off, beta tags have it on and require Include beta; alpha and unknown/mismatched channels stay excluded. Legacy `fork-` / `personal-build-` tags and installed `-personal-alpha` versions remain comparable. The signing **private key** is public, so someone else can create
 Android-accepted updates with the same identity. It does not establish that an APK
 came from this maintainer. A private-key migration needs a separate installation/update
 plan; the existing identity is retained for compatibility. The updater now requires
 GitHub asset size and SHA-256 to match and uses HTTPS through redirects. Old assets
 without a digest are refused by the in-app downloader; manual alpha installs remain unchanged.
 
-Download the `ZeekrShortcut-*.apk` asset from the release page and sideload it through App Lab.
+Download the `ZeekrShortcut-wysie-<version>.apk` asset from the release page and sideload it through App Lab.
 When the installer finishes, tap **Back** at the top left, not **Open**. Otherwise the head unit's
 installer gets stuck and later installs or updates fail.
 

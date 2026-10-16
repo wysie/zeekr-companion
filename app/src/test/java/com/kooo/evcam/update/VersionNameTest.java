@@ -118,4 +118,42 @@ public class VersionNameTest {
         assertFalse(VersionName.isRelease("nightly"));
         assertFalse(VersionName.isRelease(null));
     }
+
+    @Test public void numberedPrereleasesUseNumericOrdering() {
+        assertTrue(VersionName.isNewer("v2.11.42-beta.10", "2.11.42-beta.2"));
+        assertTrue(VersionName.isNewer("2.11.42-beta.1", "2.11.42-alpha.99"));
+        assertTrue(VersionName.isNewer("2.11.42", "2.11.42-beta.10"));
+        assertFalse(VersionName.isNewer("2.11.42-beta.2", "2.11.42-beta.10"));
+    }
+
+    @Test public void historicalTagsAndInstalledNamesRemainComparable() {
+        assertTrue(VersionName.compare("fork-2.11.41-alpha", "2.11.41-personal-alpha") == 0);
+        assertTrue(VersionName.compare("personal-build-2.11.14-alpha", "2.11.14-alpha") == 0);
+        assertTrue(VersionName.isNewer("v2.11.42-alpha.1", "2.11.41-personal-alpha"));
+        assertTrue(VersionName.isNewer("v2.11.42-beta.1", "fork-2.11.41-alpha"));
+        assertFalse(VersionName.isBetaOrRelease("fork-2.11.41-alpha"));
+        assertFalse(VersionName.isBetaOrRelease("personal-build-2.11.14-alpha"));
+    }
+
+    @Test public void prereleaseFlagAndTagMustAgree() {
+        for (boolean includeBeta : new boolean[]{false, true}) {
+            assertTrue(VersionName.isEligible("v2.11.42", false, includeBeta));
+            assertFalse(VersionName.isEligible("v2.11.42", true, includeBeta));
+            assertFalse(VersionName.isEligible("v2.11.42-alpha.1", false, includeBeta));
+            assertFalse(VersionName.isEligible("v2.11.42-alpha.1", true, includeBeta));
+            assertFalse(VersionName.isEligible("v2.11.42-beta.1", false, includeBeta));
+        }
+        assertTrue(VersionName.isEligible("v2.11.42-beta.1", true, true));
+        assertFalse(VersionName.isEligible("v2.11.42-beta.1", true, false));
+        assertTrue(VersionName.isEligible("fork-2.11.42-beta", true, true));
+    }
+
+    @Test public void malformedAndUnknownChannelsNeverBecomeUpdates() {
+        for (String value : new String[]{null, "", "nightly", "v2.11.42-rc.1", "v2.11.42-betamax",
+                "v2.11.42-betafoo", "2.11.42-beta.01", "2.11.42-beta.", "2.11.42-",
+                "02.11.42", "2.11.42+", "2.11.42/alpha", "999999999999999.0.0"}) {
+            assertFalse(String.valueOf(value), VersionName.isEligible(value, true, true));
+            assertFalse(String.valueOf(value), VersionName.isEligible(value, false, true));
+        }
+    }
 }

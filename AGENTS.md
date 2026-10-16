@@ -18,3 +18,5 @@
 - Follow `FORK_WORKFLOW.md` for integration, builds and releases. Validate the
   combined result before releasing and retain the existing signing identity for
   update compatibility.
+
+- This combined fork is **Zeekr Shortcut — wysie Edition**. Use canonical `vX.Y.Z-alpha.N` / `vX.Y.Z-beta.N` / `vX.Y.Z` tags and `ZeekrShortcut-wysie-<versionName>.apk` downloads via `.github/scripts/package_release.py`. New alpha/beta releases use GitHub Pre-release. Keep Android application ID/signing/storage names and historical download URLs; keep this branding out of independent upstream PRs.
