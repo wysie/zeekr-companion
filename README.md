@@ -295,12 +295,12 @@ This page does not cover that.
 - **This personal fork:** download the desired APK from
   [this fork's releases](https://github.com/wysie/zeekr-shortcut-car/releases).
   New combined APKs are built from `main`; each release tag identifies its exact source commit.
-  Alpha builds are installed manually; they are excluded from the in-app updater.
+  In builds with **Update channel**, choose Stable, Beta or Alpha under Settings → Check for updates. Stable includes stable releases only; Beta includes beta and stable; Alpha includes all three. Older builds with the beta switch still need manual alpha installation.
 
 The fork retains the original application ID and public test signing key so its
 APK can update an existing installation signed with that key. In-app update checks
 query [wysie/zeekr-shortcut-car releases](https://github.com/wysie/zeekr-shortcut-car/releases).
-The updater requires agreement between the tag and GitHub’s pre-release flag: stable tags have the flag off, beta tags have it on and require Include beta; alpha and unknown/mismatched channels stay excluded. Legacy `fork-` / `personal-build-` tags and installed `-personal-alpha` versions remain comparable. The signing **private key** is public, so someone else can create
+The updater requires agreement between the tag and GitHub’s pre-release flag: stable tags have the flag off; alpha/beta tags have it on and must be allowed by the selected channel. Unknown and mismatched channels stay excluded. It offers the newest eligible version, never a downgrade. Fresh installs start on Stable; upgrades preserve the old beta switch, including its default-on behavior for existing installs. Alpha requires an explicit selection and is never inferred from the installed version. The setting row shows the current channel; its single-choice dialog explains the included releases. Checks still run only when you tap Check for updates. Legacy `fork-` / `personal-build-` tags and installed `-personal-alpha` versions remain comparable. The signing **private key** is public, so someone else can create
 Android-accepted updates with the same identity. It does not establish that an APK
 came from this maintainer. A private-key migration needs a separate installation/update
 plan; the existing identity is retained for compatibility. The updater now requires

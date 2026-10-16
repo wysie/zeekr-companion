@@ -8,6 +8,7 @@ import com.kooo.evcam.zeekr.FisheyeProjection;
 import com.kooo.evcam.settings.SettingSpec;
 import com.kooo.evcam.settings.LicensePlate;
 import com.kooo.evcam.settings.SettingsRegistry;
+import com.kooo.evcam.update.UpdateChannel;
 
 /**
  * 应用配置管理类
@@ -261,6 +262,7 @@ public class AppConfig {
     public AppConfig(Context context) {
         this.context = context.getApplicationContext();
         this.prefs = this.context.getSharedPreferences(PREF_NAME, Context.MODE_PRIVATE);
+        migrateUpdateChannel();
         // 开发者模式是存着的（见 DeveloperMode）；进程里谁先建 AppConfig 谁把它读进来
         com.kooo.evcam.settings.DeveloperMode.init(this.context);
         repairInvalidSettings();
@@ -1269,16 +1271,29 @@ public class AppConfig {
         prefs.edit().putBoolean(KEY_REARVIEW_GUIDE_SEEN, true).apply();
     }
 
-    /**
-     * 检查更新时接不接收 Beta 版。默认接收：现在发出去的除了 alpha 就是 beta，
-     * 默认关掉等于「永远没有更新」。关掉之后只推正式版。alpha 无论如何都不推。
-     */
-    public boolean isUpdateBetaEnabled() {
-        return prefs.getBoolean(KEY_UPDATE_BETA, true);
+    /** Selected release channels. Stable for fresh installs; legacy beta choice is migrated. */
+    public UpdateChannel getUpdateChannel() {
+        return UpdateChannel.fromValue(readEnum(SettingsRegistry.UPDATE_CHANNEL));
     }
 
-    public void setUpdateBetaEnabled(boolean enabled) {
-        prefs.edit().putBoolean(KEY_UPDATE_BETA, enabled).apply();
+    public void setUpdateChannel(UpdateChannel channel) {
+        writeEnum(SettingsRegistry.UPDATE_CHANNEL, channel == null ? UpdateChannel.STABLE.value : channel.value);
+    }
+
+    /** Preserve the old switch (including its default-on value on established installs).
+     * Persist the fresh-install default before onboarding can change first_launch.
+     * Never infer Alpha from an installed version or any legacy setting.
+     */
+    private void migrateUpdateChannel() {
+        synchronized (prefs) {
+            if (prefs.contains(SettingsRegistry.UPDATE_CHANNEL.key)) return;
+            boolean existing = prefs.contains(KEY_UPDATE_BETA)
+                    || !prefs.getBoolean(KEY_FIRST_LAUNCH, true)
+                    || prefs.getBoolean(KEY_LANGUAGE_CHOSEN, false);
+            UpdateChannel channel = existing && prefs.getBoolean(KEY_UPDATE_BETA, true)
+                    ? UpdateChannel.BETA : UpdateChannel.STABLE;
+            prefs.edit().putString(SettingsRegistry.UPDATE_CHANNEL.key, channel.value).apply();
+        }
     }
 
     /** 录制时减少装饰性动效。默认开：编码器在用 GPU，界面不跟它抢。 */
