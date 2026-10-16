@@ -9,20 +9,29 @@ package com.kooo.evcam.zeekr;
 public final class SideViewFraming {
     private static final float EDGE_MARGIN = 0.001f;
     private static final int BOUNDARY_STEPS = 64;
+    private static final int MIN_MESH_DIVISIONS = 10;
+    private static final int MAX_MESH_DIVISIONS = 16;
     private final float[] probe = new float[2];
     private SideViewProjection.Rays rays;
     private float fov, back, up, aspect;
-    private int lane;
+    private int lane, roll;
+    private double rollCos, rollSin;
     private double fittedTangent;
 
     /** Returns true only when the configuration changes; fitting is cached between frames. */
     public boolean configure(float fov, float back, float up, int lane, float aspect) {
+        return configure(fov, back, up, lane, aspect, 0);
+    }
+
+    /** Fit the final rotated window directly, avoiding a second cover-zoom crop. */
+    public boolean configure(float fov, float back, float up, int lane, float aspect, int roll) {
         fov = clamp(fov, SideViewProjection.MIN_FOV_DEGREES, SideViewProjection.MAX_FOV_DEGREES);
         back = clamp(back, -SideViewProjection.MAX_YAW_DEGREES, SideViewProjection.MAX_YAW_DEGREES);
         up = clamp(up, -SideViewProjection.MAX_PITCH_DEGREES, SideViewProjection.MAX_PITCH_DEGREES);
         aspect = Float.isFinite(aspect) && aspect > 0f ? aspect : 1f;
+        roll = SideViewRotation.clamp(roll);
         if (rays != null && this.fov == fov && this.back == back && this.up == up
-                && this.lane == lane && this.aspect == aspect) {
+                && this.lane == lane && this.aspect == aspect && this.roll == roll) {
             return false;
         }
         this.fov = fov;
@@ -30,6 +39,9 @@ public final class SideViewFraming {
         this.up = up;
         this.lane = lane;
         this.aspect = aspect;
+        this.roll = roll;
+        rollCos = Math.cos(Math.toRadians(roll));
+        rollSin = Math.sin(Math.toRadians(roll));
         rays = new SideViewProjection.Rays(back, up, lane);
         double requested = Math.tan(Math.toRadians(fov) / 2.0);
         if (fits(requested)) {
@@ -58,12 +70,32 @@ public final class SideViewFraming {
         if (rays == null) {
             throw new IllegalStateException("Configure side-view framing before sampling");
         }
-        rays.map(u, v, fittedTangent, aspect, out, 0);
+        map(u, v, fittedTangent, out);
+    }
+
+    private void map(float u, float v, double tangent, float[] out) {
+        if (roll == 0) {
+            rays.map(u, v, tangent, aspect, out, 0);
+            return;
+        }
+        // Undo display roll in physical window coordinates, before yaw/pitch and
+        // lens projection. Rotating normalized UV directly would distort wide HUDs.
+        double x = u * 2.0 - 1.0;
+        double y = (v * 2.0 - 1.0) / aspect;
+        rays.mapPlane((rollCos * x + rollSin * y) * tangent,
+                (-rollSin * x + rollCos * y) * tangent, out, 0);
+    }
+
+    /** Bound Canvas work: retain 10×10 for small windows, at most 16×16 when enlarged. */
+    public static int meshDivisions(int width, int height) {
+        return Math.max(MIN_MESH_DIVISIONS, Math.min(MAX_MESH_DIVISIONS,
+                FisheyeMesh.divisionsFor(Math.max(width, height))));
     }
 
     private boolean fits(double tangent) {
         // The curved boundary can reach an edge between corners. Sample all four edges
-        // densely, plus every actual mesh vertex, before accepting a field of view.
+        // densely, plus an interior grid at the maximum mesh density, before
+        // accepting a field of view.
         for (int i = 0; i <= BOUNDARY_STEPS; i++) {
             float s = (float) i / BOUNDARY_STEPS;
             if (!inside(0f, s, tangent) || !inside(1f, s, tangent)
@@ -71,7 +103,7 @@ public final class SideViewFraming {
                 return false;
             }
         }
-        int divisions = FisheyeProjection.MESH_DIVISIONS;
+        int divisions = MAX_MESH_DIVISIONS;
         for (int row = 0; row <= divisions; row++) {
             for (int column = 0; column <= divisions; column++) {
                 if (!inside((float) column / divisions, (float) row / divisions, tangent)) {
@@ -83,7 +115,7 @@ public final class SideViewFraming {
     }
 
     private boolean inside(float u, float v, double tangent) {
-        rays.map(u, v, tangent, aspect, probe, 0);
+        map(u, v, tangent, probe);
         return Float.isFinite(probe[0]) && Float.isFinite(probe[1])
                 && probe[0] >= EDGE_MARGIN && probe[0] <= 1f - EDGE_MARGIN
                 && probe[1] >= EDGE_MARGIN && probe[1] <= 1f - EDGE_MARGIN;

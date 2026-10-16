@@ -636,13 +636,14 @@ public class SideViewPopupView extends ViewGroup {
         Paint tone = pictureTone();
         float fade = HudEdgeFade.widthPx(edgeFadePercent(), width, height);
         if (tone != null || fade > 0f) canvas.saveLayer(0f, 0f, width, height, tone);
-        int inner = SideViewRotation.begin(canvas, appConfig.getSidePopupRotation(lane), width, height, readMirrored());
+        int rotation = appConfig.getSidePopupRotation(lane);
+        int inner = SideViewRotation.begin(canvas, straighten ? 0 : rotation, width, height, readMirrored());
         if (straighten) {
-            framing.configure(viewFov, yaw, pitch, lane, (float) width / height);
+            framing.configure(viewFov, yaw, pitch, lane, (float) width / height, rotation);
             // 虚拟相机转过去（往后、往上）再拉直，见 SideViewProjection
             RearViewGeometry.ShaderRects r = RearViewGeometry.toShaderRects(
                     plan, lane, RearViewGeometry.Viewport.full());
-            mesh.prepare(FisheyeProjection.MESH_DIVISIONS,
+            mesh.prepare(SideViewFraming.meshDivisions(width, height),
                     r.laneOffsetX * width, r.laneOffsetY * height,
                     r.laneScaleX * width, r.laneScaleY * height, turnedMap);
             mesh.draw(canvas, 0f, 0f, width, height, paintTexture);

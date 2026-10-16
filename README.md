@@ -209,6 +209,16 @@ side view and park assist take precedence.
 
 Under **Image & framing**, **Mirror side-camera image** flips left and right in both the separate popup and Super mirror replacement. It is off by default; labels, arrows and controls remain readable and recordings are unchanged. Reset side-camera settings restores mirroring to off.
 
+With **Straighten picture** on, per-side rotation is fitted together with the final
+window shape, avoiding the extra enlargement previously applied after rotation.
+This applies to the popup, Super mirror replacement and HUD. Enlarged side views
+use a finer correction grid (up to 16×16); small windows retain 10×10. Requested
+aim, rotation and mirroring are retained, and the view still narrows when needed
+to stay inside the camera image. At high rear/up angles, substantial zoom can
+still be necessary. This uses the existing live feed; it does not increase its
+native resolution or establish factory-equivalent sharpness. With Straighten
+picture off, the existing crop/rotation behaviour is retained.
+
 **Show side view on** selects Screen (default), HUD, or Screen and HUD. Screen output still follows **Use Super mirror when active**. Automatic HUD selection needs an accessible, powered-on, public presentation display with the known 1440×480 HUD dimensions or an explicit HUD name. An unavailable or rejected HUD falls back to the screen behavior, preserving its opening-speed threshold.
 
 Under **HUD picture**, enable **Zeekr 009 HUD** to explicitly select display 3 only when its resolution is 1280×640. This option defaults off and is independent of the camera profile. The owner's 009 Diagnostics expose this anonymous display, but its physical destination and ability to show camera video remain unverified. With HUD or both outputs selected, check the result while parked and turn this option off if it appears on another screen. Private, non-presentation and explicitly named cluster/rear/passenger displays remain excluded; a missing matching display falls back to the screen. Changing the mapping releases the existing HUD window before selecting again. Reset side-camera settings restores automatic selection. Diagnostics include the selected mapping.

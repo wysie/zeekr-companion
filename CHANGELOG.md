@@ -12,6 +12,7 @@ commit message, not here.
 - Replace Include beta releases with Stable / Beta / Alpha update channels; Alpha includes all three, Beta includes beta/stable, Stable includes stable only.
 - Preserve the existing beta preference on upgrade, default new installs to Stable and require explicit Alpha selection.
 - Include raw function-change notifications and bounded byte callback details in Developer signal scans; blind-spot warning triggers remain unverified.
+- Fit corrected side-camera rotation directly to the window to reduce unnecessary zoom; use finer correction for enlarged popup, mirror-replacement and HUD views.
 
 ## [2.11.43-beta.1] - 2026-10-16
 
