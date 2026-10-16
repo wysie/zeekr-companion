@@ -79,11 +79,15 @@ public final class VersionName {
     }
 
     /** Require agreement between the version channel and GitHub's pre-release checkbox. */
-    public static boolean isEligible(String version, boolean prerelease, boolean includeBeta) {
+    public static boolean isEligible(String version, boolean prerelease, UpdateChannel channel) {
         Parts parts = parse(version);
         if (parts == null) return false;
         if (parts.pre.isEmpty()) return !prerelease;
-        return prerelease && includeBeta && beta(parts.pre);
+        if (!prerelease || channel == null || channel == UpdateChannel.STABLE) return false;
+        if (beta(parts.pre)) return true;
+        String suffix = parts.pre.toLowerCase(Locale.US);
+        return channel == UpdateChannel.ALPHA && CHANNEL.matcher(suffix).matches()
+                && (suffix.equals("alpha") || suffix.startsWith("alpha."));
     }
 
     private static boolean beta(String suffix) {

@@ -879,3 +879,31 @@ from 2.11.42-alpha.1 with Include beta releases enabled. All 1,403 JVM tests,
 debug lint and three release-packaging tests pass. Publishing as a GitHub
 Pre-release makes this beta eligible; the updater implementation is unchanged.
 No completed on-car update/download/install test is claimed.
+
+
+## Update channels — 2026-10-16, next build
+
+Settings → Check for updates replaces Include beta releases with Update channel.
+The row shows the selected short name; a native single-choice dialog explains
+Stable = stable only, Beta = beta/stable, Alpha = alpha/beta/stable. OK saves and
+Cancel discards the tentative selection. English, Chinese and Malay copy follow
+the existing native text sizes and semantic day/night colors.
+
+Fresh installs save Stable before onboarding. Existing installations preserve
+both explicit legacy switch values and its default-on Beta behavior when the old
+switch was never changed. A saved channel takes precedence over the legacy key.
+An unknown saved value falls back to Stable; Alpha is never inferred from the
+installed version. Filtering still rejects draft releases, unknown release
+channels and mismatched GitHub pre-release flags. Numeric version comparisons
+prevent downgrades even when changing channels.
+
+Validation: 1,406 JVM tests pass. The new native migration test checks fresh
+installation/onboarding, legacy on/off/unset choices, saved Alpha precedence and
+invalid-value fallback. The native UI test checks cancelling Alpha, confirming
+Alpha, Activity recreation, displayed summary and switching back to Stable.
+Both tests pass on the disposable emulator; the UI test also passes in night
+mode. Day/night screenshots show all three choices and the helper text without
+clipping. This is not a physical-car update or download/install test.
+
+The published 2.11.43-beta.1 APK is unchanged; these settings require a subsequent
+build. Source branch: feature/update-channels.

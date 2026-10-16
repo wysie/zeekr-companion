@@ -9,6 +9,7 @@ The remotes are `origin` (wysie's fork), `upstream` (dts88's repository), and
 | `upstream-main` | Unmodified dts88 code; tracks `upstream/main` and updates by fast-forward only |
 | `ferix-main` | Unmodified CAMCORDER code; tracks `ferix/main` and updates by fast-forward only |
 | `contrib/01-*` through `contrib/11-*` | Independent upstream contributions; each starts directly from dts88 main, with no fork versions or updater configuration |
+| `feature/update-channels` | Owner-selected Stable / Beta / Alpha update filtering, legacy switch migration and single-choice settings |
 | `feature/turn-signal-side-view` | One complete side-view feature: PR #4 port, independent Blind spot camera settings, temporary mirror view, Use Super mirror when active option, independent popup and pinch resizing |
 | `feature/camera-labels` | Optional camera labels, developed separately from side-view display modes |
 | `personal-build` | Historical snapshot before promotion to `main`; no new feature integration or build triggers |
@@ -160,5 +161,5 @@ New combined releases use `vX.Y.Z-alpha.N`, `vX.Y.Z-beta.N` or `vX.Y.Z` tags on
 - Git tag: exactly `v` plus the built `versionName`, e.g. `v2.11.42-alpha.1`. Do not rename existing tags or assets.
 - Public APK: `ZeekrShortcut-wysie-<versionName>.apk`, plus the matching `.apk.sha256`. Stage it locally with `python3 .github/scripts/package_release.py`; CI uses that same script and rejects a tag/version mismatch. Gradle's `app-release.apk` is an intermediate build output.
 - Release title: `Zeekr Shortcut — wysie Edition <versionName>`. Generate its body with `.github/scripts/release_notes.py`; retain dts88, FerixzTanz and EVCam credits.
-- The tag workflow creates a draft with canonical asset names. Review validation/notes, then publish alpha/beta with Pre-release on and Latest off. Stable uses Pre-release off; beta/stable require the owner's explicit release-channel decision. Alpha remains the default.
-- The updater reads this fork's releases, requires consistent pre-release flags/tags, excludes alpha/unknown channels, and compares historical fork tags/installed personal versions for migration. Upstream contribution branches retain upstream branding and release rules.
+- The tag workflow creates a draft with canonical asset names. Review validation/notes, then publish alpha/beta with Pre-release on and Latest off. Stable uses Pre-release off; beta/stable require the owner's explicit release-channel decision. Alpha remains the default **publication channel**; this is independent of the in-app Update channel preference.
+- The updater reads this fork's releases and requires consistent pre-release flags/tags. Its Update channel setting permits Stable only, Beta plus Stable, or Alpha plus Beta plus Stable. Fresh installs start on Stable; upgrades preserve the legacy beta choice, and Alpha is explicit opt-in. Unknown channels stay excluded. Historical fork tags/installed personal versions remain comparable. Upstream contribution branches retain upstream branding and release rules.
