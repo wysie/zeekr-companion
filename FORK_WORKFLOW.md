@@ -12,6 +12,7 @@ The remotes are `origin` (wysie's fork), `upstream` (dts88's repository), and
 | `fix/signal-scan-callback-details` | Read-only notification IDs/times and bounded byte payload evidence for blind-spot research; no automatic warning trigger |
 | `fix/side-camera-quality` | Fit corrected side-camera roll in the final window without a second cover zoom; bounded finer mesh for larger views |
 | `research/side-camera-native-sampling` | Audit the native-buffer path and retain an EGL/TextureView fine-detail regression; no camera-resolution or routing changes |
+| `feature/360-car-colours` | Saved Green / White / Black 009 illustration choice, live shared main/popup/photo repaint and independent calibration reset |
 | `feature/360-car-overlay` | Original 009-style vehicle artwork over the existing DIY 360 footprint, shared by main/popup/photo rendering; no transparent-underbody claim |
 | `feature/009-image-fitted-360` | Opt-in empirical 009 ray/plane transforms fitted from owner images, independent of manual geometry; common main/popup/photo projection |
 | `feature/update-channels` | Owner-selected Stable / Beta / Alpha update filtering, legacy switch migration and single-choice settings |

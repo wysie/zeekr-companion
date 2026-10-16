@@ -9,7 +9,7 @@ commit message, not here.
 
 ## [2.11.44-alpha.1] - 2026-10-16
 
-- Add a pearl-white 009-style vehicle illustration to DIY 360 main/popup views and stitched photos when using 009 mapping or the 009 image-fit profile.
+- Add a 009-style vehicle illustration with saved Green / White / Black colours to DIY 360 main/popup views and stitched photos when using 009 mapping or the 009 image-fit profile.
 
 - Replace Include beta releases with Stable / Beta / Alpha update channels; Alpha includes all three, Beta includes beta/stable, Stable includes stable only.
 - Preserve the existing beta preference on upgrade, default new installs to Stable and require explicit Alpha selection.

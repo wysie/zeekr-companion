@@ -1272,6 +1272,11 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         if (findPreference("pref_bird_display") == null) return;
         com.kooo.evcam.zeekr.BirdEyeWindowConfig window = new com.kooo.evcam.zeekr.BirdEyeWindowConfig(requireContext());
         com.kooo.evcam.zeekr.BirdEyeConfig config = new com.kooo.evcam.zeekr.BirdEyeConfig(requireContext());
+        com.kooo.evcam.zeekr.BirdEyeAppearance appearance = new com.kooo.evcam.zeekr.BirdEyeAppearance(requireContext());
+        bindEnum("pref_bird_car_colour", SettingSpec.of("bird_car_colour", "009 car colour", "white",
+                SettingSpec.entry("green", "Green", R.string.bird_eye_car_green),
+                SettingSpec.entry("white", "White", R.string.bird_eye_car_white),
+                SettingSpec.entry("black", "Black", R.string.bird_eye_car_black)), appearance.colour(), appearance::setColour);
         bindEnum("pref_bird_display", SettingSpec.of("bird_display", "360 display", "main",
                 SettingSpec.entry("main", "Main", R.string.bird_eye_display_main),
                 SettingSpec.entry("popup", "Popup", R.string.bird_eye_display_popup)), window.popup() ? "popup" : "main", value -> {

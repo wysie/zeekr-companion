@@ -36,6 +36,7 @@ final class BirdEyePreview {
     private String qualityReason = "none";
     private final View owner;
     private final BirdEyeConfig config;
+    private final BirdEyeAppearance appearance;
     private final BirdEyeVehicleOverlay vehicleOverlay = new BirdEyeVehicleOverlay();
     private final Handler main = new Handler(Looper.getMainLooper());
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
@@ -71,8 +72,13 @@ final class BirdEyePreview {
     private int failureCount;
     private final android.content.SharedPreferences.OnSharedPreferenceChangeListener calibrationListener = (prefs, key) ->
             main.post(() -> { if (running) invalidateCalibration(); });
+    private final android.content.SharedPreferences.OnSharedPreferenceChangeListener appearanceListener = (prefs, key) ->
+            main.post(this::refreshAppearance);
 
-    BirdEyePreview(View owner) { this.owner = owner; config = new BirdEyeConfig(owner.getContext()); }
+    BirdEyePreview(View owner) {
+        this.owner = owner; config = new BirdEyeConfig(owner.getContext());
+        appearance = new BirdEyeAppearance(owner.getContext());
+    }
 
     void start(TextureView texture, CompositeStreamGeometry.Plan plan) {
         if (running && this.texture == texture && this.plan == plan) return;
@@ -85,6 +91,7 @@ final class BirdEyePreview {
         ScreenState.addListener(screenListener);
         running = true;
         config.preferences.registerOnSharedPreferenceChangeListener(calibrationListener);
+        appearance.preferences.registerOnSharedPreferenceChangeListener(appearanceListener);
         noteState();
         if (worker == null || worker.isShutdown()) {
             worker = Executors.newSingleThreadExecutor(r -> new Thread(() -> {
@@ -103,6 +110,7 @@ final class BirdEyePreview {
     void stop() {
         running = false;
         config.preferences.unregisterOnSharedPreferenceChangeListener(calibrationListener);
+        appearance.preferences.unregisterOnSharedPreferenceChangeListener(appearanceListener);
         invalidatePicture();
         main.removeCallbacks(tick);
         Telemetry.get().removeListener(vehicleListener);
@@ -120,8 +128,14 @@ final class BirdEyePreview {
             calibration = null;
             AppLog.w("BirdEyePreview", "Invalid calibration: " + error.getMessage());
         }
+        prepareVehicleOverlay();
+    }
+    private void prepareVehicleOverlay() {
         vehicleOverlay.prepare(owner.getResources(), calibration != null && BirdEyeVehicleOverlay.use009(
-                calibration.imageFitted(), new AppConfig(owner.getContext()).is009CameraMappingEnabled()));
+                calibration.imageFitted(), new AppConfig(owner.getContext()).is009CameraMappingEnabled()), appearance.colour());
+    }
+    private void refreshAppearance() {
+        if (running) { prepareVehicleOverlay(); owner.invalidate(); }
     }
     private void resetQuality(boolean force) {
         int selected = config.quality();

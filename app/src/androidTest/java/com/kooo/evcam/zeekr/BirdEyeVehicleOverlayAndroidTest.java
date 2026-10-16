@@ -20,36 +20,40 @@ public class BirdEyeVehicleOverlayAndroidTest {
 
     @Test public void illustrationFitsBodyAndOnlyMirrorsExtendIntoGroundAtAllOutputSizes() throws Exception {
         BirdEyeVehicleOverlay overlay = new BirdEyeVehicleOverlay();
-        overlay.prepare(context.getResources(), true);
-        for (int width : new int[]{320, 640, 960}) {
-            int height = width * 3 / 2;
-            RectF body = new RectF(width * .3f, height * .15f, width * .7f, height * .85f);
-            for (int background : new int[]{0xffdedee2, 0xff181a20}) {
-                Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                Canvas canvas = new Canvas(image); canvas.drawColor(background);
-                Paint paint = new Paint(); paint.setColor(0xff779981);
-                for (int x = 0; x < width; x += 40) canvas.drawLine(x, 0, x, height, paint);
-                for (int y = 0; y < height; y += 40) canvas.drawLine(0, y, width, y, paint);
-                Bitmap original = image.copy(Bitmap.Config.ARGB_8888, false);
-                assertTrue(overlay.draw(canvas, body));
-                float extension = body.width() * .1f;
-                for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) {
-                    // Fractional Canvas bounds can antialias the intersected edge pixel.
-                    if (x < Math.floor(body.left - extension) || x > Math.ceil(body.right + extension)
-                            || y < Math.floor(body.top) || y > Math.ceil(body.bottom))
-                        assertEquals("Camera ground outside vehicle must not change", original.getPixel(x,y), image.getPixel(x,y));
+        for (String colour : new String[]{BirdEyeAppearance.WHITE, BirdEyeAppearance.GREEN, BirdEyeAppearance.BLACK}) {
+            overlay.prepare(context.getResources(), true, colour);
+            for (int width : new int[]{320, 640, 960}) {
+                int height = width * 3 / 2;
+                RectF body = new RectF(width * .3f, height * .15f, width * .7f, height * .85f);
+                for (int background : new int[]{0xffdedee2, 0xff181a20}) {
+                    Bitmap image = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+                    Canvas canvas = new Canvas(image); canvas.drawColor(background);
+                    Paint paint = new Paint(); paint.setColor(0xff779981);
+                    for (int x = 0; x < width; x += 40) canvas.drawLine(x, 0, x, height, paint);
+                    for (int y = 0; y < height; y += 40) canvas.drawLine(0, y, width, y, paint);
+                    Bitmap original = image.copy(Bitmap.Config.ARGB_8888, false);
+                    assertTrue(overlay.draw(canvas, body));
+                    float extension = body.width() * .1f;
+                    for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) {
+                        // Fractional Canvas bounds can antialias the intersected edge pixel.
+                        if (x < Math.floor(body.left - extension) || x > Math.ceil(body.right + extension)
+                                || y < Math.floor(body.top) || y > Math.ceil(body.bottom))
+                            assertEquals("Camera ground outside vehicle must not change", original.getPixel(x,y), image.getPixel(x,y));
+                    }
+                    int hood = image.getPixel(width / 2, (int)(body.top + body.height() * .07f));
+                    int roof = image.getPixel(width / 2, (int)(body.top + body.height() * .5f));
+                    if (BirdEyeAppearance.WHITE.equals(colour)) assertTrue("White hood faces upward", Color.red(hood) > 180);
+                    else if (BirdEyeAppearance.GREEN.equals(colour)) assertTrue("Green body", Color.green(hood) > Color.red(hood) + 5);
+                    else assertTrue("Black body", Color.red(hood) < 90);
+                    assertTrue("Dark roof glass", Color.red(roof) < 120);
+                    String theme = background == 0xffdedee2 ? "day" : "night";
+                    File directory = new File(context.getExternalFilesDir(null), "overlay-review");
+                    assertTrue(directory.isDirectory() || directory.mkdirs());
+                    try (FileOutputStream stream = new FileOutputStream(new File(directory, colour + "-" + theme + "-" + width + ".png"))) {
+                        assertTrue(image.compress(Bitmap.CompressFormat.PNG, 100, stream));
+                    }
+                    original.recycle(); image.recycle();
                 }
-                int hood = image.getPixel(width / 2, (int)(body.top + body.height() * .07f));
-                int roof = image.getPixel(width / 2, (int)(body.top + body.height() * .5f));
-                assertTrue("White hood faces upward", Color.red(hood) > 180);
-                assertTrue("Dark roof glass", Color.red(roof) < 120);
-                String theme = background == 0xffdedee2 ? "day" : "night";
-                File directory = new File(context.getExternalFilesDir(null), "overlay-review");
-                assertTrue(directory.isDirectory() || directory.mkdirs());
-                try (FileOutputStream stream = new FileOutputStream(new File(directory, theme + "-" + width + ".png"))) {
-                    assertTrue(image.compress(Bitmap.CompressFormat.PNG, 100, stream));
-                }
-                original.recycle(); image.recycle();
             }
         }
     }
@@ -61,14 +65,63 @@ public class BirdEyeVehicleOverlayAndroidTest {
         BirdEyeVehicleOverlay overlay = new BirdEyeVehicleOverlay();
         Bitmap image = Bitmap.createBitmap(240, 600, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(image); RectF body = new RectF(30, 40, 210, 560);
-        overlay.prepare(context.getResources(), false);
+        overlay.prepare(context.getResources(), false, BirdEyeAppearance.WHITE);
         assertFalse(overlay.draw(canvas, body)); assertEquals(0, image.getPixel(120,300));
-        overlay.prepare(context.getResources(), true);
+        overlay.prepare(context.getResources(), true, BirdEyeAppearance.WHITE);
         assertTrue(overlay.draw(canvas, body));
         for (int y=45;y<555;y++) for (int x=35;x<205;x++)
             assertEquals("Unknown ground must remain opaque", 255, Color.alpha(image.getPixel(x,y)));
-        overlay.prepare(context.getResources(), false);
+        overlay.prepare(context.getResources(), false, BirdEyeAppearance.WHITE);
         assertFalse(overlay.draw(canvas, body));
         image.recycle();
+    }
+
+    @Test public void colourChangeRepaintsBothRenderersWithoutInvalidatingCameraFrames() throws Exception {
+        BirdEyeAppearance appearance = new BirdEyeAppearance(context);
+        String previous = appearance.preferences.getString("vehicle_colour", null);
+        BirdEyePreview[] previews = new BirdEyePreview[2];
+        android.content.SharedPreferences.OnSharedPreferenceChangeListener[] listeners =
+                new android.content.SharedPreferences.OnSharedPreferenceChangeListener[2];
+        try {
+            InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+                appearance.setColour(BirdEyeAppearance.WHITE);
+                for (int i=0; i<previews.length; i++) {
+                    BirdEyePreview preview = previews[i] = new BirdEyePreview(new android.view.View(context));
+                    set(preview,"calibration",BirdEyeImageFit.zeekr009(new int[]{0,1,2,3},1.6));
+                    set(preview,"running",true);set(preview,"revision",37);set(preview,"displayedAt",123L);
+                    listeners[i] = (android.content.SharedPreferences.OnSharedPreferenceChangeListener)get(preview,"appearanceListener");
+                    appearance.preferences.registerOnSharedPreferenceChangeListener(listeners[i]);
+                }
+                appearance.setColour(BirdEyeAppearance.GREEN);
+            });
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+                for (BirdEyePreview preview : previews) {
+                    assertEquals(37,get(preview,"revision"));assertEquals(123L,get(preview,"displayedAt"));
+                    BirdEyeVehicleOverlay overlay = (BirdEyeVehicleOverlay)get(preview,"vehicleOverlay");
+                    Bitmap image=Bitmap.createBitmap(240,600,Bitmap.Config.ARGB_8888);
+                    assertTrue(overlay.draw(new Canvas(image),new RectF(30,40,210,560)));
+                    int hood=image.getPixel(120,76);
+                    assertTrue(Color.green(hood)>Color.red(hood)+5);image.recycle();
+                }
+            });
+        } finally {
+            InstrumentationRegistry.getInstrumentation().runOnMainSync(() -> {
+                for (int i=0; i<previews.length; i++) if (previews[i]!=null) {
+                    set(previews[i],"running",false);
+                    if (listeners[i]!=null) appearance.preferences.unregisterOnSharedPreferenceChangeListener(listeners[i]);
+                }
+                if (previous==null) appearance.preferences.edit().remove("vehicle_colour").commit();
+                else appearance.setColour(previous);
+            });
+        }
+    }
+    private static Object get(Object owner,String name) {
+        try { java.lang.reflect.Field f=owner.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(owner); }
+        catch (ReflectiveOperationException e) { throw new AssertionError(e); }
+    }
+    private static void set(Object owner,String name,Object value) {
+        try { java.lang.reflect.Field f=owner.getClass().getDeclaredField(name);f.setAccessible(true);f.set(owner,value); }
+        catch (ReflectiveOperationException e) { throw new AssertionError(e); }
     }
 }
