@@ -101,7 +101,7 @@
     <string name="set_force_h264_title">Force H.264</string>
     <string name="set_force_h264_summary">Uses H.264 for every camera, overriding the codec set for each camera in Edit stream profile</string>
     <string name="set_image_adjust_title">Image adjustment</string>
-    <string name="set_image_adjust_summary">Opens a window to adjust exposure, white balance, noise reduction and more, live</string>
+    <string name="set_image_adjust_summary">Supported camera controls for all active channels, including recordings. Opens inside the app; changes apply when enabled.</string>
     <string name="set_image_adjust_reset_title">Reset image adjustment</string>
     <string name="set_camera_mapping_title">Camera mapping</string>
     <string name="set_camera_mapping_summary">Choose which camera feeds the surround, front cabin and rear cabin views (troubleshooting)</string>
@@ -951,7 +951,7 @@
     <string name="dev_tool_progress">(%1$d/%2$d) %3$s</string>
     <string name="dev_tool_file_result">%1$s: %2$s</string>
     <string name="dev_note">Turn off Settings → System → Enable developer mode to hide this section. Saved developer values are retained.</string>
-    <string name="set_rearview_camera_label_title">Show camera label</string>
+    <string name="set_rearview_camera_label_title">Direction label</string>
     <string name="set_rearview_camera_label_summary">Shows Front, Rear, Left or Right in Super mirror and the side-view pop-up</string>
     <string name="set_side_popup_replace_mirror_title">Use Super mirror when active</string>
     <string name="set_side_popup_replace_mirror_summary">On: temporarily show the side camera in Super mirror when it is active; otherwise use a separate window. Off: always use a separate window alongside the mirror.</string>
@@ -1182,4 +1182,19 @@
         <item>Another screen</item>
         <item>Not seen</item>
     </string-array>
+    <string name="set_hud_side_contrast_night_title">HUD picture contrast at night</string>
+    <string name="set_hud_side_contrast_night_summary">Uses a separate contrast value when the car reports night mode. 100 keeps the original picture; higher values can hide dark detail.</string>
+    <string name="set_009_camera_mapping_title">009 camera mapping (verified export)</string>
+    <string name="set_009_camera_mapping_summary">Off by default. Maps camera 3 to Surround and 2 to Driver camera. Leaves the second additional slot unmapped unless manually assigned; exterior road cameras 0/1 are not cabins. Based on one 009 export; exit and reopen after changing.</string>
+    <string name="msg_009_mapping_restart">Exit and reopen the app to apply camera mapping.</string>
+    <string name="slot_driver_camera">Driver camera</string>
+    <string name="slot_road_front">Forward road camera</string>
+    <string name="slot_road_rear">Rearward road camera</string>
+    <string name="slot_additional_camera">Additional camera (manual mapping)</string>
+<string name="msg_select_first">Select something first</string>
+<string name="action_deselect_all">Deselect all</string>
+<string name="action_done">Done</string>
+<string name="action_select">Select</string>
+    <string name="adjust_enabled">Enable picture adjustments</string>
+<string name="gallery_delete_result">%1$d deleted · %2$d protected · %3$d could not be deleted</string>
 </resources>

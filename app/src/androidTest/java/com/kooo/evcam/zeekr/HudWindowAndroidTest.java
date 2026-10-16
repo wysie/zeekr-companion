@@ -41,6 +41,7 @@ public class HudWindowAndroidTest {
         boolean oldLegacy = preferences.getBoolean("hud_side_overlay", false);
         boolean oldFollow = config.isHudSideFollowSignal();
         int oldOpacity = config.getHudSideOpacityPercent(), oldNight = config.getHudSideNightPercent();
+        int dayContrast = config.getHudSideContrastPercent(), nightContrast = config.getHudSideContrastNightPercent();
         AtomicReference<SideViewHudPanel> ref = new AtomicReference<>();
         ImageReader images = ImageReader.newInstance(1280, 640, PixelFormat.RGBA_8888, 3);
         android.os.HandlerThread consumer = new android.os.HandlerThread("hud-test-display");
@@ -57,6 +58,7 @@ public class HudWindowAndroidTest {
         try {
             // Upgrades can retain this obsolete value; it must never select an overlay window.
             preferences.edit().putBoolean("hud_side_overlay", legacyOverlay).commit();
+            config.setHudSideContrastPercent(160);config.setHudSideContrastNightPercent(100);
             config.setHudSideFollowSignal(true);
             config.setHudSideOpacityPercent(80); config.setHudSideNightPercent(50);
             main(() -> {
@@ -77,6 +79,11 @@ public class HudWindowAndroidTest {
                 panel.show(LaneCycle.RIGHT);
                 assertEquals(1280 - width - left,
                         ((FrameLayout.LayoutParams) panel.getLayoutParams()).leftMargin);
+                assertNotNull(panel.pictureTone());
+                panel.setNight(true);
+                assertNull(panel.pictureTone());
+                panel.setNight(false);
+                assertNotNull(panel.pictureTone());
                 panel.setNight(true);
                 assertEquals(.4f, ((WindowManager.LayoutParams) panel.getRootView().getLayoutParams()).alpha, .01f);
                 panel.conceal();
@@ -87,6 +94,7 @@ public class HudWindowAndroidTest {
                 ref.get().detach(); assertFalse(ref.get().isAttached());
             });
         } finally {
+            config.setHudSideContrastPercent(dayContrast);config.setHudSideContrastNightPercent(nightContrast);
             main(() -> { if (ref.get() != null) ref.get().detach(); });
             display.release(); images.close(); consumer.quitSafely(); consumer.join(1000);
             if (hadLegacy) preferences.edit().putBoolean("hud_side_overlay", oldLegacy).commit();

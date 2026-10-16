@@ -112,3 +112,28 @@ the fork’s non-touchable/full-size window, freshness covers and transitions.
 009 mapping, fallback, factory coexistence and all other output defaults remain.
 Night contrast and scanner restart fixes have not been imported in this change.
 Working HUD video on the owner’s 009 remains unresolved.
+
+
+## Merged follow-ups — 2026-10-16
+
+Source snapshot: CAMCORDER main `3f9c7e40` (v2.14.1), plus merged scanner and
+night-contrast work. This is a selective port, not a merge of the entire UI rewrite.
+
+- `f56bd12c`: scanner restart preservation; the fork keys appending to the stored
+  scan session and preserves the original deadline/change budget instead of using
+  a 30-second elapsed-time heuristic. Legacy scan files can resume after upgrade.
+- `f3ade087`: independent HUD night contrast, default 100%, reset with other side
+  settings and selected by the existing vehicle night signal.
+- `285f2b79` / merged v2.14.1: thumbnail gallery, date groups, multi-selection,
+  photo sharing and viewer filmstrips. Adapted to all current/legacy read folders,
+  path-qualified photo keys, current surround-led timeline ownership, guarded
+  deletion with fail-closed lock metadata, and explicit failure counts.
+- Supported image adjustments move from the floating window/Developer section to
+  an Activity panel under Interface. Explicit enable/disable, first-edit enabling,
+  reset and existing saved camera parameters are retained. The main action rail,
+  settings categories, About attribution and System developer toggle remain.
+
+No open upstream PR is imported. In particular dts88 PR #25 is excluded. Upstream
+main through `76138b8d`, including merged camera-label PR #17 and its wording and
+dependency refinements, is integrated separately. The existing contribution branch
+heads remain unchanged. Native/emulator tests do not establish working 009 HUD video.

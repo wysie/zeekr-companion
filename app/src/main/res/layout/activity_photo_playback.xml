@@ -290,6 +290,15 @@
                 </LinearLayout>
             </FrameLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/media_filmstrip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/filmstrip_row_height"
+                android:padding="4dp"
+                android:clipToPadding="false"
+                android:background="@color/bg" />
+
             <!-- 底部控制栏：摄像头切换按钮 -->
             <com.kooo.evcam.ui.WrappingActionRow
                 android:id="@+id/controls_layout"

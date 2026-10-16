@@ -59,6 +59,23 @@ public final class ZeekrMultiPlan {
         this.missing = Collections.unmodifiableList(new ArrayList<>(missing));
     }
 
+    /** Explicit opt-in from the owner's exported 009 images; never inferred from Android model names. */
+    public static ZeekrMultiPlan observed009(String[] listed, String compositeDetected,
+                                            String compositeOverride, String driverOverride, String extraOverride) {
+        String composite = compositeOverride == null ? "3" : compositeOverride;
+        String driver = driverOverride == null ? "2" : driverOverride;
+        String extra = extraOverride;
+        if (composite.equals(driver)) driver = null;
+        if (extra != null && (extra.equals(composite) || extra.equals(driver))) extra = null;
+        List<String> missing = new ArrayList<>();
+        java.util.Set<String> available = new java.util.HashSet<>(java.util.Arrays.asList(listed));
+        for (String id : new String[]{composite,driver,extra}) if (id != null && !available.contains(id)) missing.add(id);
+        boolean real = composite.equals(compositeDetected) || (compositeDetected == null && "3".equals(composite));
+        return new ZeekrMultiPlan(composite,driver,extra,real,
+                "Owner-selected 009 mapping: 3 surround, 2 driver; road feeds 0/1 not assigned as cabins. Manual overrides retained.\n",
+                false,missing);
+    }
+
     /**
      * 照相机列表建的、三个槽位都分到了（列表里都有它们）：可以存下来（{@link Stored#of}，存不存见 {@link #worthStoring}），
      * 下次列表不完整时照它建。照存下的建的不算 —— 它说明这一次列表不完整。

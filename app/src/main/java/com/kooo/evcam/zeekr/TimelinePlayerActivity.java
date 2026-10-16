@@ -74,6 +74,11 @@ import java.util.Map;
  * （可以先 prepare 不播），但还没接上。</p>
  */
 public class TimelinePlayerActivity extends AppCompatActivity {
+    public static final String EXTRA_SESSION_START_MS = "session_start_ms";
+    private long requestedSession = -1;
+    private com.kooo.evcam.playback.FilmstripAdapter<RecordingTimeline.Session> filmstrip;
+    private androidx.recyclerview.widget.RecyclerView filmstripView;
+
 
     private static final String TAG = "TimelinePlayer";
     /** 进度刷新、几路对齐的间隔。 */
@@ -247,6 +252,20 @@ public class TimelinePlayerActivity extends AppCompatActivity {
             @Override public void handleOnBackPressed() { handleBackNavigation(); }
         });
         setContentView(R.layout.activity_timeline_player);
+        requestedSession = savedInstanceState == null ? getIntent().getLongExtra(EXTRA_SESSION_START_MS, -1) : -1;
+        filmstripView = findViewById(R.id.media_filmstrip);
+        filmstrip = new com.kooo.evcam.playback.FilmstripAdapter<>(
+                new com.kooo.evcam.playback.FilmstripAdapter.Binder<RecordingTimeline.Session>() {
+            public File thumbnail(RecordingTimeline.Session session) {
+                return session.segments.isEmpty() ? null : new File(session.segments.get(0).path);
+            }
+            public boolean isVideo(RecordingTimeline.Session session) { return true; }
+            public String label(RecordingTimeline.Session session) { return TimelineFormat.duration(session.totalDurationMs); }
+        });
+        filmstrip.setOnPick((session, index) -> switchSession(index));
+        filmstripView.setLayoutManager(new androidx.recyclerview.widget.LinearLayoutManager(this,
+                androidx.recyclerview.widget.LinearLayoutManager.HORIZONTAL, false));
+        filmstripView.setAdapter(filmstrip);
         if (savedInstanceState != null) {
             pendingSessionIndex = savedInstanceState.getInt(STATE_SESSION_INDEX, -1);
         }
@@ -509,7 +528,10 @@ public class TimelinePlayerActivity extends AppCompatActivity {
             final java.util.Set<String> locked = com.kooo.evcam.storage.FootageLocks.shownFiles(
                     getApplicationContext(), StorageHelper.getVideoReadDirs(getApplicationContext()));
             runOnUiThread(() -> {
+                if (isFinishing() || isDestroyed()) return;
                 sessions = built;
+                filmstrip.setItems(built);
+                filmstripView.setVisibility(built.isEmpty() ? View.GONE : View.VISIBLE);
                 laneSources.clear();
                 laneSources.putAll(others);
                 laneOwned.clear();
@@ -544,6 +566,12 @@ public class TimelinePlayerActivity extends AppCompatActivity {
                 // 默认打开最近的一条；界面刚重建过就回到原来那一条
                 int target = pendingSessionIndex >= 0 && pendingSessionIndex < sessions.size()
                         ? pendingSessionIndex : sessions.size() - 1;
+                if (requestedSession >= 0) {
+                    for (int i = 0; i < sessions.size(); i++) {
+                        if (sessions.get(i).startEpochMs == requestedSession) { target = i; break; }
+                    }
+                    requestedSession = -1;
+                }
                 pendingSessionIndex = -1;
                 switchSession(target);
                 handler.removeCallbacks(ticker);
@@ -558,6 +586,8 @@ public class TimelinePlayerActivity extends AppCompatActivity {
         }
         sessionIndex = Math.max(0, Math.min(index, sessions.size() - 1));
         RecordingTimeline.Session session = sessions.get(sessionIndex);
+        filmstrip.setCurrent(sessionIndex);
+        filmstripView.smoothScrollToPosition(sessionIndex);
         consecutiveErrors = 0;
         playWhenReady = true;
 

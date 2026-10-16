@@ -1008,27 +1008,7 @@ public class ProfileEditorFragment extends Fragment {
     }
 
     private String cameraIdFor(String role) {
-        String composite = StreamLayoutTable.compositeCameraId();
-        try {
-            if (cameraManager == null) {
-                return null;
-            }
-            String[] ids = cameraManager.getCameraIdList();
-            if (CameraProfile.ROLE_COMPOSITE.equals(role)) {
-                return composite != null ? composite : (ids.length > 0 ? ids[0] : null);
-            }
-            List<String> others = new ArrayList<>();
-            for (String id : ids) {
-                if (!id.equals(composite)) {
-                    others.add(id);
-                }
-            }
-            int index = CameraProfile.ROLE_CABIN_1.equals(role) ? 0 : 1;
-            return index < others.size() ? others.get(index) : null;
-        } catch (Exception e) {
-            AppLog.w(TAG, "读不到相机列表: " + e);
-            return null;
-        }
+        return com.kooo.evcam.profile.ProfileSizes.cameraIdFor(requireContext(), role);
     }
 
     String cameraSummary(String role) {
@@ -1045,9 +1025,9 @@ public class ProfileEditorFragment extends Fragment {
             return getString(R.string.slot_surround);
         }
         if (CameraProfile.ROLE_CABIN_1.equals(role)) {
-            return getString(R.string.slot_cabin_front);
+            return com.kooo.evcam.camera.CameraNames.ofSlot(requireContext(), "back");
         }
-        return getString(R.string.slot_cabin_rear);
+        return com.kooo.evcam.camera.CameraNames.ofSlot(requireContext(), "left");
     }
 
     // ------------------------------------------------------------------ 小工具

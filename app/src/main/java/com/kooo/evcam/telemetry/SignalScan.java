@@ -135,6 +135,7 @@ public final class SignalScan {
     private final Runnable poll = this::pollNow;
     private final Map<Integer, String> known = new HashMap<>();
     private Writer out;
+    private long sessionStartedAt;
     private volatile int lines;
     private final java.util.concurrent.Semaphore pendingEvents = new java.util.concurrent.Semaphore(256);
     private volatile boolean stopped;
@@ -165,6 +166,7 @@ public final class SignalScan {
                 return;
             }
             running = new SignalScan(context, onAutoStop);
+            running.sessionStartedAt = new com.kooo.evcam.AppConfig(context).signalScanSessionStartedAt();
             running.begin(Math.max(1L, Math.min(MAX_RUN_MS, remainingMs)));
         }
     }
@@ -197,8 +199,10 @@ public final class SignalScan {
     private void connect() {
         try {
             File file = new File(app.getFilesDir(), FILE_NAME);
-            out = new OutputStreamWriter(new FileOutputStream(file, false), StandardCharsets.UTF_8);
-            write("# signal scan started " + stamp() + ", running up to " + (MAX_RUN_MS / 60000) + " min");
+            SignalScanFile saved = SignalScanFile.open(file, sessionStartedAt, MAX_LINES);
+            out = saved.writer; lines = saved.changes;
+            write("# signal scan " + (saved.resumed ? "resumed " : "started ") + stamp()
+                    + ", original session deadline retained; " + lines + " earlier changes");
             Object car = EcarxSource.carFor(app);
             function = car == null ? null : EcarxSource.call(car, "getICarFunction");
             if (function == null) {

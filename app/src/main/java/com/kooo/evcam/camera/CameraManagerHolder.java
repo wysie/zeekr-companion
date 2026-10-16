@@ -148,12 +148,14 @@ public class CameraManagerHolder {
     private static final class Shape {
         final String carModel;
         final Profile profile;
+        final boolean mapping009;
         final com.kooo.evcam.profile.ProfileChannels channels;
         final boolean cabinFront;
         final boolean cabinRear;
         final int count;
 
-        private Shape(String carModel, Profile profile) {
+        private Shape(String carModel, Profile profile, boolean mapping009) {
+            this.mapping009 = mapping009;
             this.carModel = carModel;
             this.profile = profile;
             channels = com.kooo.evcam.profile.ProfileChannels.of(profile);
@@ -163,10 +165,10 @@ public class CameraManagerHolder {
         }
 
         static Shape of(Context app) {
-            return new Shape(new AppConfig(app).getCarModel(), new ProfileStore(app).current());
+            return new Shape(new AppConfig(app).getCarModel(), new ProfileStore(app).current(), new AppConfig(app).is009CameraMappingEnabled());
         }
 
-        String key() { return carModel + "/channels=" + channels.key(); }
+        String key() { return carModel + "/channels=" + channels.key() + "/mapping009=" + mapping009; }
     }
 
     /**
@@ -352,8 +354,11 @@ public class CameraManagerHolder {
         String overrides = ZeekrMultiPlan.Stored.overridesKey(overrideComposite, overrideCabin1, overrideCabin2);
         String storedText = config.getStoredSlotMap(shape.carModel);
         ZeekrMultiPlan.Stored stored = ZeekrMultiPlan.Stored.decode(storedText);
-        ZeekrMultiPlan plan = ZeekrMultiPlan.choose(ids, located.found() ? located.cameraId : null,
-                overrideComposite, overrideCabin1, overrideCabin2, stored);
+        ZeekrMultiPlan plan = shape.mapping009
+                ? ZeekrMultiPlan.observed009(ids, located.found() ? located.cameraId : null,
+                        overrideComposite, overrideCabin1, overrideCabin2)
+                : ZeekrMultiPlan.choose(ids, located.found() ? located.cameraId : null,
+                        overrideComposite, overrideCabin1, overrideCabin2, stored);
         AppLog.i(TAG, "槽位分配:\n" + plan.explanation + "-> " + plan);
 
         // 合成流尺寸：探测到的就是环视这一路，用探测的；环视不在列表里（探测不到它）用存下的
@@ -376,7 +381,7 @@ public class CameraManagerHolder {
             BlackBox.noteImportant("管线：照存下的映射建 环视=" + plan.compositeId + "、后座舱=" + plan.cabin2Id
                     + "、前座舱=" + plan.cabin1Id + "（车型 " + shape.carModel + "）"
                     + (absent.isEmpty() ? "" : "；相机列表里现在没有 " + String.join("、", absent) + " → 交给调度判"));
-        } else if (plan.worthStoring(stored, overrides)) {
+        } else if (!shape.mapping009 && plan.worthStoring(stored, overrides)) {
             // 列表完整、值得存（环视是探测到的合成流，或者还没存过能用的）才更新：合成流这一次没探测到时，照列表分出来的是
             // 「普通相机顶替环视、座舱顺次挪位」，不能拿它盖掉存着的那一份好的
             ZeekrMultiPlan.Stored now = ZeekrMultiPlan.Stored.of(plan,

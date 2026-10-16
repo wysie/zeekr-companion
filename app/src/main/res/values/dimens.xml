@@ -21,4 +21,8 @@
     <dimen name="icon_button_size">48dp</dimen>
     <dimen name="playback_action_gap">8dp</dimen>
     <dimen name="playback_action_min_height">52dp</dimen>
+<dimen name="gallery_tile_width">220dp</dimen>
+<dimen name="filmstrip_height">72dp</dimen>
+<dimen name="filmstrip_tile_width">128dp</dimen>
+    <dimen name="filmstrip_row_height">112dp</dimen>
 </resources>

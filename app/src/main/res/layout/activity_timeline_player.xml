@@ -345,4 +345,13 @@
         </LinearLayout>
     </LinearLayout>
 
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/media_filmstrip"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:minHeight="@dimen/filmstrip_row_height"
+                android:padding="4dp"
+                android:clipToPadding="false"
+                android:background="@color/bg" />
+
 </LinearLayout>

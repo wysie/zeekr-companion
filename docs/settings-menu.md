@@ -8,15 +8,15 @@ add navigation depth; their native Back button returns to their parent.
 
 | Main category | Groups and options |
 | --- | --- |
-| Recording & photos | Cameras: stream profile and profile editor. Automatic recording: launch, driver arrival, driver departure. Screen off: keep recording. Photos: JPEG output. **Stamps & driving information →** app stamp, plate switch/text, timestamp, specifications, information bar and signal-selection shortcut. |
+| Recording & photos | Cameras: stream profile, profile editor and opt-in verified-export 009 mapping. Automatic recording: launch, driver arrival, driver departure. Screen off: keep recording. Photos: JPEG output. **Stamps & driving information →** app stamp, plate switch/text, timestamp, specifications, information bar and signal-selection shortcut. |
 | Storage | Destination, USB power guidance, relay write; video/photo limits and usage; protected footage, flash-to-pass/hard-braking triggers and protected usage. |
 | Super mirror | Enable and guide; camera selection and button/gesture controls; correction, field of view and shared camera labels; window width/height; reset. |
 | Blind spot camera | Enable; Screen/HUD/Both and mirror relationship; minimum screen-opening speed and factory priority; prewarming and close delay; **Image & framing →**, **Popup window →**, **HUD picture →**; reset. |
 | 360° camera | Experimental explanation; main-button destination; Show 360° popup; quality; popup size/layout reset; calibration dialog and calibration/quality reset. |
 | Floating button | Enable; tap/hold actions; size, opacity and timer appearance; lock position; reset. |
-| Interface | Language, vehicle display name, action side, recording statistics, reduced motion, vehicle panel; main preview/photo/video correction method and field of view. |
+| Interface | Language, vehicle display name, action side, recording statistics, reduced motion, vehicle panel; in-app picture adjustments, main preview/photo/video correction method and field of view. |
 | System | App startup, Diagnostics, system/vehicle information, developer-mode enable with warning. |
-| Developer options | Recording internals: allow internal storage fallback (off by default), pipeline, H.264, wake lock and duration. Image/rendering: adjustments/reset and preview/playback GPU methods. Camera research: mapping, camera/display tools and batch exports, raw frames, signal scanner, camera-app logging, permissions. Maintenance: repair recordings, archive. |
+| Developer options | Recording internals: allow internal storage fallback (off by default), pipeline, H.264, wake lock and duration. Image/rendering: preview/playback GPU methods. Camera research: mapping, camera/display tools and batch exports, raw frames, signal scanner, camera-app logging, permissions. Maintenance: repair recordings, archive. |
 | Updates | Check for updates, include beta releases. |
 
 ## Blind spot child pages
@@ -72,3 +72,12 @@ cancellation. If fallback is explicitly on, startup waits ten seconds before
 allowing internal storage. In-recording internal failover is gated too. Direct
 Internal storage and Relay write remain independent explicit choices. Changes do
 not relocate an active file; stop/start recording to re-evaluate its destination.
+
+
+Merged follow-ups: Interface → Preview & playback now includes **Image
+adjustment**, inside the Activity. It is ordinary configuration, not gated by
+Developer mode. The panel includes enable/disable and reset; unsupported camera
+controls are omitted. The former Developer picture-adjustment/reset rows are gone.
+Blind spot camera → HUD picture has independent **HUD picture contrast at night** (100% default).
+Recording & photos offers the explicit **009 camera mapping (verified export)**
+preset, off by default and requiring exit/reopen; it is independent of Vehicle name.

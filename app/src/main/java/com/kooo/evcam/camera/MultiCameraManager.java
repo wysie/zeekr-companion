@@ -2082,6 +2082,15 @@ public class MultiCameraManager {
         return owner != null && owner.keepCanvas(ChannelRules.Kind.MIRROR, CameraSlots.KEY_SURROUND, texture);
     }
 
+    /** Optional windows follow preview/mirror ownership: never abandon a texture still in a session. */
+    public static boolean keepAuxiliaryCanvas(MultiCameraManager current, ChannelRules.Kind kind,
+                                               android.graphics.SurfaceTexture texture) {
+        if (kind != ChannelRules.Kind.SIDE_POPUP && kind != ChannelRules.Kind.SIDE_HUD
+                && kind != ChannelRules.Kind.BIRD_EYE) throw new IllegalArgumentException("Not an optional window");
+        MultiCameraManager owner = ownerOf(current, kind, CameraSlots.KEY_SURROUND, texture);
+        return owner != null && owner.keepCanvas(kind, CameraSlots.KEY_SURROUND, texture);
+    }
+
     /**
      * 最近放了的那一份（{@link #release}）：退出、换车型时它的调度还在按次序关，会话里可能还带着主界面、后视镜的画布
      * （{@link #ownerOf}）。弱引用；放的那一下（哪个线程都可能）写，主线程上读。
@@ -2144,7 +2153,13 @@ public class MultiCameraManager {
     /** 撤回这一种画布的声明（只撤回 {@code texture} 这一块，不是它就什么都不做）。 */
     private static boolean withdrawCanvas(SingleCamera camera, ChannelRules.Kind kind,
                                           android.graphics.SurfaceTexture texture) {
-        return kind == ChannelRules.Kind.MIRROR ? camera.withdrawMirror(texture) : camera.withdrawPreview(texture);
+        switch (kind) {
+            case MIRROR: return camera.withdrawMirror(texture);
+            case SIDE_POPUP: return camera.withdrawSidePopup(texture);
+            case SIDE_HUD: return camera.withdrawSideHud(texture);
+            case BIRD_EYE: return camera.withdrawBirdEye(texture);
+            default: return camera.withdrawPreview(texture);
+        }
     }
 
     /**
