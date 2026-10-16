@@ -1131,3 +1131,20 @@ after an indicator attempt. Candidate selection, window creation/dismissal and
 HUD camera rejection/binding entries can distinguish the next failure stage.
 No display-role exclusions, factory/reverse priority, camera ownership or stale
 frame protections were relaxed on the basis of the static card test.
+
+
+## Latest 009 dump — 2026-10-17 01:37
+
+Reviewed the valid 2.11.44-alpha.1 reports, batch camera/display probes and the
+new raw/stitched photo pair. Full findings are in
+[009-diagnostics-2026-10-17.md](009-diagnostics-2026-10-17.md).
+
+The dump still has the independent 009 HUD mapping off (HUD selected, no
+candidate, window never created), confirms the fitted 009 profile plus car
+illustration in an on-car photo, and identifies exposed camera IDs 0/1 as road
+front/rear, 2 as cabin and 3 as the unstitched surround composite. No factory
+stitched feed or usable blind-spot warning trigger was found in the tested data.
+Driver recording start/stop are enabled independently of Record on launch.
+Two new reports share the same captured text; a third file is empty. Original
+owner files remain private under artifacts. Runtime and the published APK are
+unchanged; no HUD live-video or geometric-distance validation is claimed.
