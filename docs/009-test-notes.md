@@ -1069,3 +1069,30 @@ values, lane assignments and quality. Native UI captures were inspected; the
 emulator's no-composite-stream toast reflects its lack of vehicle cameras and is
 not a 009 test failure. On-car use remains pending. No publication or upstream PR
 head changes are part of this feature.
+
+
+## Owner confirms display 3 on the windscreen HUD — 2026-10-17
+
+The owner reports that display 3 is the HUD and they could see its output on
+their 009. This updates the earlier unknown physical destination: display 3 is
+now owner-identified as the windscreen HUD on this head unit. The existing opt-in
+009 mapping already selects ID 3 at the 1280×640 size recorded in Diagnostics;
+no routing-code change is needed for that selection.
+
+The report does not yet distinguish an identification card from live camera
+video. Live side-camera frames, orientation, usable coverage and coexistence
+with factory HUD graphics remain unconfirmed. Do not treat display identification
+as camera-stream validation or as a mapping proven across all 009 firmware.
+
+The existing next check is to enable **Zeekr 009 HUD** under Blind spot camera →
+HUD picture → Advanced & experimental, select **Screen and HUD** as the output,
+and compare left/right side-camera video on the windscreen with the screen view.
+A new Diagnostics export taken during a blank/failed camera attempt can distinguish
+window creation, source-frame delivery and display takeover. The 009 mapping
+stays opt-in; public/presentation eligibility, exact dimensions, factory/reverse
+priority, stale-frame cover and screen fallback remain unchanged.
+
+Documentation-only update: README/settings notes now distinguish owner-confirmed
+physical display identity from unconfirmed live camera output. The published
+2.11.44-alpha.1 APK is unchanged; no new vehicle compatibility or HUD video test
+is claimed. Validation is a documentation diff check; no runtime code was changed.

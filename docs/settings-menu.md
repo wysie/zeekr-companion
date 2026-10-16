@@ -61,7 +61,9 @@ English, Chinese and Malay.
 The former “HUD above factory information” experiment has been removed. Stored
 `hud_side_overlay` values are ignored. Normal HUD output, optional 009 display
 mapping and factory-view coexistence remain available for investigation; working
-HUD video on the owner’s 009 has not been established.
+HUD video on the owner’s 009 has not been established. The owner confirmed on
+2026-10-17 that display 3 appears on the windscreen HUD; this identifies the
+physical destination separately from camera-video availability.
 
 ## USB fallback permission
 
