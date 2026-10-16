@@ -1284,6 +1284,10 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                 SettingSpec.entry("1", "Balanced", R.string.bird_eye_quality_balanced),
                 SettingSpec.entry("2", "Full", R.string.bird_eye_quality_full)), Integer.toString(config.quality()),
                 value -> config.set("quality", Integer.parseInt(value)));
+        bindEnum("pref_bird_profile", SettingSpec.of("bird_profile", "360 projection", "0",
+                SettingSpec.entry("0", "Manual", R.string.bird_eye_profile_manual),
+                SettingSpec.entry("1", "009 image fit", R.string.bird_eye_profile_009)),
+                config.imageFitted() ? "1" : "0", value -> config.setImageFitted("1".equals(value)));
         bindSlider("pref_bird_popup_size", 20, 75, window.size(), "%", value -> {
             window.setSize(value); com.kooo.evcam.zeekr.BirdEyePopupService.applyLayout();
         });
@@ -1312,6 +1316,8 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             config.reset();
             ListPreference quality = findPreference("pref_bird_quality");
             if (quality != null) { quality.setValue(Integer.toString(config.quality())); quality.setSummary(quality.getEntry()); }
+            ListPreference profile = findPreference("pref_bird_profile");
+            if (profile != null) { profile.setValue("0"); profile.setSummary(profile.getEntry()); }
         });
     }
 

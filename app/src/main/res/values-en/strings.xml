@@ -1203,4 +1203,10 @@
 <string name="action_select">Select</string>
     <string name="adjust_enabled">Enable picture adjustments</string>
 <string name="gallery_delete_result">%1$d deleted · %2$d protected · %3$d could not be deleted</string>
+
+    <string name="bird_eye_profile">Projection profile</string>
+    <string name="bird_eye_profile_manual">Manual (estimated defaults)</string>
+    <string name="bird_eye_profile_009">009 image fit (experimental)</string>
+    <string name="bird_eye_profile_note">Experimental fit for the 009, based on reference images. Distance accuracy is unverified. Your manual calibration is kept when switching profiles.</string>
+    <string name="bird_eye_profile_fitted_note">009 image fit is active. Adjust camera sources, quality and margin here. To change lens geometry, select Manual in 360 settings.</string>
 </resources>

@@ -43,6 +43,7 @@ public final class BirdEyeCalibrationDialog {
         lens.setOrientation(LinearLayout.VERTICAL); content.addView(lens);
         Runnable rebuild = () -> {
             vehicle.removeAllViews(); lens.removeAllViews();
+            note.setText(config.imageFitted() ? R.string.bird_eye_profile_fitted_note : R.string.bird_eye_calibration_note);
             TextView qualityTitle = new TextView(context); qualityTitle.setText(R.string.bird_eye_quality);
             vehicle.addView(qualityTitle);
             Spinner quality = new Spinner(context);
@@ -62,9 +63,12 @@ public final class BirdEyeCalibrationDialog {
             });
             TextView qualityNote = new TextView(context); qualityNote.setText(R.string.bird_eye_quality_note);
             vehicle.addView(qualityNote);
-            slider(context, vehicle, config, "length", R.string.bird_eye_length, 520, 300, 650, changed);
-            slider(context, vehicle, config, "width", R.string.bird_eye_width, 200, 140, 260, changed);
-            slider(context, vehicle, config, "margin", R.string.bird_eye_margin, 200, 50, 400, changed);
+            if (!config.imageFitted()) {
+                slider(context, vehicle, config, "length", R.string.bird_eye_length, 520, 300, 650, changed);
+                slider(context, vehicle, config, "width", R.string.bird_eye_width, 200, 140, 260, changed);
+            }
+            slider(context, vehicle, config, "margin", R.string.bird_eye_margin, 200, 50,
+                    config.imageFitted() ? 200 : 400, changed);
             int index = Math.max(0, camera.getSelectedItemPosition());
             Spinner lane = new Spinner(context);
             lane.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, cameras));
@@ -80,6 +84,7 @@ public final class BirdEyeCalibrationDialog {
                     }
                 }
             });
+            if (config.imageFitted()) return; // Physical-lens sliders do not apply to an empirical fit.
             slider(context, lens, config, BirdEyeConfig.key(index, "height"), R.string.bird_eye_height, 100, 30, 200, changed);
             slider(context, lens, config, BirdEyeConfig.key(index, "pitch"), R.string.bird_eye_pitch, 35, 0, 90, changed);
             slider(context, lens, config, BirdEyeConfig.key(index, "yaw"), R.string.bird_eye_yaw,
