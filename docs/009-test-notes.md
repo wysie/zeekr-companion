@@ -848,7 +848,7 @@ the native UI, plus day/night main titles. APK inspection confirms version code
 No new vehicle test is claimed; the existing 009 camera/HUD limitations remain.
 
 
-## DIY 360 overlap repair — unreleased, 2026-10-16
+## DIY 360 overlap repair — 2.11.43-beta.1, 2026-10-16
 
 Owner confirms the road-scene screenshots use unchanged calibration defaults.
 The released renderer blends across whole overlapping corners, which can double
@@ -873,4 +873,9 @@ No factory-quality alignment or on-car test is claimed.
 Validation: 54 related 360/channel JVM tests pass, including 25 projection cases;
 the Android debug build passes. Actual old/new Java renders of the same private
 raw capture confirm reduced overlap ghosting and the remaining front band.
-This work is on `fix/diy360-projection-repair`; no release has been published.
+This work comes from `fix/diy360-projection-repair`, integrated into `main`.
+Version 2.11.43-beta.1 / code 326 is prepared for the owner's in-car updater test
+from 2.11.42-alpha.1 with Include beta releases enabled. All 1,403 JVM tests,
+debug lint and three release-packaging tests pass. Publishing as a GitHub
+Pre-release makes this beta eligible; the updater implementation is unchanged.
+No completed on-car update/download/install test is claimed.

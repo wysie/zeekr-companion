@@ -7,9 +7,19 @@ Alpha sections: one line per change, what changed and nothing else. Beta and sta
 sections: written for users, reviewed before release. Why a change was made lives in the
 commit message, not here.
 
-## Unreleased
+## [2.11.43-beta.1] - 2026-10-16
 
-- Limit DIY 360 blending to narrow body-corner joins, retaining valid-camera fallback and separator-safe sampling; estimated front/body geometry remains unresolved.
+DIY 360 now blends adjacent cameras only at narrow joins extending from the
+vehicle corners, reducing doubled road markings from broad overlap. It retains
+valid-camera fallback and sampling within each camera image.
+
+The default lens and mounting geometry remain estimates. The front bodywork band
+and camera misalignment are still unresolved; this release does not install a
+new 009 calibration.
+
+This beta is available to the in-app updater with **Include beta releases** on.
+Alpha releases remain manual installs. It retains the existing application ID,
+signing identity and saved settings; Android version code is 326.
 
 ## [2.11.42-alpha.1] - 2026-10-16
 
