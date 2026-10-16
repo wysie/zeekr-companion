@@ -951,7 +951,7 @@
     <string name="dev_tool_progress">(%1$d/%2$d) %3$s</string>
     <string name="dev_tool_file_result">%1$s: %2$s</string>
     <string name="dev_note">Turn off Settings → System → Enable developer mode to hide this section. Saved developer values are retained.</string>
-    <string name="set_rearview_camera_label_title">Show camera label</string>
+    <string name="set_rearview_camera_label_title">Direction label</string>
     <string name="set_rearview_camera_label_summary">Shows Front, Rear, Left or Right in Super mirror and the side-view pop-up</string>
     <string name="set_side_popup_replace_mirror_title">Use Super mirror when active</string>
     <string name="set_side_popup_replace_mirror_summary">On: temporarily show the side camera in Super mirror when it is active; otherwise use a separate window. Off: always use a separate window alongside the mirror.</string>

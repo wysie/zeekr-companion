@@ -928,7 +928,7 @@
     <string name="dev_tool_progress">(%1$d/%2$d) %3$s</string>
     <string name="dev_tool_file_result">%1$s: %2$s</string>
     <string name="dev_note">Matikan Tetapan → Sistem → Dayakan mod pembangun untuk menyembunyikan bahagian ini. Nilai pembangun yang disimpan dikekalkan.</string>
-    <string name="set_rearview_camera_label_title">Tunjukkan label kamera</string>
+    <string name="set_rearview_camera_label_title">Label arah</string>
     <string name="set_rearview_camera_label_summary">Memaparkan Depan, Belakang, Kiri atau Kanan dalam Cermin super dan tetingkap pandangan sisi</string>
     <string name="set_side_popup_replace_mirror_title">Guna Cermin super apabila aktif</string>
     <string name="set_side_popup_replace_mirror_summary">Hidup: paparkan kamera sisi sementara dalam Cermin super apabila aktif; jika tidak, guna tetingkap berasingan. Mati: sentiasa guna tetingkap berasingan bersama cermin.</string>

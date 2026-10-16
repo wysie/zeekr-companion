@@ -9,7 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
-Nothing yet.
+- Sync dts88 main through the merged camera-label PR and its settings refinements; retain fork versioning, shared side labels and menu layout.
 
 ## [2.11.40-personal-alpha] - 2026-10-16
 

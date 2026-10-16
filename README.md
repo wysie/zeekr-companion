@@ -25,7 +25,8 @@ The in-app About page identifies wysie’s fork and links separately to this for
 dts88’s original project and Ferix’s CAMCORDER contributions. Its optional PayNow
 tip, **9271 6786**, goes to **dts88, the original author**.
 
-The combined fork includes upstream **2.11.6-alpha** (`c448fec`), including cabin
+The combined fork includes upstream main through **76138b8d**, including the merged
+[camera-label PR #17](https://github.com/dts88/zeekr-shortcut-car/pull/17), label wording/master-switch refinements and the 2.11.7-beta metadata. The camera framework includes cabin
 camera recovery, serialized camera actions, scheduler-managed photos/exit and
 camera step diagnostics. Planned cabin-camera closure now briefly closes the
 surround camera first, then reopens it if still requested. Upstream reports about

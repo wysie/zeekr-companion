@@ -938,7 +938,7 @@
     <string name="dev_tool_progress">（%1$d/%2$d）%3$s</string>
     <string name="dev_tool_file_result">%1$s：%2$s</string>
     <string name="dev_note">可在「设置 → 系统 → 启用开发者模式」中关闭并隐藏此分区，已保存的开发者设置会保留。</string>
-    <string name="set_rearview_camera_label_title">显示摄像头名称</string>
+    <string name="set_rearview_camera_label_title">方向标签</string>
     <string name="set_rearview_camera_label_summary">在超级后视镜和侧视悬浮窗中显示前、后、左或右</string>
     <string name="set_side_popup_replace_mirror_title">超级后视镜开启时使用其窗口</string>
     <string name="set_side_popup_replace_mirror_summary">开启：超级后视镜运行时在其窗口临时显示侧视，否则使用独立窗口。关闭：始终使用独立窗口，与后视镜同时显示。</string>
