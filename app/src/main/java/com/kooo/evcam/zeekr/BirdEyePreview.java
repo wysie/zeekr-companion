@@ -131,8 +131,10 @@ final class BirdEyePreview {
         prepareVehicleOverlay();
     }
     private void prepareVehicleOverlay() {
-        vehicleOverlay.prepare(owner.getResources(), calibration != null && BirdEyeVehicleOverlay.use009(
-                calibration.imageFitted(), new AppConfig(owner.getContext()).is009CameraMappingEnabled()), appearance.colour());
+        String model = calibration == null ? BirdEyeAppearance.OUTLINE : BirdEyeAppearance.resolveModel(
+                appearance.model(), calibration.imageFitted(), new AppConfig(owner.getContext()).is009CameraMappingEnabled(),
+                VehicleIdentity.resolve("auto", android.os.Build.MODEL, android.os.Build.DEVICE, android.os.Build.PRODUCT));
+        vehicleOverlay.prepare(owner.getResources(), model, appearance.colour());
     }
     private void refreshAppearance() {
         if (running) { prepareVehicleOverlay(); owner.invalidate(); }

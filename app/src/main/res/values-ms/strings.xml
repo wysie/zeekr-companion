@@ -1187,9 +1187,12 @@
     <string name="bird_eye_profile_note">Padanan eksperimen untuk 009 berdasarkan imej rujukan. Ketepatan jarak belum disahkan. Penentukuran manual dikekalkan apabila menukar profil.</string>
     <string name="bird_eye_profile_fitted_note">Padanan imej 009 aktif. Laraskan sumber kamera, kualiti dan margin di sini. Untuk menukar geometri kanta, pilih Manual dalam tetapan 360.</string>
 
-    <string name="bird_eye_car_colour">Warna kereta 009</string>
+    <string name="bird_eye_car_colour">Warna kereta</string>
     <string name="bird_eye_car_green">Hijau</string>
     <string name="bird_eye_car_white">Putih</string>
     <string name="bird_eye_car_black">Hitam</string>
-    <string name="bird_eye_car_colour_note">Digunakan pada ilustrasi 009 dalam paparan utama, tetingkap timbul dan foto 360. Rupa sahaja; imej kamera dan penentukuran tidak berubah.</string>
+    <string name="bird_eye_car_colour_note">Ilustrasi sahaja, dikongsi oleh paparan utama, tetingkap timbul dan foto 360; pemetaan kamera dan penentukuran tidak berubah. Auto menggunakan identiti yang diketahui, jika tidak, rangka dipaparkan. 7X masih memerlukan ujian kenderaan: gunakan unjuran Manual; padanan imej 009 hanya untuk 009.</string>
+    <string name="bird_eye_car_model">Ilustrasi kenderaan</string>
+    <string name="bird_eye_car_auto">Auto (rangka jika tidak diketahui)</string>
+    <string name="bird_eye_car_outline">Rangka umum</string>
 </resources>

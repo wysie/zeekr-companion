@@ -1210,9 +1210,12 @@
     <string name="bird_eye_profile_note">Experimental fit for the 009, based on reference images. Distance accuracy is unverified. Your manual calibration is kept when switching profiles.</string>
     <string name="bird_eye_profile_fitted_note">009 image fit is active. Adjust camera sources, quality and margin here. To change lens geometry, select Manual in 360 settings.</string>
 
-    <string name="bird_eye_car_colour">009 car colour</string>
+    <string name="bird_eye_car_colour">Car colour</string>
     <string name="bird_eye_car_green">Green</string>
     <string name="bird_eye_car_white">White</string>
     <string name="bird_eye_car_black">Black</string>
-    <string name="bird_eye_car_colour_note">Applies to the 009 illustration in the main view, popup and 360 photos. Appearance only; camera images and calibration are unchanged.</string>
+    <string name="bird_eye_car_colour_note">Artwork only, shared by main view, popup and 360 photos; camera mapping and calibration stay unchanged. Auto uses known vehicle identity, otherwise an outline. 7X still needs vehicle testing: use Manual projection; 009 image fit is for 009 only.</string>
+    <string name="bird_eye_car_model">Vehicle illustration</string>
+    <string name="bird_eye_car_auto">Auto (outline if unknown)</string>
+    <string name="bird_eye_car_outline">Generic outline</string>
 </resources>

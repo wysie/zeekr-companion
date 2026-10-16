@@ -1,22 +1,35 @@
-# 009 vehicle illustration
+# 009 and 7X vehicle illustrations
 
-DIY 360 uses an original 009-style vehicle illustration when either
-the explicit 009 camera mapping or the 009 image-fit projection is enabled.
-It does not infer the vehicle from unreliable Android device properties, or
-change camera mappings based on the cosmetic vehicle-name setting. Other
-vehicles retain the generic outline. Under **Settings → 360° camera → Picture →
-009 car colour**, select Green, White or Black. White is the default for new and
-existing installations. Green approximates the owner’s supplied metallic green
-reference; these are illustrative colours, not calibrated paint samples.
+Under **Settings → 360° camera → Picture → Vehicle illustration**, choose:
+
+- **Auto** (default): 009 for explicit 009 mapping, the 009 image-fit profile or a
+  positively recognised 009 Android identity; 7X for a positively recognised 7X
+  Android identity; otherwise the generic outline. Unknown Android head-unit
+  names such as Pixel 3a do not identify a vehicle. The legacy 7X camera profile
+  name is not evidence because the 009 can use the same stream profile.
+- **009** or **7X**: explicitly select only the illustration.
+- **Generic outline**: use the existing footprint without a car sprite.
+
+**Car colour** offers Green, White or Black for both cars. White remains the
+colour default for new and existing installations. Colours are illustrative,
+not calibrated paint samples. The cosmetic Interface vehicle-name preference
+is independent of this artwork selector. All artwork choices leave camera
+channels, HUD routing and projection calibration unchanged.
+
+7X artwork is available, but the DIY 360 projection has not been validated on a
+real 7X. Use Manual projection there; the 009 image-fit profile remains specific
+to the supplied 009 references. See [7X evidence collection](7x-360-validation.md).
 
 The saved colour is shared by main/popup/photo output and applies live without
 invalidating camera frames, rebuilding projection maps or changing calibration.
 It is stored separately in `bird_eye_appearance`, so resetting calibration and
-quality keeps the colour. Unknown saved colour names fall back to White.
+quality keeps both model and colour. Unknown saved colour names fall back to White.
 
 Front faces up. `BirdEyePreview.draw()` supplies the same artwork to the main
 view, service popup and stitched PNG export. The body maps to the existing
-calibration footprint; mirrors extend about 9.5% of its width on each side.
+calibration footprint; mirrors extend about 9.5% of its width on each side for
+the 009 and about 4.3% for the 7X. The selected illustration is fitted to that
+existing footprint; it does not set real vehicle dimensions.
 The underlying footprint remains opaque, and notices/watermarks render above
 the car. Camera transforms, live-frame freshness, factory priority, recordings
 and photo refusal for stale/blocked views are unchanged. This is an illustrative
@@ -24,7 +37,7 @@ vehicle, not exact body geometry or a transparent-chassis implementation.
 
 The nodpi PNG retains generated alpha. The current colour bitmap is shared
 between renderers and decoded only when needed, outside the frame draw loop.
-The cache retains one colour, rather than all three; old bitmaps are left to
+The cache retains one model/colour combination, rather than all six; old bitmaps are left to
 Android/GC while display lists still own them. Rendering uses filtered Canvas
 sampling and existing bounds; it does not add camera readbacks, pixel transforms or a
 worker. If artwork decoding fails, the existing outline is retained.
@@ -90,3 +103,9 @@ picker test passed in day and night modes, including confirmation, persistence
 after Activity recreation and retention across calibration reset. Eighteen
 rendered variant snapshots were exported; Green/Black and both picker themes
 were visually reviewed. Vehicle appearance remains to be checked on the 009.
+
+## 7X assets
+
+See [7X provenance and prompts](7x-car-overlay.md) for the three original
+generated assets, source-rectangle bounds and testing limitations. The previous
+009 assets remain unchanged.

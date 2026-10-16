@@ -1194,9 +1194,12 @@
     <string name="bird_eye_profile_note">基于 009 参考画面的实验性拟合，距离精度未验证。切换配置会保留手动校准值。</string>
     <string name="bird_eye_profile_fitted_note">当前使用 009 图像拟合。可在此调整源画面、画质和视野边距。如需编辑镜头参数，请在 360 设置中选择手动。</string>
 
-    <string name="bird_eye_car_colour">009 车身颜色</string>
+    <string name="bird_eye_car_colour">车身颜色</string>
     <string name="bird_eye_car_green">绿色</string>
     <string name="bird_eye_car_white">白色</string>
     <string name="bird_eye_car_black">黑色</string>
-    <string name="bird_eye_car_colour_note">用于 009 图示，主界面、悬浮窗和 360 照片保持一致。仅改变外观，不影响相机或标定。</string>
+    <string name="bird_eye_car_colour_note">仅改变主界面、悬浮窗和 360 照片中的图示，不会改变相机或标定。自动模式仅使用已知车型，无法识别时显示轮廓。7X 尚未实车验证；请使用手动投影，009 图像拟合仅适用于 009。</string>
+    <string name="bird_eye_car_model">车辆图示</string>
+    <string name="bird_eye_car_auto">自动（未知车型使用轮廓）</string>
+    <string name="bird_eye_car_outline">通用轮廓</string>
 </resources>

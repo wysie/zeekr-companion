@@ -50,6 +50,7 @@ public class BirdEyeCarColourAndroidTest {
                 .putBoolean("rail_side_chosen",true).commit();
         appearance.preferences.edit().clear().commit();
         assertEquals(BirdEyeAppearance.WHITE,appearance.colour());
+        assertEquals(BirdEyeAppearance.AUTO,appearance.model());
         appearance.setColour("future-colour"); assertEquals(BirdEyeAppearance.WHITE,appearance.colour());
         config.setImageFitted(true);config.set("length",550);
         try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
@@ -59,9 +60,15 @@ public class BirdEyeCarColourAndroidTest {
                 activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,shell).commitNow();
                 shell.getChildFragmentManager().executePendingTransactions();shell.showSection("screen_bird_eye");
                 shell.getChildFragmentManager().executePendingTransactions();
-                page(shell).scrollToPreference("pref_bird_car_colour");
+                page(shell).scrollToPreference("pref_bird_car_model");
                 assertEquals("white",((ListPreference)page(shell).findPreference("pref_bird_car_colour")).getValue());
             });
+            onView(withText(R.string.bird_eye_car_model)).perform(click());capture("vehicle-model-options.png");
+            onView(withText(R.string.vehicle_name_7x)).perform(click());
+            assertEquals(BirdEyeAppearance.AUTO,appearance.model());
+            onView(withText(R.string.action_ok)).perform(click());
+            assertEquals(BirdEyeAppearance.MODEL_7X,appearance.model());
+            assertTrue("Artwork must not change projection",config.imageFitted());
             onView(withText(R.string.bird_eye_car_colour)).perform(click());capture("009-colour-options.png");
             onView(withText(R.string.bird_eye_car_green)).perform(click());
             assertEquals("Not committed before OK",BirdEyeAppearance.WHITE,appearance.colour());
@@ -73,6 +80,7 @@ public class BirdEyeCarColourAndroidTest {
                 shell.getChildFragmentManager().executePendingTransactions();
                 ListPreference pref=page(shell).findPreference("pref_bird_car_colour");
                 assertEquals("green",pref.getValue());assertEquals(activity.getString(R.string.bird_eye_car_green),pref.getSummary());
+                assertEquals("7x",((ListPreference)page(shell).findPreference("pref_bird_car_model")).getValue());
                 page(shell).scrollToPreference("pref_bird_car_colour");
             });capture("009-colour-green.png");
             onView(withText(R.string.bird_eye_car_colour)).perform(click());
@@ -82,6 +90,7 @@ public class BirdEyeCarColourAndroidTest {
                 SettingsShellFragment shell=(SettingsShellFragment)activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                 page(shell).findPreference("pref_bird_reset_calibration").performClick();
                 assertFalse(config.imageFitted());assertEquals(BirdEyeAppearance.BLACK,appearance.colour());
+                assertEquals(BirdEyeAppearance.MODEL_7X,appearance.model());
                 assertEquals("black",((ListPreference)page(shell).findPreference("pref_bird_car_colour")).getValue());
             });
         } finally { restore(appearance.preferences,saved);restore(config.preferences,oldCalibration);restore(app,oldApp); }
