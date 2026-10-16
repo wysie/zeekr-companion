@@ -1027,6 +1027,7 @@
     <string name="bird_eye_length">车长（厘米）</string>
     <string name="bird_eye_width">车宽（厘米）</string>
     <string name="bird_eye_margin">车周围地面（厘米）</string>
+    <string name="bird_eye_fit_margin">视野边距（100 = 1 参考单位）</string>
     <string name="bird_eye_source_lane">源相机画面</string>
     <string name="bird_eye_height">相机离地高度（厘米）</string>
     <string name="bird_eye_pitch">向下倾角（°）</string>
@@ -1054,7 +1055,7 @@
     <string name="bird_eye_quality_low">低 — 最快</string>
     <string name="bird_eye_quality_balanced">均衡 — 默认</string>
     <string name="bird_eye_quality_full">完整 — 原生预览分辨率</string>
-    <string name="bird_eye_quality_note">均衡模式提高预览清晰度。完整模式复制可用的实时画面（最高 800 万像素），最高每秒 5 帧。复制、绘制太慢或内存不足时，本次显示会降低分辨率；低模式仍太慢则暂停。照片使用实际分辨率。提高分辨率不会修正校准。</string>
+    <string name="bird_eye_quality_note">均衡模式在相同输出尺寸下保留更多摄像头细节。完整模式复制可用的实时画面（最高 800 万像素），最高每秒 5 帧。处理太慢时先降低帧率，再降低分辨率；低模式仍太慢则暂停。照片使用实际分辨率。提高分辨率不会修正校准。</string>
     <string name="bird_eye_quality_reduced">360 处理太慢或内存不足，已降低分辨率。详细信息见诊断报告。</string>
     <string name="msg_record_profile_restart">相机选择已更改。请退出并重新打开应用后再录像。</string>
     <string name="dev_camera_display_title">相机与显示屏工具</string>
@@ -1192,7 +1193,7 @@
     <string name="bird_eye_profile_manual">手动（估计默认值）</string>
     <string name="bird_eye_profile_009">009 图像拟合（实验性）</string>
     <string name="bird_eye_profile_note">基于 009 参考画面的实验性拟合，距离精度未验证。切换配置会保留手动校准值。</string>
-    <string name="bird_eye_profile_fitted_note">当前使用 009 图像拟合。可在此调整源画面、画质和视野边距。如需编辑镜头参数，请在 360 设置中选择手动。</string>
+    <string name="bird_eye_profile_fitted_note">当前使用 009 图像拟合。独立视野边距默认为 300，显示范围更宽；减小数值可放大。参考单位并非实测距离。可在此调整源画面和画质；编辑镜头参数请在 360 设置中选择手动。</string>
 
     <string name="bird_eye_car_colour">车身颜色</string>
     <string name="bird_eye_car_green">绿色</string>

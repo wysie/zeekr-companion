@@ -22,16 +22,22 @@ final class BirdEyeVehicleOverlay {
     private static String sharedKey;
     private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
     private final RectF destination = new RectF();
+    private final RectF backing = new RectF();
     private Bitmap artwork;
+    private int backingColour;
     private Rect source = SOURCE_009;
     private float mirrorExtension = 58f / 612f;
 
     void prepare(Resources resources, String model, String colour) {
+        colour = BirdEyeAppearance.normalize(colour);
+        // Muted dark tones keep unknown ground visually distinct without a bright tray.
+        backingColour = BirdEyeAppearance.WHITE.equals(colour) ? 0xff353b3d
+                : BirdEyeAppearance.GREEN.equals(colour) ? 0xff29352f : 0xff25292c;
         boolean suv = BirdEyeAppearance.MODEL_7X.equals(model);
         source = suv ? SOURCE_7X : SOURCE_009;
         mirrorExtension = suv ? 26f / 604f : 58f / 612f;
         artwork = suv || BirdEyeAppearance.MODEL_009.equals(model)
-                ? artwork(resources, model, BirdEyeAppearance.normalize(colour)) : null;
+                ? artwork(resources, model, colour) : null;
     }
 
     private static synchronized Bitmap artwork(Resources resources, String model, String colour) {
@@ -62,10 +68,17 @@ final class BirdEyeVehicleOverlay {
 
     boolean draw(Canvas canvas, RectF footprint) {
         if (artwork == null || footprint.isEmpty()) return false;
-        // The whole original footprint stays opaque, including gaps at the asset's corners.
-        // A transparent sprite background must not imply that we can see under the vehicle.
-        paint.setColor(0xff000000);
-        canvas.drawRect(footprint, paint);
+        // The rounded surround contains the ENTIRE rectangular unknown footprint.
+        // Keep its opaque backing: transparent sprite corners cannot reveal underbody ground.
+        // A small conservative outset avoids the former harsh, exposed black rectangle.
+        float inset = surroundOutset(footprint.width());
+        backing.set(footprint); backing.inset(-inset, -inset);
+        paint.setStyle(Paint.Style.FILL); paint.setColor(backingColour);
+        canvas.drawRoundRect(backing, inset * 2, inset * 2, paint);
+        paint.setStyle(Paint.Style.STROKE); paint.setStrokeWidth(inset * .5f);
+        paint.setColor(0xff626d69);
+        canvas.drawRoundRect(backing, inset * 2, inset * 2, paint);
+        paint.setStyle(Paint.Style.FILL);
         float extension = footprint.width() * mirrorExtension;
         destination.set(footprint.left - extension, footprint.top,
                 footprint.right + extension, footprint.bottom);
@@ -73,4 +86,6 @@ final class BirdEyeVehicleOverlay {
         canvas.drawBitmap(artwork, source, destination, paint);
         return true;
     }
+
+    static float surroundOutset(float bodyWidth) { return Math.max(1, bodyWidth * .012f); }
 }

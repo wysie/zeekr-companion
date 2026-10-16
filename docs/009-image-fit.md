@@ -1,8 +1,9 @@
 # Experimental 009 image-fitted 360 projection
 
 Choose Settings → 360° camera → Calibration → Projection profile → **009 image
-fit (experimental)**. Manual remains the default, including on upgrades. The new
-profile requires a subsequent build; published 2.11.43-beta.1 is unchanged.
+fit (experimental)**. Manual remains the default, including on upgrades. The original profile shipped in 2.11.44-alpha.1. The framing, sampling and
+backing refinements below are subsequent source changes, not changes to that
+published APK.
 
 The profile changes the mapping of the current live raw camera pixels into the
 DIY ground view. It embeds numeric transforms, no owner images or cached scene
@@ -20,11 +21,14 @@ Do not apply this 009 profile to a 7X.
 
 ## Settings and rendering
 
-The fitted reference footprint is fixed. Margin is limited to 0.5–2 reference
-units to avoid extending the view beyond the supplied framing. Existing larger
-manual margins are retained and restored on returning to Manual. Camera source
+The fitted reference footprint is fixed. View margin now defaults to 3 and is limited to 0.5–3 reference units.
+It is saved independently from the Manual margin. Existing fitted installations
+initially use the new wider default; Manual values are retained. Use a lower
+View margin to zoom in again. The expanded extent was checked for finite, valid
+lens coverage; it does not change any of the four fitted matrices or establish
+accuracy outside the reference features. Camera source
 assignments remain independent of physical camera roles, as in the manual model.
-Quality and performance fallback are unchanged. Balanced still uses a reduced
+Quality controls and performance fallback remain available. Balanced uses a reduced
 working copy; Full requests the live native buffer within the existing budget.
 
 Physical-lens sliders do not apply to an empirical transform, so its calibration
@@ -35,7 +39,12 @@ quality returns to Manual and existing defaults. Diagnostics/photo sidecars name
 
 Invalid/non-finite or singular transforms are rejected. Rays outside lens/UV
 coverage or on the wrong side of the body are not clamped into fabricated edge
-imagery. Existing lane-centre bilinear sampling and narrow joins remain in use.
+imagery. Lane-centre bilinear sampling remains in use. The image-fit blend corridor is
+0.12 reference units (previously 0.20); Manual retains its existing 0.20 corridor.
+This reduces averaging of slightly displaced detail, but cannot align raised
+objects or resolve inaccurate geometry. Balanced now copies 768×3084 instead of
+512×2056 from the supplied 009 stream at unchanged 640×960 output; additional
+readback cost may reduce cadence before the existing resolution fallback.
 
 ## Evidence
 
@@ -91,3 +100,38 @@ stitched photos/sidecars, check all four corners and nearby ground markings, the
 check frame cadence while recording. Factory/reverse takeover and stale-frame
 covers retain their existing priority. This profile does not access the factory
 stitched video feed.
+
+## Framing/detail refinement validation (17 October)
+
+The new factory/app phone-photo pair was compared with the retained original
+raw capture and stitched export. Background feature matching associated the app
+phone photo with the saved export (164 inliers); this supports reproducing that
+view, not proving installed version or measured calibration. Approximate screen
+perspective correction showed that the old fitted framing was tighter than
+factory. The new margin changes the extent only, retaining all four matrices.
+
+The full 1,424 JVM tests, debug lint and signed release assembly passed. Six
+Android instrumentation checks passed, including profile persistence/reset,
+independent Manual/fitted margins, all six model/colour combinations at three
+sizes against day/night backgrounds, unchanged ground outside the conservative
+illustration bounds, opaque footprint corners and live appearance changes
+without invalidating the camera frame.
+
+The opt-in raw-review check rendered the same private 1280×5140 capture through
+the Java map and Android Canvas at 512/768/1280-pixel source widths and margins
+2/3. Six images were exported privately and the final wider view inspected.
+In a fixed ground-region comparison, the 768-pixel source was closer to native
+source rendering than 512; native sampling is only a same-projection detail
+reference, not the factory image or optical ground truth.
+
+Run `BirdEyeRawReviewAndroidTest` with instrumentation argument `bird_eye_raw`
+pointing to an accessible private original capture; without that argument it is
+skipped. Owner images/outputs are not bundled or committed. The previous
+`BirdEyeRawFixture` still reproduces the close margin-2 view at native source
+resolution; the Android review covers the new framing and source sizes.
+
+The final frame was generated offline. Actual copy cost, sustained frame rate,
+wider-view alignment and factory takeover still need an on-car check. Higher
+Balanced source resolution uses 2.25 times as many input pixels; cadence and
+resolution fallback are retained. Some corner mismatch and stretching of walls
+and gates remain; narrowing blends does not recover missing geometric calibration.

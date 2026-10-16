@@ -15,6 +15,7 @@ The remotes are `origin` (wysie's fork), `upstream` (dts88's repository), and
 | `feature/7x-360-car-overlay` | Original 7X artwork in three colours, conservative Auto/009/7X/Outline selection and explicit vehicle-validation limits; no 7X calibration claim |
 | `feature/360-car-colours` | Saved Green / White / Black 009 illustration choice, live shared main/popup/photo repaint and independent calibration reset |
 | `feature/360-car-overlay` | Original 009-style vehicle artwork over the existing DIY 360 footprint, shared by main/popup/photo rendering; no transparent-underbody claim |
+| `feature/009-360-polish` | Wider independent 009 fitted framing, higher-detail Balanced sampling and subtler opaque car surround; retains fitted transforms and vehicle-testing limits |
 | `feature/009-image-fitted-360` | Opt-in empirical 009 ray/plane transforms fitted from owner images, independent of manual geometry; common main/popup/photo projection |
 | `feature/update-channels` | Owner-selected Stable / Beta / Alpha update filtering, legacy switch migration and single-choice settings |
 | `feature/turn-signal-side-view` | One complete side-view feature: PR #4 port, independent Blind spot camera settings, temporary mirror view, Use Super mirror when active option, independent popup and pinch resizing |

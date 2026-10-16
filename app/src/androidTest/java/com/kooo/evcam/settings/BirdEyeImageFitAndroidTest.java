@@ -47,13 +47,16 @@ public class BirdEyeImageFitAndroidTest {
             config.assignLane(0,3);config.setImageFitted(true);
             BirdEyeProjection.Calibration fit=config.read();
             assertTrue(fit.imageFitted());assertEquals(5.2,fit.length,0);assertEquals(2,fit.width,0);
-            assertEquals(2,fit.margin,0);assertEquals(3,fit.cameras[0].lane);assertEquals(0,fit.cameras[3].lane);
+            assertEquals(3,fit.margin,0);assertEquals(3,fit.cameras[0].lane);assertEquals(0,fit.cameras[3].lane);
+            config.set(BirdEyeConfig.FIT_MARGIN,150);
+            assertEquals(1.5,config.read().margin,0);
             assertEquals(2,config.quality());
             config.setImageFitted(false);
             BirdEyeProjection.Calibration manual=config.read();
             assertFalse(manual.imageFitted());assertEquals(5.5,manual.length,0);
             assertEquals(2.1,manual.width,0);assertEquals(3,manual.margin,0);
             assertEquals(47,manual.cameras[0].pitch,0);
+            config.setImageFitted(true);assertEquals(1.5,config.read().margin,0);
             config.set("projection_profile",99);assertFalse(config.read().imageFitted());
             config.setImageFitted(true);config.reset();assertFalse(config.imageFitted());
         } finally { restore(config.preferences,saved); }

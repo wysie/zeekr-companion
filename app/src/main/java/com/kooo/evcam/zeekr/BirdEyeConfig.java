@@ -5,6 +5,7 @@ import android.content.SharedPreferences;
 
 /** Dedicated prototype calibration; does not alter side views, recording or preview profiles. */
 public final class BirdEyeConfig {
+    public static final String FIT_MARGIN = "image_fit_margin";
     public final SharedPreferences preferences;
     public BirdEyeConfig(Context context) {
         preferences = context.getApplicationContext().getSharedPreferences("bird_eye_calibration", Context.MODE_PRIVATE);
@@ -51,7 +52,9 @@ public final class BirdEyeConfig {
         if (imageFitted()) {
             int[] lanes = new int[4];
             for (int i = 0; i < 4; i++) lanes[i] = bounded(key(i, "lane"), i, 0, 3);
-            return BirdEyeImageFit.zeekr009(lanes, Math.min(2, margin));
+            return BirdEyeImageFit.zeekr009(lanes,
+                    bounded(FIT_MARGIN, (int) (BirdEyeImageFit.DEFAULT_MARGIN * 100), 50,
+                            (int) (BirdEyeImageFit.MAX_MARGIN * 100)) / 100.0);
         }
         BirdEyeProjection.Camera[] cameras = new BirdEyeProjection.Camera[4];
         int[] headings = {0, 180, 270, 90};

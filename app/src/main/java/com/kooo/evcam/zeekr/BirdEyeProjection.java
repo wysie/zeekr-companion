@@ -19,7 +19,7 @@ public final class BirdEyeProjection {
     static double regionWeight(int camera, double x, double y, Calibration calibration) {
         double sideDistance = Math.abs(x) - calibration.width / 2;
         double endDistance = Math.abs(y) - calibration.length / 2;
-        double t = .5 + (endDistance - sideDistance) / (SEAM_WIDTH * Math.sqrt(2));
+        double t = .5 + (endDistance - sideDistance) / (calibration.seamWidth() * Math.sqrt(2));
         t = Math.max(0, Math.min(1, t));
         double endWeight = t * t * (3 - 2 * t);
         if (camera == 0) return y > 0 ? endWeight : 0;
@@ -98,6 +98,7 @@ public final class BirdEyeProjection {
             }
         }
         public boolean imageFitted() { return imageFits != null; }
+        double seamWidth() { return imageFitted() ? .12 : SEAM_WIDTH; }
         double project(int role, double x, double y, double[] uv) {
             return imageFits == null ? cameras[role].project(x, y, uv) : imageFits[role].project(x, y, uv);
         }
@@ -106,7 +107,7 @@ public final class BirdEyeProjection {
         }
         public String describe() {
             StringBuilder result = new StringBuilder("projection=equidistant seam=body-corner-diagonal feather=")
-                    .append(SEAM_WIDTH).append(imageFits == null ? "m (estimated calibration)\nlength=" : " reference units (image fit)\nlength=")
+                    .append(seamWidth()).append(imageFits == null ? "m (estimated calibration)\nlength=" : " reference units (image fit)\nlength=")
                     .append(length).append(" width=").append(width).append(" margin=").append(margin)
                     .append(imageFits == null ? " (metres)\n" : " (reference units)\n");
             if (imageFits != null) result.append("profile=").append(BirdEyeImageFit.PROFILE)

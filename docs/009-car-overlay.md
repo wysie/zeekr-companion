@@ -30,6 +30,11 @@ view, service popup and stitched PNG export. The body maps to the existing
 calibration footprint; mirrors extend about 9.5% of its width on each side for
 the 009 and about 4.3% for the 7X. The selected illustration is fitted to that
 existing footprint; it does not set real vehicle dimensions.
+A small rounded surround replaces the visible black rectangular backing. Its
+colour follows the artwork (dark neutral, muted green or charcoal). It extends
+about 1.2% of body width, plus the antialiased border, conservatively beyond the
+unknown rectangle; its rounded corners still cover the whole original footprint.
+It does not reveal or synthesise underbody pixels.
 The underlying footprint remains opaque, and notices/watermarks render above
 the car. Camera transforms, live-frame freshness, factory priority, recordings
 and photo refusal for stale/blocked views are unchanged. This is an illustrative

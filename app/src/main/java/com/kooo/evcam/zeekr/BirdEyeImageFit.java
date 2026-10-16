@@ -6,6 +6,8 @@ package com.kooo.evcam.zeekr;
  */
 public final class BirdEyeImageFit {
     public static final String PROFILE = "009-image-fit-20261016";
+    // Wider view of observed rays, not a new metric calibration. Keep a bounded extent.
+    public static final double DEFAULT_MARGIN = 3, MAX_MARGIN = 3;
     final int role;
     private final double[] groundToRay;
     private final double[] rayToGround;
@@ -56,7 +58,7 @@ public final class BirdEyeImageFit {
     }
 
     public static BirdEyeProjection.Calibration zeekr009(int[] lanes, double margin) {
-        if (lanes == null || lanes.length != 4 || !Double.isFinite(margin) || margin < .5 || margin > 2)
+        if (lanes == null || lanes.length != 4 || !Double.isFinite(margin) || margin < .5 || margin > MAX_MARGIN)
             throw new IllegalArgumentException("Invalid 009 reference profile");
         BirdEyeProjection.Camera[] cameras = new BirdEyeProjection.Camera[4];
         BirdEyeImageFit[] fits = new BirdEyeImageFit[4];

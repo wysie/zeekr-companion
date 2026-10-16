@@ -19,7 +19,9 @@ offers Manual (the existing default) and 009 image fit (experimental). The latte
 uses fitted ray/plane transforms for all four cameras rather than the generic
 mount defaults. It applies to main/popup rendering and stitched-photo exports;
 manual lens values are retained. Its footprint/reference scale is fixed and its
-margin is limited to 0.5–2 reference units. Source assignments and quality remain
+own margin defaults to 3 and is limited to 0.5–3 reference units. This separate
+setting initially widens existing fitted views on upgrade, while retaining the
+Manual margin. Lower values zoom in; these are not measured distances. Source assignments and quality remain
 adjustable. Reset returns to Manual. This improves image alignment against the
 owner's 009 references, but is not measured distance calibration or a 7X preset.
 See [evidence, reproduction and limits](009-image-fit.md).
@@ -54,8 +56,12 @@ default when unset; Reset all restores it. For the owner's 1280×5140 stream:
 | Mode | Readback | Stitched output | Maximum rate |
 | --- | --- | --- | --- |
 | Low | 256×1028 | 320×480 | about 15 fps |
-| Balanced (default) | 512×2056 | 640×960 | 10 fps |
+| Balanced (default) | 768×3084 | 640×960 | 10 fps |
 | Full | 1280×5140 | 960×1440 | 5 fps |
+
+Balanced now retains 768 pixels per source camera side instead of 512, at the
+same output size. This uses 2.25 times the source pixels and may lower actual
+frame rate on the car; existing timing and memory fallbacks remain active.
 
 The source aspect ratio, including separators, is retained. Full requests the
 available live preview at its native dimensions, bounded to 8 million pixels
@@ -64,8 +70,10 @@ repeated JPEG photos. Small sources are not enlarged during readback. Actual
 detail depends on the producer/live preview, and a larger bitmap cannot recover
 detail already lost upstream. [TextureView copies/scales the available surface](https://developer.android.com/reference/android/view/TextureView#getBitmap(android.graphics.Bitmap)).
 
-A copy exceeding 40 ms, steady-frame extraction/render exceeding 150 ms, or
-allocation failure reduces Full → Balanced → Low for this activation. Low pauses
+Repeated copies exceeding 40 ms or steady-frame extraction/render exceeding
+150 ms first reduce cadence, and lower resolution only if sustained pressure
+remains at the 250 ms interval limit. Allocation failure also reduces
+Full → Balanced → Low for this activation. Low pauses
 if it is still too slow. A toast reports reductions; Diagnostics and photo TXT
 record requested/active mode, actual sizes, fallback reason and copy/render/lookup
 timings, retained after leaving the preview. Changing calibration alone does not

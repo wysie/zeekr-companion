@@ -108,7 +108,7 @@ public class BirdEyeImageFitTest {
             try { BirdEyeImageFit.zeekr009(lanes,2); fail("Must reject duplicate or invalid lanes"); }
             catch(IllegalArgumentException expected) { }
         }
-        for(double margin:new double[]{0,2.1,Double.NaN}) {
+        for(double margin:new double[]{0,3.01,Double.NaN}) {
             try { BirdEyeImageFit.zeekr009(new int[]{0,1,2,3},margin);fail("Fitted extent is bounded"); }
             catch(IllegalArgumentException expected) { }
         }
@@ -118,6 +118,26 @@ public class BirdEyeImageFitTest {
         assertFalse(fit.describe().contains("NaN"));
         BirdEyeImageFit backward = new BirdEyeImageFit(0,new double[]{1,0,0,0,1,0,0,0,-1});
         assertEquals(0,backward.project(0,3,new double[2]),0);
+    }
+
+    @Test public void widerFramingKeepsObservedCoverageAndTheOriginalTransforms() {
+        BirdEyeProjection.Calibration close = fitted();
+        BirdEyeProjection.Calibration wide = BirdEyeImageFit.zeekr009(new int[]{0,1,2,3}, 3);
+        double[] a = new double[2], b = new double[2];
+        for (int row=0; row<120; row++) for (int col=0; col<80; col++) {
+            double x=(col+.5-40)*.1, y=(60-row-.5)*.1;
+            if (wide.insideCar(x,y)) continue;
+            boolean covered=false;
+            for (int role=0; role<4; role++) {
+                double oldWeight=close.project(role,x,y,a), newWeight=wide.project(role,x,y,b);
+                assertEquals("Framing cannot change a ground ray",oldWeight,newWeight,0);
+                if (newWeight>0) {
+                    assertArrayEquals(a,b,0); covered=true;
+                    assertTrue(b[0]>=0&&b[0]<=1&&b[1]>=0&&b[1]<=1);
+                }
+            }
+            assertTrue("Expanded 009 extent must have actual lens coverage",covered);
+        }
     }
 
     private double median(List<Double> values) {

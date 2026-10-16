@@ -21,7 +21,7 @@ public final class BirdEyeQuality {
         if (nativeWidth <= 0 || nativeHeight <= 0) throw new IllegalArgumentException("Missing source dimensions");
         quality = normalize(quality);
         double factor = quality == FULL ? 1 : Math.min(1,
-                (quality == BALANCED ? 512.0 : 256.0) / Math.min(nativeWidth, nativeHeight));
+                (quality == BALANCED ? 768.0 : 256.0) / Math.min(nativeWidth, nativeHeight));
         factor = Math.min(factor, Math.sqrt(MAX_SOURCE_PIXELS / ((double) nativeWidth * nativeHeight)));
         factor = Math.min(factor, 8192.0 / Math.max(nativeWidth, nativeHeight));
         int sw = Math.max(1, (int) Math.floor(nativeWidth * factor));
