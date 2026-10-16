@@ -35,10 +35,12 @@ public class BirdEyeVehicleOverlayAndroidTest {
                         Bitmap original = image.copy(Bitmap.Config.ARGB_8888, false);
                         assertTrue(overlay.draw(canvas, body));
                         float extension = body.width() * .1f;
+                        // Rounded backing + half the outline stroke + its antialiased edge pixel.
+                        float surround = BirdEyeVehicleOverlay.surroundOutset(body.width()) * 1.25f + 1;
                         for (int y = 0; y < height; y++) for (int x = 0; x < width; x++) {
                             // Fractional Canvas bounds can antialias the intersected edge pixel.
                             if (x < Math.floor(body.left - extension) || x > Math.ceil(body.right + extension)
-                                    || y < Math.floor(body.top) || y > Math.ceil(body.bottom))
+                                    || y < Math.floor(body.top - surround) || y > Math.ceil(body.bottom + surround))
                                 assertEquals("Camera ground outside vehicle must not change", original.getPixel(x,y), image.getPixel(x,y));
                         }
                         int hood = image.getPixel(width / 2, (int)(body.top + body.height() * .07f));
@@ -70,6 +72,11 @@ public class BirdEyeVehicleOverlayAndroidTest {
         assertTrue(overlay.draw(canvas, body));
         for (int y=45;y<555;y++) for (int x=35;x<205;x++)
             assertEquals("Unknown ground must remain opaque", 255, Color.alpha(image.getPixel(x,y)));
+        for (int[] corner : new int[][]{{30,40},{209,40},{30,559},{209,559}}) {
+            int pixel = image.getPixel(corner[0],corner[1]);
+            assertEquals("Rounded surround must still cover the unknown rectangular corners",255,Color.alpha(pixel));
+            assertNotEquals("No exposed black rectangle",Color.BLACK,pixel);
+        }
         overlay.prepare(context.getResources(), BirdEyeAppearance.OUTLINE, BirdEyeAppearance.WHITE);
         assertFalse(overlay.draw(canvas, body));
         image.recycle();

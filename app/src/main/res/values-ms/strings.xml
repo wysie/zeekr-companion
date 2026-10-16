@@ -1020,6 +1020,7 @@
     <string name="bird_eye_length">Panjang kenderaan (cm)</string>
     <string name="bird_eye_width">Lebar kenderaan (cm)</string>
     <string name="bird_eye_margin">Tanah sekitar kenderaan (cm)</string>
+    <string name="bird_eye_fit_margin">Margin pandangan (100 = 1 unit rujukan)</string>
     <string name="bird_eye_source_lane">Imej kamera sumber</string>
     <string name="bird_eye_height">Ketinggian kamera dari tanah (cm)</string>
     <string name="bird_eye_pitch">Kecondongan ke bawah (°)</string>
@@ -1047,7 +1048,7 @@
     <string name="bird_eye_quality_low">Rendah — paling pantas</string>
     <string name="bird_eye_quality_balanced">Seimbang — lalai</string>
     <string name="bird_eye_quality_full">Penuh — resolusi pratonton asal</string>
-    <string name="bird_eye_quality_note">Seimbang menghasilkan pratonton lebih jelas. Penuh menyalin bingkai langsung yang tersedia (hingga 8 MP), sehingga 5 fps. Penyalinan atau rendering perlahan, atau kekurangan memori, menurunkan resolusi untuk sesi ini; Rendah berhenti jika masih terlalu perlahan. Foto menggunakan resolusi aktif. Resolusi tidak membetulkan penentukuran.</string>
+    <string name="bird_eye_quality_note">Seimbang mengekalkan lebih banyak butiran kamera pada saiz output yang sama. Penuh menyalin bingkai langsung yang tersedia (hingga 8 MP), sehingga 5 fps. Pemprosesan perlahan mengurangkan kadar bingkai dahulu, kemudian resolusi; Rendah berhenti jika masih terlalu perlahan. Foto menggunakan resolusi aktif. Resolusi tidak membetulkan penentukuran.</string>
     <string name="bird_eye_quality_reduced">Resolusi 360 diturunkan kerana pemprosesan perlahan atau memori terhad. Butiran terdapat dalam Diagnostics.</string>
     <string name="msg_record_profile_restart">Pilihan kamera berubah. Keluar dan buka semula aplikasi untuk menggunakannya sebelum merakam.</string>
     <string name="dev_camera_display_title">Alat kamera dan paparan</string>
@@ -1185,7 +1186,7 @@
     <string name="bird_eye_profile_manual">Manual (nilai lalai anggaran)</string>
     <string name="bird_eye_profile_009">Padanan imej 009 (eksperimen)</string>
     <string name="bird_eye_profile_note">Padanan eksperimen untuk 009 berdasarkan imej rujukan. Ketepatan jarak belum disahkan. Penentukuran manual dikekalkan apabila menukar profil.</string>
-    <string name="bird_eye_profile_fitted_note">Padanan imej 009 aktif. Laraskan sumber kamera, kualiti dan margin di sini. Untuk menukar geometri kanta, pilih Manual dalam tetapan 360.</string>
+    <string name="bird_eye_profile_fitted_note">Padanan imej 009 aktif. Margin pandangan berasingan bermula pada 300 untuk pandangan lebih luas; nilai lebih kecil mengezum masuk. Unit rujukan bukan jarak yang diukur. Laraskan sumber dan kualiti di sini; pilih Manual dalam tetapan 360 untuk mengedit geometri kanta.</string>
 
     <string name="bird_eye_car_colour">Warna kereta</string>
     <string name="bird_eye_car_green">Hijau</string>

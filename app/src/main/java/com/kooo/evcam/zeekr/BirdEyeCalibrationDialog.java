@@ -67,8 +67,10 @@ public final class BirdEyeCalibrationDialog {
                 slider(context, vehicle, config, "length", R.string.bird_eye_length, 520, 300, 650, changed);
                 slider(context, vehicle, config, "width", R.string.bird_eye_width, 200, 140, 260, changed);
             }
-            slider(context, vehicle, config, "margin", R.string.bird_eye_margin, 200, 50,
-                    config.imageFitted() ? 200 : 400, changed);
+            slider(context, vehicle, config, config.imageFitted() ? BirdEyeConfig.FIT_MARGIN : "margin",
+                    config.imageFitted() ? R.string.bird_eye_fit_margin : R.string.bird_eye_margin,
+                    config.imageFitted() ? (int) (BirdEyeImageFit.DEFAULT_MARGIN * 100) : 200,
+                    50, config.imageFitted() ? (int) (BirdEyeImageFit.MAX_MARGIN * 100) : 400, changed);
             int index = Math.max(0, camera.getSelectedItemPosition());
             Spinner lane = new Spinner(context);
             lane.setAdapter(new ArrayAdapter<>(context, android.R.layout.simple_spinner_dropdown_item, cameras));

@@ -7,6 +7,12 @@ Alpha sections: one line per change, what changed and nothing else. Beta and sta
 sections: written for users, reviewed before release. Why a change was made lives in the
 commit message, not here.
 
+## Unreleased
+
+- Give the 009 image-fit profile wider default framing and its own saved view margin, retaining Manual calibration values.
+- Retain more source detail in Balanced DIY 360 rendering and narrow fitted corner blends; retain automatic cadence/resolution fallback.
+- Replace exposed black vehicle backing with a small rounded opaque surround matching the selected car colour.
+
 ## [2.11.44-alpha.1] - 2026-10-17
 
 - Add 009 / 7X / Auto / Outline vehicle illustrations with saved Green / White / Black colours to DIY 360 main/popup views and stitched photos; 7X projection still needs vehicle testing.

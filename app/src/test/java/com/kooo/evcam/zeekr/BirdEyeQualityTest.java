@@ -12,7 +12,7 @@ public class BirdEyeQualityTest {
     }
     @Test public void balancedIsSharperAndPreservesCompositeAspect() {
         BirdEyeQuality.Size s = BirdEyeQuality.resolve(BirdEyeQuality.BALANCED, 1280, 5140);
-        assertEquals(512, s.sourceWidth); assertEquals(2056, s.sourceHeight);
+        assertEquals(768, s.sourceWidth); assertEquals(3084, s.sourceHeight);
         assertEquals(640, s.outputWidth); assertEquals(960, s.outputHeight);
         assertEquals(100, s.intervalMs);
         assertEquals(1280.0 / 5140, (double)s.sourceWidth / s.sourceHeight, .001);
