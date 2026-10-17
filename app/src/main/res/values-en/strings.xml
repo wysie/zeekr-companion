@@ -1223,4 +1223,15 @@
     <string name="bird_eye_car_model">Vehicle illustration</string>
     <string name="bird_eye_car_auto">Auto (outline if unknown)</string>
     <string name="bird_eye_car_outline">Generic outline</string>
+    <string name="drive_log_title">Drive logging to USB</string>
+    <string name="drive_log_summary">Turn on before a drive, then turn off and wait for Saved before unplugging. Automatically saves raw vehicle signals, app/lifecycle logs and start/stop Diagnostics under ZeekrShortcutApp/Logs/Drive_…. USB only; no video or screenshots. Stops at 8 hours, 256 MiB, low space or USB failure. No boot start. Only signals exposed by the car can be captured.</string>
+    <string name="drive_log_status_title">Drive logging status</string>
+    <string name="drive_log_idle">Off — no drive session started</string>
+    <string name="drive_log_starting">Checking USB…</string>
+    <string name="drive_log_recording">Saving logs to USB</string>
+    <string name="drive_log_stopping">Finishing logs and saving Diagnostics…</string>
+    <string name="drive_log_saved">Saved — safe to unplug after other recording/export tasks have stopped</string>
+    <string name="drive_log_failed">Logging stopped or could not start: %1$s</string>
+    <string name="drive_log_no_usb">No writable USB drive found. Nothing saved to internal storage.</string>
+    <string name="drive_log_stop">Stop logging</string>
 </resources>

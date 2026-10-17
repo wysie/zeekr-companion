@@ -693,6 +693,14 @@
                 android:title="@string/dev_raw_frame_title"
                 android:summary="@string/dev_raw_frame_summary" />
             <SwitchPreferenceCompat
+                android:key="pref_drive_logging"
+                android:title="@string/drive_log_title"
+                android:summary="@string/drive_log_summary" />
+            <Preference
+                android:key="pref_drive_logging_status"
+                android:title="@string/drive_log_status_title"
+                android:selectable="false" />
+            <SwitchPreferenceCompat
                 android:key="pref_signal_scan"
                 android:title="@string/dev_signal_scan_title"
                 android:summary="@string/dev_signal_scan_summary" />

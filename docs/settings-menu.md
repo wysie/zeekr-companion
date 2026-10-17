@@ -16,7 +16,7 @@ add navigation depth; their native Back button returns to their parent.
 | Floating button | Enable; tap/hold actions; size, opacity and timer appearance; lock position; reset. |
 | Interface | Language, vehicle display name, action side, recording statistics, reduced motion, vehicle panel; in-app picture adjustments, main preview/photo/video correction method and field of view. |
 | System | App startup, Diagnostics, system/vehicle information, developer-mode enable with warning. |
-| Developer options | Recording internals: allow internal storage fallback (off by default), pipeline, H.264, wake lock and duration. Image/rendering: preview/playback GPU methods. Camera research: mapping, camera/display tools and batch exports, raw frames, signal scanner, camera-app logging, permissions. Maintenance: repair recordings, archive. |
+| Developer options | Recording internals: allow internal storage fallback (off by default), pipeline, H.264, wake lock and duration. Image/rendering: preview/playback GPU methods. Camera research: mapping, camera/display tools and batch exports, raw frames, USB drive logging with live status, signal scanner, camera-app logging, permissions. Maintenance: repair recordings, archive. |
 | Updates | Check for updates, include beta releases. |
 
 ## Blind spot child pages

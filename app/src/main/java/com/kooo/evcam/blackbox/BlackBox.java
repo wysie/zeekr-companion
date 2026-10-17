@@ -292,6 +292,7 @@ public final class BlackBox {
     private static void write(String event, boolean sync) {
         // 时间戳在调用线程上取（记的是事发的时刻），写盘排到黑匣子线程上
         final String line = stamp() + "  " + event;
+        com.kooo.evcam.telemetry.DriveLogService.lifecycleLine(line);
         BOX.post(() -> writeNow(line, sync));
     }
 

@@ -129,16 +129,38 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         PreferenceRows.styleList(this, 28, 16);
     }
 
+    private final android.os.Handler driveLogUi = new android.os.Handler(android.os.Looper.getMainLooper());
+    private final Runnable driveLogRefresh = new Runnable() {
+        @Override public void run() {
+            refreshDriveLogging();
+            driveLogUi.postDelayed(this, 1000);
+        }
+    };
+    private void refreshDriveLogging() {
+        if (!isAdded() || appConfig == null) return;
+        SwitchPreferenceCompat toggle = findPreference("pref_drive_logging");
+        if (toggle != null) {
+            toggle.setChecked(com.kooo.evcam.telemetry.DriveLogService.isEnabled());
+            toggle.setEnabled(!com.kooo.evcam.telemetry.DriveLogService.isStopping());
+        }
+        Preference status = findPreference("pref_drive_logging_status");
+        if (status != null) status.setSummary(com.kooo.evcam.telemetry.DriveLogService.status(requireContext()));
+        SwitchPreferenceCompat scan = findPreference("pref_signal_scan");
+        if (scan != null) scan.setChecked(appConfig.isSignalScanEnabled());
+    }
+
     @Override
     public void onStart() {
         super.onStart();
         com.kooo.evcam.zeekr.BirdEyePopupService.addStateListener(birdEyeStateChanged);
         refreshBirdEyePopup();
+        driveLogUi.post(driveLogRefresh);
     }
 
     @Override
     public void onStop() {
         com.kooo.evcam.zeekr.BirdEyePopupService.removeStateListener(birdEyeStateChanged);
+        driveLogUi.removeCallbacks(driveLogRefresh);
         super.onStop();
     }
 
@@ -1456,6 +1478,18 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
 
         bindSwitch("pref_raw_frame_dump", appConfig.isRawFrameDumpEnabled(),
                 appConfig::setRawFrameDumpEnabled);
+
+        SwitchPreferenceCompat driveLog = findPreference("pref_drive_logging");
+        if (driveLog != null) {
+            driveLog.setPersistent(false);
+            driveLog.setOnPreferenceChangeListener((pref,value) -> {
+                if (Boolean.TRUE.equals(value)) com.kooo.evcam.telemetry.DriveLogService.start(requireContext());
+                else com.kooo.evcam.telemetry.DriveLogService.stop(requireContext());
+                refreshDriveLogging();
+                return false; // The service, including startup failures, owns the actual state.
+            });
+        }
+        refreshDriveLogging();
 
         // 信号普查：开就挂全部功能号记变化，关就停；到点自己停时开关也关（见 SignalScanControl）
         bindSwitch("pref_signal_scan", appConfig.isSignalScanEnabled(), on -> {

@@ -60,6 +60,7 @@ public final class DeveloperMode {
         com.kooo.evcam.blackbox.BlackBox.noteImportant(value ? "开发者模式：打开" : "开发者模式：关闭");
         // 没验证的信号算不算数跟着它走：信息条那份快照重新滤一次
         com.kooo.evcam.telemetry.Telemetry.get().selectionChanged();
+        com.kooo.evcam.telemetry.DriveLogService.developerModeChanged(context);
         com.kooo.evcam.telemetry.SignalScanControl.apply(context);
     }
 
