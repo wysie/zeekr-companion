@@ -9,17 +9,17 @@ commit message, not here.
 
 ## Unreleased
 
-- Adapt upstream PR #41 popup reconnection, retained-texture reuse and bounded failure recovery while preserving configurable popup, HUD and mirror controls.
+Nothing yet.
 
-- Add USB drive logging with live raw signal/app/lifecycle files, automatic start/stop Diagnostics, visible session status and bounded retention without the private scan event cap.
+## [2.11.45-alpha.1] - 2026-10-18
 
-- Add saved square, portrait and landscape aspect ratios for the separate blind-spot popup, retained during pinch resizing and expand/restore.
-
+- Adapt dts88 PR #41 popup reconnection, retained-texture reuse and bounded failure recovery while preserving configurable popup, HUD and mirror controls.
+- Add Developer options → Drive logging to USB: live raw signal/app/lifecycle files and automatic start/stop Diagnostics in timestamped Logs/Drive_… folders, with visible status and USB-only bounded retention beyond the private scan event cap.
+- Add Blind spot camera → Popup window → Aspect ratio: Square, Portrait, Landscape, Wide and Extra wide, retained during pinch resizing and expand/restore.
 - Recognize the confirmed 009 HUD display automatically and remove the extra 009 enable switch.
-- Give the 009 HUD its own smaller fixed-right layout; fit panels to measured drawable space and preserve wide-picture shape.
-
+- Give the 009 HUD its own smaller fixed-right layout and fit panels to measured drawable space while preserving wide-picture shape; factory HUD graphics can still overlap it.
 - Give the 009 image-fit profile wider default framing and its own saved view margin, retaining Manual calibration values.
-- Retain more source detail in Balanced DIY 360 rendering and narrow fitted corner blends; retain automatic cadence/resolution fallback.
+- Retain more source detail in Balanced DIY 360 rendering and narrow fitted corner blends, retaining automatic cadence/resolution fallback.
 - Replace exposed black vehicle backing with a small rounded opaque surround matching the selected car colour.
 
 ## [2.11.44-alpha.1] - 2026-10-17
