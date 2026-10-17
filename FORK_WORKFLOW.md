@@ -51,6 +51,7 @@ The remotes are `origin` (wysie's fork), `upstream` (dts88's repository), and
 | `feature/side-popup-hide-mirror` | Three-way mirror relationship with presentation-driven temporary hiding and retained mirror surface/settings |
 | `feature/hud-factory-coexistence` | Off-by-default HUD coexistence with factory centre-screen views, keeping reverse, screen output and hardware arbitration independent |
 | `feature/developer-mode-toggle` | Password-free System developer switch with warning, preserved mode persistence and immediate category refresh |
+| `integration/upstream-side-view-lifecycle` | Selective dts88 PR #41 lifecycle adaptation: two-second reconnection, same-texture reuse, safe immediate removal and refusal episodes; retains fork controls and existing PR heads |
 | `integration/merged-upstream-20261016` | dts88 merged main through 76138b8d, selected merged Ferix work through 3f9c7e40, and owner-log fixes; existing PR heads preserved |
 | `integration/ferix-2.12.5` | Combined CAMCORDER follow-ups through d6193888, adapted to dts88 2.11.6 and existing fork behaviour |
 | `feature/ferix-scan-callbacks` | Customize-value callbacks and bounded callback-shape reporting |

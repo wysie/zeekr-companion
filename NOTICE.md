@@ -194,3 +194,17 @@ password-free System developer toggle. Gallery adaptations preserve the fork’s
 legacy directories, path-qualified identities, guarded protection checks and
 existing timeline ownership rules. Picture controls use the existing camera
 manager, inside the Activity rather than a system overlay.
+
+
+## dts88 blind-spot lifecycle follow-up
+
+Retained side-texture reclamation, immediate service-owned window removal,
+reconnection watchdog and refusal-episode handling are adapted from dts88's
+[PR #41](https://github.com/dts88/zeekr-shortcut-car/pull/41), merged as
+[95f5b989](https://github.com/dts88/zeekr-shortcut-car/commit/95f5b989fd1726f9eee7f16593508dd3da7e3d5a)
+(source branch commit `bf718089`). Source references are retained in class/method
+comments. This selective adaptation keeps the wysie Edition controls and separate
+HUD/360 outputs; it does not import upstream's fixed popup placement, defaults,
+menu layout or a second side-camera service. dts88 retains credit for the scheduler
+and lifecycle work; FerixzTanz retains credit for the original side-camera feature
+and vehicle research, and wysie for the earlier framing/dismissal contributions.

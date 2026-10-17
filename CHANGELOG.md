@@ -9,6 +9,8 @@ commit message, not here.
 
 ## Unreleased
 
+- Adapt upstream PR #41 popup reconnection, retained-texture reuse and bounded failure recovery while preserving configurable popup, HUD and mirror controls.
+
 - Add USB drive logging with live raw signal/app/lifecycle files, automatic start/stop Diagnostics, visible session status and bounded retention without the private scan event cap.
 
 - Add saved square, portrait and landscape aspect ratios for the separate blind-spot popup, retained during pinch resizing and expand/restore.
