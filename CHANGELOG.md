@@ -9,6 +9,8 @@ commit message, not here.
 
 ## Unreleased
 
+- Add saved square, portrait and landscape aspect ratios for the separate blind-spot popup, retained during pinch resizing and expand/restore.
+
 - Recognize the confirmed 009 HUD display automatically and remove the extra 009 enable switch.
 - Give the 009 HUD its own smaller fixed-right layout; fit panels to measured drawable space and preserve wide-picture shape.
 

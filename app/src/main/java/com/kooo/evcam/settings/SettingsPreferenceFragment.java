@@ -792,6 +792,20 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                     appConfig.setSidePopupCloseDelayMs(value);
                     com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
                 });
+        ListPreference aspect = findPreference("pref_side_popup_aspect");
+        if (aspect != null) {
+            aspect.setPersistent(false);
+            aspect.setEntries(new CharSequence[]{getString(R.string.side_aspect_square), getString(R.string.side_aspect_portrait),
+                    getString(R.string.side_aspect_landscape), getString(R.string.side_aspect_wide), getString(R.string.side_aspect_extra_wide)});
+            aspect.setEntryValues(new CharSequence[]{"1:1", "3:4", "4:3", "16:9", "11:5"});
+            aspect.setValue(appConfig.getSidePopupAspect());
+            aspect.setSummaryProvider(p -> ((ListPreference) p).getEntry());
+            aspect.setOnPreferenceChangeListener((p,value) -> {
+                appConfig.setSidePopupAspect(String.valueOf(value));
+                com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+                return true;
+            });
+        }
         bindSlider("pref_side_popup_size", AppConfig.SIDE_POPUP_MIN_SIZE_PERCENT,
                 AppConfig.SIDE_POPUP_MAX_SIZE_PERCENT, appConfig.getSidePopupSizePercent(), "%", value -> {
                     appConfig.setSidePopupSizePercent(value);

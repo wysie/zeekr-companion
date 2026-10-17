@@ -79,7 +79,7 @@ release numbers remain independent of upstream.
   that popup is visible.
 - **Playback controls:** video and photo action buttons size to their labels, keep equal heights within each row, and wrap to another row when space is tight. “Send to phone” remains aligned and fully readable without shrinking the text.
 - **Side-window controls and tuning:** shared left/right placement, drag and pinch
-  resizing, temporary expand/close controls, per-side image rotation, defaults
+  resizing with a saved square/portrait/landscape aspect ratio, temporary expand/close controls, per-side image rotation, defaults
   reset, and automatic framing adjustment to avoid black patches at extreme aim
   angles. High angles can substantially narrow the visible area.
 - **Side-window transitions:** adapted Ferix fades (130 ms in / 160 ms out) keep hidden consumers draining while reducing a previous side image flashing on reopening. The screen popup retains its 750 ms startup notice grace; changing sides resets frame progression before revealing the new crop. Factory takeover and destruction still detach immediately, and cancelled requests cannot be reopened by an animation. HUD uses the same fades; Super mirror replacement is unchanged.
@@ -236,11 +236,16 @@ Under **HUD picture**, adjust height (30–100%), shape (width/height, 100–300
 
 The HUD has no app speed threshold, but reverse, factory views, parking assist and screen-off still suppress it. Closing the screen side view also dismisses the HUD for that signal activation; it returns after cancelling and signalling again. HUD video is covered when frames stop arriving. Its optional camera output yields before screen output, mirror and recording when the session cannot support it. Diagnostics include display flags, the detected HUD, output mode, mirroring choices and recent HUD window state. The owner has confirmed live HUD video; physical fit and smoothness of these layout changes still need an on-car check. Factory speed/warnings/navigation may remain visible over the camera because the ordinary Presentation cannot mask a separate factory layer.
 
-Side-camera correction and aim apply to either window. The pop-up size and placement settings
-apply only to the separate pop-up. Left and right cameras use one shared window position.
-Drag the window to place it and pinch to resize; both position and size are saved. It stays
-square and is limited to half the screen width.
-Super mirror keeps its own size and position. If the head unit rejects the additional output,
+Side-camera correction and aim apply to either window. Under **Blind spot camera →
+Popup window → Aspect ratio (width:height)**, choose Square (1:1, default), Portrait
+(3:4), Landscape (4:3), Wide (16:9) or Extra wide (2.2:1). This setting applies only
+to the separate popup. Left and right cameras share one saved position and shape.
+Drag to place it and pinch to resize; position, height and aspect ratio are saved.
+Resizing and expand/restore retain the chosen ratio, and the window scales down
+proportionally if needed to fit the screen. Existing square sizes remain unchanged.
+Corrected framing uses the actual window ratio rather than stretching the camera
+pixels; changing shape can change the visible coverage. High aim angles can still
+force a narrower view. Super mirror and HUD keep their own shapes and positions. If the head unit rejects the additional output,
 the side window is closed and a message suggests using Use Super mirror when active. This feature
 uses the turn signals; blind-spot obstacle alerts are not yet a trigger.
 
