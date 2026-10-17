@@ -42,6 +42,7 @@ public class SideViewHudPanel extends SideViewPopupView {
 
     /** 最近一次的情况，诊断报告里读。状态记号，不是给人读的句子（同 CameraNeeds.describe）。 */
     private static volatile String lastState = "never";
+    private static volatile String lastLayout = "viewport unmeasured";
 
     private final Display display;
     private Presentation presentation;
@@ -96,7 +97,7 @@ public class SideViewHudPanel extends SideViewPopupView {
 
     /** 诊断报告里的一行：HUD 窗口最近怎么样。 */
     public static String lastState() {
-        return lastState;
+        return lastState + "; " + lastLayout;
     }
 
     /** HUD 那块屏（规则见 {@link HudDisplayLocator}）；找不到是 null。 */
@@ -120,12 +121,16 @@ public class SideViewHudPanel extends SideViewPopupView {
             }
             candidates.add(new HudDisplayLocator.Candidate(d.getDisplayId(), size.x, size.y, d.getName(), d.getFlags()));
         }
-        int id = HudDisplayLocator.find(candidates, new AppConfig(context).isZeekr009HudEnabled());
+        int id = HudDisplayLocator.find(candidates);
         if (id == HudDisplayLocator.NONE) {
             return null;
         }
         for (Display d : displays) {
             if (d.getDisplayId() == id) {
+                for (HudDisplayLocator.Candidate candidate : candidates) if (candidate.id == id) {
+                    new AppConfig(context).selectHudLayout(HudDisplayLocator.matches009(candidate));
+                    break;
+                }
                 return d;
             }
         }
@@ -218,6 +223,9 @@ public class SideViewHudPanel extends SideViewPopupView {
         Presentation p = new Presentation(getContext(), display);
         FrameLayout frame = new FrameLayout(p.getContext());
         frame.setBackgroundColor(0);
+        frame.addOnLayoutChangeListener((view,l,t,r,b,ol,ot,or,ob) -> {
+            if (root == view && (r-l != or-ol || b-t != ob-ot)) place();
+        });
         frame.addView(this, panelParams);
         p.setContentView(frame);
         Window window = p.getWindow();
@@ -253,21 +261,27 @@ public class SideViewHudPanel extends SideViewPopupView {
         releasePresentation();
     }
 
-    /** 大小 / 位置：窗口大小跟着 HUD 的真实尺寸算；左灯靠左、右灯靠右（{@link HudPanelPlacement}）。 */
+    /** Place inside measured Presentation content, which can be smaller than the display. */
     @Override
     protected void place() {
         DisplayMetrics metrics = new DisplayMetrics();
         display.getRealMetrics(metrics);
-        HudPanelPlacement.Rect rect = HudPanelPlacement.compute(metrics.widthPixels, metrics.heightPixels,
+        int width = root != null && root.getWidth() > 0 ? root.getWidth() : metrics.widthPixels;
+        int height = root != null && root.getHeight() > 0 ? root.getHeight() : metrics.heightPixels;
+        HudPanelPlacement.Rect rect = HudPanelPlacement.compute(width, height,
                 appConfig.getHudSideSizePercent(), appConfig.getHudSideShapePercent(),
                 appConfig.getHudSideLeftPercent(), appConfig.getHudSideVerticalPercent(),
                 appConfig.isHudSideFollowSignal() && lane == LaneCycle.RIGHT);
-        panelParams = new FrameLayout.LayoutParams(rect.width, rect.height, Gravity.TOP | Gravity.START);
+        panelParams = new FrameLayout.LayoutParams(rect.width, rect.height, Gravity.TOP | Gravity.LEFT);
         panelParams.leftMargin = rect.left;
         panelParams.topMargin = rect.top;
         if (root != null && getParent() == root) {
-            setLayoutParams(panelParams);
+            FrameLayout.LayoutParams current = (FrameLayout.LayoutParams) getLayoutParams();
+            if (current.width != rect.width || current.height != rect.height
+                    || current.leftMargin != rect.left || current.topMargin != rect.top) setLayoutParams(panelParams);
         }
+        lastLayout = "viewport=" + width + "x" + height + " panel=" + rect.left + "," + rect.top
+                + " " + rect.width + "x" + rect.height + " layout=" + (appConfig.is009HudLayout() ? "009" : "standard");
     }
 
     @Override

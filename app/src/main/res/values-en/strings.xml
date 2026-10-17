@@ -1017,10 +1017,8 @@
     <string name="set_side_output_both">Screen and HUD</string>
     <string name="set_sub_hud_title">HUD picture</string>
     <string name="set_sub_hud_summary">Display, overlay layer, placement, contrast, night brightness and edge fade</string>
-    <string name="set_hud_zeekr_009_title">Zeekr 009 HUD</string>
-    <string name="set_hud_zeekr_009_summary">Use the 009 mapping for display 3 at 1280×640. Experimental: check the windscreen while parked; turn this off if the image appears on another screen. If unavailable, the screen view is used.</string>
     <string name="set_hud_side_size_title">HUD picture height (% of HUD height)</string>
-    <string name="set_hud_side_size_summary">The width follows from the shape below</string>
+    <string name="set_hud_side_size_summary">Width follows the shape below; scales down if needed to fit the HUD</string>
     <string name="set_hud_side_shape_title">HUD picture shape (width ÷ height, %)</string>
     <string name="set_hud_side_shape_summary">100 is square; higher is wider</string>
     <string name="set_hud_side_left_title">HUD horizontal position (%)</string>
@@ -1029,7 +1027,7 @@
     <string name="set_hud_side_vertical_summary">0 is the top, 100 the bottom</string>
     <string name="set_hud_side_opacity_title">HUD picture opacity (%)</string>
     <string name="set_hud_side_opacity_summary">Lower is fainter. Black does not light up on a HUD anyway</string>
-    <string name="set_side_hud_note">HUD is experimental on the 009. If unavailable, the screen view is used. HUD has no speed threshold. Factory views hide it by default; HUD picture offers an experimental coexistence option. Reverse always hides it, and screen output still yields.</string>
+    <string name="set_side_hud_note">The 009 HUD (display 3, 1280×640) is detected automatically. Its picture defaults to the right; adjust size and position below. Factory speed and warnings can appear over it. If unavailable, the screen view is used. HUD has no speed threshold. Factory views hide it by default; HUD picture offers an experimental coexistence option. Reverse always hides it, and screen output still yields.</string>
 
     <!-- DIY ground-plane 360 prototype -->
     <string name="bird_eye_button">360°</string>

@@ -133,7 +133,7 @@ public class AppConfig {
     public static final int SIDE_OUTPUT_HUD = 1;
     public static final int SIDE_OUTPUT_BOTH = 2;
     private static final String KEY_HUD_SIDE_SIZE = "hud_side_size";  // 高度，HUD 高度的百分比
-    private static final String KEY_HUD_ZEEKR_009 = "hud_zeekr_009";
+    private static final String KEY_HUD_LAYOUT_009 = "hud_layout_009";
     private static final String KEY_HUD_SIDE_SHAPE = "hud_side_shape";  // 宽 ÷ 高 ×100
     private static final String KEY_HUD_SIDE_LEFT = "hud_side_left";  // 左右位置，0 贴左 100 贴右
     private static final String KEY_HUD_SIDE_VERTICAL = "hud_side_vertical";  // 上下位置，0 顶 100 底
@@ -158,6 +158,8 @@ public class AppConfig {
     public static final int HUD_SIDE_MIN_SIZE_PERCENT = 30;
     public static final int HUD_SIDE_MAX_SIZE_PERCENT = 100;
     public static final int HUD_SIDE_DEFAULT_SIZE_PERCENT = 74;
+    public static final int HUD_SIDE_009_DEFAULT_SIZE_PERCENT = 50;
+    public static final int HUD_SIDE_009_DEFAULT_LEFT_PERCENT = 94;
     public static final int HUD_SIDE_MIN_SHAPE_PERCENT = 100;
     public static final int HUD_SIDE_MAX_SHAPE_PERCENT = 300;
     public static final int HUD_SIDE_DEFAULT_SHAPE_PERCENT = 100;
@@ -1719,7 +1721,10 @@ public class AppConfig {
                 .remove(KEY_SIDE_POPUP_HIDE_MIRROR)
                 .remove(KEY_SIDE_POPUP_MIRROR)
                 .remove(KEY_SIDE_OUTPUT)
-                .remove(KEY_HUD_ZEEKR_009)
+                .remove("hud_zeekr_009") // Obsolete gate; display matching is automatic now.
+                .remove("009_" + KEY_HUD_SIDE_SIZE).remove("009_" + KEY_HUD_SIDE_SHAPE)
+                .remove("009_" + KEY_HUD_SIDE_LEFT).remove("009_" + KEY_HUD_SIDE_VERTICAL)
+                .remove("009_" + KEY_HUD_SIDE_FOLLOW)
                 .remove(KEY_HUD_SIDE_SIZE)
                 .remove(KEY_HUD_SIDE_SHAPE)
                 .remove(KEY_HUD_SIDE_LEFT)
@@ -1930,55 +1935,55 @@ public class AppConfig {
         AppLog.i(TAG, "侧视画面出在: " + output + "（0 主屏 / 1 HUD / 2 两边）");
     }
 
-    /** Owner-selected 009 display mapping; auto detection remains the default. */
-    public boolean isZeekr009HudEnabled() {
-        return prefs.getBoolean(KEY_HUD_ZEEKR_009, false);
+    /** Selected by the actual matched display, never by the cosmetic vehicle name. */
+    public void selectHudLayout(boolean confirmed009) {
+        if (is009HudLayout() != confirmed009) prefs.edit().putBoolean(KEY_HUD_LAYOUT_009, confirmed009).apply();
     }
-
-    public void setZeekr009HudEnabled(boolean enabled) {
-        prefs.edit().putBoolean(KEY_HUD_ZEEKR_009, enabled).apply();
-    }
+    public boolean is009HudLayout() { return prefs.getBoolean(KEY_HUD_LAYOUT_009, false); }
+    private String hudLayoutKey(String key) { return is009HudLayout() ? "009_" + key : key; }
 
     /** HUD 上画面的高度，HUD 高度的百分比。 */
     public int getHudSideSizePercent() {
-        int v = prefs.getInt(KEY_HUD_SIDE_SIZE, HUD_SIDE_DEFAULT_SIZE_PERCENT);
+        int v = prefs.getInt(hudLayoutKey(KEY_HUD_SIDE_SIZE),
+                is009HudLayout() ? HUD_SIDE_009_DEFAULT_SIZE_PERCENT : HUD_SIDE_DEFAULT_SIZE_PERCENT);
         return Math.max(HUD_SIDE_MIN_SIZE_PERCENT, Math.min(HUD_SIDE_MAX_SIZE_PERCENT, v));
     }
 
     public void setHudSideSizePercent(int percent) {
-        prefs.edit().putInt(KEY_HUD_SIDE_SIZE,
+        prefs.edit().putInt(hudLayoutKey(KEY_HUD_SIDE_SIZE),
                 Math.max(HUD_SIDE_MIN_SIZE_PERCENT, Math.min(HUD_SIDE_MAX_SIZE_PERCENT, percent))).apply();
     }
 
     /** HUD 上画面的宽 ÷ 高 ×100，100 是正方形。 */
     public int getHudSideShapePercent() {
-        int v = prefs.getInt(KEY_HUD_SIDE_SHAPE, HUD_SIDE_DEFAULT_SHAPE_PERCENT);
+        int v = prefs.getInt(hudLayoutKey(KEY_HUD_SIDE_SHAPE), HUD_SIDE_DEFAULT_SHAPE_PERCENT);
         return Math.max(HUD_SIDE_MIN_SHAPE_PERCENT, Math.min(HUD_SIDE_MAX_SHAPE_PERCENT, v));
     }
 
     public void setHudSideShapePercent(int percent) {
-        prefs.edit().putInt(KEY_HUD_SIDE_SHAPE,
+        prefs.edit().putInt(hudLayoutKey(KEY_HUD_SIDE_SHAPE),
                 Math.max(HUD_SIDE_MIN_SHAPE_PERCENT, Math.min(HUD_SIDE_MAX_SHAPE_PERCENT, percent))).apply();
     }
 
     /** HUD 上画面的左右位置：剩余宽度里的百分比，0 贴左、100 贴右。 */
     public int getHudSideLeftPercent() {
-        int v = prefs.getInt(KEY_HUD_SIDE_LEFT, HUD_SIDE_DEFAULT_LEFT_PERCENT);
+        int v = prefs.getInt(hudLayoutKey(KEY_HUD_SIDE_LEFT), is009HudLayout()
+                ? HUD_SIDE_009_DEFAULT_LEFT_PERCENT : HUD_SIDE_DEFAULT_LEFT_PERCENT);
         return Math.max(0, Math.min(100, v));
     }
 
     public void setHudSideLeftPercent(int percent) {
-        prefs.edit().putInt(KEY_HUD_SIDE_LEFT, Math.max(0, Math.min(100, percent))).apply();
+        prefs.edit().putInt(hudLayoutKey(KEY_HUD_SIDE_LEFT), Math.max(0, Math.min(100, percent))).apply();
     }
 
     /** HUD 上画面的上下位置：剩余高度里的百分比，0 贴顶、100 贴底，默认居中。 */
     public int getHudSideVerticalPercent() {
-        int v = prefs.getInt(KEY_HUD_SIDE_VERTICAL, HUD_SIDE_DEFAULT_VERTICAL_PERCENT);
+        int v = prefs.getInt(hudLayoutKey(KEY_HUD_SIDE_VERTICAL), HUD_SIDE_DEFAULT_VERTICAL_PERCENT);
         return Math.max(0, Math.min(100, v));
     }
 
     public void setHudSideVerticalPercent(int percent) {
-        prefs.edit().putInt(KEY_HUD_SIDE_VERTICAL, Math.max(0, Math.min(100, percent))).apply();
+        prefs.edit().putInt(hudLayoutKey(KEY_HUD_SIDE_VERTICAL), Math.max(0, Math.min(100, percent))).apply();
     }
 
     /** HUD 上侧视左右翻转（像门镜），默认翻：看 HUD 和看门镜是同一眼，方向得一致。 */
@@ -2046,8 +2051,15 @@ public class AppConfig {
                 Math.max(HUD_SIDE_MIN_FADE_PERCENT, Math.min(HUD_SIDE_MAX_FADE_PERCENT, percent))).apply();
     }
 
-    public boolean isHudSideFollowSignal() { return prefs.getBoolean(KEY_HUD_SIDE_FOLLOW, false); }
-    public void setHudSideFollowSignal(boolean on) { prefs.edit().putBoolean(KEY_HUD_SIDE_FOLLOW, on).apply(); }
+    public boolean isHudSideFollowSignal() { return prefs.getBoolean(hudLayoutKey(KEY_HUD_SIDE_FOLLOW), false); }
+    public void setHudSideFollowSignal(boolean on) {
+        SharedPreferences.Editor edit = prefs.edit();
+        // The 009 fixed picture is on the right. Translate its position to/from
+        // distance from the indicator edge, rather than putting left signals on the right.
+        if (is009HudLayout() && on != isHudSideFollowSignal())
+            edit.putInt(hudLayoutKey(KEY_HUD_SIDE_LEFT), 100 - getHudSideLeftPercent());
+        edit.putBoolean(hudLayoutKey(KEY_HUD_SIDE_FOLLOW), on).apply();
+    }
 
     public boolean isLicensePlateEnabled() {
         return prefs.getBoolean(KEY_LICENSE_PLATE_ENABLED, false);

@@ -88,7 +88,8 @@ public class MenuReviewAndroidTest {
             capture("menu-hud.png");
             scenario.onActivity(activity -> {
                 SettingsPreferenceFragment detail = (SettingsPreferenceFragment) ref.get().getChildFragmentManager().findFragmentById(R.id.settings_detail);
-                detail.scrollToPreference("pref_hud_zeekr_009");
+                org.junit.Assert.assertNull(detail.findPreference("pref_hud_zeekr_009"));
+                detail.scrollToPreference("pref_hud_during_factory");
             });
             capture("menu-hud-advanced.png");
             // Playback layout fixture with all eight actions visible, including the normally conditional Lock.

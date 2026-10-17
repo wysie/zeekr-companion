@@ -70,7 +70,6 @@ final class SideViewHudOutput {
     private long lastFrameMs;
     private long failedUntilMs;
     private boolean presentKnown;
-    private boolean zeekr009Hud;
     private boolean present;
     private long presentCheckedMs;
     private boolean closePending;
@@ -84,7 +83,6 @@ final class SideViewHudOutput {
     SideViewHudOutput(Context context, AppConfig config, Runnable onUnavailable) {
         this.context = context;
         this.config = config;
-        this.zeekr009Hud = config.isZeekr009HudEnabled();
         this.onUnavailable = onUnavailable;
     }
 
@@ -135,11 +133,6 @@ final class SideViewHudOutput {
     void refreshLabel() { if (panel != null) panel.invalidate(); }
 
     void applyConfig() {
-        boolean selected009 = config.isZeekr009HudEnabled();
-        if (selected009 != zeekr009Hud) {
-            detach();
-            zeekr009Hud = selected009;
-        }
         presentKnown = false;
         failedUntilMs = 0;
         if (panel != null) {

@@ -319,3 +319,10 @@ The combined fork's launcher/About identity is Zeekr Shortcut — wysie Edition
 with normal native title typography and room for wrapping at larger font scales.
 Its existing scroll container retains access to all controls. Colours, gestures and
 recording behaviour are unchanged. Independent upstream PR branches keep upstream names.
+
+
+2026-10-17 009 HUD 更新：车主确认挡风玻璃 HUD 已能显示实时侧视视频。
+移除单独的 009 启用开关，按公开且开启的 3 号屏及 1280×640 尺寸自动识别。
+009 使用独立保存的右侧固定布局（高度 50%、水平 94%、垂直 50%、正方形），
+窗口按 Presentation 实际可绘制区域完整容纳。尺寸和位置仍可调整；原厂车速、
+导航和警告属于独立图层，仍可能覆盖视频。新布局尚待实车验证。
