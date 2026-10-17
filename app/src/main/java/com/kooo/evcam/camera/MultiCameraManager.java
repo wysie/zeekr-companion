@@ -2184,6 +2184,11 @@ public class MultiCameraManager {
         return takeKeptCanvas(ChannelRules.Kind.MIRROR, CameraSlots.KEY_SURROUND);
     }
 
+    /** dts88 PR #41: reclaim the same side texture before attaching a replacement consumer. */
+    public android.graphics.SurfaceTexture takeKeptSidePopup() {
+        return takeKeptCanvas(ChannelRules.Kind.SIDE_POPUP, CameraSlots.KEY_SURROUND);
+    }
+
     private android.graphics.SurfaceTexture takeKeptCanvas(ChannelRules.Kind kind, String cameraKey) {
         android.graphics.SurfaceTexture texture = keptOf(kind).remove(cameraKey);
         if (texture == null) {

@@ -242,13 +242,19 @@ public class SideViewPopupView extends ViewGroup {
     }
 
     /** 整个拿掉。 */
-    public void detach() {
-        if (!attached) {
-            return;
-        }
+    public void detach() { detachWindow(false); }
+
+    /** Service-only removal outside this window's draw/touch dispatch; permits immediate texture reclamation. */
+    public void detachImmediately() { detachWindow(true); }
+
+    private void detachWindow(boolean immediate) {
+        if (!attached) return;
         abortFade();
+        attached = false;
+        visible = false;
         try {
-            windowManager.removeView(this);
+            if (immediate) windowManager.removeViewImmediate(this);
+            else windowManager.removeView(this);
         } catch (Exception e) {
             AppLog.w(TAG, "侧视窗移除失败: " + e);
         }
@@ -584,6 +590,9 @@ public class SideViewPopupView extends ViewGroup {
     }
 
     public void clearFrames() { frameFreshness.reset(); invalidate(); }
+
+    /** A replacement camera must supply its own geometry before a live picture can be revealed. */
+    public void clearSourceGeometry() { plan = null; clearFrames(); }
 
     public void noteFrame() {
         android.graphics.SurfaceTexture source = textureView.getSurfaceTexture();

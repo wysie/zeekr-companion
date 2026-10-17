@@ -40,9 +40,12 @@ import com.kooo.evcam.telemetry.VehicleState;
  *
  * <h3>即时弹出</h3>
  *
- * <p>每次从无到有挂窗口都要重建一次会话，画面比窗口晚到零点几秒（相机没开时更久）。
+ * <p>没有可接回的保留画布时，从无到有挂窗口需要重建一次会话，画面比窗口晚到零点几秒（相机没开时更久）。
  * 「即时弹出」开着时，D 档下窗口一直挂着但完全透明，相机照推（见 {@link SideViewPopupView} 的三种状态），
  * 打灯只是把它拨亮。离开 D 档 {@link #READY_GRACE_MS} 后才拿掉，等红灯挂 N 不至于来回重建。</p>
+ *
+ * <p>Camera reconnection watchdog, retained-texture reclamation and refusal-episode recovery
+ * adapted from dts88 PR #41 (95f5b989), retaining this fork's HUD, mirror and popup controls.</p>
  *
  * <h3>车辆信号</h3>
  *
@@ -69,6 +72,7 @@ public class SideViewPopupService extends Service {
     private MultiCameraManager boundManager;
     /** 交给相机的是哪一个 SurfaceTexture：放手时确认槽位还是自己的。 */
     private SurfaceTexture boundTexture;
+    private Size boundPreviewSize;
     private boolean listening;
     private int retryCount;
     private Runnable retryRunnable;
@@ -76,7 +80,11 @@ public class SideViewPopupService extends Service {
     private boolean lastReady;
     private boolean readyExpiryScheduled;
     private boolean destroyed;
-    private boolean popupUnavailable;
+    private final SidePopupRecovery recovery = new SidePopupRecovery();
+    private Runnable watchdog;
+    private boolean restoreBufferOnFrame;
+    private final Runnable recoveryExpired = this::evaluate;
+    static final long WATCHDOG_INTERVAL_MS = 2_000L;
     private final SideViewDismissal dismissal = new SideViewDismissal();
     /** 最近显示过哪一边：备着时窗口停在那一边，下次多半还是它。 */
     private int lastLane = LaneCycle.LEFT;
@@ -120,9 +128,13 @@ public class SideViewPopupService extends Service {
             return;
         }
         svc.dismissal.dismiss(lane == LaneCycle.LEFT ? 1 : 2);
-        svc.closeNow();
-        if (svc.hud != null) svc.hud.detach();
-        svc.evaluate();
+        // Corner controls invoke this during touch dispatch; defer immediate window removal to its end.
+        svc.handler.post(() -> {
+            if (svc.destroyed || !svc.listening) return;
+            svc.closeNow();
+            if (svc.hud != null) svc.hud.detach();
+            svc.evaluate();
+        });
     }
 
     /** Re-evaluate which window hosts the side view when the mirror starts or stops. */
@@ -147,7 +159,7 @@ public class SideViewPopupService extends Service {
     public static void applyConfig() {
         SideViewPopupService svc = instance;
         if (svc != null) {
-            svc.popupUnavailable = false;
+            svc.recovery.reset();
             if (svc.popup != null) {
                 svc.popup.applyConfig();
             }
@@ -224,7 +236,7 @@ public class SideViewPopupService extends Service {
     // ================================================================= 信号
 
     private void startListening() {
-        if (listening) {
+        if (listening || destroyed) {
             return;
         }
         listening = true;
@@ -239,6 +251,8 @@ public class SideViewPopupService extends Service {
             return;
         }
         listening = false;
+        handler.removeCallbacks(recoveryExpired);
+        recovery.reset();
         Telemetry.get().removeListener(readingsListener);
         Telemetry.get().release(TELEMETRY_USER);
         lastReady = false;
@@ -283,6 +297,11 @@ public class SideViewPopupService extends Service {
         boolean suppressed = dismissal.suppress(in.turnSignal, in.hazard);
 
         boolean blocked = ScreenState.dark() || !Telemetry.get().carLinkConnected();
+        recovery.observe(SystemClock.uptimeMillis(), SideViewDecision.shouldStayReady(in),
+                !suppressed && SideViewDecision.decide(in) != SideViewDecision.NONE,
+                blocked || SideViewDecision.factoryViewActive(in));
+        handler.removeCallbacks(recoveryExpired);
+        if (recovery.wakeAt() > 0) handler.postAtTime(recoveryExpired, recovery.wakeAt());
         if (blocked) {
             lastReady = false;
             RearViewMirrorService.clearSideView();
@@ -323,7 +342,7 @@ public class SideViewPopupService extends Service {
             return;
         }
         int want = suppressed ? SideViewDecision.NONE : SideViewDecision.decide(in);
-        lastReady = !useMirror && !popupUnavailable && appConfig.isSidePopupInstant()
+        lastReady = !useMirror && !recovery.refused() && appConfig.isSidePopupInstant()
                 && SideViewDecision.shouldStayReady(in);
 
         if (want != SideViewDecision.NONE) {
@@ -335,7 +354,7 @@ public class SideViewPopupService extends Service {
                 if (want != mirrorLane) {
                     RearViewMirrorService.showSideView(want);
                 }
-            } else if (!popupUnavailable
+            } else if (!recovery.refused()
                     && (popup == null || !popup.isShowing() || popup.lane() != want)) {
                 AppLog.i(TAG, "转向灯：弹出「" + LaneCycle.labelOf(want) + "」路");
                 showPopup(want);
@@ -357,7 +376,7 @@ public class SideViewPopupService extends Service {
             return;
         }
 
-        if (useMirror || popupUnavailable) {
+        if (useMirror || recovery.refused()) {
             // An idle mirror already supplies the feed. Do not attach a hidden second window.
             detachPopup();
             return;
@@ -418,62 +437,135 @@ public class SideViewPopupService extends Service {
 
     private void attachPopup(int lane, boolean show) {
         if (popup != null && popup.isAttached()) {
-            if (show) {
-                popup.show(lane);
-            } else {
-                popup.attachHidden(lane);
-            }
+            if (show) popup.show(lane); else popup.attachHidden(lane);
             return;
         }
-        popup = new SideViewPopupView(this, appConfig);
-        popup.setWindowVisibilityListener(this::syncMirrorVisibility);
-        popup.getTextureView().setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
-            @Override
-            public void onSurfaceTextureAvailable(SurfaceTexture st, int w, int h) {
-                bindCamera(st);
+        SideViewPopupView view = new SideViewPopupView(this, appConfig);
+        popup = view;
+        retryCount = 0;
+        restoreBufferOnFrame = false;
+        view.setWindowVisibilityListener(this::syncMirrorVisibility);
+        view.getTextureView().setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+            @Override public void onSurfaceTextureAvailable(SurfaceTexture st, int w, int h) {
+                if (popup == view) bindCamera(st);
             }
-
-            @Override
-            public void onSurfaceTextureSizeChanged(SurfaceTexture st, int w, int h) {
-                restoreBufferSize(st);
+            @Override public void onSurfaceTextureSizeChanged(SurfaceTexture st, int w, int h) {
+                if (popup == view) restoreBufferSize(st);
             }
-
-            @Override
-            public boolean onSurfaceTextureDestroyed(SurfaceTexture st) {
-                MultiCameraManager owner = boundManager != null ? boundManager
-                        : CameraManagerHolder.getInstance().getCameraManager();
-                boolean kept = MultiCameraManager.keepAuxiliaryCanvas(owner,
-                        com.kooo.evcam.camera.ChannelRules.Kind.SIDE_POPUP, st);
-                if (popup != null && popup.getTextureView().getSurfaceTexture() == st) popup.clearFrames();
-                if (boundTexture == st) unbindCamera();
-                return !kept;
+            @Override public boolean onSurfaceTextureDestroyed(SurfaceTexture st) {
+                view.clearFrames();
+                return !handCanvasToPipeline(st);
             }
-
-            @Override
-            public void onSurfaceTextureUpdated(SurfaceTexture st) {
+            @Override public void onSurfaceTextureUpdated(SurfaceTexture st) {
+                if (popup != view) return;
+                if (restoreBufferOnFrame) { restoreBufferOnFrame = false; restoreBufferSize(st); }
                 onFrame();
             }
         });
-        if (show) {
-            popup.show(lane);
-        } else {
-            popup.attachHidden(lane);
+        if (show) view.show(lane); else view.attachHidden(lane);
+        if (!view.isAttached()) {
+            // Do not retry addView on every signal update, including permission/window-manager failures.
+            recovery.refuse();
+            lastReady = false;
+            popup = null;
+            BlackBox.noteImportant("Side popup window rejected; wait for the next readiness episode");
+            showUnavailable();
+            return;
         }
+        takeBackKeptCanvas();
+        startWatchdog();
+    }
+
+    /** Adapted from dts88 PR #41. Reopening can reuse an output already carried by the session. */
+    private void takeBackKeptCanvas() {
+        SideViewPopupView view = popup;
+        MultiCameraManager manager = currentPipeline();
+        if (view == null || !view.isAttached() || manager == null || manager.isReleased()) return;
+        SurfaceTexture texture = manager.takeKeptSidePopup();
+        if (texture == null) return;
+        try { view.getTextureView().setSurfaceTexture(texture); }
+        catch (RuntimeException e) {
+            AppLog.w(TAG, "Cannot restore retained side texture: " + e);
+            if (!MultiCameraManager.keepAuxiliaryCanvas(manager,
+                    com.kooo.evcam.camera.ChannelRules.Kind.SIDE_POPUP, texture)) texture.release();
+            return;
+        }
+        restoreBufferOnFrame = true;
+        view.clearFrames(); // Reclamation never treats an old frame as a new live picture.
+        bindCamera(texture); // setSurfaceTexture does not emit onSurfaceTextureAvailable.
+        BlackBox.note("Side popup reclaimed its retained texture");
+    }
+
+    private boolean handCanvasToPipeline(SurfaceTexture texture) {
+        MultiCameraManager owner = boundManager != null ? boundManager : currentPipeline();
+        if (boundTexture == texture) { restoreBufferOnFrame = false; unbindCamera(); }
+        boolean kept = MultiCameraManager.keepAuxiliaryCanvas(owner,
+                com.kooo.evcam.camera.ChannelRules.Kind.SIDE_POPUP, texture);
+        if (!kept) com.kooo.evcam.camera.ChannelScheduler.wakeAll();
+        return kept;
     }
 
     private void detachPopup() {
         cancelDelayedClose();
         cancelReadyExpiry();
         cancelRetry();
-        if (popup != null && popup.isShowing()) {
-            noteIfNoFrame();
-        }
+        cancelWatchdog();
+        restoreBufferOnFrame = false;
+        SideViewPopupView view = popup;
+        if (view != null && view.isShowing()) noteIfNoFrame();
+        // A reclaimed texture may be detached before the first layout and receive no destruction callback.
+        SurfaceTexture orphan = view != null && !view.getTextureView().isAttachedToWindow()
+                ? view.getTextureView().getSurfaceTexture() : null;
+        MultiCameraManager owner = boundManager != null ? boundManager : currentPipeline();
+        popup = null;
+        // Let the synchronous destruction callback capture the exact bound owner before clearing it.
+        if (view != null) view.detachImmediately();
         unbindCamera();
-        if (popup != null) {
-            popup.detach();
-            popup = null;
-        }
+        if (orphan != null && !orphan.isReleased()
+                && !MultiCameraManager.keepAuxiliaryCanvas(owner,
+                    com.kooo.evcam.camera.ChannelRules.Kind.SIDE_POPUP, orphan)) orphan.release();
         syncMirrorVisibility();
+    }
+
+    /** Protected seams permit native lifecycle tests without opening a real camera. */
+    protected MultiCameraManager currentPipeline() {
+        return CameraManagerHolder.getInstance().getCameraManager();
+    }
+
+    protected boolean cameraBlocked() {
+        if (ScreenState.dark() || !Telemetry.get().carLinkConnected()) return true;
+        Readings r = Telemetry.get().readings();
+        SideViewDecision.Input in = new SideViewDecision.Input();
+        in.gear = r.text(Signal.GEAR);
+        in.stock360Shown = r.bool(Signal.STOCK_360);
+        in.stockPopupShown = r.bool(Signal.STOCK_POPUP);
+        in.parkAssistOn = r.bool(Signal.PARK_ASSIST);
+        return SideViewDecision.factoryViewActive(in);
+    }
+
+    private void startWatchdog() {
+        if (watchdog != null) return;
+        watchdog = new Runnable() {
+            @Override public void run() {
+                if (watchdog != this || destroyed || !listening) return;
+                if (cameraBlocked()) evaluate(); // Preserve factory priority and disconnect guards.
+                if (watchdog != this) return;
+                SideViewPopupView view = popup;
+                if (view != null && view.isAttached() && !recovery.refused() && !cameraBlocked()
+                        && view.getTextureView().isAvailable()) bindCamera(view.getTextureView().getSurfaceTexture());
+                if (watchdog == this) handler.postDelayed(this, WATCHDOG_INTERVAL_MS);
+            }
+        };
+        handler.postDelayed(watchdog, WATCHDOG_INTERVAL_MS);
+    }
+
+    private void cancelWatchdog() {
+        if (watchdog != null) { handler.removeCallbacks(watchdog); watchdog = null; }
+    }
+
+    private void showUnavailable() {
+        android.widget.Toast.makeText(com.kooo.evcam.settings.Languages.localized(this),
+                com.kooo.evcam.R.string.msg_side_popup_unavailable, android.widget.Toast.LENGTH_LONG).show();
     }
 
     private void cancelReadyExpiry() {
@@ -519,12 +611,12 @@ public class SideViewPopupService extends Service {
     // ================================================================= 相机
 
     private void bindCamera(SurfaceTexture surfaceTexture) {
-        if (popup == null || !popup.isAttached() || surfaceTexture == null || surfaceTexture.isReleased()
-                || ScreenState.dark() || popupUnavailable
+        if (destroyed || !listening || popup == null || !popup.isAttached() || surfaceTexture == null || surfaceTexture.isReleased()
+                || cameraBlocked() || recovery.refused()
                 || (RearViewMirrorService.isRunning() && appConfig.isSidePopupReplaceMirror())) {
             return;
         }
-        MultiCameraManager manager = CameraManagerHolder.getInstance().getCameraManager();
+        MultiCameraManager manager = currentPipeline();
         if (manager == null) {
             manager = CameraManagerHolder.getInstance().getOrInit(this);
         }
@@ -534,33 +626,38 @@ public class SideViewPopupService extends Service {
             return;
         }
         Size previewSize = camera.getPreviewSize();
-        if (previewSize != null) {
-            popup.setSourceSize(previewSize);
+        boolean changed = boundCamera != camera || boundManager != manager || boundTexture != surfaceTexture;
+        if (changed) {
+            withdrawOutput();
+            popup.clearSourceGeometry();
+            boundCamera = camera;
+            boundManager = manager;
+            boundTexture = surfaceTexture;
         }
-        boundCamera = camera;
-        boundManager = manager;
-        boundTexture = surfaceTexture;
-        restoreBufferSize(surfaceTexture);
+        if (previewSize != null && (!previewSize.equals(boundPreviewSize) || !popup.hasGeometry())) {
+            popup.setSourceSize(previewSize);
+            boundPreviewSize = previewSize;
+        }
+        if (changed) restoreBufferSize(surfaceTexture);
         boolean wasOpen = camera.isCameraOpened();
         boolean declared = camera.declareSidePopup(surfaceTexture, why -> {
             if (why != SingleCamera.Drop.CONFIG_FAILED || destroyed
                     || boundCamera != camera || boundTexture != surfaceTexture) {
                 return;
             }
-            popupUnavailable = true;
+            recovery.refuse();
             lastReady = false;
             BlackBox.note("侧视输出被相机拒绝：关闭侧视窗，保留后视镜和录像");
             detachPopup();
-            android.widget.Toast.makeText(com.kooo.evcam.settings.Languages.localized(this),
-                    com.kooo.evcam.R.string.msg_side_popup_unavailable,
-                    android.widget.Toast.LENGTH_LONG).show();
+            showUnavailable();
         });
         retryCount = 0;
+        boolean claimed = !CameraNeeds.current().isHeld(CameraNeeds.Holder.SIDE_POPUP);
         CameraNeeds.current().claim(CameraNeeds.Holder.SIDE_POPUP);
         if (declared) {
             manager.channelScheduler().wake();
         }
-        BlackBox.note("侧视弹窗接相机：「" + LaneCycle.labelOf(popup.lane()) + "」路，"
+        if (changed || declared || claimed) BlackBox.note("侧视弹窗接相机：「" + LaneCycle.labelOf(popup.lane()) + "」路，"
                 + (popup.isShowing() ? "显示中" : "备着") + "，相机" + (wasOpen ? "已开" : "未开，现在开")
                 + "，预览尺寸 " + previewSize + "，几何" + (popup.hasGeometry() ? "已知" : "未知（等第一帧补）"));
     }
@@ -579,6 +676,10 @@ public class SideViewPopupService extends Service {
     private void unbindCamera() {
         cancelRetry();
         CameraNeeds.current().release(CameraNeeds.Holder.SIDE_POPUP);
+        withdrawOutput();
+    }
+
+    private void withdrawOutput() {
         if (boundCamera != null) {
             // Withdraw only the independent popup; the mirror owns a different declaration.
             if (boundCamera.withdrawSidePopup(boundTexture) && boundManager != null) {
@@ -587,12 +688,16 @@ public class SideViewPopupService extends Service {
             boundCamera = null;
             boundManager = null;
             boundTexture = null;
+            boundPreviewSize = null;
         }
     }
 
     private void scheduleRetry(SurfaceTexture surfaceTexture) {
         if (retryCount >= MAX_RETRY) {
-            AppLog.w(TAG, "相机始终不可用，侧视放弃绑定");
+            if (retryCount == MAX_RETRY) {
+                AppLog.w(TAG, "相机始终不可用，侧视快速重试结束；看门狗继续恢复");
+                retryCount++;
+            }
             return;
         }
         retryCount++;
