@@ -1066,7 +1066,7 @@
     <string name="msg_record_profile_restart">相机选择已更改。请退出并重新打开应用后再录像。</string>
     <string name="dev_camera_display_title">相机与显示屏工具</string>
     <string name="dev_camera_display_summary">批量保存相机画面、显示编号测试卡；导出至 ZeekrShortcutApp/Developer</string>
-    <string name="dev_camera_display_help">请先停止录像并关闭原厂相机。\n\n相机导出会暂时释放本应用的正常画面，为每个可用的 Camera2 ID 保存一张未经校正的图像，以及尺寸和错误报告；无法获取未公开的原厂视频流。\n\n显示屏识别先显示主屏大测试卡。确认可见后，每次单独测试一个副屏，持续最多 30 秒。请记录编号实际出现的位置，或选择未看到。导出的 PNG 是生成的测试卡，不是截图。不会更改相机映射或 HUD 设置。\n\n文件保存至所选存储的 ZeekrShortcutApp/Developer。</string>
+    <string name="dev_camera_display_help">请先停止录像并关闭原厂相机。\n\n相机导出会检查公开 ID、物理相机或可用性回调报告的 ID，以及数字候选 0–15（最多 48 个候选、3 分钟）。对可访问的候选保存一张未校正画面、支持尺寸和失败记录。无效、不可用及无权限的 ID 会记录在报告中；不会绕过权限或读取原厂私有缓冲区。期间暂时释放本应用的常规画面。\n\n屏幕识别先显示主屏测试卡，再逐个测试公开副屏；请记录测试卡出现的位置或未看到。保存的 PNG 是生成的测试卡，不是截图。相机映射和 HUD 设置保持不变。\n\n文件保存在所选存储的 ZeekrShortcutApp/Developer。</string>
     <string name="dev_camera_export">导出全部相机画面</string>
     <string name="dev_display_identify">识别显示屏并导出测试卡</string>
     <string name="dev_probe_stop">停止</string>
@@ -1220,4 +1220,18 @@
     <string name="drive_log_failed">日志已停止或无法开始：%1$s</string>
     <string name="drive_log_no_usb">未找到可写 U 盘；未保存到内置存储。</string>
     <string name="drive_log_stop">停止日志</string>
+    <string name="record_group_surround">环视</string>
+    <string name="record_group_roads">前方 + 后方</string>
+    <string name="record_group_cabin">座舱</string>
+    <string name="record_group_manual">手动映射</string>
+    <string name="record_source_choose">选择来源</string>
+    <string name="record_source_unassigned">未分配</string>
+    <string name="record_source_pick">选择来源：%1$s</string>
+    <string name="record_source_change">更改相机来源</string>
+    <string name="record_source_settings">相机设置</string>
+    <string name="record_source_duplicate">此相机已分配给另一已启用来源。请选择其他相机或关闭该来源。</string>
+    <string name="record_cabin_009_note">这台 009 已确认一条座舱画面，尚未识别到第二条座舱画面。</string>
+    <string name="record_preview_layout">预览布局</string>
+    <string name="record_preview_selected">选中的录制来源</string>
+    <string name="record_groups_help">可同时选择多个录制组。前方 + 后方使用独立道路相机，不是环视裁切。预览布局与录制独立；来源更改在重启应用后生效。</string>
 </resources>

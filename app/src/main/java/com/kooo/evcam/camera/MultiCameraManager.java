@@ -2251,39 +2251,20 @@ public class MultiCameraManager {
                            String leftId, TextureView leftView,
                            String rightId, TextureView rightView) {
 
-        // 清空之前的摄像头实例
+        Map<String, String> ids = new LinkedHashMap<>();
+        ids.put("front", frontId); ids.put("back", backId); ids.put("left", leftId); ids.put("right", rightId);
+        Map<String, TextureView> views = new HashMap<>();
+        views.put("front", frontView); views.put("back", backView); views.put("left", leftView); views.put("right", rightView);
+        initCameras(ids, views);
+    }
+
+    public void initCameras(Map<String, String> ids, Map<String, TextureView> views) {
         cameras.clear();
-
-        // 同一路相机只建一份：两个槽位指到同一个 id（手动映射填错）时，后面的槽位空着。
-        // 以前是两份都建、标成主 / 从实例，从实例什么都不做 —— 十处守卫只为这一种配置错误
         Set<String> used = new HashSet<>();
-        // 根据参数创建摄像头实例（支持 null TextureView 用于后台初始化）
-        if (frontId != null && used.add(frontId)) {
-            SingleCamera frontCamera = new SingleCamera(context, frontId, frontView);
-            frontCamera.setCameraPosition("front");
-            cameras.put("front", frontCamera);
-            AppLog.d(TAG, "初始化前摄像头: ID=" + frontId);
-        }
-
-        if (backId != null && used.add(backId)) {
-            SingleCamera backCamera= new SingleCamera(context, backId, backView);
-            backCamera.setCameraPosition("back");
-            cameras.put("back", backCamera);
-            AppLog.d(TAG, "初始化后摄像头: ID=" + backId);
-        }
-
-        if (leftId != null && used.add(leftId)) {
-            SingleCamera leftCamera= new SingleCamera(context, leftId, leftView);
-            leftCamera.setCameraPosition("left");
-            cameras.put("left", leftCamera);
-            AppLog.d(TAG, "初始化左摄像头: ID=" + leftId);
-        }
-
-        if (rightId != null && used.add(rightId)) {
-            SingleCamera rightCamera= new SingleCamera(context, rightId, rightView);
-            rightCamera.setCameraPosition("right");
-            cameras.put("right", rightCamera);
-            AppLog.d(TAG, "初始化右摄像头: ID=" + rightId);
+        for (Map.Entry<String, String> entry : ids.entrySet()) {
+            if (entry.getValue() == null || !used.add(entry.getValue())) continue;
+            SingleCamera camera = new SingleCamera(context, entry.getValue(), views.get(entry.getKey()));
+            camera.setCameraPosition(entry.getKey()); cameras.put(entry.getKey(), camera);
         }
         
         AppLog.d(TAG, "共初始化 " + cameras.size() + " 个摄像头");
@@ -5649,7 +5630,7 @@ public class MultiCameraManager {
      */
     public String getDebugStats() {
         StringBuilder sb = new StringBuilder();
-        String[] order = CameraNames.POSITIONS;
+        String[] order = CameraSlots.openOrder(cameras.keySet()).toArray(new String[0]);
         for (int i = 0; i < order.length; i++) {
             SingleCamera camera = cameras.get(order[i]);
             if (camera == null) continue;
@@ -5659,7 +5640,7 @@ public class MultiCameraManager {
                     ? previewSize.getWidth() + "×" + previewSize.getHeight()
                     : "-";
             float fps = camera.getCurrentFps();
-            sb.append(CameraNames.of(context, order[i]))
+            sb.append(CameraNames.ofSlot(context, order[i]))
                     .append("(").append(camera.getCameraId()).append(") ");
             sb.append(String.format(java.util.Locale.US, "%.1f fps  ", fps));
             sb.append(res);

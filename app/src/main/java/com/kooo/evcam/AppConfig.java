@@ -1223,6 +1223,16 @@ public class AppConfig {
         AppLog.d(TAG, "车型设置: " + carModel);
     }
 
+    /** Ordinary source choices remain active outside Developer mode; empty means unassigned. */
+    public String getSourceCameraId(String role) { return prefs.getString("source_id_" + role, null); }
+    public void setSourceCameraId(String role, String id) {
+        android.content.SharedPreferences.Editor e = prefs.edit();
+        if (id == null) e.remove("source_id_" + role); else e.putString("source_id_" + role, id);
+        e.apply();
+    }
+    public String getPreviewSourceMode() { return prefs.getString("preview_source_mode", "selected"); }
+    public void setPreviewSourceMode(String mode) { prefs.edit().putString("preview_source_mode", mode).apply(); }
+
     /** Explicit vehicle mapping, independent of cosmetic naming and Developer mode. Restart to apply. */
     public boolean is009CameraMappingEnabled() { return prefs.getBoolean("camera_mapping_009", false); }
     public void set009CameraMappingEnabled(boolean on) { prefs.edit().putBoolean("camera_mapping_009", on).apply(); }

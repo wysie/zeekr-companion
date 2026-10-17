@@ -69,6 +69,9 @@ public final class CameraNames {
      * 返回 null，由调用方决定叫什么 —— 那种情况下名字归用户。</p>
      */
     public static Integer roleResFor(Context context, String position) {
+        if ("roadfront".equals(position)) return R.string.slot_road_front;
+        if ("roadrear".equals(position)) return R.string.slot_road_rear;
+        if ("manual".equals(position)) return R.string.record_group_manual;
         try {
             String role = com.kooo.evcam.profile.ProfileSizes.roleForCameraKey(position);
             if (role != null
@@ -76,7 +79,8 @@ public final class CameraNames {
                             .current().camera(role) != null) {
                 com.kooo.evcam.AppConfig config = new com.kooo.evcam.AppConfig(context);
                 if (config.is009CameraMappingEnabled()) {
-                    String override = config.getCameraOverride(position);
+                    String override = config.getSourceCameraId(role);
+                    if (override == null) override = config.getCameraOverride(position);
                     if ("back".equals(position) && (override == null || "2".equals(override))) return R.string.slot_driver_camera;
                     if ("back".equals(position) || "left".equals(position)) {
                         if ("0".equals(override)) return R.string.slot_road_front;

@@ -74,8 +74,9 @@ public class ProfileEditorFragment extends Fragment {
     private static final String STATE_LANE = "lane";
 
     /** 这台车就这三路，顺序也固定。 */
-    private static final String[] ROLES = {CameraProfile.ROLE_COMPOSITE,
-            CameraProfile.ROLE_CABIN_1, CameraProfile.ROLE_CABIN_2};
+    private static final String[] ROLES = com.kooo.evcam.profile.RecordingSources.ALL_ROLES;
+    private static final String[] GROUPS = {CameraProfile.ROLE_COMPOSITE, CameraProfile.ROLE_ROAD_FRONT,
+            CameraProfile.ROLE_CABIN_1, CameraProfile.ROLE_MANUAL};
 
     /** 拍照质量不再是一个选项。 */
     private static final int PHOTO_QUALITY = 95;
@@ -127,6 +128,7 @@ public class ProfileEditorFragment extends Fragment {
      * 比一个错的值更难查。</p>
      */
     private void normaliseProfile() {
+        com.kooo.evcam.profile.RecordingSources.ensure(profile);
         for (String role : ROLES) {
             if (profile.camera(role) == null) {
                 CameraProfile camera = newCamera(role);
@@ -302,59 +304,143 @@ public class ProfileEditorFragment extends Fragment {
 
     // ------------------------------------------------------------------ 相机
 
+    private String[] groupRoles(String group) {
+        if (CameraProfile.ROLE_ROAD_FRONT.equals(group)) return new String[]{CameraProfile.ROLE_ROAD_FRONT, CameraProfile.ROLE_ROAD_REAR};
+        if (CameraProfile.ROLE_CABIN_1.equals(group)) {
+            boolean second = !new AppConfig(requireContext()).is009CameraMappingEnabled();
+            return second ? new String[]{CameraProfile.ROLE_CABIN_1, CameraProfile.ROLE_CABIN_2}
+                    : new String[]{CameraProfile.ROLE_CABIN_1};
+        }
+        if (CameraProfile.ROLE_MANUAL.equals(group) && new AppConfig(requireContext()).is009CameraMappingEnabled()
+                && profile.camera(CameraProfile.ROLE_CABIN_2).enabled) return profile.camera(CameraProfile.ROLE_MANUAL).enabled
+                        ? new String[]{CameraProfile.ROLE_CABIN_2, CameraProfile.ROLE_MANUAL} : new String[]{CameraProfile.ROLE_CABIN_2};
+        return new String[]{group};
+    }
+    private String groupName(String group) {
+        return getString(CameraProfile.ROLE_COMPOSITE.equals(group) ? R.string.record_group_surround
+                : CameraProfile.ROLE_ROAD_FRONT.equals(group) ? R.string.record_group_roads
+                : CameraProfile.ROLE_CABIN_1.equals(group) ? R.string.record_group_cabin : R.string.record_group_manual);
+    }
+    private String groupOf(String role) {
+        if (CameraProfile.ROLE_ROAD_REAR.equals(role)) return CameraProfile.ROLE_ROAD_FRONT;
+        if (CameraProfile.ROLE_CABIN_2.equals(role)) return new AppConfig(requireContext()).is009CameraMappingEnabled()
+                ? CameraProfile.ROLE_MANUAL : CameraProfile.ROLE_CABIN_1;
+        return role;
+    }
     private void renderCameras() {
         Context context = requireContext();
-        LayoutInflater inflater = LayoutInflater.from(context);
-        int on = 0;
-        for (CameraProfile camera : profile.cameras) {
-            if (camera.enabled) {
-                on++;
+        camerasTitle.setText(getString(R.string.editor_cameras_title, com.kooo.evcam.profile.ProfileChannels.of(profile).count));
+        cameraRow.removeAllViews(); cameraRow.setOrientation(LinearLayout.VERTICAL);
+        android.widget.Button preview = (android.widget.Button)LayoutInflater.from(context).inflate(R.layout.item_record_source_action, cameraRow, false);
+        preview.setText(R.string.record_preview_layout);
+        preview.setOnClickListener(v -> pickOne(getString(R.string.record_preview_layout),
+                new String[]{getString(R.string.record_preview_selected), getString(R.string.record_group_surround),
+                        getString(R.string.record_group_roads), getString(R.string.slot_road_front),
+                        getString(R.string.slot_road_rear), getString(R.string.record_group_cabin)},
+                new String[]{"selected", "surround", "roads", "roadfront", "roadrear", "cabin"},
+                value -> { new AppConfig(context).setPreviewSourceMode(value); toast(getString(R.string.msg_mapping_saved)); }));
+        cameraRow.addView(preview, new LinearLayout.LayoutParams(-1, -2));
+        LinearLayout row = null;
+        for (int i = 0; i < GROUPS.length; i++) {
+            String group = GROUPS[i];
+            if (i % 2 == 0) {
+                row = new com.kooo.evcam.ui.ResponsiveCardRow(context, null);
+                LinearLayout.LayoutParams rowParams = new LinearLayout.LayoutParams(-1, -2);
+                if (i > 0) rowParams.topMargin = dp(12); cameraRow.addView(row, rowParams);
             }
-        }
-        camerasTitle.setText(getString(R.string.editor_cameras_title, on));
-        cameraRow.removeAllViews();
-        CameraProfile selected = selectedCamera();
-        for (String role : ROLES) {
-            CameraProfile camera = profile.camera(role);
-            if (camera == null) {
-                continue;   // normaliseProfile 之后不会发生，保险起见
+            View card = LayoutInflater.from(context).inflate(R.layout.item_camera_card, row, false);
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(0, -2, 1);
+            if (i % 2 != 0) params.setMarginStart(dp(12)); row.addView(card, params);
+            card.setBackgroundResource(group.equals(groupOf(selectedRole)) ? R.drawable.bg_editor_card_on : R.drawable.bg_editor_card);
+            ((TextView) card.findViewById(R.id.camera_name)).setText(groupName(group));
+            boolean enabled = false; StringBuilder summary = new StringBuilder();
+            for (String role : groupRoles(group)) {
+                CameraProfile c = profile.camera(role); enabled |= c.enabled;
+                if (summary.length() > 0) summary.append("\n");
+                String id = cameraIdFor(role);
+                summary.append(roleName(role)).append(": ").append(id == null ? getString(R.string.record_source_choose) : getString(R.string.opt_camera_id, id));
             }
-            View card = inflater.inflate(R.layout.item_camera_card, cameraRow, false);
-            LinearLayout.LayoutParams params =
-                    new LinearLayout.LayoutParams(0, ViewGroup.LayoutParams.WRAP_CONTENT, 1f);
-            if (cameraRow.getChildCount() > 0) {
-                params.setMarginStart(dp(12));
-            }
-            card.setLayoutParams(params);
-            card.setBackgroundResource(camera == selected
-                    ? R.drawable.bg_editor_card_on : R.drawable.bg_editor_card);
-            ((TextView) card.findViewById(R.id.camera_name)).setText(roleName(camera.role));
-            ((TextView) card.findViewById(R.id.camera_summary)).setText(recordSummary(camera));
-            // 关着的那张把字压暗：三张卡永远都在，开没开得一眼看得出来。
-            // 压的只是字，不是整张卡 —— 开关本身得看着是能按的
-            float dim = camera.enabled ? 1f : 0.45f;
-            card.findViewById(R.id.camera_name).setAlpha(dim);
-            card.findViewById(R.id.camera_summary).setAlpha(dim);
-            // 「我选了均衡，但后座舱不是」—— 这件事必须看得见。比的是记下来的那一档：
-            // 以前比的是从各路参数倒推出来的档，倒推得出来就说明每一路都对得上，标记永远不出现
-            boolean tuned = !profile.quality.matches(camera.record);
-            card.findViewById(R.id.camera_tuned)
-                    .setVisibility(tuned ? View.VISIBLE : View.GONE);
+            ((TextView) card.findViewById(R.id.camera_summary)).setText(summary);
+            card.findViewById(R.id.camera_tuned).setVisibility(View.GONE);
             android.widget.CompoundButton toggle = card.findViewById(R.id.camera_enabled);
-            toggle.setContentDescription(roleName(camera.role));
-            toggle.setChecked(camera.enabled);
+            toggle.setContentDescription(groupName(group)); toggle.setChecked(enabled);
             toggle.setOnClickListener(v -> {
-                camera.enabled = toggle.isChecked();
-                // 开一路就是要改它：顺手选中，细调框直接就是它的
-                if (camera.enabled) {
-                    selectedRole = camera.role;
-                    selectedLane = 0;
+                boolean on = toggle.isChecked();
+                if (on) for (String role : groupRoles(group)) if (cameraIdFor(role) == null) {
+                    toggle.setChecked(false); selectedRole = role; selectSource(role, true); return;
                 }
-                commit();
+                if (on && sourceConflict(groupRoles(group))) { toggle.setChecked(false); toast(getString(R.string.record_source_duplicate)); return; }
+                for (String role : groupRoles(group)) profile.camera(role).enabled = on;
+                selectedRole = groupRoles(group)[0]; selectedLane = 0; commit();
             });
-            card.setOnClickListener(v -> selectCamera(camera.role));
-            cameraRow.addView(card);
+            card.setOnClickListener(v -> {
+                String role = groupRoles(group)[0]; selectCamera(role);
+                if (CameraProfile.ROLE_MANUAL.equals(group) && cameraIdFor(role) == null) selectSource(role, false);
+            });
         }
+    }
+    private boolean sourceConflict(String[] enabling) {
+        java.util.Set<String> seen = new java.util.HashSet<>();
+        java.util.Set<String> wanted = new java.util.HashSet<>(java.util.Arrays.asList(enabling));
+        wanted.addAll(com.kooo.evcam.profile.ProfileChannels.of(profile,
+                new AppConfig(requireContext()).getPreviewSourceMode()).keys.stream()
+                .map(com.kooo.evcam.profile.RecordingSources::role).collect(java.util.stream.Collectors.toList()));
+        for (CameraProfile c : profile.cameras) if (c.enabled || wanted.contains(c.role)) {
+            String id = cameraIdFor(c.role); if (id != null && !seen.add(id)) return true;
+        }
+        return false;
+    }
+    private void selectSource(String role, boolean enableGroup) {
+        java.util.List<String> ids = new java.util.ArrayList<>();
+        try {
+            android.hardware.camera2.CameraManager manager = (android.hardware.camera2.CameraManager) requireContext().getSystemService(Context.CAMERA_SERVICE);
+            java.util.Collections.addAll(ids, manager.getCameraIdList());
+            // Known configured sources can disappear from the advertised list while held.
+            java.util.Set<String> choices = new java.util.LinkedHashSet<>(ids);
+            choices.addAll(requireContext().getSharedPreferences("camera_discovery", Context.MODE_PRIVATE)
+                    .getStringSet("captured_ids", java.util.Collections.emptySet()));
+            if (new AppConfig(requireContext()).is009CameraMappingEnabled()) java.util.Collections.addAll(choices,"0","1","2","3");
+            for (CameraProfile c : profile.cameras) {
+                String configured = cameraIdFor(c.role); if (configured != null) choices.add(configured);
+            }
+            ids.clear(); ids.addAll(choices);
+        } catch (Exception e) { toast(getString(R.string.msg_camera_list_failed)); return; }
+        String[] labels = new String[ids.size() + 2]; labels[0] = getString(R.string.opt_camera_auto);
+        labels[1] = getString(R.string.record_source_unassigned);
+        for (int i = 0; i < ids.size(); i++) {
+            String id = ids.get(i); labels[i + 2] = getString(R.string.opt_camera_id, id);
+            if (new AppConfig(requireContext()).is009CameraMappingEnabled()) {
+                int name = "0".equals(id) ? R.string.slot_road_front : "1".equals(id) ? R.string.slot_road_rear
+                        : "2".equals(id) ? R.string.record_group_cabin : "3".equals(id) ? R.string.record_group_surround : 0;
+                if (name != 0) labels[i + 2] += " — " + getString(name);
+            }
+        }
+        CamDialogs.show(new MaterialAlertDialogBuilder(requireContext(), R.style.Theme_Cam_MaterialAlertDialog)
+                .setTitle(getString(R.string.record_source_pick, roleName(role)))
+                .setItems(labels, (dialog, index) -> {
+                    String picked = index == 0 ? null : index == 1 ? "" : ids.get(index - 2);
+                    String resolved = picked == null ? ProfileSizes.automaticCameraIdFor(requireContext(), role) : picked;
+                    if (resolved != null && !resolved.isEmpty()) for (CameraProfile c : profile.cameras) {
+                        if ((c.enabled || com.kooo.evcam.profile.ProfileChannels.of(profile,
+                                new AppConfig(requireContext()).getPreviewSourceMode()).keys.contains(
+                                        com.kooo.evcam.profile.RecordingSources.key(c.role)))
+                                && !c.role.equals(role) && resolved.equals(cameraIdFor(c.role))) {
+                            toast(getString(R.string.record_source_duplicate)); return;
+                        }
+                    }
+                    new AppConfig(requireContext()).setSourceCameraId(role, picked);
+                    if (cameraIdFor(role) == null) {
+                        profile.camera(role).enabled = false;
+                        if (CameraProfile.ROLE_ROAD_FRONT.equals(groupOf(role)))
+                            for (String member : groupRoles(groupOf(role))) profile.camera(member).enabled = false;
+                    }
+                    if (enableGroup && cameraIdFor(role) != null) {
+                        boolean complete = true;
+                        for (String member : groupRoles(groupOf(role))) complete &= cameraIdFor(member) != null;
+                        if (complete) for (String member : groupRoles(groupOf(role))) profile.camera(member).enabled = true;
+                    }
+                    commit(); toast(getString(R.string.msg_mapping_saved));
+                }).setNegativeButton(R.string.action_cancel, null));
     }
 
     /** 这一路录成什么样，一行写完。 */
@@ -418,6 +504,21 @@ public class ProfileEditorFragment extends Fragment {
         which.setLayoutParams(grow);
         header.addView(which);
         detailBox.addView(header);
+        String group = groupOf(camera.role);
+        String[] members = groupRoles(group);
+        if (members.length > 1) {
+            String[] labels = new String[members.length];
+            for (int i = 0; i < members.length; i++) labels[i] = roleName(members[i]);
+            knob(context, R.string.record_source_settings, labels, members, camera.role, value -> selectCamera(value));
+        }
+        android.widget.Button source = (android.widget.Button)LayoutInflater.from(context).inflate(R.layout.item_record_source_action, detailBox, false);
+        source.setText(R.string.record_source_change); source.setOnClickListener(v -> selectSource(camera.role, false));
+        detailBox.addView(source, new LinearLayout.LayoutParams(-1, -2));
+        if (CameraProfile.ROLE_CABIN_1.equals(group) && new AppConfig(context).is009CameraMappingEnabled()) {
+            TextView note = new TextView(context); note.setText(R.string.record_cabin_009_note);
+            note.setTextAppearance(R.style.TextAppearance_Cam_Body); detailBox.addView(note);
+        }
+
 
         knob(context, R.string.editor_knob_fps,
                 new String[]{getString(R.string.editor_fps_unlimited), "30", "24", "20", "15", "10"},
@@ -921,7 +1022,8 @@ public class ProfileEditorFragment extends Fragment {
         } else {
             // 座舱：整幅一格，默认镜像，和新建配置时一致
             LaneLayout lane = LaneLayout.cell(-1, 0f, 0f, 1f, 1f);
-            lane.mirrored = CameraProfile.CABIN_MIRRORED_BY_DEFAULT;
+            lane.mirrored = (CameraProfile.ROLE_CABIN_1.equals(role) || CameraProfile.ROLE_CABIN_2.equals(role))
+                    && CameraProfile.CABIN_MIRRORED_BY_DEFAULT;
             camera.lanes.add(lane);
         }
         return camera;
@@ -1021,6 +1123,9 @@ public class ProfileEditorFragment extends Fragment {
     }
 
     String roleName(String role) {
+        if (CameraProfile.ROLE_ROAD_FRONT.equals(role)) return getString(R.string.slot_road_front);
+        if (CameraProfile.ROLE_ROAD_REAR.equals(role)) return getString(R.string.slot_road_rear);
+        if (CameraProfile.ROLE_MANUAL.equals(role)) return getString(R.string.record_group_manual);
         if (CameraProfile.ROLE_COMPOSITE.equals(role)) {
             return getString(R.string.slot_surround);
         }

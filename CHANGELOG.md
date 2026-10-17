@@ -9,6 +9,10 @@ commit message, not here.
 
 ## Unreleased
 
+- Add independent Surround, Front + Rear, Cabin and Manual mapping recording groups with separate preview selection and direct camera-source pickers.
+- Discover road/cabin/manual-only recordings and show dedicated road feeds as ordinary pictures in playback.
+- Expand Developer camera export to reported physical/availability IDs and bounded numeric candidates 0–15, recording results and retaining successfully captured IDs for manual mapping.
+
 - Add default-on Blind spot camera auto-fit toggle; disabling it retains requested corrected width/angles and shows missing camera coverage in black across popup, HUD and mirror replacement.
 - Rewrite About in wysie’s voice, bring dts88/Ferix/EVCam credits up front and attribute inherited community acknowledgements to the original project.
 

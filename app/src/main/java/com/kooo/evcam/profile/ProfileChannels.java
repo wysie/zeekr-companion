@@ -1,41 +1,37 @@
 package com.kooo.evcam.profile;
 
-/** Selected channel identities, independent of how many channels happen to be enabled. */
+/** Recording selection and visible previews are separate; one camera is opened per source. */
 public final class ProfileChannels {
-    public final boolean surround;
-    public final boolean cabinFront;
-    public final boolean cabinRear;
+    public final boolean surround, cabinFront, cabinRear;
     public final int count;
-
-    private ProfileChannels(boolean surround, boolean front, boolean rear) {
-        this.surround = surround;
-        this.cabinFront = front;
-        this.cabinRear = rear;
-        count = (surround ? 1 : 0) + (front ? 1 : 0) + (rear ? 1 : 0);
+    public final java.util.Set<String> keys, previewKeys;
+    private ProfileChannels(Profile profile, String mode, boolean overlayNeedsSurround) {
+        java.util.Set<String> recording = new java.util.LinkedHashSet<>();
+        for (CameraProfile c : profile.cameras) if (c.enabled) {
+            String key = RecordingSources.key(c.role); if (key != null) recording.add(key);
+        }
+        java.util.Set<String> preview = new java.util.LinkedHashSet<>();
+        if ("roads".equals(mode) || "roadfront".equals(mode)) preview.add("roadfront");
+        if ("roads".equals(mode) || "roadrear".equals(mode)) preview.add("roadrear");
+        if ("surround".equals(mode)) preview.add("front");
+        if ("cabin".equals(mode)) preview.add("back");
+        if (preview.isEmpty()) preview.addAll(recording);
+        java.util.Set<String> all = new java.util.LinkedHashSet<>(recording); all.addAll(preview);
+        if (overlayNeedsSurround) all.add("front");
+        keys = java.util.Collections.unmodifiableSet(all);
+        previewKeys = java.util.Collections.unmodifiableSet(preview); count = all.size();
+        surround = preview.contains("front"); cabinFront = preview.contains("back"); cabinRear = preview.contains("left");
     }
-
-    public static ProfileChannels of(Profile profile) {
-        return new ProfileChannels(enabled(profile, CameraProfile.ROLE_COMPOSITE),
-                enabled(profile, CameraProfile.ROLE_CABIN_1), enabled(profile, CameraProfile.ROLE_CABIN_2));
-    }
-
-    private static boolean enabled(Profile profile, String role) {
-        CameraProfile camera = profile.camera(role);
-        return camera != null && camera.enabled;
-    }
-
-    public boolean cabinLayout() { return cabinFront || cabinRear; }
-
-    /** The cabin layout contains three texture slots even when only one is selected. */
-    public int layoutSlots() { return cabinLayout() ? 3 : 1; }
-
-    public boolean needsTexture(String cameraKey) {
-        return "front".equals(cameraKey) ? surround
-                : "back".equals(cameraKey) ? cabinFront
-                : "left".equals(cameraKey) && cabinRear;
-    }
-
+    public static ProfileChannels of(Profile profile) { return new ProfileChannels(profile, "selected", false); }
+    public static ProfileChannels of(Profile profile, String previewMode) { return new ProfileChannels(profile, previewMode, false); }
+    public static ProfileChannels of(Profile profile, String previewMode, boolean overlayNeedsSurround) { return new ProfileChannels(profile, previewMode, overlayNeedsSurround); }
+    public boolean cabinLayout() { return previewKeys.size() > (surround ? 1 : 0); }
+    public int layoutSlots() { return cabinLayout() ? Math.max(3, previewKeys.size()) : 1; }
+    public boolean needsTexture(String key) { return previewKeys.contains(key); }
     public String key() {
-        return (surround ? "1" : "0") + (cabinFront ? "1" : "0") + (cabinRear ? "1" : "0");
+        String legacy = (keys.contains("front") ? "1" : "0") + (keys.contains("back") ? "1" : "0") + (keys.contains("left") ? "1" : "0");
+        if (keys.size() <= 3 && !keys.contains("roadfront") && !keys.contains("roadrear") && !keys.contains("manual")
+                && previewKeys.equals(keys)) return legacy;
+        return legacy + "/sources=" + String.join(",", keys) + "/preview=" + String.join(",", previewKeys);
     }
 }
