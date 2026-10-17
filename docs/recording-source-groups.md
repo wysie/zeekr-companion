@@ -32,9 +32,10 @@ active assignments are rejected. Cancel changes nothing. Assigning no source
 turns its recording off. Source/group/preview changes require exiting and reopening
 the app; ongoing recording uses its existing pipeline/settings snapshot.
 
-With the explicit verified 009 mapping selected, defaults are surround 3, front
-road 0, rear road 1 and cabin 2. Those exterior IDs are not inferred from a cosmetic
-vehicle name and are not automatically assumed on a 7X. Manual mapping has no
+With System → Vehicle model set to 009 (or a positively detected 009), defaults
+are surround 3, front road 0, rear road 1 and cabin 2. An old enabled 009 mapping
+is retained. The old cosmetic name never selects these exterior IDs, and they
+are not assumed on a 7X. See [selection and evidence](vehicle-model-profiles.md). Manual mapping has no
 default camera. Actual sizes remain limited to what each camera declares. New source quality starts
 at Auto resolution / 20 fps / medium bitrate. Select a higher declared resolution
 in each road camera’s detail section when testing quality; a 2560×1440 JPEG export

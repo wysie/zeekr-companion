@@ -1233,10 +1233,25 @@ public class AppConfig {
     public String getPreviewSourceMode() { return prefs.getString("preview_source_mode", "selected"); }
     public void setPreviewSourceMode(String mode) { prefs.edit().putString("preview_source_mode", mode).apply(); }
 
-    /** Explicit vehicle mapping, independent of cosmetic naming and Developer mode. Restart to apply. */
-    public boolean is009CameraMappingEnabled() { return prefs.getBoolean("camera_mapping_009", false); }
+    /** Automatic source defaults follow the functional model; explicit source IDs still win. */
+    public boolean is009CameraMappingEnabled() {
+        return getVehicleModel() == com.kooo.evcam.zeekr.VehicleIdentity.Model.ZEEKR_009;
+    }
+    /** Legacy migration/test entry point; the new model selection takes precedence. */
     public void set009CameraMappingEnabled(boolean on) { prefs.edit().putBoolean("camera_mapping_009", on).apply(); }
 
+    public String getVehicleProfileMode() {
+        return com.kooo.evcam.zeekr.VehicleProfile.selection(
+                prefs.getString(com.kooo.evcam.zeekr.VehicleProfile.KEY, null),
+                prefs.getBoolean("camera_mapping_009", false));
+    }
+    public void setVehicleProfileMode(String mode) { writeEnum(SettingsRegistry.VEHICLE_PROFILE, mode); }
+    public com.kooo.evcam.zeekr.VehicleIdentity.Model getVehicleModel() {
+        return com.kooo.evcam.zeekr.VehicleIdentity.resolve(getVehicleProfileMode(),
+                android.os.Build.MODEL, android.os.Build.DEVICE, android.os.Build.PRODUCT);
+    }
+
+    /** Historical cosmetic selection, retained for diagnostics only. */
     public String getVehicleNameMode() { return readEnum(SettingsRegistry.VEHICLE_NAME); }
 
     public void setVehicleNameMode(String mode) { writeEnum(SettingsRegistry.VEHICLE_NAME, mode); }

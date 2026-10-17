@@ -22,30 +22,36 @@ public class VehicleLabelsAndroidTest {
         return new ContextThemeWrapper(target.createConfigurationContext(config), R.style.Theme_Cam);
     }
 
-    @Test public void namesFollowSelectionInEachLanguageWithoutChangingCameraOrHudSettings() {
+    @Test public void modelNamesFollowSelectionWithoutChangingStreamProfileOrHudLayout() {
         Context english = context("en");
         AppConfig config = new AppConfig(english);
-        String original = config.getVehicleNameMode();
+        android.content.SharedPreferences prefs = english.getSharedPreferences("app_config", 0);
+        String original = prefs.getString(com.kooo.evcam.zeekr.VehicleProfile.KEY, null);
         String stream = config.getCarModel();
         boolean hud = config.is009HudLayout();
         try {
             for (String language : new String[]{"en", "zh", "ms"}) {
                 Context localized = context(language);
-                config.setVehicleNameMode("009");
+                config.setVehicleProfileMode("009");
                 assertTrue(VehicleLabels.name(localized).contains("009"));
                 assertTrue(VehicleLabels.profile(localized, false).contains("009"));
                 assertTrue(VehicleLabels.profile(localized, true).contains("009"));
                 assertFalse(VehicleLabels.profile(localized, false).contains("7X"));
-                config.setVehicleNameMode("7x");
+                config.setVehicleProfileMode("7x");
                 assertTrue(VehicleLabels.profile(localized, false).contains("7X"));
                 assertEquals(stream, config.getCarModel());
                 assertEquals(hud, config.is009HudLayout());
             }
-            config.setVehicleNameMode("invalid");
-            assertEquals("7x", config.getVehicleNameMode()); // Invalid writes preserve the valid setting.
-            config.setVehicleNameMode("auto");
-            assertEquals("auto", config.getVehicleNameMode());
+            config.setVehicleProfileMode("invalid");
+            assertEquals("7x", config.getVehicleProfileMode()); // Invalid writes preserve the valid setting.
+            config.setVehicleProfileMode("auto");
+            assertEquals("auto", config.getVehicleProfileMode());
             assertEquals("Zeekr", VehicleLabels.name(english)); // Disposable emulator reports no Zeekr model.
-        } finally { config.setVehicleNameMode(original); }
+        } finally {
+            android.content.SharedPreferences.Editor e = prefs.edit();
+            if (original == null) e.remove(com.kooo.evcam.zeekr.VehicleProfile.KEY);
+            else e.putString(com.kooo.evcam.zeekr.VehicleProfile.KEY, original);
+            e.commit();
+        }
     }
 }

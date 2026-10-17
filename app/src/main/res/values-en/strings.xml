@@ -1250,4 +1250,12 @@
     <string name="record_preview_layout">Preview layout</string>
     <string name="record_preview_selected">Selected recording sources</string>
     <string name="record_groups_help">Choose multiple recording groups. Front + Rear uses separate road cameras, not surround crops. Preview layout is independent of recording. Source changes take effect after restarting the app.</string>
+    <string name="vehicle_profile_title">Vehicle model</string>
+    <string name="vehicle_profile_defaults_title">Model defaults and confirmed feeds</string>
+    <string name="vehicle_profile_summary">%1$s · Exit and reopen after changing</string>
+    <string name="vehicle_profile_unknown">Auto · Not identified. Choose your model.</string>
+    <string name="vehicle_profile_defaults_009">009 owner export: Surround = camera 3, Front road = 0, Rear road = 1, Cabin = 2. No second cabin feed confirmed. Manual mappings override these defaults. HUD uses its own verified display match and saved layout. The optional 009 image fit remains a separate 360 setting; distance accuracy and simultaneous recording still need vehicle checks.</string>
+    <string name="vehicle_profile_defaults_7x">Upstream 7X evidence: surround composite plus front and rear cabin feeds. Camera sources are discovered, with manual mappings taking priority. Separate front/rear road feeds are unconfirmed and need manual identification. HUD keeps its own display matching/layout. DIY 360 uses Manual projection; the 009 image fit is not applied. 7X 360 alignment still needs vehicle testing.</string>
+    <string name="vehicle_profile_defaults_unknown">Auto only accepts an explicit 009 or 7X model name from Android. Generic names such as Pixel 3a do not identify the car. Existing source overrides and recording choices are kept. HUD checks actual displays independently. DIY 360 remains experimental; no model-specific calibration is inferred.</string>
+    <string name="vehicle_profile_stop_recording">Stop recording before changing the vehicle model.</string>
 </resources>

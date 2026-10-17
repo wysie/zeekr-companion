@@ -9,6 +9,7 @@ The remotes are `origin` (wysie's fork), `upstream` (dts88's repository), and
 | `upstream-main` | Unmodified dts88 code; tracks `upstream/main` and updates by fast-forward only |
 | `ferix-main` | Unmodified CAMCORDER code; tracks `ferix/main` and updates by fast-forward only |
 | `contrib/01-*` through `contrib/11-*` | Independent upstream contributions; each starts directly from dts88 main, with no fork versions or updater configuration |
+| `feature/vehicle-model-profiles` | Functional Auto/009/7X model selection, conservative migration/defaults and visible evidence; preserve overrides and actual HUD matching |
 | `feature/recording-source-groups` | Independent recording groups and preview, direct source choices, standalone playback and bounded extended camera-ID export; defaults preserve existing recording selections |
 | `feature/side-view-auto-fit` | Default-on corrected side-picture fitting switch; off retains requested framing with black source-lane clipping across screen, HUD and mirror replacement |
 | `fix/about-wysie-credits` | First-person wysie Edition introduction, prominent dts88/Ferix/EVCam credit and clearly attributed original community thanks |

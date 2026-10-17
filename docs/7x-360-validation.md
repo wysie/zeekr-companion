@@ -8,7 +8,10 @@ was fitted to one owner's 009 references and is not a 7X calibration.
 The camera-stream profile retains a historical 7X name but is also used on the
 009; that name cannot establish vehicle identity or calibration compatibility.
 Artwork selection changes no camera channels, lens parameters, body dimensions
-or projection profile. No 7X-specific camera calibration has been added.
+or projection profile. System → Vehicle model is the functional model selector;
+selecting/detecting 7X prevents the 009 image fit from being applied while retaining
+its saved values for a later switch back. No 7X-specific camera calibration has
+been added. See [model defaults and evidence](vehicle-model-profiles.md).
 
 ## Useful first contribution from a 7X owner
 

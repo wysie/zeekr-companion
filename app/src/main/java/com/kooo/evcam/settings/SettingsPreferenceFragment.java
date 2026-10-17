@@ -192,11 +192,6 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     // ------------------------------------------------------------------ 录制
 
     private void bindRecording() {
-        bindSwitch("pref_009_camera_mapping", appConfig.is009CameraMappingEnabled(), on -> {
-            appConfig.set009CameraMappingEnabled(on);
-            toast(getString(R.string.msg_009_mapping_restart));
-        });
-
         bindCarModel();
 
         // 相机与视频流的参数（每一路的三条流、每一格的摆法）都在下面这个
@@ -1262,12 +1257,6 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         });
 
         bindLanguage();
-        bindEnum("pref_vehicle_name", SettingsRegistry.VEHICLE_NAME, appConfig.getVehicleNameMode(),
-                appConfig::setVehicleNameMode, () -> {
-                    Preference pref = findPreference("pref_vehicle_name");
-                    if (pref != null) pref.setSummary(getString(R.string.vehicle_name_summary,
-                            com.kooo.evcam.ui.VehicleLabels.name(requireContext())));
-                });
         // 回到主界面时生效（MainActivity.showRecordingInterface 会按它重新摆一次）。
         // 在这里选过，首次启动就不必再问
         bindSegmented("pref_rail_side", SettingsRegistry.ACTION_RAIL_SIDE,
@@ -1339,9 +1328,11 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                 SettingSpec.entry("1", "Balanced", R.string.bird_eye_quality_balanced),
                 SettingSpec.entry("2", "Full", R.string.bird_eye_quality_full)), Integer.toString(config.quality()),
                 value -> config.set("quality", Integer.parseInt(value)));
-        bindEnum("pref_bird_profile", SettingSpec.of("bird_profile", "360 projection", "0",
-                SettingSpec.entry("0", "Manual", R.string.bird_eye_profile_manual),
-                SettingSpec.entry("1", "009 image fit", R.string.bird_eye_profile_009)),
+        SettingSpec.Entry manualProjection = SettingSpec.entry("0", "Manual", R.string.bird_eye_profile_manual);
+        bindEnum("pref_bird_profile", config.allows009ImageFit()
+                ? SettingSpec.of("bird_profile", "360 projection", "0", manualProjection,
+                        SettingSpec.entry("1", "009 image fit", R.string.bird_eye_profile_009))
+                : SettingSpec.of("bird_profile", "360 projection", "0", manualProjection),
                 config.imageFitted() ? "1" : "0", value -> config.setImageFitted("1".equals(value)));
         bindSlider("pref_bird_popup_size", 20, 75, window.size(), "%", value -> {
             window.setSize(value); com.kooo.evcam.zeekr.BirdEyePopupService.applyLayout();
@@ -1391,6 +1382,23 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
      * 开发者的「熄屏录制（阻止休眠）」不在这里，在开发者选项分区（{@link #bindAdvanced}）。
      */
     private void bindSystem() {
+        bindEnum("pref_vehicle_profile", SettingsRegistry.VEHICLE_PROFILE, appConfig.getVehicleProfileMode(),
+                value -> {
+                    appConfig.setVehicleProfileMode(value);
+                    toast(getString(R.string.msg_restart_required));
+                }, this::refreshVehicleProfile);
+        Preference vehicle = findPreference("pref_vehicle_profile");
+        if (vehicle != null) {
+            Preference.OnPreferenceChangeListener change = vehicle.getOnPreferenceChangeListener();
+            vehicle.setOnPreferenceChangeListener((pref, value) -> {
+                if (!appConfig.getVehicleProfileMode().equals(String.valueOf(value))
+                        && com.kooo.evcam.recording.RecordingCoordinator.get(requireContext()).isRecording()) {
+                    toast(getString(R.string.vehicle_profile_stop_recording));
+                    return false;
+                }
+                return change.onPreferenceChange(pref, value);
+            });
+        }
         bindSwitch("pref_developer_mode", DeveloperMode.isUnlocked(), value -> {
             DeveloperMode.setEnabled(requireContext(), value);
             boundUnlocked = value;
@@ -1776,6 +1784,19 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             setter.set(String.valueOf(newValue));
             return true;
         });
+    }
+
+    private void refreshVehicleProfile() {
+        Preference model = findPreference("pref_vehicle_profile");
+        Preference info = findPreference("pref_vehicle_profile_info");
+        com.kooo.evcam.zeekr.VehicleIdentity.Model resolved = appConfig.getVehicleModel();
+        if (model != null) model.setSummary(resolved == com.kooo.evcam.zeekr.VehicleIdentity.Model.UNKNOWN
+                ? getString(R.string.vehicle_profile_unknown)
+                : getString(R.string.vehicle_profile_summary, com.kooo.evcam.ui.VehicleLabels.name(requireContext())));
+        if (info != null) info.setSummary(resolved == com.kooo.evcam.zeekr.VehicleIdentity.Model.ZEEKR_009
+                ? R.string.vehicle_profile_defaults_009
+                : resolved == com.kooo.evcam.zeekr.VehicleIdentity.Model.ZEEKR_7X
+                ? R.string.vehicle_profile_defaults_7x : R.string.vehicle_profile_defaults_unknown);
     }
 
     private void bindEnum(String key, SettingSpec spec, String current, StringSetter setter) {

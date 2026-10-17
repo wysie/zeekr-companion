@@ -13,10 +13,6 @@
     <PreferenceScreen
         android:key="screen_recording"
         android:title="@string/set_section_recording">
-        <SwitchPreferenceCompat
-            android:key="pref_009_camera_mapping"
-            android:title="@string/set_009_camera_mapping_title"
-            android:summary="@string/set_009_camera_mapping_summary" />
         <PreferenceCategory
             android:key="group_recording_cameras"
             android:title="@string/menu_cameras">
@@ -575,10 +571,6 @@
             android:key="pref_language"
             android:title="@string/set_language_title"
             android:summary="%s" />
-        <ListPreference
-            android:key="pref_vehicle_name"
-            android:title="@string/vehicle_name_title"
-            app:useSimpleSummaryProvider="false" />
         <com.kooo.evcam.settings.SegmentedPreference
             android:key="pref_rail_side"
             android:title="@string/set_rail_side_title"
@@ -616,6 +608,14 @@
     <PreferenceScreen
         android:key="screen_system"
         android:title="@string/set_section_system">
+        <ListPreference
+            android:key="pref_vehicle_profile"
+            android:title="@string/vehicle_profile_title"
+            app:useSimpleSummaryProvider="false" />
+        <Preference
+            android:key="pref_vehicle_profile_info"
+            android:title="@string/vehicle_profile_defaults_title"
+            android:selectable="false" />
         <SwitchPreferenceCompat
             android:key="pref_auto_start"
             android:defaultValue="true"

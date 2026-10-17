@@ -4,7 +4,7 @@ import java.util.Locale;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-/** Display identity only: never selects camera channels, calibration or a HUD destination. */
+/** Conservative model-name parser; hardware configuration is handled by its callers. */
 public final class VehicleIdentity {
     public enum Model { UNKNOWN, ZEEKR_009, ZEEKR_7X }
     private static final Pattern NAMED_MODEL = Pattern.compile(

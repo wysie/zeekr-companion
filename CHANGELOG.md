@@ -9,6 +9,9 @@ commit message, not here.
 
 ## Unreleased
 
+- Add System → Vehicle model (Auto / 009 / 7X) with functional camera defaults, conservative detection, preserved manual overrides and migration of the old 009 mapping opt-in.
+- Show confirmed model feed information and keep HUD display matching independent; retain but suspend the 009-only 360 image fit on a selected/detected 7X.
+
 - Add independent Surround, Front + Rear, Cabin and Manual mapping recording groups with separate preview selection and direct camera-source pickers.
 - Discover road/cabin/manual-only recordings and show dedicated road feeds as ordinary pictures in playback.
 - Expand Developer camera export to reported physical/availability IDs and bounded numeric candidates 0–15, recording results and retaining successfully captured IDs for manual mapping.
