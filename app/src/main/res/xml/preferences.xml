@@ -287,6 +287,10 @@
                 android:key="pref_side_popup_straighten"
                 android:title="@string/set_side_popup_straighten_title"
                 android:summary="@string/set_side_popup_straighten_summary" />
+            <SwitchPreferenceCompat
+                android:key="pref_side_popup_auto_fit"
+                android:title="@string/set_side_popup_auto_fit_title"
+                android:summary="@string/set_side_popup_auto_fit_summary" />
             <SeekBarPreference
                 android:key="pref_side_popup_fov"
                 android:title="@string/set_side_popup_fov_title"

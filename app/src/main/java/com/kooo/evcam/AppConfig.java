@@ -107,6 +107,7 @@ public class AppConfig {
     public static final int SIDE_POPUP_DEFAULT_MIN_SPEED = 30;
     public static final int SIDE_POPUP_MAX_MIN_SPEED = 80;
     private static final String KEY_SIDE_POPUP_STRAIGHTEN = "side_popup_straighten";  // 侧视拉直鱼眼
+    private static final String KEY_SIDE_POPUP_AUTO_FIT = "side_popup_auto_fit";
     private static final String KEY_SIDE_POPUP_INSTANT = "side_popup_instant";  // D 档时备着相机，打灯即出画面
     private static final String KEY_SIDE_POPUP_CLOSE_DELAY_MS = "side_popup_close_delay_ms";  // 灯灭后再留多少毫秒
     private static final String KEY_SIDE_POPUP_SIZE = "side_popup_size";  // 高度，屏幕高度的百分比
@@ -1740,6 +1741,7 @@ public class AppConfig {
                 .remove(KEY_HUD_SIDE_FADE)
                 .remove(KEY_SIDE_POPUP_MIN_SPEED)
                 .remove(KEY_SIDE_POPUP_STRAIGHTEN)
+                .remove(KEY_SIDE_POPUP_AUTO_FIT)
                 .remove(KEY_SIDE_POPUP_FOV)
                 .remove(KEY_SIDE_POPUP_YAW)
                 .remove(KEY_SIDE_POPUP_PITCH)
@@ -1822,6 +1824,10 @@ public class AppConfig {
         prefs.edit().putInt(KEY_SIDE_POPUP_MIN_SPEED,
                 Math.max(0, Math.min(SIDE_POPUP_MAX_MIN_SPEED, kmh))).apply();
     }
+
+    /** Shared corrected side-image framing for popup, HUD and Super mirror replacement. */
+    public boolean isSidePopupAutoFit() { return prefs.getBoolean(KEY_SIDE_POPUP_AUTO_FIT, true); }
+    public void setSidePopupAutoFit(boolean on) { prefs.edit().putBoolean(KEY_SIDE_POPUP_AUTO_FIT, on).apply(); }
 
     /** 侧视拉直鱼眼，默认开；视野和朝向见 getSidePopupFov / Yaw / Pitch。 */
     public boolean isSidePopupStraighten() {

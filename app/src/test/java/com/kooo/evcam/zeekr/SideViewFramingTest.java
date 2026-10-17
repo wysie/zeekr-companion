@@ -200,6 +200,44 @@ public class SideViewFramingTest {
         assertEquals(16, SideViewFraming.meshDivisions(2000, 400));
     }
 
+    @Test public void disablingAutoFitPreservesWidthAtExtremeAimAndRetainsUnclampedRays() {
+        for (int lane : new int[]{LaneCycle.LEFT, LaneCycle.RIGHT}) {
+            for (float aspect : new float[]{.75f, 1f, 2.2f}) {
+                for (int roll : new int[]{-45, 0, 45}) {
+                    SideViewFraming framing = new SideViewFraming();
+                    for (int fov : new int[]{60, 90, 130}) {
+                        framing.configure(fov, 80, 15, lane, aspect, roll, false);
+                        assertEquals(fov, framing.effectiveFovDegrees(), .001);
+                        int outside = 0;
+                        float[] uv = new float[2];
+                        for (int y = 0; y <= 16; y++) for (int x = 0; x <= 16; x++) {
+                            framing.sourcePoint(x / 16f, y / 16f, uv);
+                            assertTrue(Float.isFinite(uv[0]) && Float.isFinite(uv[1]));
+                            if (uv[0] < 0 || uv[0] > 1 || uv[1] < 0 || uv[1] > 1) outside++;
+                        }
+                        assertTrue("Keep missing coverage outside, never clamp it onto image edges", outside > 0);
+                    }
+                }
+            }
+        }
+    }
+
+    @Test public void changingOnlyAutoFitRecalculatesFramingWithoutChangingTheViewCentre() {
+        SideViewFraming framing = new SideViewFraming();
+        float[] fitted = new float[2], original = new float[2];
+        framing.configure(130, 80, 15, LaneCycle.LEFT, 2.2f, 45);
+        assertTrue(framing.effectiveFovDegrees() < 23);
+        framing.sourcePoint(.5f, .5f, fitted);
+        assertTrue(framing.configure(130, 80, 15, LaneCycle.LEFT, 2.2f, 45, false));
+        assertEquals(130, framing.effectiveFovDegrees(), .001);
+        framing.sourcePoint(.5f, .5f, original);
+        assertArrayEquals(fitted, original, .00001f);
+        assertFalse(framing.configure(130, 80, 15, LaneCycle.LEFT, 2.2f, 45, false));
+        assertTrue(framing.configure(130, 80, 15, LaneCycle.LEFT, 2.2f, 45, true));
+        assertTrue(framing.effectiveFovDegrees() < 23);
+        assertValidGrid(framing, 64);
+    }
+
     private static void assertValidGrid(SideViewFraming frame, int n) {
         float[][] points = new float[(n + 1) * (n + 1)][2];
         for (int r = 0; r <= n; r++) {

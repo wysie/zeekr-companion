@@ -774,8 +774,14 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                 });
         bindSwitch("pref_side_popup_straighten", appConfig.isSidePopupStraighten(), value -> {
             appConfig.setSidePopupStraighten(value);
+            refreshSideAutoFit();
             com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
         });
+        bindSwitch("pref_side_popup_auto_fit", appConfig.isSidePopupAutoFit(), value -> {
+            appConfig.setSidePopupAutoFit(value);
+            com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+        });
+        refreshSideAutoFit();
         bindSlider("pref_side_popup_fov",
                 Math.round(com.kooo.evcam.zeekr.SideViewProjection.MIN_FOV_DEGREES),
                 Math.round(com.kooo.evcam.zeekr.SideViewProjection.MAX_FOV_DEGREES),
@@ -904,6 +910,11 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             toast(getString(R.string.msg_side_popup_reset));
         });
         refreshSideNavigation();
+    }
+
+    private void refreshSideAutoFit() {
+        Preference fit = findPreference("pref_side_popup_auto_fit");
+        if (fit != null) fit.setEnabled(appConfig.isSidePopupStraighten());
     }
 
     /** Child screens have no XML dependency on a master outside their own root. */

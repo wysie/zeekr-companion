@@ -2,8 +2,8 @@ package com.kooo.evcam.zeekr;
 
 /**
  * Fits a corrected side view inside its camera image without clamping individual samples.
- * Keeps the requested aim and aspect ratio; reduces FOV when the requested view crosses
- * an image edge. The saved settings are unchanged. No pixels are invented or stretched
+ * Keeps the requested aim and aspect ratio; with auto-fit on, reduces FOV when the
+ * requested view crosses an image edge. With it off, returns unclamped source points. The saved settings are unchanged. No pixels are invented or stretched
  * from an edge to cover missing camera coverage.
  */
 public final class SideViewFraming {
@@ -15,6 +15,7 @@ public final class SideViewFraming {
     private SideViewProjection.Rays rays;
     private float fov, back, up, aspect;
     private int lane, roll;
+    private boolean autoFit;
     private double rollCos, rollSin;
     private double fittedTangent;
 
@@ -25,13 +26,18 @@ public final class SideViewFraming {
 
     /** Fit the final rotated window directly, avoiding a second cover-zoom crop. */
     public boolean configure(float fov, float back, float up, int lane, float aspect, int roll) {
+        return configure(fov, back, up, lane, aspect, roll, true);
+    }
+
+    /** Without fitting, preserve the requested width; callers must clip sampling to its lane. */
+    public boolean configure(float fov, float back, float up, int lane, float aspect, int roll, boolean autoFit) {
         fov = clamp(fov, SideViewProjection.MIN_FOV_DEGREES, SideViewProjection.MAX_FOV_DEGREES);
         back = clamp(back, -SideViewProjection.MAX_YAW_DEGREES, SideViewProjection.MAX_YAW_DEGREES);
         up = clamp(up, -SideViewProjection.MAX_PITCH_DEGREES, SideViewProjection.MAX_PITCH_DEGREES);
         aspect = Float.isFinite(aspect) && aspect > 0f ? aspect : 1f;
         roll = SideViewRotation.clamp(roll);
         if (rays != null && this.fov == fov && this.back == back && this.up == up
-                && this.lane == lane && this.aspect == aspect && this.roll == roll) {
+                && this.lane == lane && this.aspect == aspect && this.roll == roll && this.autoFit == autoFit) {
             return false;
         }
         this.fov = fov;
@@ -40,11 +46,12 @@ public final class SideViewFraming {
         this.lane = lane;
         this.aspect = aspect;
         this.roll = roll;
+        this.autoFit = autoFit;
         rollCos = Math.cos(Math.toRadians(roll));
         rollSin = Math.sin(Math.toRadians(roll));
         rays = new SideViewProjection.Rays(back, up, lane);
         double requested = Math.tan(Math.toRadians(fov) / 2.0);
-        if (fits(requested)) {
+        if (!autoFit || fits(requested)) {
             fittedTangent = requested;
         } else {
             double low = 0.0;

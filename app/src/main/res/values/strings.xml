@@ -305,14 +305,16 @@
     <string name="msg_side_popup_on">自动盲区摄像头已开启：打左灯看左侧、打右灯看右侧</string>
     <string name="set_side_popup_straighten_title">拉直画面</string>
     <string name="set_side_popup_straighten_summary">校正鱼眼并调整侧视取景，适用于已有后视镜和独立侧视窗口；不改变录像。</string>
+    <string name="set_side_popup_auto_fit_title">自动适配以避免黑块</string>
+    <string name="set_side_popup_auto_fit_summary">默认开启。开启「拉直画面」时，必要时缩小视野以避免黑块。关闭后保留设定的视野和角度，相机未覆盖的区域显示为黑色。侧视弹窗、HUD 和超级后视镜侧视共用；不改变录像。</string>
     <string name="set_side_popup_fov_title">视野（°）</string>
-    <string name="set_side_popup_fov_summary">越小越放大。开启「拉直画面」时，靠近相机画面边缘会自动缩小视野；大角度取景可能明显减少可见范围</string>
+    <string name="set_side_popup_fov_summary">越大视野越宽，越小越放大。开启「拉直画面」和「自动适配」时，靠近相机画面边缘可能缩小实际视野。</string>
     <string name="set_side_popup_yaw_title">往后看（°）</string>
-    <string name="set_side_popup_yaw_summary">开启「拉直画面」时，大角度往后看会自动放大画面以避免黑块，可见的周围范围也会减少。正数朝车尾，负数朝车头。</string>
+    <string name="set_side_popup_yaw_summary">正数朝车尾，负数朝车头。开启「拉直画面」和「自动适配」时，大角度可能放大画面；关闭自动适配后，未覆盖的区域显示为黑色。</string>
     <string name="set_side_popup_pitch_title">往上看（°）</string>
     <string name="set_side_popup_pitch_summary">正数朝车外、远处的路转，负数朝车身和地面。方向是猜的：反了就往另一头拉</string>
-    <string name="set_side_popup_edge_note_title">大角度取景会放大画面</string>
-    <string name="set_side_popup_edge_note_summary">开启「拉直画面」时，靠近相机画面边缘会自动缩小视野，以避免黑块。例如：方形窗口内，往后看 80°、往上看 15°、视野设为 90°，实际视野约为 20.5°，可见的周围范围会减少。降低取景角度可获得更宽的视野。保存的视野设置不会改变。</string>
+    <string name="set_side_popup_edge_note_title">设定视野与相机覆盖范围</string>
+    <string name="set_side_popup_edge_note_summary">自动适配仅影响拉直后的画面。开启时，方形窗口内往后看 80°、往上看 15°，设定的 90° 视野可能缩小为约 20.5°。关闭时保留设定的视野，超出相机画面的区域显示为黑色。保存的视野和角度不会改变。</string>
     <string name="set_side_popup_close_delay_ms_title">灯灭后再留（毫秒）</string>
     <string name="set_side_popup_close_delay_ms_summary">1000 毫秒 = 1 秒。0 表示灯一灭就收。原厂画面出来时照样立刻收</string>
     <string name="set_side_popup_instant_title">即时弹出</string>
@@ -957,7 +959,7 @@
     <string name="msg_side_popup_reset">盲区摄像头设置已恢复默认</string>
     <string name="set_side_popup_rotation_left_title">左侧画面旋转（°）</string>
     <string name="set_side_popup_rotation_right_title">右侧画面旋转（°）</string>
-    <string name="set_side_popup_rotation_summary">调整画面倾斜；正数顺时针，负数逆时针。旋转时裁切边缘填满窗口；适用于两种窗口，不改变录像。</string>
+    <string name="set_side_popup_rotation_summary">调整画面倾斜；正数顺时针，负数逆时针。拉直后的画面遵循自动适配设置；未拉直时裁切边缘以填满窗口。不改变录像。</string>
     <string name="side_control_close">关闭本次侧视</string>
     <string name="side_control_expand">放大侧视窗口</string>
     <string name="side_control_restore">恢复窗口大小</string>

@@ -648,14 +648,17 @@ public class SideViewPopupView extends ViewGroup {
         int rotation = appConfig.getSidePopupRotation(lane);
         int inner = SideViewRotation.begin(canvas, straighten ? 0 : rotation, width, height, readMirrored());
         if (straighten) {
-            framing.configure(viewFov, yaw, pitch, lane, (float) width / height, rotation);
+            boolean autoFit = appConfig.isSidePopupAutoFit();
+            framing.configure(viewFov, yaw, pitch, lane, (float) width / height, rotation,
+                    autoFit);
             // 虚拟相机转过去（往后、往上）再拉直，见 SideViewProjection
             RearViewGeometry.ShaderRects r = RearViewGeometry.toShaderRects(
                     plan, lane, RearViewGeometry.Viewport.full());
             mesh.prepare(SideViewFraming.meshDivisions(width, height),
                     r.laneOffsetX * width, r.laneOffsetY * height,
                     r.laneScaleX * width, r.laneScaleY * height, turnedMap);
-            mesh.draw(canvas, 0f, 0f, width, height, paintTexture);
+            if (autoFit) mesh.draw(canvas, 0f, 0f, width, height, paintTexture);
+            else mesh.drawClippedToLane(canvas, 0f, 0f, width, height, paintTexture);
         } else {
             // 不拉直：只能在原图里裁一块挪一挪（见 SideViewAim），角度折算成那边的百分比
             int zoomPercent = Math.round(180f / viewFov * 100f);

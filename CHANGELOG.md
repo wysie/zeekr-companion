@@ -9,6 +9,7 @@ commit message, not here.
 
 ## Unreleased
 
+- Add default-on Blind spot camera auto-fit toggle; disabling it retains requested corrected width/angles and shows missing camera coverage in black across popup, HUD and mirror replacement.
 - Rewrite About in wysie’s voice, bring dts88/Ferix/EVCam credits up front and attribute inherited community acknowledgements to the original project.
 
 ## [2.11.45-alpha.1] - 2026-10-18
