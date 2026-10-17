@@ -160,14 +160,30 @@ public final class SignalScan {
      * @param remainingMs 还能跑多久（重启进程后接着上一次时传剩下的）
      * @param onAutoStop  到点自己停时调（主线程之外），用来把开关关掉
      */
-    public static void start(Context context, long remainingMs, Runnable onAutoStop) {
+    public static void start(Context context, long remainingMs, long session, Runnable onAutoStop) {
         synchronized (LOCK) {
             if (running != null) {
+                SignalScan scan = running;
+                scan.handler.post(() -> {
+                    if (scan.stopped) return;
+                    // Change private summary ownership on the same worker: no overlapping writers/watchers.
+                    if (scan.sessionStartedAt != session) {
+                        try {
+                            if (scan.out != null) scan.out.close();
+                            scan.out = null;
+                            SignalScanFile saved = SignalScanFile.open(new File(scan.app.getFilesDir(), FILE_NAME),session,MAX_LINES);
+                            scan.out = saved.writer; scan.lines = saved.changes; scan.sessionStartedAt = session;
+                            scan.write("# scan session changed; existing callback subscriptions retained");
+                        } catch (IOException e) { AppLog.w(TAG,"scan summary reopen failed: " + e); }
+                    }
+                    scan.handler.removeCallbacks(scan.autoStop);
+                    scan.handler.postDelayed(scan.autoStop, Math.max(1L, remainingMs));
+                });
                 return;
             }
             running = new SignalScan(context, onAutoStop);
-            running.sessionStartedAt = new com.kooo.evcam.AppConfig(context).signalScanSessionStartedAt();
-            running.begin(Math.max(1L, Math.min(MAX_RUN_MS, remainingMs)));
+            running.sessionStartedAt = session;
+            running.begin(Math.max(1L, remainingMs));
         }
     }
 
@@ -199,10 +215,16 @@ public final class SignalScan {
     private void connect() {
         try {
             File file = new File(app.getFilesDir(), FILE_NAME);
-            SignalScanFile saved = SignalScanFile.open(file, sessionStartedAt, MAX_LINES);
-            out = saved.writer; lines = saved.changes;
-            write("# signal scan " + (saved.resumed ? "resumed " : "started ") + stamp()
-                    + ", original session deadline retained; " + lines + " earlier changes");
+            try {
+                SignalScanFile saved = SignalScanFile.open(file, sessionStartedAt, MAX_LINES);
+                out = saved.writer; lines = saved.changes;
+                write("# signal scan " + (saved.resumed ? "resumed " : "started ") + stamp()
+                        + ", original session deadline retained; " + lines + " earlier changes");
+            } catch (IOException e) {
+                lines = MAX_LINES;
+                write("# private summary unavailable; USB capture remains independent: " + e);
+                AppLog.w(TAG,"private scan summary unavailable: " + e);
+            }
             Object car = EcarxSource.carFor(app);
             function = car == null ? null : EcarxSource.call(car, "getICarFunction");
             if (function == null) {
@@ -657,22 +679,26 @@ public final class SignalScan {
 
     private void postEvent(Runnable event) {
         Handler h = handler;
-        if (h == null || stopped || lines >= MAX_LINES || !pendingEvents.tryAcquire()) return;
-        if (!h.post(() -> { try { event.run(); } finally { pendingEvents.release(); } }))
+        if (h == null || stopped || (lines >= MAX_LINES && !DriveLogService.capturesSignals())) return;
+        if (!pendingEvents.tryAcquire()) { DriveLogService.sourceEventDropped(); return; }
+        if (!h.post(() -> { try { event.run(); } finally { pendingEvents.release(); } })) {
             pendingEvents.release();
+            DriveLogService.sourceEventDropped();
+        }
     }
 
     /** 一行：时刻 车速 号 = 值 名字（报告按空格切，号里不能有空格）。 */
     private void logLine(long wall, String key, String value, String name) {
-        if (stopped || lines >= MAX_LINES) {
-            return;
-        }
+        if (stopped || (lines >= MAX_LINES && !DriveLogService.capturesSignals())) return;
         Float speed = Telemetry.get().latest().speedKmh;
-        write(time(wall) + " v=" + (speed == null ? "?" : String.format(Locale.US, "%.0f", speed))
-                + " " + key + " = " + value + (name != null ? " " + name : ""));
+        String entry = time(wall) + " v=" + (speed == null ? "?" : String.format(Locale.US, "%.0f", speed))
+                + " " + key + " = " + value + (name != null ? " " + name : "");
+        // The bounded private Diagnostics summary may fill; the USB drive session continues independently.
+        if (lines >= MAX_LINES) { DriveLogService.signalLine(entry); return; }
+        write(entry);
         lines++;
         if (lines == MAX_LINES) {
-            write("# reached " + MAX_LINES + " lines, no more changes recorded");
+            write("# reached " + MAX_LINES + " private summary lines; USB drive logging, if active, continues");
         }
     }
 
@@ -682,7 +708,7 @@ public final class SignalScan {
                 running = null;
             }
         }
-        end("ran " + (MAX_RUN_MS / 60000) + " min");
+        end("current scan deadline reached");
         if (onAutoStop != null) {
             onAutoStop.run();
         }
@@ -737,6 +763,7 @@ public final class SignalScan {
     }
 
     private void write(String line) {
+        DriveLogService.signalLine(line);
         Writer w = out;
         if (w == null) {
             return;
@@ -746,11 +773,6 @@ public final class SignalScan {
             w.write('\n');
         } catch (IOException e) {
             AppLog.w(TAG, "write failed: " + e.getMessage());
-        }
-        Handler h = handler;
-        if (h != null && !stopped) {
-            h.removeCallbacks(flush);
-            h.postDelayed(flush, FLUSH_MS);
         }
     }
 
@@ -762,6 +784,8 @@ public final class SignalScan {
         } catch (IOException ignored) {
             // 下次再写
         }
+        Handler h = handler;
+        if (h != null && !stopped) { h.removeCallbacks(flush); h.postDelayed(flush, FLUSH_MS); }
     }
 
     /** 缩写按整词比（WINDOW 里的 DOW 不算），长的按片段找。 */

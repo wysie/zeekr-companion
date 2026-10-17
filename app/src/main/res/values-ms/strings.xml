@@ -1200,4 +1200,15 @@
     <string name="bird_eye_car_model">Ilustrasi kenderaan</string>
     <string name="bird_eye_car_auto">Auto (rangka jika tidak diketahui)</string>
     <string name="bird_eye_car_outline">Rangka umum</string>
+    <string name="drive_log_title">Log perjalanan ke USB</string>
+    <string name="drive_log_summary">Hidupkan sebelum perjalanan, kemudian matikan dan tunggu status Disimpan sebelum mencabut USB. Menyimpan isyarat kenderaan mentah, log aplikasi/kitar hayat dan Diagnostik mula/akhir ke ZeekrShortcutApp/Logs/Drive_…. USB sahaja; tiada video atau tangkapan skrin. Berhenti selepas 8 jam, 256 MiB, ruang rendah atau kegagalan USB. Tidak bermula semasa but. Hanya isyarat yang didedahkan oleh kereta boleh direkod.</string>
+    <string name="drive_log_status_title">Status log perjalanan</string>
+    <string name="drive_log_idle">Dimatikan — tiada sesi dimulakan</string>
+    <string name="drive_log_starting">Memeriksa USB…</string>
+    <string name="drive_log_recording">Menyimpan log ke USB</string>
+    <string name="drive_log_stopping">Menyiapkan log dan menyimpan Diagnostik…</string>
+    <string name="drive_log_saved">Disimpan — cabut selepas tugas rakaman/eksport lain berhenti</string>
+    <string name="drive_log_failed">Log berhenti atau tidak dapat dimulakan: %1$s</string>
+    <string name="drive_log_no_usb">Tiada USB boleh tulis. Tiada simpanan ke storan dalaman.</string>
+    <string name="drive_log_stop">Hentikan log</string>
 </resources>

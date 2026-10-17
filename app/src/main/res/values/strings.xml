@@ -1207,4 +1207,15 @@
     <string name="bird_eye_car_model">车辆图示</string>
     <string name="bird_eye_car_auto">自动（未知车型使用轮廓）</string>
     <string name="bird_eye_car_outline">通用轮廓</string>
+    <string name="drive_log_title">行车日志直接保存到 U 盘</string>
+    <string name="drive_log_summary">出发前开启，结束后关闭并等待保存完成再拔盘。自动在 ZeekrShortcutApp/Logs/Drive_… 中保存原始车辆信号、应用和生命周期日志及开始/结束诊断。仅 U 盘，不录视频或截图。8 小时、256 MiB、空间不足或 U 盘异常时停止；不随开机启动。仅能记录车机提供的信号。</string>
+    <string name="drive_log_status_title">行车日志状态</string>
+    <string name="drive_log_idle">已关闭，尚未开始行车日志</string>
+    <string name="drive_log_starting">正在检查 U 盘…</string>
+    <string name="drive_log_recording">正在保存日志到 U 盘</string>
+    <string name="drive_log_stopping">正在完成日志并保存诊断…</string>
+    <string name="drive_log_saved">已保存；其他录制或导出结束后可拔盘</string>
+    <string name="drive_log_failed">日志已停止或无法开始：%1$s</string>
+    <string name="drive_log_no_usb">未找到可写 U 盘；未保存到内置存储。</string>
+    <string name="drive_log_stop">停止日志</string>
 </resources>

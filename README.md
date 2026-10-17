@@ -96,6 +96,7 @@ The following additions are adapted from
 in [NOTICE.md](NOTICE.md) and source hashes in [port notes](docs/ferix-feature-ports.md).
 
 - **Phone sharing fixes and diagnostics:** reachable network addresses, transfer status and HEAD/compression fixes. Android timeout reports still need device verification.
+- **Automatic USB drive logs:** Settings → Developer options → Drive logging to USB starts a separate read-only logging session. Turn it off after the drive and wait for Saved; raw signal events, app/lifecycle logs and automatic start/stop Diagnostics are already in a timestamped `ZeekrShortcutApp/Logs/Drive_…` folder. It keeps logging when the main screen closes, bypasses the private scan’s 60,000-event/filtered-export limit, retains numbered parts and older sessions, and never falls back to internal storage. Limits are 8 hours, 256 MiB per session and a 64 MiB free-space reserve; Android may stop it earlier. It does not start on boot or resume automatically after process death. See [drive logging behavior and validation](docs/usb-drive-logging.md).
 - **Read-only vehicle signal scanner:** an opt-in Developer option for finding unmapped signals, including possible blind-spot warnings; automatically stops after three hours or when Developer options are locked. It also records customize-value callbacks as C: entries and reports other callback shapes, while retaining bounded callback queues.
 - **Turn arrows:** upright green/grey indicator arrows in both side-camera display modes, placed between the popup controls.
 - **Hard-braking footage locks:** automatic protection around hard stops, with a separate storage budget that preserves manual locks.
@@ -406,7 +407,32 @@ Send to phone offers Wi-Fi, hotspot or tethering addresses instead of internal v
 
 ## Vehicle signal scanner
 
-Enable Settings → Developer options → Record all vehicle signals for a read-only scan of function changes and unfamiliar sensor events. Blind-spot-like functions are polled when available. It stops after three hours or when Developer options are locked, skips sensors already used by the app, and exports results through Diagnostics. Pending callbacks are capped at 256 and excess events are dropped under overload; the export is not a complete event history. The scanner also records function-change notifications as `N:` (function ID and time, without an alarm state or side) and byte callbacks as `B:` (ID, zone, full payload length and up to 64 bytes of hex, explicitly marked when truncated). These payloads are copied into immutable text before deferred processing. They do not trigger a camera, interpret bit fields or add vehicle reads/writes. Both retain the existing callback queue, time, line-count and export limits. This is a research tool: no obstacle-alert trigger or factory 360 video feed has been identified.
+Enable Settings → Developer options → Record all vehicle signals for a read-only scan of function changes and unfamiliar sensor events. Blind-spot-like functions are polled when available. It stops after three hours or when Developer options are locked, skips sensors already used by the app, and exports results through Diagnostics. Pending callbacks are capped at 256 and excess events are dropped under overload; the export is not a complete event history. The scanner also records function-change notifications as `N:` (function ID and time, without an alarm state or side) and byte callbacks as `B:` (ID, zone, full payload length and up to 64 bytes of hex, explicitly marked when truncated). These payloads are copied into immutable text before deferred processing. They do not trigger a camera, interpret bit fields or add vehicle reads/writes. For the separate scanner, both retain the existing callback queue, time, line-count and export limits. This is a research tool: no obstacle-alert trigger or factory 360 video feed has been identified.
+
+For an entire drive without manually saving a report, use **Drive logging to USB**
+in that same Developer category. You do not need to enable the separate scanner
+switch: the drive session subscribes automatically and leaves its preference alone.
+Start with the USB inserted, wait for **Saving logs to USB**, drive, then switch it
+off and wait for **Saved** before unplugging. The session creates `signals-*.log`,
+`app-*.log`, `lifecycle-*.log`, `session-*.log` and automatic start/stop Diagnostics
+in a unique `ZeekrShortcutApp/Logs/Drive_…` folder. No camera/video or full-system
+logcat recording is added. It collects from activation onward, without requiring
+the Diagnostics screen. Start/stop snapshots supplement the raw files; the normal
+Diagnostics summary remains filtered.
+
+Drive logging retains high-frequency observed events and continues beyond the
+private scan cap. Writes run off the camera/UI callback threads, flush and sync
+every two seconds, and roll into 8 MiB parts without deleting older evidence.
+Stop limits are eight hours, 256 MiB per session, less than 64 MiB free, USB/I/O
+failure, Developer mode disabled or Android service termination. It locks to the
+chosen USB volume, does not silently use internal storage or another drive, and
+never starts on boot or automatically resumes a killed session. Android can stop
+it earlier; unplugging/ejecting may terminate the process. The last two seconds,
+queued events or unfinished snapshots may then be missing; status marks the
+session interrupted rather than Saved. Existing callback queues remain bounded,
+with dropped-event counts written as GAP markers. Very long text entries and byte
+payloads retain explicit bounds. Only signals exposed by the head unit are visible;
+this still does not establish a decoded blind-spot warning or automatic trigger.
 
 ## Hard-braking footage lock
 

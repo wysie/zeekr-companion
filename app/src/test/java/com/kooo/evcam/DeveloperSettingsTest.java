@@ -52,6 +52,9 @@ public class DeveloperSettingsTest {
         ROWS.put("pref_permissions", NONE);
         ROWS.put("pref_camera_display_tools", NONE);
         ROWS.put("pref_raw_frame_dump", Arrays.asList("raw_frame_dump"));
+        // Session actions/status; no persisted enable flag. DeveloperMode stops the service explicitly.
+        ROWS.put("pref_drive_logging", NONE);
+        ROWS.put("pref_drive_logging_status", NONE);
         ROWS.put("pref_signal_scan", Arrays.asList("signal_scan"));
         ROWS.put("pref_gpu_fisheye_preview", Arrays.asList("gpu_fisheye_preview"));
         ROWS.put("pref_gpu_fisheye_video", Arrays.asList("gpu_fisheye_video"));

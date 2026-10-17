@@ -9,6 +9,8 @@ commit message, not here.
 
 ## Unreleased
 
+- Add USB drive logging with live raw signal/app/lifecycle files, automatic start/stop Diagnostics, visible session status and bounded retention without the private scan event cap.
+
 - Add saved square, portrait and landscape aspect ratios for the separate blind-spot popup, retained during pinch resizing and expand/restore.
 
 - Recognize the confirmed 009 HUD display automatically and remove the extra 009 enable switch.

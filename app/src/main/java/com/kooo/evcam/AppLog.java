@@ -245,6 +245,7 @@ public final class AppLog {
         String timestamp = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss.SSS", Locale.US).format(new Date());
         String levelLabel = levelToLabel(level);
         String line = timestamp + " " + levelLabel + "/" + tag + ": " + message;
+        com.kooo.evcam.telemetry.DriveLogService.appLine(line);
         synchronized (LOCK) {
             BUFFER.add(line);
             if (BUFFER.size() > MAX_BUFFER_LINES) {
