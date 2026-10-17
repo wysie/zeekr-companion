@@ -9,7 +9,7 @@ commit message, not here.
 
 ## Unreleased
 
-Nothing yet.
+- Rewrite About in wysie’s voice, bring dts88/Ferix/EVCam credits up front and attribute inherited community acknowledgements to the original project.
 
 ## [2.11.45-alpha.1] - 2026-10-18
 

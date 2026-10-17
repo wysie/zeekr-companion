@@ -21,9 +21,10 @@ dts88’s original version is the more thoroughly tested option. This custom for
 by wysie is primarily for personal use and adds experimental features; its vehicle
 testing is more limited. Neither project is an official ZEEKR product.
 
-The in-app About page identifies wysie’s fork and links separately to this fork,
-dts88’s original project and Ferix’s CAMCORDER contributions. Its optional PayNow
-tip, **9271 6786**, goes to **dts88, the original author**.
+The in-app About page introduces wysie Edition in my own voice, thanks dts88,
+Ferix and the EVCam contributors up front, and links to their projects. Original
+community acknowledgements are retained and attributed to dts88’s project. Its
+optional PayNow tip, **9271 6786**, goes to **dts88, the original author**.
 
 Current test download: [wysie Edition 2.11.45-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.45-alpha.1).
 For in-app delivery, select **Updates → Update channel → Alpha**; Beta and Stable
