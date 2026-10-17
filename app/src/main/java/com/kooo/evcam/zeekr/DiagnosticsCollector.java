@@ -947,7 +947,7 @@ public final class DiagnosticsCollector {
         AppConfig hudConfig = new AppConfig(context);
         sb.append("HUD candidate: ").append(hud == null ? "none" : hud.getDisplayId()).append("; output=")
                 .append(hudConfig.getSideOutput()).append("; screenMirrored=").append(hudConfig.isSidePopupMirrored())
-                .append("; selection=").append(hudConfig.isZeekr009HudEnabled() ? "009 display 3 (1280x640)" : "auto")
+                .append("; selection=auto-known-signatures; layout=").append(hudConfig.is009HudLayout() ? "009" : "standard")
                 .append("; duringFactoryViews=").append(hudConfig.isHudDuringFactoryViews())
                 .append("; hudMirrored=").append(hudConfig.isHudSideMirrored()).append("; window=")
                 .append(SideViewHudPanel.lastState()).append('\n');

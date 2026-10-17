@@ -27,7 +27,7 @@ public class VehicleLabelsAndroidTest {
         AppConfig config = new AppConfig(english);
         String original = config.getVehicleNameMode();
         String stream = config.getCarModel();
-        boolean hud = config.isZeekr009HudEnabled();
+        boolean hud = config.is009HudLayout();
         try {
             for (String language : new String[]{"en", "zh", "ms"}) {
                 Context localized = context(language);
@@ -39,7 +39,7 @@ public class VehicleLabelsAndroidTest {
                 config.setVehicleNameMode("7x");
                 assertTrue(VehicleLabels.profile(localized, false).contains("7X"));
                 assertEquals(stream, config.getCarModel());
-                assertEquals(hud, config.isZeekr009HudEnabled());
+                assertEquals(hud, config.is009HudLayout());
             }
             config.setVehicleNameMode("invalid");
             assertEquals("7x", config.getVehicleNameMode()); // Invalid writes preserve the valid setting.

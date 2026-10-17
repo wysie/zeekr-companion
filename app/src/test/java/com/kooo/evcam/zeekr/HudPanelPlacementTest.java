@@ -81,4 +81,22 @@ public class HudPanelPlacementTest {
         assertTrue(rr.left >= 0 && rr.left + rr.width <= 1440);
         assertEquals(0, rr.left);
     }
+
+    @Test public void confirmed009DefaultsAreSmallerAndFixedOnTheRight() {
+        for (int[] viewport : new int[][]{{1280,640},{960,480},{640,360}}) {
+            HudPanelPlacement.Rect r = HudPanelPlacement.compute(viewport[0],viewport[1],
+                    AppConfig.HUD_SIDE_009_DEFAULT_SIZE_PERCENT,100,
+                    AppConfig.HUD_SIDE_009_DEFAULT_LEFT_PERCENT,50);
+            assertTrue(r.left > viewport[0]/2);
+            assertEquals(viewport[1]/2,r.height);
+            assertEquals(r.height,r.width);
+            assertTrue(r.left+r.width<=viewport[0]);assertTrue(r.top+r.height<=viewport[1]);
+        }
+    }
+
+    @Test public void widePictureFitsSmallContentWithoutSqueezingItsAspectRatio() {
+        HudPanelPlacement.Rect r=HudPanelPlacement.compute(640,480,100,300,100,100);
+        assertEquals(640,r.width);assertEquals(213,r.height);
+        assertEquals(0,r.left);assertEquals(267,r.top);
+    }
 }

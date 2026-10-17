@@ -1148,3 +1148,28 @@ Driver recording start/stop are enabled independently of Record on launch.
 Two new reports share the same captured text; a third file is empty. Original
 owner files remain private under artifacts. Runtime and the published APK are
 unchanged; no HUD live-video or geometric-distance validation is claimed.
+
+
+## Owner-confirmed 009 HUD video and measured placement — 17 October
+
+The owner now reports working side-camera video on the windscreen HUD and
+supplied factory-only / camera-active phone photos. This supersedes the earlier
+card-only findings and mapping-off diagnostics; no installed version is inferred
+from the photographs. The camera overlaps factory graphics and appears cropped.
+
+New source automatically recognises the public/on display 3 at 1280×640 and
+removes the separate 009 enable preference. It gives that matched display its
+own smaller fixed-right layout, retaining generic/7X placement values separately.
+The window fits measured Presentation content and wide shapes scale
+proportionally. Factory speed/navigation/warnings remain independent; no higher
+window layer or factory-information suppression was added.
+
+Passed 1,426 JVM tests, lint, signed release assembly and eight Android checks.
+The real Presentation checks include constraining content to 640×360 while the
+display remains 1280×640, preserving the entire panel and requested wide shape.
+Native configuration tests cover independent defaults/persistence/reset and
+switching indicator-side positioning without reversing its intended sides.
+Navigation verifies the old enable switch is absent; settings snapshots were
+reviewed. Owner photos and emulator outputs remain private under artifacts.
+The new physical layout, optical clipping and in-car cadence still need testing.
+See [current HUD behavior and evidence](009-hud-live-video.md).

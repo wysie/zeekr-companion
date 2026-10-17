@@ -719,6 +719,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     // ------------------------------------------------------------------ 打转向灯弹侧视
 
     private void bindSidePopup() {
+        com.kooo.evcam.zeekr.SideViewHudPanel.find(requireContext()); // Select layout from the actual available HUD.
         bindOverlaySwitch("pref_side_popup", appConfig.isSidePopupEnabled(),
                 OverlayCoordinator::setSidePopupEnabled, on -> {
                     refreshSideNavigation();
@@ -802,10 +803,6 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                     com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
                 });
         bindSideOutput();
-        bindSwitch("pref_hud_zeekr_009", appConfig.isZeekr009HudEnabled(), value -> {
-            appConfig.setZeekr009HudEnabled(value);
-            com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
-        });
         bindSwitch("pref_hud_side_mirror", appConfig.isHudSideMirrored(), value -> {
             appConfig.setHudSideMirrored(value);
             com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
@@ -817,6 +814,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         bindSwitch("pref_hud_side_follow", appConfig.isHudSideFollowSignal(), value -> {
             appConfig.setHudSideFollowSignal(value);
             com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+            bindSidePopup(); // Refresh the position value when its edge reference changes.
         });
         bindSlider("pref_hud_side_contrast", AppConfig.HUD_SIDE_MIN_CONTRAST_PERCENT,
                 AppConfig.HUD_SIDE_MAX_CONTRAST_PERCENT, appConfig.getHudSideContrastPercent(), "%", value -> {

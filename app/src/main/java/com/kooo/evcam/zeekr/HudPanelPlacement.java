@@ -45,9 +45,14 @@ public final class HudPanelPlacement {
      */
     public static Rect compute(int hudWidth, int hudHeight, int sizePercent, int shapePercent,
                                int edgePercent, int verticalPercent, boolean rightSide) {
+        if (hudWidth <= 0 || hudHeight <= 0) throw new IllegalArgumentException("Missing HUD viewport");
         int height = Math.round(hudHeight * sizePercent / 100f);
         height = Math.max(Math.min(MIN_SIZE_PX, hudHeight), Math.min(height, hudHeight));
         int width = Math.round(height * shapePercent / 100f);
+        if (width > hudWidth) {
+            height = Math.max(1, Math.round(height * (hudWidth / (float) width)));
+            width = hudWidth; // Fit, preserving shape instead of squeezing the picture.
+        }
         width = Math.max(Math.min(MIN_SIZE_PX, hudWidth), Math.min(width, hudWidth));
         int fromEdge = Math.round(Math.max(0, hudWidth - width) * clampPercent(edgePercent) / 100f);
         int left = rightSide ? hudWidth - width - fromEdge : fromEdge;

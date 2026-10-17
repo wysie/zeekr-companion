@@ -96,7 +96,7 @@ public class SettingsNavigationAndroidTest {
                     assertNotNull(page(shell).findPreference(child[1]));
                     if ("sub_side_hud".equals(child[0])) {
                         assertNull(page(shell).findPreference("pref_hud_side_overlay"));
-                        assertNotNull(page(shell).findPreference("pref_hud_zeekr_009"));
+                        assertNull(page(shell).findPreference("pref_hud_zeekr_009"));
                         assertNotNull(page(shell).findPreference("pref_hud_during_factory"));
                     }
                     back(shell);

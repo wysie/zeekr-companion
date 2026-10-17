@@ -1001,10 +1001,8 @@
     <string name="set_side_output_both">主屏和 HUD</string>
     <string name="set_sub_hud_title">HUD 画面</string>
     <string name="set_sub_hud_summary">显示屏、悬浮窗层级、位置、对比度、夜间亮度和边缘渐隐</string>
-    <string name="set_hud_zeekr_009_title">极氪 009 HUD</string>
-    <string name="set_hud_zeekr_009_summary">使用 009 的 3 号显示屏（1280×640）。实验功能：停车时确认画面在挡风玻璃上；若出现在其他屏幕，请关闭此项。不可用时回退到主屏。</string>
     <string name="set_hud_side_size_title">HUD 画面高度（占 HUD 高度 %）</string>
-    <string name="set_hud_side_size_summary">宽度由下面的形状决定</string>
+    <string name="set_hud_side_size_summary">宽度由下面的形状决定；必要时等比例缩小以完整显示</string>
     <string name="set_hud_side_shape_title">HUD 画面形状（宽 ÷ 高，%）</string>
     <string name="set_hud_side_shape_summary">100 为正方形，越大越宽</string>
     <string name="set_hud_side_left_title">HUD 水平位置（%）</string>
@@ -1013,7 +1011,7 @@
     <string name="set_hud_side_vertical_summary">0 贴顶，100 贴底</string>
     <string name="set_hud_side_opacity_title">HUD 画面不透明度（%）</string>
     <string name="set_hud_side_opacity_summary">越低越淡。HUD 上黑色本来就不亮</string>
-    <string name="set_side_hud_note">HUD 功能尚未在 009 上验证。不可用时回退到主屏。HUD 不受速度门槛限制。默认在原厂画面显示时隐藏；可在 HUD 画面中开启试验性共存选项。倒车时仍隐藏，主屏侧视仍让位。</string>
+    <string name="set_side_hud_note">自动识别 009 HUD（3 号屏，1280×640），默认在右侧显示。可在下方调整大小和位置；原厂车速和警告可能覆盖画面。不可用时回退到主屏。HUD 不受速度门槛限制。默认在原厂画面显示时隐藏；可在 HUD 画面中开启试验性共存选项。倒车时仍隐藏，主屏侧视仍让位。</string>
 
     <!-- DIY ground-plane 360 prototype -->
     <string name="bird_eye_button">360°</string>

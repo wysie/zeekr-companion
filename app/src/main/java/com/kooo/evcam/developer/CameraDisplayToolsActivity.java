@@ -149,7 +149,8 @@ public final class CameraDisplayToolsActivity extends AppCompatActivity {
         AppConfig config = new AppConfig(this);
         return new JSONObject().put("kind", kind).put("app_version", getPackageManager().getPackageInfo(getPackageName(), 0).versionName)
                 .put("created_at_ms", System.currentTimeMillis()).put("gear", Telemetry.get().readings().text(Signal.GEAR))
-                .put("hud_009_enabled", config.isZeekr009HudEnabled()).put("side_output", config.getSideOutput());
+                .put("hud_selection", "automatic-known-signatures").put("hud_layout_009", config.is009HudLayout())
+                .put("side_output", config.getSideOutput());
     }
     private void startScan() {
         if (!canStart()) return;

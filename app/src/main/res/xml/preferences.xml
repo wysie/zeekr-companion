@@ -414,10 +414,6 @@
             <PreferenceCategory
                 android:key="group_hud_advanced"
                 android:title="@string/menu_advanced_experimental">
-                <androidx.preference.SwitchPreferenceCompat
-                    android:key="pref_hud_zeekr_009"
-                    android:title="@string/set_hud_zeekr_009_title"
-                    android:summary="@string/set_hud_zeekr_009_summary" />
                 <SwitchPreferenceCompat
                     android:key="pref_hud_during_factory"
                     android:title="@string/set_hud_during_factory_title"

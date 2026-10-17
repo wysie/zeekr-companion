@@ -29,6 +29,7 @@ The remotes are `origin` (wysie's fork), `upstream` (dts88's repository), and
 | `feature/driver-recording` | Driver sessions integrated with current upstream recording/persistence rules |
 | `feature/side-view-arrows` | Turn arrows for both display modes; starts from the existing side-view feature |
 | `feature/side-view-hud` | Ferix PR14 adapted to current scheduler and fork screen behavior, with cautious display selection; based on main after mirroring |
+| `fix/009-hud-fit-and-detection` | Owner-confirmed automatic 009 HUD signature, independent fixed-right layout and fitting to measured Presentation content; factory HUD graphics remain independent |
 | `feature/009-hud-display` | Opt-in 009 HUD mapping for display 3 at 1280×640, based on the owner's Diagnostics; physical destination and video output await testing |
 | `fix/side-popup-startup-flash` | Prepare the separate side popup transparently until live frames arrive, with a delayed waiting notice and retained stalled-frame cover |
 | `fix/playback-action-layout` | Shared content-sized wrapping photo/video controls, retaining native text size and same-row alignment |

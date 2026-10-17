@@ -9,6 +9,9 @@ commit message, not here.
 
 ## Unreleased
 
+- Recognize the confirmed 009 HUD display automatically and remove the extra 009 enable switch.
+- Give the 009 HUD its own smaller fixed-right layout; fit panels to measured drawable space and preserve wide-picture shape.
+
 - Give the 009 image-fit profile wider default framing and its own saved view margin, retaining Manual calibration values.
 - Retain more source detail in Balanced DIY 360 rendering and narrow fitted corner blends; retain automatic cadence/resolution fallback.
 - Replace exposed black vehicle backing with a small rounded opaque surround matching the selected car colour.

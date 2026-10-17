@@ -58,12 +58,19 @@ factory/reverse priority and existing independent PR branch heads. It does not
 change the recording policy or 360 geometry. New labels/help are localised in
 English, Chinese and Malay.
 
-The former “HUD above factory information” experiment has been removed. Stored
-`hud_side_overlay` values are ignored. Normal HUD output, optional 009 display
-mapping and factory-view coexistence remain available for investigation; working
-HUD video on the owner’s 009 has not been established. The owner confirmed on
-2026-10-17 that display 3 appears on the windscreen HUD; this identifies the
-physical destination separately from camera-video availability.
+The former “HUD above factory information” experiment remains removed. Stored
+`hud_side_overlay` values are ignored. The owner has now confirmed live camera
+video on the 009 windscreen HUD. Automatic matching recognises its public/on
+display 3 at 1280×640; the extra 009 enable switch is removed and its old value
+is ignored. HUD advanced keeps factory-view coexistence only.
+
+009 placement has separate saved settings: 50% height, square shape, horizontal
+94% (right), vertical 50%, and indicator-side following off. Both cameras thus
+use the same right-hand position. Existing generic/7X layout values remain
+saved; first use on a matched 009 starts its own defaults. Sliders still adjust
+size and position. The panel fits measured Presentation content, including when
+it is smaller than physical display metrics; wide shapes shrink proportionally.
+Factory speed/warnings may still draw over it. See [009 live HUD evidence](009-hud-live-video.md).
 
 ## USB fallback permission
 

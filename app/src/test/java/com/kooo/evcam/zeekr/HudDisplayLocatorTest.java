@@ -34,30 +34,29 @@ public class HudDisplayLocatorTest {
         assertEquals(-1, HudDisplayLocator.find(Arrays.asList(c(3,0,0,"HUD",8),
                 c(4,1920,1080,"hudson",8))));
     }
-    @Test public void owner009InventoryRequiresExplicitSelection() {
+    @Test public void owner009InventoryIsNowRecognizedAutomatically() {
         java.util.List<HudDisplayLocator.Candidate> inventory = Arrays.asList(
                 c(0,2560,1600,"Built-in Screen",0x83),
                 c(2,1920,720,"HDMI Screen",0x8b),
                 c(3,1280,640,"HDMI Screen",0x8b));
-        assertEquals(-1, HudDisplayLocator.find(inventory));
-        assertEquals(3, HudDisplayLocator.find(inventory, true));
+        assertEquals(3, HudDisplayLocator.find(inventory));
     }
-    @Test public void explicit009MappingRequiresBothIdAndDimensions() {
+    @Test public void confirmed009SignatureRequiresBothIdAndDimensions() {
         assertEquals(-1, HudDisplayLocator.find(Arrays.asList(
-                c(2,1280,640,"HDMI Screen",8), c(3,1920,720,"HDMI Screen",8)), true));
+                c(2,1280,640,"HDMI Screen",8), c(3,1920,720,"HDMI Screen",8))));
     }
-    @Test public void explicit009MappingRejectsRestrictedDisplays() {
-        assertEquals(-1, HudDisplayLocator.find(Arrays.asList(c(3,1280,640,"HDMI",12)), true));
-        assertEquals(-1, HudDisplayLocator.find(Arrays.asList(c(3,1280,640,"HDMI",0)), true));
+    @Test public void confirmed009SignatureRejectsRestrictedDisplays() {
+        assertEquals(-1, HudDisplayLocator.find(Arrays.asList(c(3,1280,640,"HDMI",12))));
+        assertEquals(-1, HudDisplayLocator.find(Arrays.asList(c(3,1280,640,"HDMI",0))));
     }
-    @Test public void explicit009MappingRejectsKnownOtherScreenRoles() {
+    @Test public void confirmed009SignatureRejectsKnownOtherScreenRoles() {
         for (String name : Arrays.asList("Instrument Cluster", "Rear screen", "Passenger screen", "后排屏幕")) {
-            assertEquals(-1, HudDisplayLocator.find(Arrays.asList(c(3,1280,640,name,8)), true));
+            assertEquals(-1, HudDisplayLocator.find(Arrays.asList(c(3,1280,640,name,8))));
         }
     }
-    @Test public void explicit009MappingDoesNotSelectADifferentHud() {
-        assertEquals(-1, HudDisplayLocator.find(Arrays.asList(c(5,1440,480,"HUD",8)), true));
-        assertEquals(3, HudDisplayLocator.find(Arrays.asList(
-                c(3,1280,640,"HDMI",8), c(5,1440,480,"HUD",8)), true));
+    @Test public void simultaneousRecognizedHudsRemainAmbiguous() {
+        assertEquals(5, HudDisplayLocator.find(Arrays.asList(c(5,1440,480,"HUD",8))));
+        assertEquals(-1, HudDisplayLocator.find(Arrays.asList(
+                c(3,1280,640,"HDMI",8), c(5,1440,480,"HUD",8))));
     }
 }
