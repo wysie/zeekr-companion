@@ -37,4 +37,16 @@ public class RecordingSourcesTest {
   assertNull(RecordingSources.defaultId(CameraProfile.ROLE_ROAD_FRONT,false));assertNull(RecordingSources.defaultId(CameraProfile.ROLE_MANUAL,true));
   assertNull(RecordingSources.role(null));
  }
+ @Test public void combinedPreviewPreservesEveryRecordingCombinationAndAddsOnlyPreviewSources() {
+  for(int mask=0;mask<64;mask++) {
+   Profile p=profile();int i=0;Set<String> recording=new LinkedHashSet<>();
+   for(String role:RecordingSources.ALL_ROLES) {p.camera(role).enabled=(mask&(1<<i++))!=0;if(p.camera(role).enabled)recording.add(RecordingSources.key(role));}
+   Map<String,String> before=p.toMap();
+   ProfileChannels channels=ProfileChannels.of(p,"surround_roads",true);
+   assertEquals(new LinkedHashSet<>(Arrays.asList("front","roadfront","roadrear")),channels.previewKeys);
+   assertTrue(channels.keys.containsAll(recording));assertTrue(channels.keys.containsAll(channels.previewKeys));
+   assertEquals(before,p.toMap());assertTrue(channels.surround);assertTrue(channels.cabinLayout());
+   assertEquals(3,channels.layoutSlots());
+  }
+ }
 }

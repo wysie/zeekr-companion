@@ -1242,4 +1242,8 @@
     <string name="vehicle_profile_defaults_7x">上游 7X 证据：环视合成流及前、后座舱画面。自动发现相机，手动映射优先。独立前后道路画面尚未确认，需手动识别。HUD 保留独立的显示器匹配和布局。DIY 360 使用手动投影，不应用 009 图像拟合。7X 拼接对齐仍需实车测试。</string>
     <string name="vehicle_profile_defaults_unknown">自动只接受安卓明确报告的 009 或 7X 车型名，Pixel 3a 等通用名称不能识别车型。保留手动来源和录制选择。HUD 独立检查实际显示器。DIY 360 仍为实验功能，不推断车型标定。</string>
     <string name="vehicle_profile_stop_recording">请先停止录制，再更改车型。</string>
+    <string name="record_preview_current">预览布局：%1$s</string>
+    <string name="record_preview_surround_roads">环视 + 前后道路</string>
+    <string name="record_preview_cabin">驾驶员 / 前座舱</string>
+    <string name="record_preview_help">主屏幕预览独立于录制选择。独立道路画面需在「编辑视频流配置」中指定已识别的来源；7X 道路来源尚未确认。更改后请退出并重新打开。保留现有录制和布局选择。</string>
 </resources>

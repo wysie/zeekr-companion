@@ -80,8 +80,9 @@ public class RecordingSourceGroupsAndroidTest {
    scenario.onActivity(a->{ProfileEditorFragment e=ref.get();toggle(e.requireView(),R.string.record_group_roads).performClick();
     Profile p=new ProfileStore(target).current();assertFalse(p.camera("roadfront").enabled);assertFalse(p.camera("roadrear").enabled);assertTrue(p.camera("composite").enabled);assertTrue(p.camera("cabin1").enabled);
    });
-   onView(withText(R.string.record_preview_layout)).perform(click());
+   onView(androidx.test.espresso.matcher.ViewMatchers.withContentDescription(R.string.record_preview_layout)).perform(click());
    onView(withText(R.string.record_group_roads)).perform(click());
+   onView(withText(R.string.action_ok)).perform(click());
    scenario.onActivity(a->{assertEquals("roads",config.getPreviewSourceMode());Profile p=new ProfileStore(target).current();assertFalse(p.camera("roadfront").enabled);assertEquals(2,ProfileChannels.of(p,"roads").previewKeys.size());});
   }
  }
@@ -103,6 +104,80 @@ public class RecordingSourceGroupsAndroidTest {
    assertTrue("Independent road preview attaches its actual camera sources",ready[0]);
    scenario.recreate();
    scenario.onActivity(a->assertEquals("roads",new AppConfig(a).getPreviewSourceMode()));
+  }
+ }
+ @Test public void previewPickerPreservesProfileTuningAndCancelKeepsThePreviousChoice() throws Exception {
+  config.setPreviewSourceMode("roads");
+  Profile p=new ProfileStore(target).current();
+  p.camera("composite").photo.jpegQuality=87;p.camera("composite").photo.resolution="1280x720";
+  p.camera("composite").preview.resolution="1920x1080";
+  new ProfileStore(target).save(p);
+  Map<String,String> saved=new ProfileStore(target).current().toMap();
+  try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
+   scenario.onActivity(this::install);
+   onView(androidx.test.espresso.matcher.ViewMatchers.withContentDescription(R.string.record_preview_layout)).perform(click());
+   onView(withText(R.string.record_group_roads)).check(androidx.test.espresso.assertion.ViewAssertions.matches(androidx.test.espresso.matcher.ViewMatchers.isChecked()));
+   onView(withText(R.string.slot_road_rear)).perform(click());
+   onView(withText(R.string.action_cancel)).perform(click());
+   assertEquals("roads",config.getPreviewSourceMode());assertEquals(saved,new ProfileStore(target).current().toMap());
+   onView(androidx.test.espresso.matcher.ViewMatchers.withContentDescription(R.string.record_preview_layout)).perform(click());
+   onView(withText(R.string.record_preview_surround_roads)).perform(click());
+   onView(withText(R.string.action_ok)).perform(click());
+   assertEquals("surround_roads",config.getPreviewSourceMode());assertEquals(saved,new ProfileStore(target).current().toMap());
+   onView(androidx.test.espresso.matcher.ViewMatchers.withContentDescription(R.string.record_preview_layout))
+     .check(androidx.test.espresso.assertion.ViewAssertions.matches(withText(startsWith(target.getString(R.string.record_preview_layout)))));
+   scenario.recreate();
+   assertEquals("surround_roads",new AppConfig(target).getPreviewSourceMode());assertEquals(saved,new ProfileStore(target).current().toMap());
+  }
+ }
+ @Test public void legacyPreviewChoicesRemainStoredAcrossVehicleSelectionsAndInvalidWrites() {
+  android.content.SharedPreferences prefs=target.getSharedPreferences("app_config",0);
+  for(String mode:new String[]{"selected","surround","roads","roadfront","roadrear","cabin"}) {
+   prefs.edit().putString("preview_source_mode",mode).commit();
+   assertEquals(mode,config.getPreviewSourceMode());
+   config.setVehicleProfileMode("7x");assertEquals(mode,new AppConfig(target).getPreviewSourceMode());
+   config.setVehicleProfileMode("009");assertEquals(mode,new AppConfig(target).getPreviewSourceMode());
+   config.setPreviewSourceMode("unknown");assertEquals(mode,config.getPreviewSourceMode());
+   assertEquals(mode,prefs.getString("preview_source_mode",null));
+  }
+  prefs.edit().remove("preview_source_mode").commit();assertEquals("selected",config.getPreviewSourceMode());
+  assertFalse(prefs.contains("preview_source_mode")); // Merely reading/opening settings never migrates a default into storage.
+ }
+ @Test public void recordingSettingsExposeTheSavedPreviewWithoutMutatingRecorders() {
+  config.setPreviewSourceMode("roadrear");
+  Map<String,String> before=new ProfileStore(target).current().toMap();
+  try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
+   scenario.onActivity(activity->{
+    activity.findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
+    SettingsShellFragment shell=new SettingsShellFragment();
+    activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,shell).commitNow();
+    shell.getChildFragmentManager().executePendingTransactions();shell.showSection("screen_recording");shell.getChildFragmentManager().executePendingTransactions();
+    SettingsPreferenceFragment page=(SettingsPreferenceFragment)shell.getChildFragmentManager().findFragmentById(R.id.settings_detail);
+    androidx.preference.ListPreference preview=page.findPreference("pref_preview_layout");
+    assertNotNull(preview);assertEquals("roadrear",preview.getValue());assertFalse(preview.isPersistent());
+    assertEquals(7,preview.getEntryValues().length);assertTrue(preview.getSummary().toString().contains(target.getString(R.string.slot_road_rear)));
+    preview.callChangeListener("surround_roads");assertEquals("surround_roads",config.getPreviewSourceMode());
+    assertEquals(target.getString(R.string.record_preview_surround_roads),preview.getSummary());
+   });
+   assertEquals(before,new ProfileStore(target).current().toMap());
+  }
+ }
+ @Test public void combinedPreviewBuildsSurroundAndRoadPanesWithoutChangingRecorders() throws Exception {
+  config.setPreviewSourceMode("surround_roads");
+  try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
+   boolean[] ready={false};long until=android.os.SystemClock.elapsedRealtime()+10000;
+   do {
+    scenario.onActivity(a->{
+     com.kooo.evcam.camera.MultiCameraManager manager=CameraManagerHolder.getInstance().getCameraManager();
+     ready[0]=manager!=null&&manager.isBuilt()&&a.findViewById(R.id.composite_wrapper).getVisibility()==View.VISIBLE;
+     if(ready[0]) {
+      assertNotNull(manager.getCamera("front"));assertEquals("0",manager.getCamera("roadfront").getCameraId());assertEquals("1",manager.getCamera("roadrear").getCameraId());
+      assertEquals(Collections.singleton("front"),RecordSpecs.enabledCameraKeys(target));
+      assertEquals(View.VISIBLE,a.findViewById(R.id.cabin_column).getVisibility());
+     }
+    });if(!ready[0])android.os.SystemClock.sleep(50);
+   }while(!ready[0]&&android.os.SystemClock.elapsedRealtime()<until);
+   assertTrue("Surround and dedicated road previews share the configured pipeline",ready[0]);
   }
  }
  @Test public void genericPipelineKeepsDedicatedRoadSourcesAndTheirRecordingIdentity() {

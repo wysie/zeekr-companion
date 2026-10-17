@@ -29,6 +29,17 @@ public final class SettingsRegistry {
     private SettingsRegistry() {
     }
 
+    /** Stored values are shared by both preview selectors and the pipeline. */
+    public static final SettingSpec PREVIEW_LAYOUT = SettingSpec.of(
+            "preview_source_mode", "预览布局", "selected",
+            entry("selected", "跟随录制来源", R.string.record_preview_selected),
+            entry("surround", "环视", R.string.record_group_surround),
+            entry("roads", "前后道路", R.string.record_group_roads),
+            entry("roadfront", "前方道路", R.string.slot_road_front),
+            entry("roadrear", "后方道路", R.string.slot_road_rear),
+            entry("cabin", "驾驶员 / 前座舱", R.string.record_preview_cabin),
+            entry("surround_roads", "环视 + 前后道路", R.string.record_preview_surround_roads));
+
     public static final SettingSpec UPDATE_CHANNEL = SettingSpec.of(
             "update_channel", "更新通道", com.kooo.evcam.update.UpdateChannel.STABLE.value,
             entry(com.kooo.evcam.update.UpdateChannel.STABLE.value, "正式版 — 仅正式版", R.string.update_channel_stable_option),
@@ -112,6 +123,7 @@ public final class SettingsRegistry {
             CAR_MODEL,
             VEHICLE_NAME,
             VEHICLE_PROFILE,
+            PREVIEW_LAYOUT,
             LANGUAGE,
             FISHEYE_PROJECTION,
             ACTION_RAIL_SIDE));

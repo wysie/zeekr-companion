@@ -185,6 +185,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         refreshRearViewSize();
         refreshSidePopupSize();
         refreshCameraLabels();
+        refreshPreviewLayout();
         refreshSideNavigation();
         refreshBirdEyePopup();
     }
@@ -193,6 +194,10 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
 
     private void bindRecording() {
         bindCarModel();
+        bindEnum("pref_preview_layout", SettingsRegistry.PREVIEW_LAYOUT, appConfig.getPreviewSourceMode(), value -> {
+            appConfig.setPreviewSourceMode(value);
+            toast(getString(R.string.msg_restart_required));
+        });
 
         // 相机与视频流的参数（每一路的三条流、每一格的摆法）都在下面这个
         // 「编辑视频流配置」里。同一件事只留一个入口：两个入口意味着
@@ -274,6 +279,14 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
      * <p><b>当前值一定保留</b>：万一已经停在某个隐藏选项上，把它从列表里抹掉
      * 会让下拉框显示空白，那才是真的没法收拾。</p>
      */
+    private void refreshPreviewLayout() {
+        ListPreference preview = findPreference("pref_preview_layout");
+        if (preview == null || appConfig == null) return;
+        String mode = appConfig.getPreviewSourceMode();
+        preview.setValue(mode);
+        preview.setSummary(PreviewLayoutPicker.label(requireContext(), mode));
+    }
+
     private void bindCarModel() {
         ListPreference pref = findPreference("pref_car_model");
         if (pref == null) {

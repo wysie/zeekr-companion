@@ -332,13 +332,12 @@ public class ProfileEditorFragment extends Fragment {
         camerasTitle.setText(getString(R.string.editor_cameras_title, com.kooo.evcam.profile.ProfileChannels.of(profile).count));
         cameraRow.removeAllViews(); cameraRow.setOrientation(LinearLayout.VERTICAL);
         android.widget.Button preview = (android.widget.Button)LayoutInflater.from(context).inflate(R.layout.item_record_source_action, cameraRow, false);
-        preview.setText(R.string.record_preview_layout);
-        preview.setOnClickListener(v -> pickOne(getString(R.string.record_preview_layout),
-                new String[]{getString(R.string.record_preview_selected), getString(R.string.record_group_surround),
-                        getString(R.string.record_group_roads), getString(R.string.slot_road_front),
-                        getString(R.string.slot_road_rear), getString(R.string.record_group_cabin)},
-                new String[]{"selected", "surround", "roads", "roadfront", "roadrear", "cabin"},
-                value -> { new AppConfig(context).setPreviewSourceMode(value); toast(getString(R.string.msg_mapping_saved)); }));
+        preview.setContentDescription(getString(R.string.record_preview_layout));
+        preview.setText(getString(R.string.record_preview_current,
+                PreviewLayoutPicker.label(context, new AppConfig(context).getPreviewSourceMode())));
+        preview.setOnClickListener(v -> PreviewLayoutPicker.show(context, () -> {
+            renderCameras(); toast(getString(R.string.msg_restart_required));
+        }));
         cameraRow.addView(preview, new LinearLayout.LayoutParams(-1, -2));
         LinearLayout row = null;
         for (int i = 0; i < GROUPS.length; i++) {

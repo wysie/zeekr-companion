@@ -15,9 +15,20 @@ A legacy 009 extra is retained rather than silently reassigned as a road camera.
 The existing two-cabin configuration is retained for other models; it does not
 establish that every car physically has two cabin feeds.
 
-Preview layout is independent: Selected recording sources (default), Surround,
-Front + Rear, Front only, Rear only, or Cabin. Opening a preview does not enable
-its recorder. Normal side-camera/Super mirror/360-popup consumers retain access
+Recording & photos → **Preview layout** is independent: Selected recording
+sources (unchanged default), Surround, Front + Rear, Front road, Rear road,
+Driver / front cabin, or Surround + Front + Rear. The last option displays the
+composite alongside the two dedicated road sources; it does not synthesize new
+camera views. The historical `cabin` choice still shows the first cabin/driver
+source; use Selected recording sources to retain an existing two-cabin layout.
+The stream editor shows the current layout in its shortcut button. Both selectors
+use the same saved value and choices. The editor highlights the current selection
+and waits for OK; Cancel/back changes nothing. The Settings row refreshes on
+return from the editor. Preview-only changes never save the recording profile,
+so existing custom preview/photo/recording tuning is preserved. Existing stored
+layout IDs remain valid; an unset preference still follows recording sources.
+Model changes do not reset this choice. Exit and reopen after changing.
+Opening a preview does not enable its recorder. Normal side-camera/Super mirror/360-popup consumers retain access
 to the surround source without forcing its recorder or main preview on. The
 existing scheduler, fresh-frame guards and factory/reverse priority still apply.
 Existing non-surround screen-off release rules also remain in place.
@@ -96,3 +107,13 @@ frame rate, factory takeover/recovery and side-camera/HUD operation. These tests
 are still needed: single-camera JPEG exports do not prove concurrent recording
 at the chosen quality. 7X exterior mapping and concurrency need separate evidence.
 No downloadable release or version bump is created by this change.
+
+## Preview selector validation
+
+Host coverage exercises the combined preview against all 64 recording-source
+combinations without changing any profile fields. Native Android regressions
+check existing layout IDs, invalid writes, unset defaults, vehicle-model switches,
+current-choice highlighting, Cancel/OK, stored profile tuning, Activity recreation,
+the Settings entry and the real combined-preview pipeline/pane routing. Native
+layout/navigation and vehicle-profile tests run alongside them. Emulator routing
+does not establish real vehicle concurrency or frame rate.

@@ -1230,8 +1230,8 @@ public class AppConfig {
         if (id == null) e.remove("source_id_" + role); else e.putString("source_id_" + role, id);
         e.apply();
     }
-    public String getPreviewSourceMode() { return prefs.getString("preview_source_mode", "selected"); }
-    public void setPreviewSourceMode(String mode) { prefs.edit().putString("preview_source_mode", mode).apply(); }
+    public String getPreviewSourceMode() { return readEnum(SettingsRegistry.PREVIEW_LAYOUT); }
+    public void setPreviewSourceMode(String mode) { writeEnum(SettingsRegistry.PREVIEW_LAYOUT, mode); }
 
     /** Automatic source defaults follow the functional model; explicit source IDs still win. */
     public boolean is009CameraMappingEnabled() {
