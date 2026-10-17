@@ -27,7 +27,7 @@ import static org.junit.Assert.*;
 public class SettingsNavigationAndroidTest {
     private Context target;
     private AppConfig config;
-    private boolean oldSide, oldLabels, oldDeveloper, oldDestination;
+    private boolean oldSide, oldLabels, oldDeveloper, oldDestination, oldAutoFit, oldStraighten;
     @Before public void setup() throws Exception {
         target = InstrumentationRegistry.getInstrumentation().getTargetContext();
         for (String permission : new String[]{Manifest.permission.CAMERA, Manifest.permission.READ_EXTERNAL_STORAGE,
@@ -37,6 +37,7 @@ public class SettingsNavigationAndroidTest {
         target.getSharedPreferences("app_config", Context.MODE_PRIVATE).edit().putBoolean("first_launch", false)
                 .putBoolean("language_chosen", true).putBoolean("rail_side_chosen", true).commit();
         config = new AppConfig(target);
+        oldAutoFit = config.isSidePopupAutoFit(); oldStraighten = config.isSidePopupStraighten();
         oldSide = config.isSidePopupEnabled(); oldLabels = config.isRearViewCameraLabelEnabled();
         oldDeveloper = DeveloperMode.isUnlocked(); oldDestination = new BirdEyeWindowConfig(target).popup();
         DeveloperMode.setEnabled(target, true);
@@ -44,6 +45,7 @@ public class SettingsNavigationAndroidTest {
     }
     @After public void restore() {
         BirdEyePopupService.stop(target);
+        config.setSidePopupAutoFit(oldAutoFit); config.setSidePopupStraighten(oldStraighten);
         config.setSidePopupEnabled(oldSide); config.setRearViewCameraLabelEnabled(oldLabels);
         new BirdEyeWindowConfig(target).setPopup(oldDestination);
         DeveloperMode.setEnabled(target, oldDeveloper);
@@ -128,6 +130,28 @@ public class SettingsNavigationAndroidTest {
             });
         }
     }
+    @Test public void sideAutoFitDefaultsOnAndPersistsIndependentlyOfStraighten() {
+        target.getSharedPreferences("app_config", Context.MODE_PRIVATE).edit().remove("side_popup_auto_fit").commit();
+        config.setSidePopupStraighten(true);
+        assertTrue(new AppConfig(target).isSidePopupAutoFit());
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+            scenario.onActivity(activity -> {
+                SettingsShellFragment shell = install(activity);
+                select(shell, "screen_blind_spot_camera"); open(shell, "sub_side_image");
+                SwitchPreferenceCompat fit = page(shell).findPreference("pref_side_popup_auto_fit");
+                SwitchPreferenceCompat straighten = page(shell).findPreference("pref_side_popup_straighten");
+                assertTrue(fit.isEnabled()); assertTrue(fit.isChecked());
+                fit.performClick(); assertFalse(new AppConfig(target).isSidePopupAutoFit());
+                straighten.performClick(); assertFalse(fit.isEnabled());
+                assertFalse(config.isSidePopupStraighten()); assertFalse(config.isSidePopupAutoFit());
+                straighten.performClick(); assertTrue(fit.isEnabled()); assertFalse(fit.isChecked());
+                back(shell); open(shell, "sub_side_image");
+                fit = page(shell).findPreference("pref_side_popup_auto_fit");
+                assertFalse(fit.isChecked()); fit.performClick(); assertTrue(config.isSidePopupAutoFit());
+            });
+        }
+    }
+
     @Test public void developerToggleHidesCategoryAndRecordingControlsStayInRecording() {
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             scenario.onActivity(activity -> {

@@ -9,6 +9,7 @@ The remotes are `origin` (wysie's fork), `upstream` (dts88's repository), and
 | `upstream-main` | Unmodified dts88 code; tracks `upstream/main` and updates by fast-forward only |
 | `ferix-main` | Unmodified CAMCORDER code; tracks `ferix/main` and updates by fast-forward only |
 | `contrib/01-*` through `contrib/11-*` | Independent upstream contributions; each starts directly from dts88 main, with no fork versions or updater configuration |
+| `feature/side-view-auto-fit` | Default-on corrected side-picture fitting switch; off retains requested framing with black source-lane clipping across screen, HUD and mirror replacement |
 | `fix/about-wysie-credits` | First-person wysie Edition introduction, prominent dts88/Ferix/EVCam credit and clearly attributed original community thanks |
 | `fix/signal-scan-callback-details` | Read-only notification IDs/times and bounded byte payload evidence for blind-spot research; no automatic warning trigger |
 | `fix/side-camera-quality` | Fit corrected side-camera roll in the final window without a second cover zoom; bounded finer mesh for larger views |
@@ -153,10 +154,12 @@ mirror and recording. Both side cameras share one saved popup location; drag it 
 and pinch to resize. The owner reports labels and mirror replacement working on the 009;
 the shared placement and drag changes still need an on-car check.
 
-Corrected side views automatically narrow the requested FOV when high rear/up
-aiming would cross the camera image edge. Aim and saved settings are retained.
+With Auto-fit to avoid black patches on (default), corrected side views narrow
+the requested FOV when high rear/up aiming would cross the camera image edge. Aim and saved settings are retained.
 At 80° rear / 15° up, a requested 90° square view fits at approximately 20.5°;
-this avoids collapsed black tiles but greatly reduces visible coverage.
+this avoids collapsed black tiles but greatly reduces visible coverage. Turning
+Auto-fit off preserves the requested corrected FOV with black missing areas; it
+never samples the neighbouring composite camera.
 
 ## Ferix feature ports
 

@@ -162,7 +162,9 @@ public class SidePopupAspectAndroidTest {
         main(()->{control(window,R.string.side_control_expand).performClick();
             config.setSidePopupAspect("4:3");window.applyConfig();});settled();
         main(()->checkBoundsAndRatio("4:3"));
+        config.setSidePopupAutoFit(false);
         config.resetSidePopupSettings();assertEquals("1:1",config.getSidePopupAspect());
+        assertTrue("Reset restores default-on auto-fit",config.isSidePopupAutoFit());
         assertTrue("Reset keeps the feature enabled",config.isSidePopupEnabled());
     }
     @Test public void pickerRequiresConfirmationAndPersistsAfterRecreation() throws Exception {

@@ -1308,14 +1308,17 @@ public class RearViewMirrorView extends ViewGroup {
     private void drawSideView(Canvas canvas, int width, int height) {
         int lane = sideView.displayLane(laneIndex);
         if (sideStraighten) {
+            boolean autoFit = appConfig.isSidePopupAutoFit();
             sideFraming.configure(sideFov, sideYaw, sidePitch, lane,
-                    (float) width / Math.max(1, height), appConfig.getSidePopupRotation(lane));
+                    (float) width / Math.max(1, height), appConfig.getSidePopupRotation(lane),
+                    autoFit);
             RearViewGeometry.ShaderRects r = RearViewGeometry.toShaderRects(
                     plan, lane, RearViewGeometry.Viewport.full());
             mesh.prepare(SideViewFraming.meshDivisions(width, height),
                     r.laneOffsetX * width, r.laneOffsetY * height,
                     r.laneScaleX * width, r.laneScaleY * height, sideMap);
-            mesh.draw(canvas, 0f, 0f, width, height, paintTexture);
+            if (autoFit) mesh.draw(canvas, 0f, 0f, width, height, paintTexture);
+            else mesh.drawClippedToLane(canvas, 0f, 0f, width, height, paintTexture);
             return;
         }
         RearViewGeometry.Viewport aimed = SideViewAim.viewport(lane,
