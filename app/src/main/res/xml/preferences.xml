@@ -25,6 +25,14 @@
                 android:key="pref_profile_editor"
                 android:title="@string/set_profile_editor_title"
                 android:summary="@string/set_profile_editor_summary" />
+            <ListPreference
+                android:key="pref_preview_layout"
+                android:title="@string/record_preview_layout"
+                app:useSimpleSummaryProvider="false" />
+            <Preference
+                android:key="pref_preview_layout_help"
+                android:summary="@string/record_preview_help"
+                android:selectable="false" />
         </PreferenceCategory>
         <PreferenceCategory
             android:key="group_recording_auto"

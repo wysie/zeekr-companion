@@ -11,9 +11,9 @@ public final class ProfileChannels {
             String key = RecordingSources.key(c.role); if (key != null) recording.add(key);
         }
         java.util.Set<String> preview = new java.util.LinkedHashSet<>();
-        if ("roads".equals(mode) || "roadfront".equals(mode)) preview.add("roadfront");
-        if ("roads".equals(mode) || "roadrear".equals(mode)) preview.add("roadrear");
-        if ("surround".equals(mode)) preview.add("front");
+        if ("surround".equals(mode) || "surround_roads".equals(mode)) preview.add("front");
+        if ("roads".equals(mode) || "roadfront".equals(mode) || "surround_roads".equals(mode)) preview.add("roadfront");
+        if ("roads".equals(mode) || "roadrear".equals(mode) || "surround_roads".equals(mode)) preview.add("roadrear");
         if ("cabin".equals(mode)) preview.add("back");
         if (preview.isEmpty()) preview.addAll(recording);
         java.util.Set<String> all = new java.util.LinkedHashSet<>(recording); all.addAll(preview);

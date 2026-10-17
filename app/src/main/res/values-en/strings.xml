@@ -1258,4 +1258,8 @@
     <string name="vehicle_profile_defaults_7x">Upstream 7X evidence: surround composite plus front and rear cabin feeds. Camera sources are discovered, with manual mappings taking priority. Separate front/rear road feeds are unconfirmed and need manual identification. HUD keeps its own display matching/layout. DIY 360 uses Manual projection; the 009 image fit is not applied. 7X 360 alignment still needs vehicle testing.</string>
     <string name="vehicle_profile_defaults_unknown">Auto only accepts an explicit 009 or 7X model name from Android. Generic names such as Pixel 3a do not identify the car. Existing source overrides and recording choices are kept. HUD checks actual displays independently. DIY 360 remains experimental; no model-specific calibration is inferred.</string>
     <string name="vehicle_profile_stop_recording">Stop recording before changing the vehicle model.</string>
+    <string name="record_preview_current">Preview layout: %1$s</string>
+    <string name="record_preview_surround_roads">Surround + Front + Rear</string>
+    <string name="record_preview_cabin">Driver / front cabin</string>
+    <string name="record_preview_help">Controls the main-screen cameras independently of recording. Dedicated road feeds need identified sources in Edit stream profile; 7X road feeds are not yet confirmed. Exit and reopen after changing. Existing recording and layout choices are kept.</string>
 </resources>

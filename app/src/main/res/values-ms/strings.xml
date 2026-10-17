@@ -1235,4 +1235,8 @@
     <string name="vehicle_profile_defaults_7x">Bukti 7X huluan: komposit sekeliling serta kabin hadapan dan belakang. Sumber ditemui secara automatik; pemetaan manual diutamakan. Suapan jalan hadapan/belakang berasingan belum disahkan dan perlu dikenal pasti secara manual. HUD mengekalkan padanan dan susun atur tersendiri. DIY 360 menggunakan unjuran Manual, tanpa padanan imej 009. Penjajaran 7X masih perlu diuji pada kereta.</string>
     <string name="vehicle_profile_defaults_unknown">Auto hanya menerima nama model 009 atau 7X yang jelas daripada Android. Nama umum seperti Pixel 3a tidak mengenal pasti kereta. Pilihan sumber dan rakaman dikekalkan. HUD menyemak paparan sebenar secara berasingan. DIY 360 kekal eksperimen tanpa andaian penentukuran model.</string>
     <string name="vehicle_profile_stop_recording">Hentikan rakaman sebelum menukar model kenderaan.</string>
+    <string name="record_preview_current">Susun atur pratonton: %1$s</string>
+    <string name="record_preview_surround_roads">Sekeliling + Hadapan + Belakang</string>
+    <string name="record_preview_cabin">Pemandu / kabin hadapan</string>
+    <string name="record_preview_help">Kamera skrin utama dipilih berasingan daripada rakaman. Suapan jalan memerlukan sumber dikenal pasti dalam Sunting profil strim; suapan jalan 7X belum disahkan. Keluar dan buka semula selepas menukar. Pilihan rakaman dan susun atur sedia ada dikekalkan.</string>
 </resources>

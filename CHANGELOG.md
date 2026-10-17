@@ -9,6 +9,9 @@ commit message, not here.
 
 ## Unreleased
 
+- Expose the saved Preview layout under Recording & photos and in the stream editor, with current-choice highlighting, confirmation/cancel and a combined Surround + Front + Rear option.
+- Save preview changes without rewriting recording profiles; preserve existing source, quality, recording and preview selections across upgrades and model changes.
+
 - Add System → Vehicle model (Auto / 009 / 7X) with functional camera defaults, conservative detection, preserved manual overrides and migration of the old 009 mapping opt-in.
 - Show confirmed model feed information and keep HUD display matching independent; retain but suspend the 009-only 360 image fit on a selected/detected 7X.
 
