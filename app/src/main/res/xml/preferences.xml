@@ -331,6 +331,11 @@
             android:key="sub_side_window"
             android:title="@string/menu_popup_window"
             android:summary="@string/menu_popup_window_summary">
+            <ListPreference
+                android:key="pref_side_popup_aspect"
+                android:title="@string/set_side_popup_aspect_title"
+                android:dialogTitle="@string/set_side_popup_aspect_title"
+                app:useSimpleSummaryProvider="false" />
             <SeekBarPreference
                 android:key="pref_side_popup_size"
                 android:title="@string/set_side_popup_size_title"

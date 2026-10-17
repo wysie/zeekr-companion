@@ -126,7 +126,7 @@ public class SideViewPopupView extends ViewGroup {
                             return false;
                         }
                         startSpan = detector.getCurrentSpan();
-                        startSize = params.width;
+                        startSize = params.height;
                         savePosition();
                         return startSpan > 0f;
                     }
@@ -517,17 +517,17 @@ public class SideViewPopupView extends ViewGroup {
         }
         int w = getResources().getDisplayMetrics().widthPixels;
         int h = getResources().getDisplayMetrics().heightPixels;
-        int size = Math.min(Math.min(w, h), Math.max(controls.minimumWindowSize(),
-                SidePopupSizing.size(appConfig.getSidePopupSizePercent(), w, h)));
-        params.width = size;
-        params.height = size;
+        SidePopupSizing.Size size = SidePopupSizing.dimensions(appConfig.getSidePopupSizePercent(),
+                appConfig.getSidePopupAspect(), w, h, controls.minimumWindowSize());
+        params.width = size.width;
+        params.height = size.height;
         int savedX = appConfig.getSidePopupX();
         int savedY = appConfig.getSidePopupY();
-        params.x = SidePopupSizing.clampPosition(savedX < 0 ? (w - size) / 2 : savedX, w, size);
+        params.x = SidePopupSizing.clampPosition(savedX < 0 ? (w - size.width) / 2 : savedX, w, size.width);
         int y = savedY < 0
-                ? Math.round(Math.max(0, h - size) * appConfig.getSidePopupVerticalPercent() / 100f)
+                ? Math.round(Math.max(0, h - size.height) * appConfig.getSidePopupVerticalPercent() / 100f)
                 : savedY;
-        params.y = SidePopupSizing.clampPosition(y, h, size);
+        params.y = SidePopupSizing.clampPosition(y, h, size.height);
     }
 
     private void toggleExpanded() {

@@ -18,6 +18,7 @@ The remotes are `origin` (wysie's fork), `upstream` (dts88's repository), and
 | `feature/009-360-polish` | Wider independent 009 fitted framing, higher-detail Balanced sampling and subtler opaque car surround; retains fitted transforms and vehicle-testing limits |
 | `feature/009-image-fitted-360` | Opt-in empirical 009 ray/plane transforms fitted from owner images, independent of manual geometry; common main/popup/photo projection |
 | `feature/update-channels` | Owner-selected Stable / Beta / Alpha update filtering, legacy switch migration and single-choice settings |
+| `feature/side-popup-aspect-ratio` | Saved square/portrait/landscape shapes for the separate blind-spot window, preserving pinch/drag/expand and independent HUD/Super mirror geometry |
 | `feature/turn-signal-side-view` | One complete side-view feature: PR #4 port, independent Blind spot camera settings, temporary mirror view, Use Super mirror when active option, independent popup and pinch resizing |
 | `feature/camera-labels` | Optional camera labels, developed separately from side-view display modes |
 | `personal-build` | Historical snapshot before promotion to `main`; no new feature integration or build triggers |

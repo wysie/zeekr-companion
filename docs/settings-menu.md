@@ -23,7 +23,7 @@ add navigation depth; their native Back button returns to their parent.
 
 - **Image & framing:** straighten, view width, aim back/up and high-angle crop note,
   separate left/right rotation, centre-screen mirroring, shared camera labels.
-- **Popup window:** size, height/position and drag/pinch/expand/close guidance.
+- **Popup window:** aspect ratio (Square 1:1, Portrait 3:4, Landscape 4:3, Wide 16:9, Extra wide 2.2:1), height/position and drag/pinch/expand/close guidance. Square remains the default; resizing and expand/restore retain the chosen shape.
 - **HUD picture:** Picture (mirror, contrast, night brightness, opacity, edge fade);
   Placement (height, shape, horizontal/vertical position, follow indicator side);
   Advanced experimental routing (009 mapping and factory-view coexistence).

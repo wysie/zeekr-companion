@@ -317,8 +317,14 @@
     <string name="set_side_popup_close_delay_ms_summary">1000 毫秒 = 1 秒。0 表示灯一灭就收。原厂画面出来时照样立刻收</string>
     <string name="set_side_popup_instant_title">即时弹出</string>
     <string name="set_side_popup_instant_summary">挂 D 档时让侧视窗在后台备着，打灯马上有画面。代价是开车时相机一直开着，多用一点电</string>
-    <string name="set_side_popup_size_title">弹窗大小（屏幕高度的 %）</string>
-    <string name="set_side_popup_size_summary">独立窗口使用此大小，也可以双指缩放；最大为屏幕宽度的一半。</string>
+    <string name="set_side_popup_aspect_title">宽高比（宽:高）</string>
+    <string name="side_aspect_square">正方形（1:1）</string>
+    <string name="side_aspect_portrait">竖向（3:4）</string>
+    <string name="side_aspect_landscape">横向（4:3）</string>
+    <string name="side_aspect_wide">宽屏（16:9）</string>
+    <string name="side_aspect_extra_wide">超宽（2.2:1）</string>
+    <string name="set_side_popup_size_title">弹窗高度（屏幕高度的 %）</string>
+    <string name="set_side_popup_size_summary">仅用于独立弹窗。双指缩放保留所选宽高比；必要时等比例缩小以完整显示在屏幕内。</string>
     <string name="set_side_popup_vertical_title">上下位置（%）</string>
     <string name="set_side_popup_vertical_summary">独立窗口两侧共用同一位置；可拖动窗口定位，或用此滑块调整高度。0 为顶部，100 为底部。</string>
     <string name="msg_floating_reset">悬浮按钮已重置</string>
@@ -1121,7 +1127,7 @@
     <string name="menu_image_framing_summary">校正、取景方向、旋转、主屏镜像与共用角标</string>
     <string name="menu_popup_window">弹出窗口</string>
     <string name="menu_popup_window_summary">大小、位置与窗口手势</string>
-    <string name="menu_popup_gestures">拖动可移动，双指缩放可改变大小，角落按钮可放大或还原。X 仅关闭本次打灯画面；取消后再次打灯会重新显示。超级后视镜保留自己的窗口大小与位置。</string>
+    <string name="menu_popup_gestures">拖动可移动，双指缩放可改变大小，角落按钮可放大或还原，并保留所选宽高比。X 仅关闭本次打灯画面；取消后再次打灯会重新显示。超级后视镜与 HUD 保留各自的窗口形状与位置。</string>
     <string name="menu_placement">位置</string>
     <string name="menu_advanced_experimental">高级 · 试验性</string>
     <string name="menu_output">显示输出</string>

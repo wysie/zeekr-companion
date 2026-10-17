@@ -301,8 +301,14 @@
     <string name="set_side_popup_close_delay_ms_summary">1000 ms = 1 second. 0 closes it as soon as the signal goes off. A stock view still closes it straight away</string>
     <string name="set_side_popup_instant_title">Instant pop-up</string>
     <string name="set_side_popup_instant_summary">In D, keeps the side view ready in the background so the picture is there as soon as you signal. The camera stays on while driving, which uses a little more power</string>
-    <string name="set_side_popup_size_title">Pop-up size (% of screen height)</string>
-    <string name="set_side_popup_size_summary">Separate window only; pinch it to resize too. Limited to half the screen width.</string>
+    <string name="set_side_popup_aspect_title">Aspect ratio (width:height)</string>
+    <string name="side_aspect_square">Square (1:1)</string>
+    <string name="side_aspect_portrait">Portrait (3:4)</string>
+    <string name="side_aspect_landscape">Landscape (4:3)</string>
+    <string name="side_aspect_wide">Wide (16:9)</string>
+    <string name="side_aspect_extra_wide">Extra wide (2.2:1)</string>
+    <string name="set_side_popup_size_title">Pop-up height (% of screen height)</string>
+    <string name="set_side_popup_size_summary">Separate window only. Pinch to resize while keeping the selected aspect ratio; scales down when needed to fit the screen.</string>
     <string name="set_side_popup_vertical_title">Height on screen (%)</string>
     <string name="set_side_popup_vertical_summary">Both cameras use one saved position. Drag the separate window to place it, or use this slider for height: 0 top, 100 bottom.</string>
     <string name="msg_floating_reset">Floating button reset</string>
@@ -1137,7 +1143,7 @@
     <string name="menu_image_framing_summary">Correction, viewing direction, rotation, screen mirroring and shared labels</string>
     <string name="menu_popup_window">Popup window</string>
     <string name="menu_popup_window_summary">Size, position and window gestures</string>
-    <string name="menu_popup_gestures">Drag to move, pinch to resize, or use the corner control to expand/restore. X dismisses this signal activation; cancel and signal again to reopen. Super mirror keeps its own window size and position.</string>
+    <string name="menu_popup_gestures">Drag to move, pinch to resize, or use the corner control to expand/restore. The selected aspect ratio is kept. X dismisses this signal activation; cancel and signal again to reopen. Super mirror and HUD keep their own window shapes and positions.</string>
     <string name="menu_placement">Placement</string>
     <string name="menu_advanced_experimental">Advanced · experimental</string>
     <string name="menu_output">Output</string>

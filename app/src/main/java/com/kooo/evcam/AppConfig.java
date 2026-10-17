@@ -109,7 +109,8 @@ public class AppConfig {
     private static final String KEY_SIDE_POPUP_STRAIGHTEN = "side_popup_straighten";  // 侧视拉直鱼眼
     private static final String KEY_SIDE_POPUP_INSTANT = "side_popup_instant";  // D 档时备着相机，打灯即出画面
     private static final String KEY_SIDE_POPUP_CLOSE_DELAY_MS = "side_popup_close_delay_ms";  // 灯灭后再留多少毫秒
-    private static final String KEY_SIDE_POPUP_SIZE = "side_popup_size";  // 边长，屏幕高度的百分比
+    private static final String KEY_SIDE_POPUP_SIZE = "side_popup_size";  // 高度，屏幕高度的百分比
+    private static final String KEY_SIDE_POPUP_ASPECT = "side_popup_aspect";
     private static final String KEY_SIDE_POPUP_VERTICAL = "side_popup_vertical";  // 上下位置，0 顶 100 底
     private static final String KEY_SIDE_POPUP_X = "side_popup_x";
     private static final String KEY_SIDE_POPUP_Y = "side_popup_y";
@@ -1747,6 +1748,7 @@ public class AppConfig {
                 .remove(KEY_SIDE_POPUP_INSTANT)
                 .remove(KEY_SIDE_POPUP_CLOSE_DELAY_MS)
                 .remove(KEY_SIDE_POPUP_SIZE)
+                .remove(KEY_SIDE_POPUP_ASPECT)
                 .remove(KEY_SIDE_POPUP_VERTICAL)
                 .remove(KEY_SIDE_POPUP_X)
                 .remove(KEY_SIDE_POPUP_Y)
@@ -1851,7 +1853,16 @@ public class AppConfig {
                 Math.max(0, Math.min(SIDE_POPUP_MAX_CLOSE_DELAY_MS, rounded))).apply();
     }
 
-    /** 侧视窗边长，屏幕高度的百分比。 */
+    /** Separate popup only; HUD and Super mirror keep their own geometry. */
+    public String getSidePopupAspect() {
+        return com.kooo.evcam.zeekr.SidePopupSizing.normalizeAspect(prefs.getString(KEY_SIDE_POPUP_ASPECT, "1:1"));
+    }
+    public void setSidePopupAspect(String aspect) {
+        prefs.edit().putString(KEY_SIDE_POPUP_ASPECT,
+                com.kooo.evcam.zeekr.SidePopupSizing.normalizeAspect(aspect)).apply();
+    }
+
+    /** 侧视窗高度，屏幕高度的百分比；实际窗口按屏幕边界等比例缩小。 */
     public int getSidePopupSizePercent() {
         int v = prefs.getInt(KEY_SIDE_POPUP_SIZE, SIDE_POPUP_DEFAULT_SIZE_PERCENT);
         return Math.max(SIDE_POPUP_MIN_SIZE_PERCENT, Math.min(SIDE_POPUP_MAX_SIZE_PERCENT, v));

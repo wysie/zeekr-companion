@@ -301,8 +301,14 @@
     <string name="set_side_popup_close_delay_ms_summary">1000 ms = 1 saat. 0 menutupnya sebaik sahaja isyarat dimatikan. Paparan asal kereta tetap menutupnya serta-merta</string>
     <string name="set_side_popup_instant_title">Tetingkap timbul segera</string>
     <string name="set_side_popup_instant_summary">Dalam gear D, pandangan sisi disediakan di latar belakang supaya gambar muncul sebaik sahaja anda memberi isyarat. Kamera kekal hidup semasa memandu dan menggunakan sedikit lagi kuasa</string>
-    <string name="set_side_popup_size_title">Saiz tetingkap timbul (% ketinggian skrin)</string>
-    <string name="set_side_popup_size_summary">Tetingkap berasingan sahaja; cubit dengan dua jari untuk mengubah saiz. Terhad kepada separuh lebar skrin.</string>
+    <string name="set_side_popup_aspect_title">Nisbah aspek (lebar:tinggi)</string>
+    <string name="side_aspect_square">Segi empat sama (1:1)</string>
+    <string name="side_aspect_portrait">Potret (3:4)</string>
+    <string name="side_aspect_landscape">Landskap (4:3)</string>
+    <string name="side_aspect_wide">Lebar (16:9)</string>
+    <string name="side_aspect_extra_wide">Ekstra lebar (2.2:1)</string>
+    <string name="set_side_popup_size_title">Ketinggian tetingkap timbul (% ketinggian skrin)</string>
+    <string name="set_side_popup_size_summary">Tetingkap berasingan sahaja. Cubit untuk mengubah saiz dengan mengekalkan nisbah aspek; dikecilkan mengikut nisbah jika perlu supaya muat pada skrin.</string>
     <string name="set_side_popup_vertical_title">Ketinggian pada skrin (%)</string>
     <string name="set_side_popup_vertical_summary">Kedua-dua kamera menggunakan satu kedudukan tersimpan. Seret tetingkap berasingan atau laraskan ketinggian: 0 atas, 100 bawah.</string>
     <string name="msg_floating_reset">Butang terapung ditetapkan semula</string>
@@ -1114,7 +1120,7 @@
     <string name="menu_image_framing_summary">Pembetulan, arah pandangan, putaran, pencerminan skrin dan label bersama</string>
     <string name="menu_popup_window">Tetingkap timbul</string>
     <string name="menu_popup_window_summary">Saiz, kedudukan dan gerak isyarat tetingkap</string>
-    <string name="menu_popup_gestures">Seret untuk alih, cubit untuk ubah saiz, atau guna kawalan penjuru untuk besar/pulih. X menutup paparan bagi isyarat semasa; batalkan dan beri isyarat semula untuk buka. Cermin super mengekalkan saiz dan kedudukannya sendiri.</string>
+    <string name="menu_popup_gestures">Seret untuk alih, cubit untuk ubah saiz, atau guna kawalan penjuru untuk besar/pulih. Nisbah aspek dikekalkan. X menutup paparan bagi isyarat semasa; batalkan dan beri isyarat semula untuk buka. Cermin super dan HUD mengekalkan bentuk dan kedudukan sendiri.</string>
     <string name="menu_placement">Kedudukan</string>
     <string name="menu_advanced_experimental">Lanjutan · percubaan</string>
     <string name="menu_output">Output</string>
