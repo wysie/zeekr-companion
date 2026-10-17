@@ -109,7 +109,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:text="@string/editor_cameras_summary"
+                        android:text="@string/record_groups_help"
                         android:textAppearance="@style/TextAppearance.Cam.Caption"
                         android:textColor="@color/text_secondary" />
                 </LinearLayout>
@@ -124,7 +124,7 @@
                     android:text="@string/editor_open_lanes" />
             </LinearLayout>
 
-            <com.kooo.evcam.ui.ResponsiveCardRow
+            <LinearLayout
                 android:id="@+id/editor_cameras"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

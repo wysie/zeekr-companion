@@ -32,6 +32,7 @@ final class CameraFeedExporter {
     private static final int MAX_JPEG_BYTES = 32 * 1024 * 1024;
     private final CameraManager manager;
     private final File folder;
+    private final android.content.SharedPreferences discoveries;
     private final HandlerThread thread = new HandlerThread("DeveloperCameraProbe");
     private final Handler callbacks;
     private final ProbeCloseGuard guard = new ProbeCloseGuard();
@@ -49,6 +50,7 @@ final class CameraFeedExporter {
     CameraFeedExporter(Context context, File folder, Consumer<String> progress, Runnable released) {
         manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         this.folder = folder; this.progress = progress; this.released = released;
+        discoveries = context.getSharedPreferences("camera_discovery", Context.MODE_PRIVATE);
         thread.start(); callbacks = new Handler(thread.getLooper());
     }
 
@@ -69,13 +71,24 @@ final class CameraFeedExporter {
             // Deliver the initial availability inventory before opening any device.
             CountDownLatch barrier = new CountDownLatch(1);
             callbacks.post(barrier::countDown); barrier.await(2, TimeUnit.SECONDS);
-            String[] ids = manager.getCameraIdList();
-            report.put("camera_ids", new JSONArray(Arrays.asList(ids)));
-            for (int n = 0; n < ids.length && !cancelled; n++) {
-                String id = ids[n];
-                JSONObject item = new JSONObject().put("id", id);
+            String[] listed = manager.getCameraIdList();
+            report.put("camera_ids", new JSONArray(Arrays.asList(listed)));
+            java.util.Set<String> advertised = new java.util.LinkedHashSet<>(Arrays.asList(listed));
+            java.util.Set<String> reported = new java.util.LinkedHashSet<>();
+            synchronized (availability) { reported.addAll(availability.keySet()); }
+            for (String id : listed) try { reported.addAll(manager.getCameraCharacteristics(id).getPhysicalCameraIds()); }
+                catch (Exception ignored) { }
+            java.util.List<String> ids = ProbeCameraIds.candidates(advertised, reported);
+            report.put("candidate_ids", new JSONArray(ids));
+            report.put("candidate_policy", "Advertised, physical/availability IDs and numeric 0–15; max 48 candidates, 3 minutes; inaccessible IDs are reported, never permission-bypassed.");
+            long deadline = android.os.SystemClock.elapsedRealtime() + 180_000;
+            for (int n = 0; n < ids.size() && !cancelled; n++) {
+                if (android.os.SystemClock.elapsedRealtime() >= deadline) { report.put("limit_reached", "3-minute scan limit"); break; }
+                String id = ids.get(n);
+                JSONObject item = new JSONObject().put("id", id).put("advertised", advertised.contains(id))
+                        .put("candidate_origin", advertised.contains(id) ? "advertised" : reported.contains(id) ? "physical_or_availability" : "numeric_probe");
                 results.put(item);
-                progress.accept("Camera " + id + " (" + (n + 1) + "/" + ids.length + ")");
+                progress.accept("Camera " + id + " (" + (n + 1) + "/" + ids.size() + ")");
                 try {
                     CameraCharacteristics c = manager.getCameraCharacteristics(id);
                     item.put("lens_facing", c.get(CameraCharacteristics.LENS_FACING));
@@ -90,7 +103,7 @@ final class CameraFeedExporter {
                     item.put("jpeg_sizes", sizesJson(jpegSizes));
                     item.put("yuv_sizes", sizesJson(yuvSizes));
                     synchronized (availability) {
-                        if (!Boolean.TRUE.equals(availability.get(id))) {
+                        if (Boolean.FALSE.equals(availability.get(id)) || advertised.contains(id) && !Boolean.TRUE.equals(availability.get(id))) {
                             item.put("result", "Skipped: unavailable or availability unknown; no takeover attempted");
                             continue;
                         }
@@ -120,6 +133,9 @@ final class CameraFeedExporter {
                         try (FileOutputStream out = new FileOutputStream(file)) { out.write(shot.bytes); }
                         item.put("image", name).put("image_timestamp_ns", shot.timestamp);
                         item.put("result", "Saved");
+                        java.util.Set<String> captured = new java.util.LinkedHashSet<>(discoveries.getStringSet("captured_ids", java.util.Collections.emptySet()));
+                        if (captured.size() < ProbeCameraIds.MAX_CANDIDATES) captured.add(id);
+                        discoveries.edit().putStringSet("captured_ids", captured).apply();
                     } else item.put("result", cancelled ? "Cancelled" : shot.error == null ? "No image" : shot.error);
                     if (!closed) {
                         report.put("closure_warning", "Native close not confirmed. Lease retained; restart app if it does not recover.");

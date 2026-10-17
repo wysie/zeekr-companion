@@ -176,34 +176,22 @@ public final class ProfileSizes {
      * <p>接线那一层用的是槽位名，配置里用的是角色。这里是两者之间唯一的换算点。</p>
      */
     public static String roleForCameraKey(String cameraKey) {
-        if ("front".equals(cameraKey)) {
-            return CameraProfile.ROLE_COMPOSITE;
-        }
-        if ("back".equals(cameraKey)) {
-            return CameraProfile.ROLE_CABIN_1;
-        }
-        if ("left".equals(cameraKey)) {
-            return CameraProfile.ROLE_CABIN_2;
-        }
-        return null;
+        return RecordingSources.role(cameraKey);
     }
 
     /** {@link #roleForCameraKey} 的反向：配置里的角色对应接线用的槽位名。 */
     public static String cameraKeyForRole(String role) {
-        if (CameraProfile.ROLE_COMPOSITE.equals(role)) {
-            return "front";
-        }
-        if (CameraProfile.ROLE_CABIN_1.equals(role)) {
-            return "back";
-        }
-        if (CameraProfile.ROLE_CABIN_2.equals(role)) {
-            return "left";
-        }
-        return null;
+        return RecordingSources.key(role);
     }
 
-    public static String cameraIdFor(Context context, String role) {
+    public static String cameraIdFor(Context context, String role) { return cameraIdFor(context, role, false); }
+    public static String automaticCameraIdFor(Context context, String role) { return cameraIdFor(context, role, true); }
+    private static String cameraIdFor(Context context, String role, boolean automatic) {
         com.kooo.evcam.AppConfig config = new com.kooo.evcam.AppConfig(context);
+        String explicit = automatic ? null : config.getSourceCameraId(role);
+        if (explicit != null) return explicit.isEmpty() ? null : explicit;
+        for (String extra : RecordingSources.EXTRA_ROLES) if (extra.equals(role))
+            return RecordingSources.defaultId(role, config.is009CameraMappingEnabled());
         if (config.is009CameraMappingEnabled()) {
             String key = cameraKeyForRole(role);
             String manual = key == null ? null : config.getCameraOverride(key);

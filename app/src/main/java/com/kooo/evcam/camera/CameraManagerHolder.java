@@ -110,6 +110,7 @@ public class CameraManagerHolder {
 
     /** 一份管线建好之后的样子：主界面画四宫格几何、状态条那一格、座舱格子、出错的提示用。 */
     public static final class Built {
+        final java.util.Map<String, Size> extraSizes = new java.util.LinkedHashMap<>();
         /** 槽位怎么分的（照存下的、或者照列表）；列相机出错时是 null。 */
         public final ZeekrMultiPlan plan;
         /** 合成流的尺寸：探测到的，或者存下的；null = 不知道（环视不是合成流、探测不到也没存过）。 */
@@ -153,22 +154,31 @@ public class CameraManagerHolder {
         final boolean cabinFront;
         final boolean cabinRear;
         final int count;
+        final java.util.Map<String, String> sources = new java.util.LinkedHashMap<>();
 
-        private Shape(String carModel, Profile profile, boolean mapping009) {
+        private Shape(String carModel, Profile profile, boolean mapping009, String previewMode, boolean overlayNeedsSurround) {
             this.mapping009 = mapping009;
             this.carModel = carModel;
             this.profile = profile;
-            channels = com.kooo.evcam.profile.ProfileChannels.of(profile);
-            cabinFront = channels.cabinFront;
-            cabinRear = channels.cabinRear;
+            channels = com.kooo.evcam.profile.ProfileChannels.of(profile, previewMode, overlayNeedsSurround);
+            cabinFront = channels.keys.contains("back");
+            cabinRear = channels.keys.contains("left");
             count = Math.max(1, channels.count);
         }
 
         static Shape of(Context app) {
-            return new Shape(new AppConfig(app).getCarModel(), new ProfileStore(app).current(), new AppConfig(app).is009CameraMappingEnabled());
+            AppConfig config = new AppConfig(app);
+            Shape shape = new Shape(config.getCarModel(), new ProfileStore(app).current(), config.is009CameraMappingEnabled(), config.getPreviewSourceMode(),
+                    config.isSidePopupEnabled() || config.isRearViewEnabled() || new com.kooo.evcam.zeekr.BirdEyeWindowConfig(app).popup());
+            for (String role : com.kooo.evcam.profile.RecordingSources.ALL_ROLES)
+                shape.sources.put(role, config.getSourceCameraId(role));
+            return shape;
         }
 
-        String key() { return carModel + "/channels=" + channels.key() + "/mapping009=" + mapping009; }
+        String key() {
+            StringBuilder key = new StringBuilder(carModel + "/channels=" + channels.key() + "/mapping009=" + mapping009);
+            return key.append("/sources=").append(sources).toString();
+        }
     }
 
     /**
@@ -351,6 +361,9 @@ public class CameraManagerHolder {
         String overrideComposite = config.getCameraOverride(CameraSlots.KEY_SURROUND);
         String overrideCabin1 = config.getCameraOverride(CameraSlots.KEY_CABIN_FRONT);
         String overrideCabin2 = config.getCameraOverride(CameraSlots.KEY_CABIN_REAR);
+        if (shape.sources.get(CameraProfile.ROLE_COMPOSITE) != null) overrideComposite = shape.sources.get(CameraProfile.ROLE_COMPOSITE);
+        if (shape.sources.get(CameraProfile.ROLE_CABIN_1) != null) overrideCabin1 = shape.sources.get(CameraProfile.ROLE_CABIN_1);
+        if (shape.sources.get(CameraProfile.ROLE_CABIN_2) != null) overrideCabin2 = shape.sources.get(CameraProfile.ROLE_CABIN_2);
         String overrides = ZeekrMultiPlan.Stored.overridesKey(overrideComposite, overrideCabin1, overrideCabin2);
         String storedText = config.getStoredSlotMap(shape.carModel);
         ZeekrMultiPlan.Stored stored = ZeekrMultiPlan.Stored.decode(storedText);
@@ -403,6 +416,8 @@ public class CameraManagerHolder {
         Size cabinFrontUse = shape.cabinFront ? profileSize(app, shape.profile, CameraProfile.ROLE_CABIN_1, null) : null;
         Size cabinRearUse = shape.cabinRear ? profileSize(app, shape.profile, CameraProfile.ROLE_CABIN_2, null) : null;
         Built result = new Built(plan, compositeSize, compositeUse, located.diagnostics, false);
+        for (String role : com.kooo.evcam.profile.RecordingSources.EXTRA_ROLES)
+            if (shape.channels.keys.contains(role)) result.extraSizes.put(role, profileSize(app, shape.profile, role, null));
         main.post(() -> finish(manager, shape, result, cabinFrontUse, cabinRearUse));
     }
 
@@ -420,13 +435,21 @@ public class CameraManagerHolder {
             if (plan == null) {
                 manager.initCameras(null, null, null, null, null, null, null, null);
             } else {
-                manager.initCameras(shape.channels.surround ? plan.compositeId : null, null,
-                        shape.cabinFront ? plan.cabin1Id : null, null,
-                        shape.cabinRear ? plan.cabin2Id : null, null,
-                        null, null);
+                java.util.Map<String, String> ids = new java.util.LinkedHashMap<>();
+                for (String key : shape.channels.keys) {
+                    String role = com.kooo.evcam.profile.RecordingSources.role(key);
+                    String explicit = shape.sources.get(role);
+                    String id = "front".equals(key) ? plan.compositeId : "back".equals(key) ? plan.cabin1Id
+                            : "left".equals(key) ? plan.cabin2Id
+                            : com.kooo.evcam.profile.RecordingSources.defaultId(role, shape.mapping009);
+                    if (explicit != null) id = explicit.isEmpty() ? null : explicit;
+                    ids.put(key, id);
+                }
+                manager.initCameras(ids, java.util.Collections.emptyMap());
                 pin(manager, CameraSlots.KEY_SURROUND, result.compositeUse);
                 pin(manager, CameraSlots.KEY_CABIN_FRONT, cabinFrontUse);
                 pin(manager, CameraSlots.KEY_CABIN_REAR, cabinRearUse);
+                for (java.util.Map.Entry<String, Size> extra : result.extraSizes.entrySet()) pin(manager, extra.getKey(), extra.getValue());
                 AppLog.i(TAG, "相机管线建好了（" + builtFor + "）: " + plan + "，环视尺寸 " + result.compositeUse
                         + "（合成流 " + result.compositeSize + "），前座舱 " + cabinFrontUse + "，后座舱 " + cabinRearUse);
             }

@@ -105,12 +105,14 @@ public final class VideoScan {
             AppLog.e("VideoScan", "扫描录像失败", e);
         }
 
-        List<RecordingTimeline.Session> built = RecordingTimeline.build(sources);
+        Map<String, List<RecordingTimeline.Source>> inventory = new HashMap<>(others);
+        inventory.put(CameraSlots.SURROUND, sources);
+        List<RecordingTimeline.Session> built = com.kooo.evcam.zeekr.RecordingCatalog.build(inventory);
         Map<String, List<LaneTrack>> owned = new HashMap<>();
         for (Map.Entry<String, List<RecordingTimeline.Source>> entry : others.entrySet()) {
             long segment = RecordSpecs.segmentMs(RecordSpecs.forCameraKey(app,
                     CameraSlots.keyForSuffix(entry.getKey())).segmentMinutes);
-            owned.put(entry.getKey(), LaneTrack.of(entry.getValue()).byRecording(built, segment));
+            owned.put(entry.getKey(), com.kooo.evcam.zeekr.RecordingCatalog.owned(entry.getValue(), built, segment));
         }
         Set<String> locked = FootageLocks.shownFiles(app, dirs);
 
@@ -128,6 +130,7 @@ public final class VideoScan {
             boolean anyLocked = false;
             for (LaneTrack.Clip clip : clips) {
                 File file = new File(clip.path);
+                if (files.contains(file)) continue;
                 files.add(file);
                 bytes += clip.sizeBytes;
                 anyLocked |= locked.contains(file.getAbsolutePath());

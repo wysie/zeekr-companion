@@ -1059,7 +1059,7 @@
     <string name="msg_record_profile_restart">Pilihan kamera berubah. Keluar dan buka semula aplikasi untuk menggunakannya sebelum merakam.</string>
     <string name="dev_camera_display_title">Alat kamera dan paparan</string>
     <string name="dev_camera_display_summary">Petikan kamera dan ujian paparan bernombor; eksport ke ZeekrShortcutApp/Developer</string>
-    <string name="dev_camera_display_help">Hentikan rakaman dan tutup kamera kilang dahulu.\n\nEksport kamera menyimpan satu imej tanpa pembetulan bagi setiap ID Camera2 yang tersedia, bersama saiz dan ralat. Paparan biasa aplikasi dilepaskan sementara. Aliran kilang peribadi tidak dapat diakses.\n\nPengenalpastian paparan bermula dengan kad besar pada skrin utama. Sahkan kad itu, kemudian uji satu paparan sekunder pada satu masa sehingga 30 saat. Rekod tempat nombor muncul, atau bahawa ia tidak kelihatan. PNG yang dieksport ialah kad yang dijana, bukan tangkapan skrin. Pemetaan kamera dan tetapan HUD tidak diubah.\n\nFail: ZeekrShortcutApp/Developer pada storan dipilih.</string>
+    <string name="dev_camera_display_help">Hentikan rakaman dan tutup kamera kilang dahulu.\n\nEksport menyemak ID diiklankan, ID fizikal/ketersediaan yang dilaporkan dan calon angka 0–15 (maksimum 48 calon, 3 minit). Satu imej asal bagi setiap calon yang boleh diakses, saiz dan kegagalan disimpan. ID tidak sah, tidak tersedia atau ditolak kebenaran dicatat; tiada kebenaran atau penimbal kilang dipintas. Suapan biasa aplikasi dilepaskan sementara.\n\nPengenalpastian paparan bermula dengan kad skrin utama, kemudian paparan sekunder awam satu demi satu. Catat lokasi kad atau jika tidak kelihatan. PNG ialah kad dijana, bukan tangkapan skrin. Pemetaan kamera dan tetapan HUD tidak berubah.\n\nFail: ZeekrShortcutApp/Developer pada storan dipilih.</string>
     <string name="dev_camera_export">Eksport semua suapan kamera</string>
     <string name="dev_display_identify">Kenal pasti paparan dan eksport kad</string>
     <string name="dev_probe_stop">Henti</string>
@@ -1213,4 +1213,18 @@
     <string name="drive_log_failed">Log berhenti atau tidak dapat dimulakan: %1$s</string>
     <string name="drive_log_no_usb">Tiada USB boleh tulis. Tiada simpanan ke storan dalaman.</string>
     <string name="drive_log_stop">Hentikan log</string>
+    <string name="record_group_surround">Sekeliling</string>
+    <string name="record_group_roads">Hadapan + Belakang</string>
+    <string name="record_group_cabin">Kabin</string>
+    <string name="record_group_manual">Pemetaan manual</string>
+    <string name="record_source_choose">Pilih sumber</string>
+    <string name="record_source_unassigned">Belum dipetakan</string>
+    <string name="record_source_pick">Pilih sumber: %1$s</string>
+    <string name="record_source_change">Tukar sumber kamera</string>
+    <string name="record_source_settings">Tetapan kamera</string>
+    <string name="record_source_duplicate">Kamera ini sudah dipetakan kepada sumber aktif lain. Pilih kamera lain atau matikan sumber tersebut.</string>
+    <string name="record_cabin_009_note">Satu suapan kabin disahkan pada 009 ini. Suapan kabin kedua belum dikenal pasti.</string>
+    <string name="record_preview_layout">Susun atur pratonton</string>
+    <string name="record_preview_selected">Sumber rakaman dipilih</string>
+    <string name="record_groups_help">Pilih beberapa kumpulan rakaman. Hadapan + Belakang menggunakan kamera jalan berasingan, bukan potongan sekeliling. Susun atur pratonton bebas daripada rakaman. Mulakan semula aplikasi selepas menukar sumber.</string>
 </resources>

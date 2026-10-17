@@ -172,7 +172,7 @@ public final class CameraDisplayToolsActivity extends AppCompatActivity {
                 try {
                     destination = folder("CameraScan");
                     JSONObject report = report("camera_ids");
-                    report.put("note", "Exposed Camera2 IDs only; no profile/settings changes, no private-buffer access. Images retain native orientation. JPEG may differ from preview geometry.");
+                    report.put("note", "Advertised Camera2 IDs plus bounded physical/availability/numeric candidates; no profile/settings changes, no private-buffer access. Images retain native orientation. JPEG may differ from preview geometry.");
                     CameraFeedExporter task = new CameraFeedExporter(getApplicationContext(), destination,
                             text -> main.post(() -> show(text)), () -> main.post(this::releaseLease));
                     exporter = task;
