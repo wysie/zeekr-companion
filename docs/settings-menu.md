@@ -8,14 +8,14 @@ add navigation depth; their native Back button returns to their parent.
 
 | Main category | Groups and options |
 | --- | --- |
-| Recording & photos | Cameras: stream profile, profile editor and opt-in verified-export 009 mapping. Automatic recording: launch, driver arrival, driver departure. Screen off: keep recording. Photos: JPEG output. **Stamps & driving information →** app stamp, plate switch/text, timestamp, specifications, information bar and signal-selection shortcut. |
+| Recording & photos | Cameras: stream profile, profile editor with independent recording groups and preview; model defaults live under System. Automatic recording: launch, driver arrival, driver departure. Screen off: keep recording. Photos: JPEG output. **Stamps & driving information →** app stamp, plate switch/text, timestamp, specifications, information bar and signal-selection shortcut. |
 | Storage | Destination, USB power guidance, relay write; video/photo limits and usage; protected footage, flash-to-pass/hard-braking triggers and protected usage. |
 | Super mirror | Enable and guide; camera selection and button/gesture controls; correction, field of view and shared camera labels; window width/height; reset. |
 | Blind spot camera | Enable; Screen/HUD/Both and mirror relationship; minimum screen-opening speed and factory priority; prewarming and close delay; **Image & framing →**, **Popup window →**, **HUD picture →**; reset. |
 | 360° camera | Experimental explanation; main-button destination; Show 360° popup; quality; popup size/layout reset; calibration dialog and calibration/quality reset. |
 | Floating button | Enable; tap/hold actions; size, opacity and timer appearance; lock position; reset. |
-| Interface | Language, vehicle display name, action side, recording statistics, reduced motion, vehicle panel; in-app picture adjustments, main preview/photo/video correction method and field of view. |
-| System | App startup, Diagnostics, system/vehicle information, developer-mode enable with warning. |
+| Interface | Language, action side, recording statistics, reduced motion, vehicle panel; in-app picture adjustments, main preview/photo/video correction method and field of view. |
+| System | Vehicle model (Auto / 009 / 7X), confirmed feed/default information, app startup, Diagnostics, system/vehicle information, developer-mode enable with warning. |
 | Developer options | Recording internals: allow internal storage fallback (off by default), pipeline, H.264, wake lock and duration. Image/rendering: preview/playback GPU methods. Camera research: mapping, camera/display tools and batch exports, raw frames, USB drive logging with live status, signal scanner, camera-app logging, permissions. Maintenance: repair recordings, archive. |
 | Updates | Check for updates, include beta releases. |
 
@@ -88,5 +88,12 @@ adjustment**, inside the Activity. It is ordinary configuration, not gated by
 Developer mode. The panel includes enable/disable and reset; unsupported camera
 controls are omitted. The former Developer picture-adjustment/reset rows are gone.
 Blind spot camera → HUD picture has independent **HUD picture contrast at night** (100% default).
-Recording & photos offers the explicit **009 camera mapping (verified export)**
-preset, off by default and requiring exit/reopen; it is independent of Vehicle name.
+System → **Vehicle model** replaces the cosmetic name selector and separate 009
+mapping switch. Auto uses explicit Android model names; unidentified head units
+show a manual-selection prompt. An enabled legacy 009 mapping is retained as 009,
+but a cosmetic name alone never changes camera sources. The model selects automatic
+source defaults, builtin names and Auto artwork. Manual sources and saved picture
+settings remain. Exit and reopen after changing. The evidence row explains 009
+confirmed sources, upstream 7X surround/cabin evidence and unverified road/360
+capabilities. HUD still matches actual displays; the 009-only image fit is suspended
+without deletion on 7X. See [model defaults](vehicle-model-profiles.md).

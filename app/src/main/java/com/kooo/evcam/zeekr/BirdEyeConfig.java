@@ -7,13 +7,19 @@ import android.content.SharedPreferences;
 public final class BirdEyeConfig {
     public static final String FIT_MARGIN = "image_fit_margin";
     public final SharedPreferences preferences;
+    private final Context context;
     public BirdEyeConfig(Context context) {
+        this.context = context.getApplicationContext();
         preferences = context.getApplicationContext().getSharedPreferences("bird_eye_calibration", Context.MODE_PRIVATE);
     }
     public int get(String key, int fallback) { return preferences.getInt(key, fallback); }
     public void set(String key, int value) { preferences.edit().putInt(key, value).apply(); }
     public int quality() { return BirdEyeQuality.normalize(get("quality", BirdEyeQuality.BALANCED)); }
-    public boolean imageFitted() { return get("projection_profile", 0) == 1; }
+    /** A saved 009 fit is retained, but cannot be applied to a selected/detected 7X. */
+    public boolean allows009ImageFit() {
+        return new com.kooo.evcam.AppConfig(context).getVehicleModel() != VehicleIdentity.Model.ZEEKR_7X;
+    }
+    public boolean imageFitted() { return allows009ImageFit() && get("projection_profile", 0) == 1; }
     public void setImageFitted(boolean on) { set("projection_profile", on ? 1 : 0); }
     public static String key(int camera, String field) { return "camera_" + camera + "_" + field; }
     public void assignLane(int camera, int lane) {

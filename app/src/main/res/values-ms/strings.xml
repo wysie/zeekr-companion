@@ -1227,4 +1227,12 @@
     <string name="record_preview_layout">Susun atur pratonton</string>
     <string name="record_preview_selected">Sumber rakaman dipilih</string>
     <string name="record_groups_help">Pilih beberapa kumpulan rakaman. Hadapan + Belakang menggunakan kamera jalan berasingan, bukan potongan sekeliling. Susun atur pratonton bebas daripada rakaman. Mulakan semula aplikasi selepas menukar sumber.</string>
+    <string name="vehicle_profile_title">Model kenderaan</string>
+    <string name="vehicle_profile_defaults_title">Lalai model dan suapan disahkan</string>
+    <string name="vehicle_profile_summary">%1$s · Keluar dan buka semula selepas menukar</string>
+    <string name="vehicle_profile_unknown">Auto · Tidak dikenal pasti. Pilih model.</string>
+    <string name="vehicle_profile_defaults_009">Eksport pemilik 009: Sekeliling = kamera 3, Jalan hadapan = 0, Jalan belakang = 1, Kabin = 2. Suapan kabin kedua belum disahkan. Pemetaan manual diutamakan. HUD menggunakan padanan paparan dan susun atur tersendiri. Padanan imej 009 kekal sebagai pilihan 360 berasingan; ketepatan jarak dan rakaman serentak masih perlu diuji pada kereta.</string>
+    <string name="vehicle_profile_defaults_7x">Bukti 7X huluan: komposit sekeliling serta kabin hadapan dan belakang. Sumber ditemui secara automatik; pemetaan manual diutamakan. Suapan jalan hadapan/belakang berasingan belum disahkan dan perlu dikenal pasti secara manual. HUD mengekalkan padanan dan susun atur tersendiri. DIY 360 menggunakan unjuran Manual, tanpa padanan imej 009. Penjajaran 7X masih perlu diuji pada kereta.</string>
+    <string name="vehicle_profile_defaults_unknown">Auto hanya menerima nama model 009 atau 7X yang jelas daripada Android. Nama umum seperti Pixel 3a tidak mengenal pasti kereta. Pilihan sumber dan rakaman dikekalkan. HUD menyemak paparan sebenar secara berasingan. DIY 360 kekal eksperimen tanpa andaian penentukuran model.</string>
+    <string name="vehicle_profile_stop_recording">Hentikan rakaman sebelum menukar model kenderaan.</string>
 </resources>
