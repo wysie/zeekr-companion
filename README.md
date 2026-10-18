@@ -50,7 +50,9 @@ For in-app delivery, select **Updates → Update channel → Alpha**; Beta and S
 channels deliberately exclude this release. It retains the application ID and
 signing certificate for an in-place update. New behavior still needs on-car testing.
 
-The main page now keeps a compact identity, the recording control and Camera status
+The main-page title pairs a small linked-companions logo with **Zeekr Companion**;
+the mark follows the light/dark theme and the text wraps for larger fonts.
+The main page keeps the recording control and Camera status
 at the top of the control panel, with Settings/Minimise pinned at the bottom.
 Recording and Camera status are separate actions with an 8dp gap and matching
 card corners, including while recording; Camera status retains its live-source tint.
