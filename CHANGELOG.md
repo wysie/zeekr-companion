@@ -9,6 +9,8 @@ commit message, not here.
 
 ## Unreleased
 
+- Include road/manual sources in camera ownership checks, availability replay and diagnostic open lists.
+
 ## [2.11.47-alpha.1] - 2026-10-18
 
 - Add Interface → Theme with Follow system, Light and Dark; apply the selected palette to camera-popup controls while keeping menu font sizes unchanged.
