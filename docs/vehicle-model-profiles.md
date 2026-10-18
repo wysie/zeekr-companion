@@ -54,10 +54,13 @@ listed source is not a guarantee that every selected combination can run togethe
   confirmed 009 display-3 1280×640 match selects its existing independent right-hand
   layout defaults. Generic/7X matching and saved layout remain separate. Model
   selection cannot force a HUD destination or suppress factory graphics.
-- The optional 009 fitted 360 calibration remains opt-in. On selected/detected
-  7X it is not applied or offered in the projection picker; its stored choice and
-  values are retained and restored when switching back to 009. Manual geometry
-  remains shared estimates, with no verified 7X fitted calibration.
+- 360 projection offers Automatic, Manual and 009 image fit. Untouched setups use
+  Automatic: selected/detected 009 uses the experimental 009 fit; 7X/unknown uses
+  Manual. Existing explicit choices and legacy manual lens edits stay preserved.
+  Choosing Automatic retains tuning; Reset calibration clears it and restores
+  Automatic. An explicit saved 009 fit on 7X is shown as inactive and retained for
+  switching back, never silently relabelled Automatic. There is no verified 7X fit.
+  See [projection selection and preservation](automatic-360-projection.md).
 - Blind-spot picture width/angles, correction fitting and other common defaults
   remain shared; no measured per-model replacements have been established.
   These controls remain adjustable and are never reset on each launch.

@@ -12,6 +12,7 @@ outgoing PRs; neither index substitutes for the other.
 | Branch | Purpose |
 | --- | --- |
 | `main` | Combined installable fork: completed features, fork version numbers, update source and build configuration |
+| `feature/automatic-360-projection` | Automatic/Manual/009 projection intent with model-aware defaults, preserved explicit/legacy manual tuning and inactive-7X reporting |
 | `feature/floating-double-tap` | Optional double-tap action with delayed single-tap arbitration only when assigned; preserve existing tap/hold choices, dragging and cancellation |
 | `upstream-main` | Unmodified dts88 code; tracks `upstream/main` and updates by fast-forward only |
 | `ferix-main` | Unmodified CAMCORDER code; tracks `ferix/main` and updates by fast-forward only |

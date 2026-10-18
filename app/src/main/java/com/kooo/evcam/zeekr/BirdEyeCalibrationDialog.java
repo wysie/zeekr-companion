@@ -103,7 +103,7 @@ public final class BirdEyeCalibrationDialog {
             mirror.setMinHeight(dp(context, 48)); lens.addView(mirror);
             mirror.setOnCheckedChangeListener((button, on) -> {
                 if (!BirdEyePreview.canConfigure()) return;
-                config.preferences.edit().putBoolean(BirdEyeConfig.key(index, "mirror"), on).apply(); changed.run();
+                config.setManualMirror(index, on); changed.run();
             });
         };
         camera.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
@@ -155,7 +155,8 @@ public final class BirdEyeCalibrationDialog {
                 if (!fromUser) return;
                 if (!BirdEyePreview.canConfigure()) return;
                 int selected = min + progress;
-                config.set(key, selected);
+                if (BirdEyeProjectionMode.manualGeometryKey(key)) config.setManualParameter(key, selected);
+                else config.set(key, selected);
                 label.setText(context.getString(R.string.bird_eye_value, context.getString(title), selected));
                 bar.setContentDescription(label.getText());
                 changed.run();

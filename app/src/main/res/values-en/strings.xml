@@ -1215,9 +1215,12 @@
 <string name="gallery_delete_result">%1$d deleted · %2$d protected · %3$d could not be deleted</string>
 
     <string name="bird_eye_profile">Projection profile</string>
+    <string name="bird_eye_profile_auto">Automatic</string>
+    <string name="bird_eye_profile_auto_summary">Automatic · %1$s</string>
+    <string name="bird_eye_profile_009_inactive">009 image fit (inactive on 7X)</string>
     <string name="bird_eye_profile_manual">Manual (estimated defaults)</string>
     <string name="bird_eye_profile_009">009 image fit (experimental)</string>
-    <string name="bird_eye_profile_note">Experimental fit for the 009, based on reference images. Distance accuracy is unverified. Your manual calibration is kept when switching profiles.</string>
+    <string name="bird_eye_profile_note">Automatic follows the vehicle model: experimental 009 image fit for 009, Manual for 7X or an unidentified car. Existing choices and manual lens edits are preserved. Select Automatic to follow the model without deleting tuning; Reset calibration clears tuning and restores Automatic.</string>
     <string name="bird_eye_profile_fitted_note">009 image fit is active. Its separate view margin defaults to 300 for wider framing; lower values zoom in. Reference units are not measured distances. Adjust sources and quality here; select Manual in 360 settings to edit lens geometry.</string>
 
     <string name="bird_eye_car_colour">Car colour</string>
@@ -1257,7 +1260,7 @@
     <string name="vehicle_profile_defaults_title">Model defaults and confirmed feeds</string>
     <string name="vehicle_profile_summary">%1$s · Exit and reopen after changing</string>
     <string name="vehicle_profile_unknown">Auto · Not identified. Choose your model.</string>
-    <string name="vehicle_profile_defaults_009">009 owner export: Surround = camera 3, Front road = 0, Rear road = 1, Cabin = 2. No second cabin feed confirmed. Manual mappings override these defaults. HUD uses its own verified display match and saved layout. The optional 009 image fit remains a separate 360 setting; distance accuracy and simultaneous recording still need vehicle checks.</string>
+    <string name="vehicle_profile_defaults_009">009 owner export: Surround = camera 3, Front road = 0, Rear road = 1, Cabin = 2. No second cabin feed confirmed. Manual mappings override these defaults. HUD uses its own display match and saved layout. Automatic 360 projection uses the experimental 009 fit; explicit choices and manual tuning take priority. Distance accuracy and simultaneous recording still need vehicle checks.</string>
     <string name="vehicle_profile_defaults_7x">Upstream 7X evidence: surround composite plus front and rear cabin feeds. Camera sources are discovered, with manual mappings taking priority. Separate front/rear road feeds are unconfirmed and need manual identification. HUD keeps its own display matching/layout. DIY 360 uses Manual projection; the 009 image fit is not applied. 7X 360 alignment still needs vehicle testing.</string>
     <string name="vehicle_profile_defaults_unknown">Auto only accepts an explicit 009 or 7X model name from Android. Generic names such as Pixel 3a do not identify the car. Existing source overrides and recording choices are kept. HUD checks actual displays independently. DIY 360 remains experimental; no model-specific calibration is inferred.</string>
     <string name="vehicle_profile_stop_recording">Stop recording before changing the vehicle model.</string>

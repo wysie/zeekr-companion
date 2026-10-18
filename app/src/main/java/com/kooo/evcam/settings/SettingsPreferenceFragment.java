@@ -1347,12 +1347,16 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                 SettingSpec.entry("1", "Balanced", R.string.bird_eye_quality_balanced),
                 SettingSpec.entry("2", "Full", R.string.bird_eye_quality_full)), Integer.toString(config.quality()),
                 value -> config.set("quality", Integer.parseInt(value)));
+        SettingSpec.Entry autoProjection = SettingSpec.entry("-1", "Automatic", R.string.bird_eye_profile_auto);
         SettingSpec.Entry manualProjection = SettingSpec.entry("0", "Manual", R.string.bird_eye_profile_manual);
         bindEnum("pref_bird_profile", config.allows009ImageFit()
-                ? SettingSpec.of("bird_profile", "360 projection", "0", manualProjection,
+                ? SettingSpec.of("bird_profile", "360 projection", "-1", autoProjection, manualProjection,
                         SettingSpec.entry("1", "009 image fit", R.string.bird_eye_profile_009))
-                : SettingSpec.of("bird_profile", "360 projection", "0", manualProjection),
-                config.imageFitted() ? "1" : "0", value -> config.setImageFitted("1".equals(value)));
+                : "1".equals(config.projectionMode())
+                        ? SettingSpec.of("bird_profile", "360 projection", "-1", autoProjection, manualProjection,
+                                SettingSpec.entry("1", "009 image fit (inactive)", R.string.bird_eye_profile_009_inactive))
+                        : SettingSpec.of("bird_profile", "360 projection", "-1", autoProjection, manualProjection),
+                config.projectionMode(), config::setProjectionMode, () -> refreshBirdEyeProjectionSummary(config));
         bindSlider("pref_bird_popup_size", 20, 75, window.size(), "%", value -> {
             window.setSize(value); com.kooo.evcam.zeekr.BirdEyePopupService.applyLayout();
         });
@@ -1372,7 +1376,8 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                 return false; // Service lifecycle reconciles X, startup refusal and other stop paths.
             });
         }
-        onClick("pref_bird_calibrate", pref -> com.kooo.evcam.zeekr.BirdEyeCalibrationDialog.show(requireContext(), () -> {}));
+        onClick("pref_bird_calibrate", pref -> com.kooo.evcam.zeekr.BirdEyeCalibrationDialog.show(requireContext(),
+                this::refreshBirdEyePopup));
         onClick("pref_bird_reset_layout", pref -> {
             window.resetLayout(); com.kooo.evcam.zeekr.BirdEyePopupService.applyLayout();
             SeekBarPreference size = findPreference("pref_bird_popup_size"); if (size != null) size.setValue(window.size());
@@ -1382,12 +1387,30 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             ListPreference quality = findPreference("pref_bird_quality");
             if (quality != null) { quality.setValue(Integer.toString(config.quality())); quality.setSummary(quality.getEntry()); }
             ListPreference profile = findPreference("pref_bird_profile");
-            if (profile != null) { profile.setValue("0"); profile.setSummary(profile.getEntry()); }
+            if (profile != null) { profile.setValue(config.projectionMode()); refreshBirdEyeProjectionSummary(config); }
         });
+    }
+
+    private void refreshBirdEyeProjectionSummary(com.kooo.evcam.zeekr.BirdEyeConfig config) {
+        ListPreference profile = findPreference("pref_bird_profile");
+        if (profile == null) return;
+        if ("-1".equals(config.projectionMode())) {
+            profile.setSummary(getString(R.string.bird_eye_profile_auto_summary,
+                    getString(config.imageFitted() ? R.string.bird_eye_profile_009 : R.string.bird_eye_profile_manual)));
+        } else if ("1".equals(config.projectionMode()) && !config.allows009ImageFit()) {
+            profile.setSummary(R.string.bird_eye_profile_009_inactive);
+        } else profile.setSummary(profile.getEntry());
     }
 
     private void refreshBirdEyePopup() {
         if (!isAdded() || getPreferenceScreen() == null) return;
+        ListPreference profile = findPreference("pref_bird_profile");
+        if (profile != null) {
+            com.kooo.evcam.zeekr.BirdEyeConfig config = new com.kooo.evcam.zeekr.BirdEyeConfig(requireContext());
+            profile.setValue(config.projectionMode()); refreshBirdEyeProjectionSummary(config);
+            ListPreference quality = findPreference("pref_bird_quality");
+            if (quality != null) { quality.setValue(Integer.toString(config.quality())); quality.setSummary(quality.getEntry()); }
+        }
         SwitchPreferenceCompat visible = findPreference("pref_bird_visible");
         if (visible != null) visible.setChecked(com.kooo.evcam.zeekr.BirdEyePopupService.isRunning());
         SeekBarPreference size = findPreference("pref_bird_popup_size");

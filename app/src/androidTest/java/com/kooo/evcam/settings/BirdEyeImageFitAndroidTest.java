@@ -10,6 +10,7 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import com.kooo.evcam.MainActivity;
+import com.kooo.evcam.AppConfig;
 import com.kooo.evcam.R;
 import com.kooo.evcam.zeekr.BirdEyeConfig;
 import com.kooo.evcam.zeekr.BirdEyeProjection;
@@ -38,10 +39,12 @@ public class BirdEyeImageFitAndroidTest {
         }
         assertTrue(edit.commit());
     }
-    @Test public void profileKeepsManualValuesQualityAndLaneAssignmentsAndResetRestoresManual() {
+    @Test public void profileKeepsManualValuesQualityAndLaneAssignmentsAndResetRestoresAutomatic() {
         BirdEyeConfig config=new BirdEyeConfig(target());Map<String,?> saved=config.preferences.getAll();
+        SharedPreferences app=target().getSharedPreferences("app_config",Context.MODE_PRIVATE);
+        Map<String,?> oldApp=app.getAll(); new AppConfig(target()).setVehicleProfileMode("009");
         try {
-            config.reset(); assertFalse(config.imageFitted());
+            config.reset(); assertTrue(config.imageFitted()); assertEquals("-1", config.projectionMode());
             config.set("length",550);config.set("width",210);config.set("margin",300);
             config.set("quality",2);config.set(BirdEyeConfig.key(0,"pitch"),47);
             config.assignLane(0,3);config.setImageFitted(true);
@@ -58,13 +61,15 @@ public class BirdEyeImageFitAndroidTest {
             assertEquals(47,manual.cameras[0].pitch,0);
             config.setImageFitted(true);assertEquals(1.5,config.read().margin,0);
             config.set("projection_profile",99);assertFalse(config.read().imageFitted());
-            config.setImageFitted(true);config.reset();assertFalse(config.imageFitted());
-        } finally { restore(config.preferences,saved); }
+            config.setImageFitted(true);config.reset();assertTrue(config.imageFitted());
+            assertEquals("-1", config.projectionMode());
+        } finally { restore(config.preferences,saved); restore(app,oldApp); }
     }
     @Test public void nativeProfilePickerRequiresConfirmationAndPersistsAcrossRecreation() throws Exception {
         BirdEyeConfig config=new BirdEyeConfig(target());Map<String,?> saved=config.preferences.getAll();
         SharedPreferences app=target().getSharedPreferences("app_config",Context.MODE_PRIVATE);
         Map<String,?> oldApp=app.getAll();boolean developer=DeveloperMode.isUnlocked();
+        new AppConfig(target()).setVehicleProfileMode("009");
         for(String permission:new String[]{Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE}) InstrumentationRegistry.getInstrumentation().getUiAutomation()
                 .grantRuntimePermission(target().getPackageName(),permission);
@@ -95,10 +100,24 @@ public class BirdEyeImageFitAndroidTest {
                 assertEquals("1",pref.getValue());assertEquals(activity.getString(R.string.bird_eye_profile_009),pref.getSummary());
                 page(shell).scrollToPreference("pref_bird_profile");
             });capture("009-profile-selected.png");
+            onView(withText(R.string.bird_eye_profile)).perform(click());
+            onView(withText(R.string.bird_eye_profile_manual)).perform(click());
+            onView(withText(R.string.action_ok)).perform(click());
+            assertEquals("0", config.projectionMode());
+            onView(withText(R.string.bird_eye_profile)).perform(click());
+            onView(withText(R.string.bird_eye_profile_auto)).perform(click());
+            onView(withText(R.string.action_cancel)).perform(click());
+            assertEquals("0", config.projectionMode());
+            onView(withText(R.string.bird_eye_profile)).perform(click());
+            onView(withText(R.string.bird_eye_profile_auto)).perform(click());
+            onView(withText(R.string.action_ok)).perform(click());
+            assertEquals("-1", config.projectionMode()); assertTrue(config.imageFitted());
+            capture("009-profile-auto.png");
             scenario.onActivity(activity->{
                 SettingsShellFragment shell=(SettingsShellFragment)activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                 page(shell).findPreference("pref_bird_reset_calibration").performClick();
-                assertFalse(config.imageFitted());assertEquals("0",((ListPreference)page(shell).findPreference("pref_bird_profile")).getValue());
+                assertTrue(config.imageFitted());assertEquals("-1",((ListPreference)page(shell).findPreference("pref_bird_profile")).getValue());
+                assertTrue(((ListPreference)page(shell).findPreference("pref_bird_profile")).getSummary().toString().contains("009"));
             });
         } finally { restore(config.preferences,saved);restore(app,oldApp);DeveloperMode.setEnabled(target(),developer); }
     }

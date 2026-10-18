@@ -19,8 +19,25 @@ public final class BirdEyeConfig {
     public boolean allows009ImageFit() {
         return new com.kooo.evcam.AppConfig(context).getVehicleModel() != VehicleIdentity.Model.ZEEKR_7X;
     }
-    public boolean imageFitted() { return allows009ImageFit() && get("projection_profile", 0) == 1; }
-    public void setImageFitted(boolean on) { set("projection_profile", on ? 1 : 0); }
+    public String projectionMode() { return BirdEyeProjectionMode.selection(preferences.getAll()); }
+    public boolean imageFitted() {
+        return BirdEyeProjectionMode.imageFitted(projectionMode(), new com.kooo.evcam.AppConfig(context).getVehicleModel());
+    }
+    public void setProjectionMode(String mode) {
+        int value = BirdEyeProjectionMode.AUTO.equals(mode) ? -1 : BirdEyeProjectionMode.FIT_009.equals(mode) ? 1 : 0;
+        set(BirdEyeProjectionMode.KEY, value);
+    }
+    public void setImageFitted(boolean on) {
+        setProjectionMode(on ? BirdEyeProjectionMode.FIT_009 : BirdEyeProjectionMode.MANUAL);
+    }
+    /** A user lens edit pins Manual; opening controls or changing quality does not. */
+    public void setManualParameter(String key, int value) {
+        if (!BirdEyeProjectionMode.manualGeometryKey(key)) throw new IllegalArgumentException("Not manual geometry: " + key);
+        preferences.edit().putInt(key, value).putInt(BirdEyeProjectionMode.KEY, 0).apply();
+    }
+    public void setManualMirror(int camera, boolean on) {
+        preferences.edit().putBoolean(key(camera, "mirror"), on).putInt(BirdEyeProjectionMode.KEY, 0).apply();
+    }
     public static String key(int camera, String field) { return "camera_" + camera + "_" + field; }
     public void assignLane(int camera, int lane) {
         int[] previous = new int[4];

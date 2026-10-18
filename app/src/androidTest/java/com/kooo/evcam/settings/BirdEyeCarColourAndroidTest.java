@@ -10,6 +10,7 @@ import androidx.test.core.app.ActivityScenario;
 import androidx.test.ext.junit.runners.AndroidJUnit4;
 import androidx.test.platform.app.InstrumentationRegistry;
 import com.kooo.evcam.MainActivity;
+import com.kooo.evcam.AppConfig;
 import com.kooo.evcam.R;
 import com.kooo.evcam.zeekr.BirdEyeAppearance;
 import com.kooo.evcam.zeekr.BirdEyeConfig;
@@ -43,6 +44,7 @@ public class BirdEyeCarColourAndroidTest {
         BirdEyeConfig config=new BirdEyeConfig(target());Map<String,?> oldCalibration=config.preferences.getAll();
         SharedPreferences app=target().getSharedPreferences("app_config",Context.MODE_PRIVATE);
         Map<String,?> oldApp=app.getAll();
+        new AppConfig(target()).setVehicleProfileMode("009");
         for(String permission:new String[]{Manifest.permission.CAMERA,Manifest.permission.READ_EXTERNAL_STORAGE,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE}) InstrumentationRegistry.getInstrumentation().getUiAutomation()
                 .grantRuntimePermission(target().getPackageName(),permission);
@@ -89,7 +91,8 @@ public class BirdEyeCarColourAndroidTest {
             scenario.onActivity(activity->{
                 SettingsShellFragment shell=(SettingsShellFragment)activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                 page(shell).findPreference("pref_bird_reset_calibration").performClick();
-                assertFalse(config.imageFitted());assertEquals(BirdEyeAppearance.BLACK,appearance.colour());
+                assertTrue(config.imageFitted());assertEquals("-1",config.projectionMode());
+                assertEquals(BirdEyeAppearance.BLACK,appearance.colour());
                 assertEquals(BirdEyeAppearance.MODEL_7X,appearance.model());
                 assertEquals("black",((ListPreference)page(shell).findPreference("pref_bird_car_colour")).getValue());
             });

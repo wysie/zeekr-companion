@@ -1192,9 +1192,12 @@
 <string name="gallery_delete_result">%1$d dipadam · %2$d dilindungi · %3$d tidak dapat dipadam</string>
 
     <string name="bird_eye_profile">Profil unjuran</string>
+    <string name="bird_eye_profile_auto">Automatik</string>
+    <string name="bird_eye_profile_auto_summary">Automatik · %1$s</string>
+    <string name="bird_eye_profile_009_inactive">Padanan imej 009 (tidak aktif pada 7X)</string>
     <string name="bird_eye_profile_manual">Manual (nilai lalai anggaran)</string>
     <string name="bird_eye_profile_009">Padanan imej 009 (eksperimen)</string>
-    <string name="bird_eye_profile_note">Padanan eksperimen untuk 009 berdasarkan imej rujukan. Ketepatan jarak belum disahkan. Penentukuran manual dikekalkan apabila menukar profil.</string>
+    <string name="bird_eye_profile_note">Automatik mengikut model: padanan imej 009 eksperimen untuk 009, Manual untuk 7X atau kereta yang tidak dikenal pasti. Pilihan dan larasan kanta manual sedia ada dikekalkan. Pilih Automatik untuk mengikut model tanpa memadam larasan; tetapan semula penentukuran memadam larasan dan memulihkan Automatik.</string>
     <string name="bird_eye_profile_fitted_note">Padanan imej 009 aktif. Margin pandangan berasingan bermula pada 300 untuk pandangan lebih luas; nilai lebih kecil mengezum masuk. Unit rujukan bukan jarak yang diukur. Laraskan sumber dan kualiti di sini; pilih Manual dalam tetapan 360 untuk mengedit geometri kanta.</string>
 
     <string name="bird_eye_car_colour">Warna kereta</string>
@@ -1234,7 +1237,7 @@
     <string name="vehicle_profile_defaults_title">Lalai model dan suapan disahkan</string>
     <string name="vehicle_profile_summary">%1$s · Keluar dan buka semula selepas menukar</string>
     <string name="vehicle_profile_unknown">Auto · Tidak dikenal pasti. Pilih model.</string>
-    <string name="vehicle_profile_defaults_009">Eksport pemilik 009: Sekeliling = kamera 3, Jalan hadapan = 0, Jalan belakang = 1, Kabin = 2. Suapan kabin kedua belum disahkan. Pemetaan manual diutamakan. HUD menggunakan padanan paparan dan susun atur tersendiri. Padanan imej 009 kekal sebagai pilihan 360 berasingan; ketepatan jarak dan rakaman serentak masih perlu diuji pada kereta.</string>
+    <string name="vehicle_profile_defaults_009">Eksport pemilik 009: Surround = kamera 3, Jalan hadapan = 0, Jalan belakang = 1, Kabin = 2. Suapan kabin kedua belum disahkan. Pemetaan manual mengatasi nilai lalai ini. HUD menggunakan padanan paparan dan susun atur tersendiri. Unjuran 360 Automatik menggunakan padanan 009 eksperimen; pilihan jelas dan larasan manual diutamakan. Ketepatan jarak dan rakaman serentak masih memerlukan ujian kenderaan.</string>
     <string name="vehicle_profile_defaults_7x">Bukti 7X huluan: komposit sekeliling serta kabin hadapan dan belakang. Sumber ditemui secara automatik; pemetaan manual diutamakan. Suapan jalan hadapan/belakang berasingan belum disahkan dan perlu dikenal pasti secara manual. HUD mengekalkan padanan dan susun atur tersendiri. DIY 360 menggunakan unjuran Manual, tanpa padanan imej 009. Penjajaran 7X masih perlu diuji pada kereta.</string>
     <string name="vehicle_profile_defaults_unknown">Auto hanya menerima nama model 009 atau 7X yang jelas daripada Android. Nama umum seperti Pixel 3a tidak mengenal pasti kereta. Pilihan sumber dan rakaman dikekalkan. HUD menyemak paparan sebenar secara berasingan. DIY 360 kekal eksperimen tanpa andaian penentukuran model.</string>
     <string name="vehicle_profile_stop_recording">Hentikan rakaman sebelum menukar model kenderaan.</string>

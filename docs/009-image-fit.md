@@ -1,7 +1,10 @@
 # Experimental 009 image-fitted 360 projection
 
 Choose Settings → 360° camera → Calibration → Projection profile → **009 image
-fit (experimental)**. Manual remains the default, including on upgrades. The original profile shipped in 2.11.44-alpha.1. The framing, sampling and
+fit (experimental)** to force that choice, or use Automatic to follow the vehicle
+model. Untouched setups use Automatic (009 fit for 009, Manual for 7X/unknown);
+existing explicit choices and manual lens edits are preserved. See
+[selection and migration](automatic-360-projection.md). The original profile shipped in 2.11.44-alpha.1. The framing, sampling and
 backing refinements below are subsequent source changes, not changes to that
 published APK.
 
@@ -34,7 +37,7 @@ working copy; Full requests the live native buffer within the existing budget.
 Physical-lens sliders do not apply to an empirical transform, so its calibration
 dialog shows source selection, quality and margin instead. Switching back to
 Manual restores the saved dimensions and lens parameters. Reset calibration and
-quality returns to Manual and existing defaults. Diagnostics/photo sidecars name
+quality clears tuning and returns to Automatic and model-dependent defaults. Diagnostics/photo sidecars name
 `009-image-fit-20261016` and record its transforms/reference units.
 
 Invalid/non-finite or singular transforms are rejected. Rays outside lens/UV
