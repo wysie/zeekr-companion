@@ -93,6 +93,37 @@ public class ChannelSchedulerTest {
 
     // ================================================================= 叫醒
 
+    private void configuredStartupWithFailure(int reason, boolean oldSession) {
+        claim(Holder.PREVIEW);
+        declare(surround, pvS); declare(rear, pvR);
+        settle(); at(100); opened(surround);
+        surround.counts = new SessionCounts.Snapshot(oldSession ? now - 1 : now, now,
+                0, 0, 1, now, reason, 1, java.util.Collections.emptyMap());
+        settle();
+        surround.progressAgeMs = CameraLiveness.STUCK_MS;
+        at(100 + CameraLiveness.STUCK_MS);
+    }
+
+    @Test public void currentErrorWithoutFramesReleasesTheStartupSlotAtNoProgressBudget() {
+        configuredStartupWithFailure(android.hardware.camera2.CaptureFailure.REASON_ERROR, false);
+        assertEquals(Arrays.asList("open [PREVIEW]"), rear.actions);
+        assertEquals(1, lines("stepEnded OPEN front timedOut").size());
+    }
+
+    @Test public void flushedRequestsDoNotShortenTheStartupWindow() {
+        configuredStartupWithFailure(android.hardware.camera2.CaptureFailure.REASON_FLUSHED, false);
+        assertTrue(rear.actions.isEmpty());
+        at(ChannelRules.STEP_MAX_MS);
+        assertEquals(Arrays.asList("open [PREVIEW]"), rear.actions);
+    }
+
+    @Test public void previousSessionErrorsDoNotShortenTheStartupWindow() {
+        configuredStartupWithFailure(android.hardware.camera2.CaptureFailure.REASON_ERROR, true);
+        assertTrue(rear.actions.isEmpty());
+        at(ChannelRules.STEP_MAX_MS);
+        assertEquals(Arrays.asList("open [PREVIEW]"), rear.actions);
+    }
+
     /** 几次叫醒并成一次 post：熄屏那一下所有监听者都做完了它才跑一轮。 */
     @Test
     public void wakesCoalesceIntoOneRound() {

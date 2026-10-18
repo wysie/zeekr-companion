@@ -1483,6 +1483,7 @@ public final class ChannelScheduler {
             list.add(new ChannelRules.Lane(entry.getKey(), entry.getValue().cameraId()));
         }
         w = new ChannelRules.World(list);
+        w.startupHandoverUntil = clock.now() + ChannelRules.QUIET_MS;
         // 亮熄屏从一开始就照实：第一轮之前录像、拍照来问「座舱被熄屏放开没有」（releasedByDark），读到的不能是新世界的初值（黑着）
         readScreen();
         running = null;
@@ -1993,6 +1994,10 @@ public final class ChannelScheduler {
         lane.record = host.recordPrep(lane.key);
         lane.firstFrameAt = port.firstFrameAt();
         lane.progressAgeMs = port.progressAgeMs();
+        SessionCounts.Snapshot evidence = port.sessionCounts();
+        lane.failedBeforeFirstFrame = evidence != null && evidence.configuredAt == lane.sessionSince
+                && evidence.repeatingAt != 0 && evidence.results == 0 && evidence.failures > 0
+                && evidence.firstFailReason == android.hardware.camera2.CaptureFailure.REASON_ERROR;
         reconcileDevice(lane, port, now);
 
         CameraAvailabilityWatch.Word word = host.word(lane.cameraId);
@@ -2538,8 +2543,9 @@ public final class ChannelScheduler {
                     break;
                 }
                 case OTHER_INSTANCE:
+                case STARTUP_HANDOVER:
                     sig = d.why.name();
-                    wait = new Wait(d.why, null, null, d.ms, "", 0, null, null, false, false);
+                    wait = new Wait(d.why, key, null, d.ms, "", 0, null, null, false, false);
                     break;
                 case QUIET:
                     sig = d.why + "|" + key + "|" + d.pending;

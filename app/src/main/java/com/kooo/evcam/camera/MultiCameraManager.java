@@ -2782,6 +2782,9 @@ public class MultiCameraManager {
             case OTHER_INSTANCE:
                 text = "另一份管线把相机关完（换车型、退出后马上又开）";
                 break;
+            case STARTUP_HANDOVER:
+                text = "启动交接：先等环视放开，再按次序开其他相机";
+                break;
             case SURROUND_CLOSING:
                 text = "环视先关完，再关座舱";
                 break;
@@ -3442,6 +3445,10 @@ public class MultiCameraManager {
                     break;
                 case OTHER_INSTANCE:
                     line = "通道：等另一份管线把相机关完（换车型、退出后马上又开）再动";
+                    break;
+                case STARTUP_HANDOVER:
+                    line = "通道：启动交接先等环视放开，最多 " + (ChannelRules.QUIET_MS / 1000)
+                            + " 秒；不抢占原厂相机";
                     break;
                 case QUIET:
                     line = "通道：相机服务 " + seconds(wait.agoMs) + "前报了别人引起的变化"

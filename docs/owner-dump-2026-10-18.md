@@ -41,6 +41,27 @@ for these observed 009 sessions/settings; it is not a guarantee for every
 resolution, output combination, firmware or 7X. The dump has no Videos directory,
 so file contents and continuity cannot be independently verified here.
 
+### Startup corrections
+
+The startup scheduler now gives a requested, initially unavailable Surround source
+up to three seconds to finish its availability handover before opening another
+ready source. If it stays factory-held, other sources proceed after that window;
+a single requested source and already available Surround add no new wait.
+
+A configured, repeating session that returns Camera2 errors and no successful
+results uses the existing eight-second no-progress budget instead of occupying
+the whole 15-second opening slot. Flushed requests, previous-session errors and
+slow starts without errors keep the original window. Results from a replaced
+capture session no longer advance the current session's liveness/FPS counters.
+Factory ownership, close completion, rescue limits and owner picture values are
+retained. Slow native disconnects still have to finish; these changes cannot
+guarantee a particular first-frame time on the vehicle.
+
+Validation: 1,491 JVM tests, debug lint, debug/test/release assembly, and three
+native API 32 regressions for source ownership and stale-session progress. The
+startup scenarios replay availability and session evidence in controlled tests;
+on-car confirmation after an update/cold start remains necessary.
+
 ## Road and manual camera ownership lookup
 
 The extra source roles were missing from the ownership lookup used by

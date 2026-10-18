@@ -300,6 +300,8 @@ public final class ChannelRules {
         long firstFrameAt;
         /** 多久没有进展：出了一帧、开了相机、建好会话都算（SingleCamera.progressAgeMs）。 */
         long progressAgeMs;
+        /** Current session has returned an error before producing any successful result. */
+        boolean failedBeforeFirstFrame;
         /** 不在：相机服务的缓存里没有这一路，问的时候回放里也没有（10-10 车机拿着后座舱时就是这样）。 */
         boolean absent;
         /** 相机服务对这一路说的最后一句：TRUE 空闲、FALSE 被占用、null 从没说过。不论多早说的（大纲 §7 解读 1）。 */
@@ -404,6 +406,8 @@ public final class ChannelRules {
         long exitSince;
         /** 另一个管理器实例在关相机（换车型时两份并存），从什么时候起；0 = 没有。 */
         long otherClosingSince;
+        /** Bounded initial handover window; genuine long-term holders must not block other sources. */
+        long startupHandoverUntil;
         /** 手上那一步；null = 没有。{@link ChannelRules#begin} 记、{@link ChannelRules#finish} 清。 */
         Step step;
 
@@ -487,6 +491,8 @@ public final class ChannelRules {
         JUDGING,
         /** 相机服务 3 秒内报过别人引起的变化。 */
         QUIET,
+        /** Give a briefly unavailable Surround source its initial handover window before other opens. */
+        STARTUP_HANDOVER,
         /** 开之前等这一路的录像输出（最多 2 秒）。 */
         RECORD_OUTPUT,
         /** 退出 / 车机要睡：等还没关完的那几路关完。 */
@@ -806,6 +812,13 @@ public final class ChannelRules {
         if (lane.device == Device.OPEN && lane.firstFrameAt != 0 && lane.firstFrameAt >= step.startedAt) {
             return Outcome.DONE;
         }
+        // A configured session returning errors but no frames need not consume the
+        // full 15-second open slot. Keep the existing eight-second no-progress
+        // budget; slow successful starts and flushed/old-session errors do not qualify.
+        boolean failedStartup = lane.device == Device.OPEN && lane.firstFrameAt == 0
+                && lane.sessionSince >= step.startedAt && lane.failedBeforeFirstFrame
+                && lane.progressAgeMs >= CameraLiveness.STUCK_MS;
+        if (failedStartup) return Outcome.TIMED_OUT;
         return late ? Outcome.TIMED_OUT : Outcome.RUNNING;
     }
 
@@ -1596,6 +1609,25 @@ public final class ChannelRules {
 
         // 开
         String deferredKey = null;
+        Lane initialSurround = w.lane(CameraSlots.KEY_SURROUND);
+        boolean anotherSourceReady = false;
+        for (Lane lane : w.lanes) {
+            if (lane != initialSurround && lane.device == Device.CLOSED && lane.mark == null
+                    && !rescuing(lane) && shouldOpen(w, lane)) {
+                anotherSourceReady = true;
+                break;
+            }
+        }
+        if (usable && w.startupHandoverUntil > now && initialSurround != null
+                && initialSurround.device == Device.CLOSED && shouldOpen(w, initialSurround)
+                && initialSurround.mark != null && anotherSourceReady) {
+            // After an APK update availability can arrive rear-free / surround-busy,
+            // then release Surround a few hundred ms later. Do not open rear first
+            // during that handover; once the bounded window expires, keep the usual
+            // rule that a factory-held camera cannot starve other requested feeds.
+            return withDeferred(Decision.waitFor(Why.STARTUP_HANDOVER, initialSurround.key,
+                    w.startupHandoverUntil - now).about(Move.OPEN), null);
+        }
         for (Lane lane : w.lanes) {
             if (lane.device != Device.CLOSED || lane.mark != null || rescuing(lane) || !shouldOpen(w, lane)) {
                 continue;

@@ -2973,9 +2973,10 @@ public class SingleCamera {
         public void onCaptureCompleted(@NonNull CameraCaptureSession session,
                                       @NonNull CaptureRequest request,
                                       @NonNull TotalCaptureResult result) {
-            if (session == captureSession) {
-                counts.completed();
-            }
+            // Late results from a replaced/closed session cannot prove that the
+            // current output is alive or postpone recovery of its stalled request.
+            if (session != captureSession) return;
+            counts.completed();
             captureBeat.beat(StallWatch.now());
             long previousCapture = lastCaptureUptimeMs;
             lastProgressUptimeMs = SystemClock.uptimeMillis();
