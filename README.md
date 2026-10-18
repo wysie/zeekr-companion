@@ -34,7 +34,8 @@ credits this fork’s origin in dts88’s Zeekr Shortcut, alongside Ferix and EV
 Future APKs use `ZeekrCompanion-<version>.apk`. The repository, updater destination,
 application ID, signing certificate, preferences and `ZeekrShortcutApp` folders stay
 compatible with existing installations. Existing download links remain valid.
-Logo concepts are being reviewed; the installed icon has not changed yet.
+The launcher uses the approved linked-companions logo, with matching Android themed
+and notification icons. [Vector artwork and colours](docs/branding/README.md) are included.
 
 Current test download: [wysie Edition 2.11.49-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.49-alpha.1).
 For in-app delivery, select **Updates → Update channel → Alpha**; Beta and Stable

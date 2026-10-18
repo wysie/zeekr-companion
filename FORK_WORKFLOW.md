@@ -12,6 +12,7 @@ outgoing PRs; neither index substitutes for the other.
 | Branch | Purpose |
 | --- | --- |
 | `main` | Combined installable fork: completed features, fork version numbers, update source and build configuration |
+| `feature/companion-icon` | Approved v3 linked-companions adaptive, themed and notification icons; compatible package/signing identity |
 | `feature/companion-branding` | Zeekr Companion display name, About attribution and compatible APK/release naming; logo selection remains separate |
 | `feature/main-page-controls` | Compact main page, shared preview selector, explicit popup controls and expanded preview with retained camera views and accessible recording controls |
 | `fix/camera-status-and-recovery` | Read-only recorder/producer status, persistent live/planned counts and truthful accessible waiting states; no retry-policy changes |
