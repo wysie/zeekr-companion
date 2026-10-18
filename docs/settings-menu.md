@@ -1,5 +1,10 @@
 # Settings map
 
+The [Astra UI and UX review from 2026-10-18](ui-ux-review-2026-10-18.md)
+is saved as deferred work, including prioritized recommendations, the proposed
+implementation batches and unresolved owner reports. It does not change the
+implemented settings described below.
+
 The native two-pane sidebar remains: Recording & photos, Storage, Super mirror,
 Blind spot camera, 360° camera, Floating button, Interface, System, Developer
 options (when enabled), and Updates. About & credits remains a direct destination.
