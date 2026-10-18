@@ -149,3 +149,9 @@ Origins, third-party licences and boundaries: [NOTICE.md](NOTICE.md).
 Only results from the current capture session update its frame/progress and FPS
 counters. Late results from a replaced session cannot postpone stall detection.
 This does not change camera ownership, retry budgets or recording defaults.
+### Settings typography
+
+Sidebar destinations and About/Quit actions retain the same Body size when rows
+are recycled. Long labels wrap to two lines instead of autoshrinking. MainActivity
+keeps its existing 1.2× font scale in a local configuration before view inflation;
+other screens retain their own scale. Theme changes do not select a smaller font.
