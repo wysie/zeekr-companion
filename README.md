@@ -103,9 +103,10 @@ release numbers remain independent of upstream.
 - **Optional camera labels:** identify the displayed camera in Super mirror and
   the side window. Super mirror also has a defaults reset.
 
-The following additions are adapted from
+The following additions include work adapted from
 [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER), with source credit
-in [NOTICE.md](NOTICE.md) and source hashes in [port notes](docs/ferix-feature-ports.md).
+in [NOTICE.md](NOTICE.md) and source hashes in [port notes](docs/ferix-feature-ports.md),
+alongside fork follow-ups such as USB drive logging.
 
 - **Phone sharing fixes and diagnostics:** reachable network addresses, transfer status and HEAD/compression fixes. Android timeout reports still need device verification.
 - **Automatic USB drive logs:** Settings → Developer options → Drive logging to USB starts a separate read-only logging session. Turn it off after the drive and wait for Saved; raw signal events, app/lifecycle logs and automatic start/stop Diagnostics are already in a timestamped `ZeekrShortcutApp/Logs/Drive_…` folder. It keeps logging when the main screen closes, bypasses the private scan’s 60,000-event/filtered-export limit, retains numbered parts and older sessions, and never falls back to internal storage. Limits are 8 hours, 256 MiB per session and a 64 MiB free-space reserve; Android may stop it earlier. It does not start on boot or resume automatically after process death. See [drive logging behavior and validation](docs/usb-drive-logging.md).
@@ -139,6 +140,12 @@ Ferix's unmodified CAMCORDER source. Individual contribution branches stay separ
 see the [submitted upstream PRs](docs/upstream-contributions.md). See
 [Fork workflow](FORK_WORKFLOW.md) for the branch layout. Whenever a feature is
 added or changed, update this README with its behavior, settings and limitations.
+
+The [source integration ledger](docs/source-integration-ledger.md) records the exact
+dts88/Ferix heads reviewed, what we imported or adapted, what we deferred/skipped,
+and experiments later removed. It links local commits, reasons and verified release
+inclusion. Update it on every external review, including reviews with no imports;
+tracking a source branch does not mean all its changes are in this fork.
 
 Release naming uses **Zeekr Shortcut — wysie Edition** for the app and release title,
 `vX.Y.Z-alpha.N` / `vX.Y.Z-beta.N` / `vX.Y.Z` for tags, and

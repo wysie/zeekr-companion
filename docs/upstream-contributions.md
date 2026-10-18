@@ -1,5 +1,8 @@
 # Upstream contributions
 
+This index tracks outgoing PRs. Incoming source reviews, imports, adaptations and
+exclusions are tracked in the [source integration ledger](source-integration-ledger.md).
+
 Submitted on 2026-10-16 against dts88 main at `0f145f7a` (2.12.0-alpha).
 
 Each branch starts directly from that upstream commit and builds independently.
