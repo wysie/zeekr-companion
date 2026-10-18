@@ -1199,9 +1199,12 @@
 <string name="gallery_delete_result">已删除 %1$d · 已保护 %2$d · 无法删除 %3$d</string>
 
     <string name="bird_eye_profile">投影配置</string>
+    <string name="bird_eye_profile_auto">自动</string>
+    <string name="bird_eye_profile_auto_summary">自动 · %1$s</string>
+    <string name="bird_eye_profile_009_inactive">009 图像拟合（在 7X 上停用）</string>
     <string name="bird_eye_profile_manual">手动（估计默认值）</string>
     <string name="bird_eye_profile_009">009 图像拟合（实验性）</string>
-    <string name="bird_eye_profile_note">基于 009 参考画面的实验性拟合，距离精度未验证。切换配置会保留手动校准值。</string>
+    <string name="bird_eye_profile_note">自动按车型选择：009 使用实验性图像拟合，7X 或未识别车型使用手动投影。已保存的投影选择和手动镜头参数会保留。选择自动可恢复跟随车型，且不删除调校值。重置校准会清除调校并恢复自动。</string>
     <string name="bird_eye_profile_fitted_note">当前使用 009 图像拟合。独立视野边距默认为 300，显示范围更宽；减小数值可放大。参考单位并非实测距离。可在此调整源画面和画质；编辑镜头参数请在 360 设置中选择手动。</string>
 
     <string name="bird_eye_car_colour">车身颜色</string>
@@ -1241,7 +1244,7 @@
     <string name="vehicle_profile_defaults_title">车型默认值与已确认画面</string>
     <string name="vehicle_profile_summary">%1$s · 更改后请退出并重新打开</string>
     <string name="vehicle_profile_unknown">自动 · 未识别，请选择车型。</string>
-    <string name="vehicle_profile_defaults_009">009 车主导出：环视 = 相机 3，前方道路 = 0，后方道路 = 1，座舱 = 2。尚未确认第二路座舱。手动映射优先。HUD 单独匹配已核对的显示器并保留其布局。009 图像拟合仍需在 360 设置中单独选择；距离精度与多路同时录制还需实车验证。</string>
+    <string name="vehicle_profile_defaults_009">009 车主导出：环视 = 相机 3，前方道路 = 0，后方道路 = 1，座舱 = 2。未确认第二路座舱。手动映射优先。HUD 独立匹配显示器并保留布局。360 自动投影使用实验性 009 图像拟合，显式选择和手动调校优先；距离精度和同时录制仍需实车验证。</string>
     <string name="vehicle_profile_defaults_7x">上游 7X 证据：环视合成流及前、后座舱画面。自动发现相机，手动映射优先。独立前后道路画面尚未确认，需手动识别。HUD 保留独立的显示器匹配和布局。DIY 360 使用手动投影，不应用 009 图像拟合。7X 拼接对齐仍需实车测试。</string>
     <string name="vehicle_profile_defaults_unknown">自动只接受安卓明确报告的 009 或 7X 车型名，Pixel 3a 等通用名称不能识别车型。保留手动来源和录制选择。HUD 独立检查实际显示器。DIY 360 仍为实验功能，不推断车型标定。</string>
     <string name="vehicle_profile_stop_recording">请先停止录制，再更改车型。</string>

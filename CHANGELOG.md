@@ -9,6 +9,8 @@ commit message, not here.
 
 ## Unreleased
 
+- Add model-aware Automatic 360 projection: use the 009 fit on 009, preserve explicit choices and legacy manual lens edits, and retain tuning when returning to Automatic.
+
 - Keep About & credits, Quit app and settings sections at a consistent sidebar font size after scrolling; wrap long labels without shrinking them.
 
 - Add an optional floating-button double-tap action and Do nothing choice, preserving immediate single taps when double tap is off.

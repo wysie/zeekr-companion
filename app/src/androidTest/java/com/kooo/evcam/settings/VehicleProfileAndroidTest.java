@@ -98,6 +98,52 @@ public class VehicleProfileAndroidTest {
         assertTrue(bird.imageFitted()); assertEquals(275, bird.get(BirdEyeConfig.FIT_MARGIN, 0));
         assertFalse(config.isAutoStartRecording()); assertFalse(config.isDriveAutoStart());
     }
+    @Test public void automatic360FollowsModelWithoutWritingAnOverrideAndRetainsManualTuning() {
+        BirdEyeConfig bird = new BirdEyeConfig(target);
+        config.setVehicleProfileMode("009");
+        assertEquals("-1", bird.projectionMode()); assertTrue(bird.read().imageFitted());
+        assertFalse(bird.preferences.contains("projection_profile"));
+        config.setVehicleProfileMode("7x"); assertFalse(bird.read().imageFitted());
+        assertEquals("-1", bird.projectionMode());
+        config.setVehicleProfileMode("auto"); assertFalse(bird.imageFitted());
+        // Real manual edits while Auto resolves to Manual must pin that intent before a later model change.
+        bird.setManualParameter("length", 550); bird.setManualParameter(BirdEyeConfig.key(0, "pitch"), 47);
+        config.setVehicleProfileMode("009"); assertEquals("0", bird.projectionMode()); assertFalse(bird.imageFitted());
+        bird.setProjectionMode("-1"); assertTrue(bird.imageFitted()); assertEquals(550, bird.get("length", 0));
+        bird.setProjectionMode("0"); assertEquals(5.5, bird.read().length, 0);
+        assertEquals(47, bird.read().cameras[0].pitch, 0);
+    }
+    @Test public void legacySliderEditsAreManualButQualitySourcesAndFittedMarginAreNot() {
+        BirdEyeConfig bird = new BirdEyeConfig(target); config.setVehicleProfileMode("009");
+        bird.set("quality", 2); bird.assignLane(0, 3); bird.set(BirdEyeConfig.FIT_MARGIN, 275);
+        assertEquals("-1", bird.projectionMode()); assertTrue(bird.imageFitted());
+        assertEquals(2, bird.quality()); assertEquals(3, bird.read().cameras[0].lane);
+        bird.set("length", 520); // Old versions saved slider values without a projection flag.
+        assertEquals("0", bird.projectionMode()); assertFalse(bird.imageFitted());
+        bird.setProjectionMode("-1"); assertTrue(bird.imageFitted());
+        bird.setManualMirror(0, true); assertEquals("0", bird.projectionMode());
+        bird.reset(); assertEquals("-1", bird.projectionMode()); assertTrue(bird.imageFitted());
+        assertEquals(BirdEyeQuality.BALANCED, bird.quality());
+    }
+    @Test public void saved009FitOn7xRemainsVisibleAsInactiveInsteadOfBeingRelabelledAutomatic() {
+        BirdEyeConfig bird = new BirdEyeConfig(target); bird.setImageFitted(true);
+        config.setVehicleProfileMode("7x");
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+            scenario.onActivity(activity -> {
+                SettingsShellFragment shell = new SettingsShellFragment();
+                activity.findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
+                activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container, shell).commitNow();
+                shell.getChildFragmentManager().executePendingTransactions(); shell.showSection("screen_bird_eye");
+                shell.getChildFragmentManager().executePendingTransactions();
+                SettingsPreferenceFragment page = (SettingsPreferenceFragment) shell.getChildFragmentManager().findFragmentById(R.id.settings_detail);
+                ListPreference projection = page.findPreference("pref_bird_profile");
+                assertEquals("1", projection.getValue());
+                assertEquals(activity.getString(R.string.bird_eye_profile_009_inactive), projection.getSummary());
+                assertFalse(bird.imageFitted()); assertEquals(1, bird.preferences.getInt("projection_profile", 0));
+            });
+        }
+        config.setVehicleProfileMode("009"); assertTrue(bird.imageFitted());
+    }
     @Test public void systemHasOneFunctionalSelectorWithEvidenceAndNoOldMappingToggle() {
         try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
             scenario.onActivity(activity -> {

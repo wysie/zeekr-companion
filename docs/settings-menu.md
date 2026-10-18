@@ -26,7 +26,7 @@ does not establish the exact cause of the owner's older-build screenshot.
 | Storage | Destination, USB power guidance, relay write; video/photo limits and usage; protected footage, flash-to-pass/hard-braking triggers and protected usage. |
 | Super mirror | Enable and guide; camera selection and button/gesture controls; correction, field of view and shared camera labels; window width/height; reset. |
 | Blind spot camera | Enable; Screen/HUD/Both and mirror relationship; minimum screen-opening speed and factory priority; prewarming and close delay; **Image & framing →**, **Popup window →**, **HUD picture →**; reset. |
-| 360° camera | Experimental explanation; main-button destination; Show 360° popup; quality; popup size/layout reset; calibration dialog and calibration/quality reset. |
+| 360° camera | Experimental explanation; main-button destination; Show 360° popup; quality; Automatic / Manual / 009 image-fit projection; popup size/layout reset; calibration dialog and calibration/quality reset. Automatic follows the model unless an explicit choice or legacy manual tuning is preserved. |
 | Floating button | Enable; tap/double-tap/hold actions (including Do nothing); size, opacity and timer appearance; lock position; reset. Double tap starts off; assigning it briefly delays single taps. |
 | Interface | Language, action side, recording statistics, reduced motion, vehicle panel; in-app picture adjustments, main preview/photo/video correction method and field of view. |
 | System | Vehicle model (Auto / 009 / 7X), confirmed feed/default information, app startup, Diagnostics, system/vehicle information, developer-mode enable with warning. |
