@@ -93,7 +93,7 @@ public class RearViewMirrorView extends ViewGroup {
     private final AutoFitTextureView textureView;
     private final CameraLabel cameraLabel;
     private final SideViewControls sideControls;
-    private final SideViewExpansion sideExpansion = new SideViewExpansion();
+    private final SideViewExpansion windowExpansion = new SideViewExpansion();
 
     private WindowManager.LayoutParams params;
     private boolean hiddenForSidePopup;
@@ -222,9 +222,8 @@ public class RearViewMirrorView extends ViewGroup {
 
         textureView = new AutoFitTextureView(context);
         addView(textureView);
-        sideControls = new SideViewControls(context, SideViewPopupService::dismissCurrentSideView,
-                this::toggleSideViewExpanded);
-        sideControls.setVisibility(View.GONE);
+        sideControls = new SideViewControls(context, this::closeWindow, this::toggleWindowExpanded);
+        sideControls.setMirrorMode(true);
         addView(sideControls);
         setClipToOutline(true);
         setOutlineProvider(new android.view.ViewOutlineProvider() {
@@ -301,6 +300,7 @@ public class RearViewMirrorView extends ViewGroup {
             buttonMode = appConfig.isRearViewButtonMode();
             docked = RearViewTouchModel.dockedAt(params.x, params.width, screenWidth())
                     != RearViewTouchModel.Dock.NONE;
+            refreshWindowControls();
             // 上次就是贴边收起来的：画布一开始就不可见，和贴边那一刻一样（见 syncDockState）
             textureView.setVisibility(docked ? View.INVISIBLE : View.VISIBLE);
             idleHandler.postDelayed(idleTick, IDLE_TICK_MS);
@@ -356,10 +356,12 @@ public class RearViewMirrorView extends ViewGroup {
         if (!attached || params == null) {
             return;
         }
+        // A replacement captures the normal mirror geometry, never its temporary expansion.
+        if (!sideView.active()) restoreWindowExpanded();
         sideView.show(lane, params.x, params.y, params.width, params.height, docked);
         params.width = Math.min(screenWidth(), Math.max(params.width, sideControls.minimumWindowSize()));
         params.height = Math.min(screenHeight(), Math.max(params.height, sideControls.barHeight()));
-        sideControls.setVisibility(View.VISIBLE);
+        refreshWindowControls();
         invalidateOutline();
         cancelGlide();
         cancelTapFlash();
@@ -398,7 +400,8 @@ public class RearViewMirrorView extends ViewGroup {
     }
 
     public void clearSideView() {
-        restoreSideViewExpanded();
+        if (!sideView.active()) return;
+        restoreWindowExpanded();
         MirrorSideView.Placement restore = sideView.clear();
         if (restore == null || params == null) {
             return;
@@ -411,7 +414,7 @@ public class RearViewMirrorView extends ViewGroup {
             params.height = restore.height;
         }
         docked = restore.docked;
-        sideControls.setVisibility(View.GONE);
+        refreshWindowControls();
         invalidateOutline();
         textureView.setVisibility(docked ? View.INVISIBLE : View.VISIBLE);
         applyLayout();
@@ -421,22 +424,38 @@ public class RearViewMirrorView extends ViewGroup {
         invalidate();
     }
 
-    private void toggleSideViewExpanded() {
-        if (!sideView.active() || params == null) {
+    private void closeWindow() {
+        if (sideView.active()) {
+            SideViewPopupService.dismissCurrentSideView();
+        } else {
+            com.kooo.evcam.overlay.OverlayCoordinator.setRearViewEnabled(getContext(), false);
+        }
+    }
+
+    private void refreshWindowControls() {
+        sideControls.setVisibility(docked && !sideView.active() ? View.GONE : View.VISIBLE);
+        sideControls.setMirrorMode(!sideView.active());
+        sideControls.setExpanded(windowExpansion.expanded());
+    }
+
+    private void toggleWindowExpanded() {
+        if (!attached || params == null || docked) {
             return;
         }
-        SideViewExpansion.Geometry next = sideExpansion.toggle(
+        cancelGlide();
+        cancelTapFlash();
+        SideViewExpansion.Geometry next = windowExpansion.toggle(
                 new SideViewExpansion.Geometry(params.x, params.y, params.width, params.height),
                 screenWidth(), screenHeight(),
                 getResources().getDimensionPixelSize(R.dimen.side_control_margin));
         applySideGeometry(next);
-        sideControls.setExpanded(sideExpansion.expanded());
+        refreshWindowControls();
         applyLayout();
         invalidate();
     }
 
-    private void restoreSideViewExpanded() {
-        SideViewExpansion.Geometry normal = sideExpansion.restore();
+    private void restoreWindowExpanded() {
+        SideViewExpansion.Geometry normal = windowExpansion.restore();
         if (normal != null && params != null) {
             applySideGeometry(normal);
             sideControls.setExpanded(false);
@@ -507,6 +526,7 @@ public class RearViewMirrorView extends ViewGroup {
             return;
         }
         docked = nowDocked;
+        refreshWindowControls();
         if (docked) {
             frozen = false;   // 收起来不算「画面停了」，是我们自己不画的
         } else {
@@ -536,6 +556,7 @@ public class RearViewMirrorView extends ViewGroup {
         idleHandler.removeCallbacks(idleTick);
         cancelGlide();
         cancelTapFlash();
+        restoreWindowExpanded();
         if (!attached) {
             return;
         }
@@ -601,7 +622,7 @@ public class RearViewMirrorView extends ViewGroup {
         if (params == null) {
             return;
         }
-        restoreSideViewExpanded();
+        restoreWindowExpanded();
         params.width = appConfig.getRearViewWidth(screenWidth());
         params.height = appConfig.getRearViewHeight(screenHeight());
         if (sideView.active()) {
@@ -661,9 +682,7 @@ public class RearViewMirrorView extends ViewGroup {
             // Drain frames, but do not expose the packed strip before its geometry is known.
             drawTextureOnce(canvas);
             drawFrozenHint(canvas, width, height);
-            if (sideView.active()) {
-                drawChild(canvas, sideControls, getDrawingTime());
-            }
+            drawChild(canvas, sideControls, getDrawingTime());
             return;
         }
 
@@ -727,8 +746,9 @@ public class RearViewMirrorView extends ViewGroup {
             drawTapFlash(canvas, width, height);
         }
         if (!frozen && appConfig.isRearViewCameraLabelEnabled()) {
-            cameraLabel.draw(canvas, laneIndex, width, height);
+            cameraLabel.drawBottom(canvas, laneIndex, width, height);
         }
+        drawChild(canvas, sideControls, getDrawingTime());
     }
 
     /**
@@ -795,7 +815,7 @@ public class RearViewMirrorView extends ViewGroup {
     @SuppressLint("ClickableViewAccessibility")
     @Override
     public boolean onTouchEvent(MotionEvent event) {
-        if (sideView.active()) {
+        if (sideView.active() || windowExpansion.expanded()) {
             if (frozen && event.getActionMasked() == MotionEvent.ACTION_UP && resumeAction != null) {
                 resumeAction.run();
             }
@@ -1090,7 +1110,7 @@ public class RearViewMirrorView extends ViewGroup {
     }
 
     private void savePosition() {
-        if (sideView.active()) {
+        if (sideView.active() || windowExpansion.expanded()) {
             return;
         }
         appConfig.setRearViewPosition(params.x, params.y);

@@ -130,6 +130,11 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     }
 
     private final android.os.Handler driveLogUi = new android.os.Handler(android.os.Looper.getMainLooper());
+    private android.content.SharedPreferences.OnSharedPreferenceChangeListener rearViewStateChanged;
+    private void refreshRearViewEnabled() {
+        SwitchPreferenceCompat mirror = findPreference("pref_rearview");
+        if (mirror != null && appConfig != null) mirror.setChecked(appConfig.isRearViewEnabled());
+    }
     private final Runnable driveLogRefresh = new Runnable() {
         @Override public void run() {
             refreshDriveLogging();
@@ -154,11 +159,15 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         super.onStart();
         com.kooo.evcam.zeekr.BirdEyePopupService.addStateListener(birdEyeStateChanged);
         refreshBirdEyePopup();
+        rearViewStateChanged = appConfig.onChanged(this::refreshRearViewEnabled, "rearview_enabled");
+        refreshRearViewEnabled();
         driveLogUi.post(driveLogRefresh);
     }
 
     @Override
     public void onStop() {
+        appConfig.removeChangeListener(rearViewStateChanged);
+        rearViewStateChanged = null;
         com.kooo.evcam.zeekr.BirdEyePopupService.removeStateListener(birdEyeStateChanged);
         driveLogUi.removeCallbacks(driveLogRefresh);
         super.onStop();
