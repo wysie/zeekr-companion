@@ -998,13 +998,13 @@
     <string name="set_side_popup_mirror_summary">Balikkan kiri dan kanan dalam tetingkap sisi dan penggantian Super mirror. Dimatikan secara lalai; rakaman tidak berubah.</string>
     <string name="side_popup_no_picture">Tiada gambar langsung</string>
     <string name="set_hud_side_mirror_title">Cerminkan gambar HUD seperti cermin pintu</string>
-    <string name="set_hud_side_mirror_summary">Hidup secara lalai: anda melihat HUD dan cermin pintu pada masa yang sama, jadi ia patut dibaca sama</string>
+    <string name="set_hud_side_mirror_summary">Balikkan kiri dan kanan pada gambar HUD tersuai sahaja. Tetapan cermin tetingkap timbul dan rakaman tidak berubah.</string>
     <string name="set_side_output_title">Papar pandangan sisi pada</string>
     <string name="set_side_output_screen">Skrin</string>
     <string name="set_side_output_hud">HUD</string>
     <string name="set_side_output_both">Skrin dan HUD</string>
     <string name="set_sub_hud_title">Gambar HUD</string>
-    <string name="set_sub_hud_summary">Paparan, lapisan tindihan, kedudukan, kontras, kecerahan malam dan pudar tepi</string>
+    <string name="set_sub_hud_summary">Ikut gambar tetingkap timbul atau sesuaikan; saiz, nisbah, kedudukan dan kecerahan HUD berasingan</string>
     <string name="set_hud_side_size_title">Ketinggian gambar HUD (% daripada tinggi HUD)</string>
     <string name="set_hud_side_size_summary">Lebar mengikut bentuk di bawah; dikecilkan mengikut nisbah jika perlu supaya muat</string>
     <string name="set_hud_side_shape_title">Bentuk gambar HUD (lebar ÷ tinggi, %)</string>
@@ -1254,4 +1254,10 @@
     <string name="camera_source_automatic">Automatik · %1$s</string>
     <string name="camera_source_manual">Manual · %1$s</string>
     <string name="camera_source_legacy">Kamera tambahan lama</string>
+    <string name="set_hud_follow_popup_picture_title">Ikut tetapan gambar pop timbul</string>
+    <string name="set_hud_follow_popup_picture_summary">Gunakan lebar pandangan, arah, putaran, pencerminan, label, pelurusan dan muat automatik pop timbul. Saiz, nisbah, kedudukan dan kecerahan HUD kekal berasingan. Matikan untuk menyesuaikan gambar HUD; nilai tersuai lama dikekalkan.</string>
+    <string name="set_hud_custom_picture_title">Gambar HUD tersuai</string>
+    <string name="set_hud_picture_straighten_summary">Betulkan herotan mata ikan pada gambar HUD sahaja.</string>
+    <string name="set_hud_picture_auto_fit_summary">Kecilkan pandangan HUD jika perlu untuk mengelakkan kawasan hitam. Matikan untuk mengekalkan liputan yang diminta dengan kawasan hitam di luar imej kamera.</string>
+    <string name="set_hud_picture_label_summary">Tunjukkan label arah kamera pada HUD sahaja.</string>
 </resources>

@@ -170,6 +170,13 @@ public class SideViewHudPanel extends SideViewPopupView {
     protected boolean readMirrored() {
         return appConfig.isHudSideMirrored();
     }
+    @Override protected boolean readStraighten() { return appConfig.isHudSideStraighten(); }
+    @Override protected boolean readAutoFit() { return appConfig.isHudSideAutoFit(); }
+    @Override protected boolean readCameraLabel() { return appConfig.isHudSideCameraLabelEnabled(); }
+    @Override protected int readFov() { return appConfig.getHudSideFov(); }
+    @Override protected int readYaw() { return appConfig.getHudSideYaw(); }
+    @Override protected int readPitch() { return appConfig.getHudSidePitch(); }
+    @Override protected int readRotation(int side) { return appConfig.getHudSideRotation(side); }
 
     @Override
     public boolean isAttached() {

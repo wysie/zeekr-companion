@@ -25,6 +25,14 @@ not select the display.
 
 ## Placement and clipping
 
+**Follow popup picture settings** uses popup view width, aim, rotations, mirroring,
+labels, Straighten and Auto-fit. It defaults on unless an explicit legacy HUD
+mirror choice needs preserving. Turn it off for a custom HUD picture, initially
+seeded from the popup; later toggles retain the last custom tuning. Layout and
+tone remain independent in both modes. Equal requested picture values can still
+produce different fitted coverage at different aspect ratios. This does not
+establish a recommended HUD preset or fix the reported optical clipping/overlap.
+
 The confirmed 009 display selects its own saved placement profile: height 50%,
 square shape, horizontal position 94%, vertical position 50%, Follow indicator
 side off. Thus left and right cameras both appear on the right. The existing
@@ -33,7 +41,7 @@ indicator-side following translates the 009 position to distance from that edge
 (default 6%), and turning it off restores the corresponding right-hand position. Its first
 use starts these new defaults independently of saved generic/7X layout values;
 switching back to another recognised HUD restores that layout's stored values.
-Contrast, mirroring, brightness, camera aim and correction remain unchanged.
+Switching placement profiles does not change tone or the selected picture mode.
 
 The panel now uses the measured drawable Presentation content. Physical display
 metrics can exceed an app's content space, so they are used only before layout.
@@ -62,6 +70,15 @@ Reverse, factory-view coexistence settings, output arbitration, stale-frame
 covers, cancellation and screen fallback retain their existing policies.
 
 ## Verification
+
+Follow/custom picture checks pass on Android with real SharedPreferences,
+production popup/HUD renderers and nested settings navigation. They cover live
+following, first-use copying, retained custom values, legacy mirror preservation,
+independent layout/tone, reset and recreation. The combined check ran 16 native
+tests (including existing Presentation fitting and corrected-image rendering),
+1,479 JVM tests, lint and debug/release assembly. Settings were visually checked
+at 2560×1600 with enlarged text. This validates configuration/software bounds,
+not physical HUD clipping, factory-layer overlap or an in-car picture preset.
 
 JVM checks cover the owner's display inventory, exact signature matching,
 restricted/ambiguous screens, smaller viewport bounds and proportional shape.

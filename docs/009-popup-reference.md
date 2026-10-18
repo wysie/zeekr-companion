@@ -25,11 +25,11 @@ only the named popup fields; preserve unrelated recording, storage, source mappi
 360 calibration and other picture/window choices. Preserve custom choices on
 upgrades rather than overwriting them merely because the vehicle model is 009.
 
-This note does **not** install a runtime preset or change defaults. Currently the
-screen popup and HUD share aim/FOV/rotation and the camera-label preference;
-screen/HUD mirroring and window placement are already separate. Popup-only
-application needs that shared configuration separated or otherwise preserved for
-the HUD before changing these values. Shared labels also affect Super mirror.
+This note does **not** install a runtime preset or change defaults. HUD picture
+now has **Follow popup picture settings**, with optional saved custom aim/FOV,
+rotations, mirroring, labels, Straighten and Auto-fit. Window layout and tone are
+always independent. Popup edits also affect a following HUD; turn following off
+to retain separate HUD tuning. Shared popup labels still affect Super mirror.
 
 ## HUD remains unresolved
 

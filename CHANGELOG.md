@@ -9,6 +9,8 @@ commit message, not here.
 
 ## Unreleased
 
+- Add HUD Follow popup picture settings with optional saved custom tuning; keep HUD size, shape, placement and tone independent.
+
 - Add dts88’s project link beside his About-page credit and Ferix’s CAMCORDER link below dts88 under Projects and downloads.
 
 - Add model-aware Automatic 360 projection: use the 009 fit on 009, preserve explicit choices and legacy manual lens edits, and retain tuning when returning to Automatic.

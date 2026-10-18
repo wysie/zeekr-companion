@@ -1021,13 +1021,13 @@
     <string name="set_side_popup_mirror_summary">Flip left and right in the side popup and Super mirror replacement. Off by default; recordings are unchanged.</string>
     <string name="side_popup_no_picture">No live picture</string>
     <string name="set_hud_side_mirror_title">Mirror the HUD picture like the door mirror</string>
-    <string name="set_hud_side_mirror_summary">Flip left and right on the HUD. On by default; independent of screen mirroring and recordings</string>
+    <string name="set_hud_side_mirror_summary">Flip left and right in the custom HUD picture only. Popup mirroring and recordings stay unchanged.</string>
     <string name="set_side_output_title">Show side view on</string>
     <string name="set_side_output_screen">Screen</string>
     <string name="set_side_output_hud">HUD</string>
     <string name="set_side_output_both">Screen and HUD</string>
     <string name="set_sub_hud_title">HUD picture</string>
-    <string name="set_sub_hud_summary">Display, overlay layer, placement, contrast, night brightness and edge fade</string>
+    <string name="set_sub_hud_summary">Follow popup or customize the picture; separate HUD size, shape, placement and brightness</string>
     <string name="set_hud_side_size_title">HUD picture height (% of HUD height)</string>
     <string name="set_hud_side_size_summary">Width follows the shape below; scales down if needed to fit the HUD</string>
     <string name="set_hud_side_shape_title">HUD picture shape (width ÷ height, %)</string>
@@ -1277,4 +1277,10 @@
     <string name="camera_source_automatic">Automatic · %1$s</string>
     <string name="camera_source_manual">Manual · %1$s</string>
     <string name="camera_source_legacy">Legacy additional camera</string>
+    <string name="set_hud_follow_popup_picture_title">Follow popup picture settings</string>
+    <string name="set_hud_follow_popup_picture_summary">Use popup view width, aim, rotation, mirroring, labels, Straighten and Auto-fit. HUD size, aspect ratio, position and brightness stay separate. Turn off to customize the HUD picture; previous custom values are kept.</string>
+    <string name="set_hud_custom_picture_title">Custom HUD picture</string>
+    <string name="set_hud_picture_straighten_summary">Correct fisheye distortion in the HUD picture only.</string>
+    <string name="set_hud_picture_auto_fit_summary">Narrow the HUD view when needed to avoid black patches. Turn off to keep the requested coverage with black areas where the camera has no image.</string>
+    <string name="set_hud_picture_label_summary">Show the camera direction label on the HUD only.</string>
 </resources>

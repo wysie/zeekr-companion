@@ -11,9 +11,10 @@ be crossed. Off keeps the requested width and the same centre/aim/rotation. It
 does not clamp individual UV samples onto source edges. Missing coverage is black.
 The width control still has its existing 60–130 degree range.
 
-The preference is shared by the screen popup, HUD (which uses the popup picture
-renderer), and Super mirror's temporary side view. Window shapes/positions and
-HUD mirroring remain independent. Normal Super mirror rear view, DIY 360, photos
+The preference is shared by the screen popup and Super mirror's temporary side
+view. HUD uses it while **Follow popup picture settings** is on; turn following
+off to customize HUD Auto-fit and the other picture controls independently.
+Window shapes/positions and HUD tone remain independent. Normal Super mirror rear view, DIY 360, photos
 and recordings are unchanged. On a projected HUD, black means no projected light.
 Factory/reverse priority and live-frame guards are unchanged.
 
