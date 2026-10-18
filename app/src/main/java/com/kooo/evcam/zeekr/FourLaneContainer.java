@@ -69,6 +69,7 @@ import com.kooo.evcam.ui.MotionPolicy;
  */
 public class FourLaneContainer extends ViewGroup implements LivePreview {
     private final PreviewFrameGuard frameGuard = new PreviewFrameGuard(this);
+    @Override public void setSourceKey(String key) { frameGuard.setSourceKey(key); }
     @Override public void noteFrame(android.graphics.SurfaceTexture source) { frameGuard.observe(source); }
     @Override public void resetFrames() { frameGuard.reset(); }
 

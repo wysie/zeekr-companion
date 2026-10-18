@@ -545,3 +545,5 @@ unknown vendor flags cannot prove that a factory view is absent.
 
 The [menu review](docs/menu-review-2026-10-15.md) records implemented layout fixes
 and the implemented navigation cleanup; the current hierarchy is in the [settings map](docs/settings-menu.md).
+
+Camera status is available from the main preview chip and System. It keeps the recorder’s live/planned source count visible and lists source assignments, producer state, recording participation and explicitly labelled saved quality. Waiting previews now distinguish known contention, recovery, pause and stopped-recovery states; prolonged waits show elapsed time and point to Camera status / diagnostics. Covers remain opaque and recording truth remains independent of preview freshness. Status is read-only and never forces camera retries or interrupts healthy recording. The footer now names the source whose quality it summarizes.

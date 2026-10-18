@@ -1508,6 +1508,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             }
         });
         // 诊断信息放在系统里：它是给所有人导出报告用的
+        onClick("pref_camera_status", pref -> startActivity(new Intent(requireContext(), com.kooo.evcam.ui.CameraStatusActivity.class)));
         onClick("pref_diagnostics", pref ->
                 startActivity(new Intent(getContext(), DiagnosticsActivity.class)));
         // 系统信息（试验性）：车机能读到的车辆信号。只在这一页开着时多读浮点和定位，离开就放掉（离散信号熄屏判断一直在读）

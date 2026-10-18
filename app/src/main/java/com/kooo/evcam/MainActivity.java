@@ -792,6 +792,9 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private TextureView.SurfaceTextureListener buildSurfaceListener(String cameraKey) {
+        AutoFitTextureView target=canvasFor(cameraKey);
+        if(target!=null&&target.getParent() instanceof com.kooo.evcam.zeekr.LivePreview)
+            ((com.kooo.evcam.zeekr.LivePreview)target.getParent()).setSourceKey(cameraKey);
         return new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(@NonNull android.graphics.SurfaceTexture surface, int width, int height) {
@@ -2739,6 +2742,9 @@ public class MainActivity extends AppCompatActivity {
             tvRecordingStats.setVisibility(view == RecordingCoordinator.View.RECORDING && recordingStartTime > 0
                     ? View.VISIBLE : View.GONE);
         }
+        android.widget.TextView status=findViewById(R.id.camera_status_chip);
+        if(status!=null){status.setText(com.kooo.evcam.ui.CameraStatusText.progress(this,recordingCoordinator.summary()));
+            status.setOnClickListener(v->startActivity(new Intent(this,com.kooo.evcam.ui.CameraStatusActivity.class)));}
         renderCompositeInfoCell();
     }
 

@@ -105,7 +105,9 @@ public final class StatusLine {
         Context context = root.getContext();
         TextView stream = root.findViewById(R.id.tv_status_stream);
         if (stream != null) {
-            StreamSpec spec = RecordSpecs.forCameraKey(context, "front");
+            java.util.Set<String> enabled=RecordSpecs.enabledCameraKeys(context);
+            String shown=enabled.contains("front")||enabled.isEmpty()?"front":enabled.iterator().next();
+            StreamSpec spec = RecordSpecs.forCameraKey(context, shown);
             String fps = spec.fps == null || spec.fps.isEmpty()
                     || StreamSpec.FPS_UNLIMITED.equals(spec.fps)
                     ? context.getString(R.string.opt_fps_auto_unknown)
@@ -117,7 +119,7 @@ public final class StatusLine {
                     : R.string.status_bitrate_medium;
             // 配置名原来在标题栏里（「极氪7X（环视 + 前后座舱）」那一行）。标题栏拆了之后
             // 它归到这里 —— 它本来就是一条「现在按什么在跑」的状态，和帧率码率同类
-            String profile = profileName(context);
+            String profile = VehicleLabels.name(context) + " · " + com.kooo.evcam.camera.CameraNames.ofSlot(context,shown);
             NumberRoll.set(stream, (profile.isEmpty() ? "" : profile + " · ")
                     + fps + " · " + context.getString(bitrate));
             stream.setVisibility(View.VISIBLE);

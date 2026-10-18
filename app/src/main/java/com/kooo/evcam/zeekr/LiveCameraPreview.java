@@ -13,6 +13,7 @@ public final class LiveCameraPreview extends FrameLayout implements LivePreview 
     public LiveCameraPreview(Context context, AttributeSet attrs) {
         super(context, attrs); guard = new PreviewFrameGuard(this);
     }
+    @Override public void setSourceKey(String key) { guard.setSourceKey(key); }
     @Override public void noteFrame(SurfaceTexture source) { guard.observe(source); }
     @Override public void resetFrames() { guard.reset(); }
     @Override protected void onAttachedToWindow() { super.onAttachedToWindow(); guard.attach(); }
