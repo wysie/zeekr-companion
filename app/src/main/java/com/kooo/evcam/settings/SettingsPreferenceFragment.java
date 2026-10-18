@@ -1117,6 +1117,8 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
 
         bindFloatingAction("pref_floating_tap", appConfig.getFloatingTapAction(),
                 value -> appConfig.setFloatingTapAction(value));
+        bindFloatingAction("pref_floating_double_tap", appConfig.getFloatingDoubleTapAction(),
+                value -> appConfig.setFloatingDoubleTapAction(value));
         bindFloatingAction("pref_floating_long_press", appConfig.getFloatingLongPressAction(),
                 value -> appConfig.setFloatingLongPressAction(value));
 
@@ -1139,7 +1141,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     }
 
     /**
-     * 单击 / 长按能选哪几件事。
+     * 单击 / 双击 / 长按能选哪几件事。
      *
      * <p>选项文字在 strings.xml，存下去的是 {@link FloatingAction} 里那几个 key，
      * 两边靠同一个数组下标对上 —— 所以这里必须一起写，不能一边加一边忘。</p>
@@ -1163,6 +1165,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         list.setSummaryProvider(p -> ((ListPreference) p).getEntry());
         list.setOnPreferenceChangeListener((p, value) -> {
             onPick.set(String.valueOf(value));
+            pushFloatingStyle(); // Cancel gestures captured under the previous assignments.
             return true;
         });
     }
@@ -1176,6 +1179,8 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
      */
     private static int labelOf(FloatingAction action) {
         switch (action) {
+            case NONE:
+                return R.string.floating_action_none;
             case TOGGLE_RECORDING:
                 return R.string.floating_action_toggle_recording;
             case TAKE_PHOTO:
