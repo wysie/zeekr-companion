@@ -48,7 +48,9 @@ public class AboutActivity extends AppCompatActivity {
 
         bindLink(R.id.about_link_project, PROJECT_URL);
         bindLink(R.id.about_link_upstream, UPSTREAM_URL);
+        bindLink(R.id.about_link_upstream_credits, UPSTREAM_URL);
         bindLink(R.id.about_link_ferix, FERIX_URL);
+        bindLink(R.id.about_link_ferix_project, FERIX_URL);
         bindLink(R.id.about_link_evcam, EVCAM_URL);
         bindLink(R.id.about_link_gpl, GPL_URL);
 
