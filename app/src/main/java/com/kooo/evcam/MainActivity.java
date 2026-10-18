@@ -96,6 +96,8 @@ public class MainActivity extends AppCompatActivity {
     // 调试信息覆盖层（连点5下空白处显示）
     private TextView tvDebugOverlay;
     private boolean debugOverlayVisible = false;
+    private com.kooo.evcam.ui.MainPageControls mainPageControls;
+    private boolean restoreExpandedMain;
     private final android.os.Handler debugUpdateHandler = new android.os.Handler(android.os.Looper.getMainLooper());
     private Runnable debugUpdateRunnable;
     private int debugTapCount = 0;
@@ -272,6 +274,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        restoreExpandedMain = savedInstanceState != null && savedInstanceState.getBoolean("main_preview_expanded", false);
         getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() { handleBackNavigation(); }
         });
@@ -613,6 +616,8 @@ public class MainActivity extends AppCompatActivity {
         }
 
         btnTakePhoto.setOnClickListener(v -> takePicture());
+        if (mainPageControls != null) { restoreExpandedMain = mainPageControls.isExpanded(); mainPageControls.close(); }
+        mainPageControls = new com.kooo.evcam.ui.MainPageControls(this, this::toggleRecording, restoreExpandedMain);
 
         if (textureFront != null && previewChannels.needsTexture("front")) {
             textureFront.setSurfaceTextureListener(buildSurfaceListener("front"));
@@ -2966,6 +2971,12 @@ public class MainActivity extends AppCompatActivity {
     }
 
     @Override
+    protected void onSaveInstanceState(Bundle state) {
+        if (mainPageControls != null) state.putBoolean("main_preview_expanded", mainPageControls.isExpanded());
+        super.onSaveInstanceState(state);
+    }
+
+    @Override
     protected void onDestroy() {
         super.onDestroy();
         com.kooo.evcam.blackbox.BlackBox.noteImportant("主界面 onDestroy finishing=" + isFinishing()
@@ -3114,6 +3125,8 @@ public class MainActivity extends AppCompatActivity {
         } else if (fragmentContainer != null && fragmentContainer.getVisibility() == View.VISIBLE) {
             goToRecordingInterface();
             AppLog.d(TAG, "返回键：回到录制界面");
+        } else if (mainPageControls != null && mainPageControls.isExpanded()) {
+            mainPageControls.setExpanded(false);
         } else {
             // 录制界面按返回不关闭 Activity，退到后台 —— 下次打开能直接恢复
             moveTaskToBack(true);
@@ -3290,9 +3303,6 @@ public class MainActivity extends AppCompatActivity {
         com.google.android.material.button.MaterialButton birdEye = findViewById(R.id.btn_bird_eye);
         if (birdEye != null) {
             birdEye.setOnClickListener(v -> {
-                if (new com.kooo.evcam.zeekr.BirdEyeWindowConfig(this).popup()) {
-                    openBirdEyePopup(); return;
-                }
                 com.kooo.evcam.zeekr.BirdEyePopupService.stop(this);
                 if (expandedPreview != null) {
                     expandAnimator.finishNow();
@@ -3306,7 +3316,7 @@ public class MainActivity extends AppCompatActivity {
                     return;
                 }
                 birdEye.setSelected(!wasOn);
-                birdEye.setText(wasOn ? R.string.bird_eye_button : R.string.bird_eye_back);
+                birdEye.setText(wasOn ? R.string.main_360_view : R.string.bird_eye_back);
                 updateCompositeLabels();
             });
             birdEye.setOnLongClickListener(v -> {
@@ -3500,8 +3510,7 @@ public class MainActivity extends AppCompatActivity {
             boolean enabled = compositeContainer.getDisplayMode()
                     == com.kooo.evcam.zeekr.FourLaneContainer.DisplayMode.BIRD_EYE;
             birdEye.setSelected(enabled);
-            birdEye.setText(enabled ? R.string.bird_eye_back : new com.kooo.evcam.zeekr.BirdEyeWindowConfig(this).popup()
-                    ? R.string.bird_eye_popup_button : R.string.bird_eye_button);
+            birdEye.setText(enabled ? R.string.bird_eye_back : R.string.main_360_view);
         }
         boolean grid = compositeContainer.getDisplayMode()
                 == com.kooo.evcam.zeekr.FourLaneContainer.DisplayMode.GRID;
@@ -3543,7 +3552,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         String hint = cameraHint();
-        String line = hint != null ? hint : compositeInfoText;
+        String line = hint != null ? hint : "";
         tvCompositeInfo.setText(line);
         tvCompositeInfo.setVisibility(line.isEmpty() ? View.INVISIBLE : View.VISIBLE);
     }

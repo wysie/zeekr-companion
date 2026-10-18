@@ -59,6 +59,7 @@ public final class BirdEyePopupService extends Service {
     }
     public static void stop(Context context) { context.stopService(new Intent(context, BirdEyePopupService.class)); }
     public static boolean isRunning() { return instance != null; }
+    public static boolean isWindowVisible() { return instance != null && instance.view != null; }
     public static android.graphics.Bitmap photo() { return instance == null || instance.view == null ? null : instance.view.photo(); }
     public static String describe() { return instance == null ? "closed" : instance.view == null ? "suspended" : instance.view.describe(); }
     public static void applyLayout() { if (instance != null && instance.view != null) instance.view.applyLayout(); }

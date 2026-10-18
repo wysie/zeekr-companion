@@ -1398,7 +1398,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
 
     /** DIY renderer settings and the independently placed manual popup. */
     private void bindBirdEye() {
-        if (findPreference("pref_bird_display") == null) return;
+        if (findPreference("pref_bird_visible") == null) return;
         com.kooo.evcam.zeekr.BirdEyeWindowConfig window = new com.kooo.evcam.zeekr.BirdEyeWindowConfig(requireContext());
         com.kooo.evcam.zeekr.BirdEyeConfig config = new com.kooo.evcam.zeekr.BirdEyeConfig(requireContext());
         com.kooo.evcam.zeekr.BirdEyeAppearance appearance = new com.kooo.evcam.zeekr.BirdEyeAppearance(requireContext());
@@ -1411,13 +1411,6 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                 SettingSpec.entry("green", "Green", R.string.bird_eye_car_green),
                 SettingSpec.entry("white", "White", R.string.bird_eye_car_white),
                 SettingSpec.entry("black", "Black", R.string.bird_eye_car_black)), appearance.colour(), appearance::setColour);
-        bindEnum("pref_bird_display", SettingSpec.of("bird_display", "360 display", "main",
-                SettingSpec.entry("main", "Main", R.string.bird_eye_display_main),
-                SettingSpec.entry("popup", "Popup", R.string.bird_eye_display_popup)), window.popup() ? "popup" : "main", value -> {
-            window.setPopup("popup".equals(value));
-            if (window.popup() && getActivity() instanceof MainActivity) ((MainActivity) getActivity()).leaveBirdEyeMain();
-            if (!window.popup()) com.kooo.evcam.zeekr.BirdEyePopupService.stop(requireContext());
-        });
         bindEnum("pref_bird_quality", SettingSpec.of("bird_quality", "360 quality", "1",
                 SettingSpec.entry("0", "Low", R.string.bird_eye_quality_low),
                 SettingSpec.entry("1", "Balanced", R.string.bird_eye_quality_balanced),

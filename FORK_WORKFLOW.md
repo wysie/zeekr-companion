@@ -12,6 +12,7 @@ outgoing PRs; neither index substitutes for the other.
 | Branch | Purpose |
 | --- | --- |
 | `main` | Combined installable fork: completed features, fork version numbers, update source and build configuration |
+| `feature/main-page-controls` | Compact main page, shared preview selector, explicit popup controls and expanded preview with retained camera views and accessible recording controls |
 | `fix/camera-status-and-recovery` | Read-only recorder/producer status, persistent live/planned counts and truthful accessible waiting states; no retry-policy changes |
 | `fix/settings-semantics-and-setup` | Scoped confirmed resets, canonical setup order, live actions and persistent pending-source notice |
 | `fix/hud-and-troubleshooting-ui` | HUD groups, explicit USB troubleshooting, persistent diagnostic paths and foreground stop-control policy |

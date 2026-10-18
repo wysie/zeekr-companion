@@ -204,11 +204,12 @@ public class SettingsNavigationAndroidTest {
             await(BirdEyePopupService::isRunning);
             scenario.onActivity(activity -> {
                 SettingsShellFragment shell = (SettingsShellFragment) activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                Preference destination = page(shell).findPreference("pref_bird_display");
-                destination.getOnPreferenceChangeListener().onPreferenceChange(destination, "main");
+                assertNull(page(shell).findPreference("pref_bird_display"));
+                assertNotNull(page(shell).findPreference("pref_bird_destinations_note"));
+                ((SwitchPreferenceCompat) page(shell).findPreference("pref_bird_visible")).performClick();
             });
             await(() -> !BirdEyePopupService.isRunning());
-            assertFalse(new BirdEyeWindowConfig(target).popup());
+            assertTrue("Legacy destination is retained without changing it when closing a window", new BirdEyeWindowConfig(target).popup());
             scenario.recreate();
             assertFalse(BirdEyePopupService.isRunning());
             assertFalse(target.getSharedPreferences("app_config", Context.MODE_PRIVATE).contains("pref_bird_visible"));

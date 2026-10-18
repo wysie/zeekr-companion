@@ -28,10 +28,26 @@ downloads lists wysie Edition, dts88's original project, then Ferix's CAMCORDER.
 Original community acknowledgements are retained and attributed to dts88’s project. Its
 optional PayNow tip, **9271 6786**, goes to **dts88, the original author**.
 
-Current test download: [wysie Edition 2.11.48-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.48-alpha.1).
+Current test download: [wysie Edition 2.11.49-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.49-alpha.1).
 For in-app delivery, select **Updates → Update channel → Alpha**; Beta and Stable
 channels deliberately exclude this release. It retains the application ID and
 signing certificate for an in-place update. New behavior still needs on-car testing.
+
+The main page now keeps a compact identity, the recording control and Camera status
+at the top of the control panel, with Settings/Minimise pinned at the bottom.
+Secondary actions scroll only when needed. **Preview** opens the same selector as
+Settings: saved preview choices do not change recording groups or quality, and a
+persistent notice explains when reopening is required. **360 view** changes the
+main picture; **Windows → 360 window** controls the separate manual session.
+The former 360 shortcut-destination selector is replaced by these explicit actions;
+its stored value is retained. Super mirror uses its existing persistent enable
+preference. Window controls distinguish Open, Closed and Paused without inventing
+camera availability. **Expand preview** hides only the panel, retains the existing
+camera views, and keeps recording/status controls visible; tap Restore or Back to
+return. It retains left/right panel placement and session expansion on recreation.
+The main footer keeps storage/fallback and camera problems; detailed recording
+specifications remain in Camera status and the Settings footer. No camera source,
+resolution, framing or recording setting is reset by this layout change.
 
 The combined fork includes upstream main through **76138b8d**, including the merged
 [camera-label PR #17](https://github.com/dts88/zeekr-shortcut-car/pull/17), label wording/master-switch refinements and the 2.11.7-beta metadata. The camera framework includes cabin
@@ -546,7 +562,7 @@ unknown vendor flags cannot prove that a factory view is absent.
 The [menu review](docs/menu-review-2026-10-15.md) records implemented layout fixes
 and the implemented navigation cleanup; the current hierarchy is in the [settings map](docs/settings-menu.md).
 
-Camera status is available from the main preview chip and System. It keeps the recorder’s live/planned source count visible and lists source assignments, producer state, recording participation and explicitly labelled saved quality. Waiting previews now distinguish known contention, recovery, pause and stopped-recovery states; prolonged waits show elapsed time and point to Camera status / diagnostics. Covers remain opaque and recording truth remains independent of preview freshness. Status is read-only and never forces camera retries or interrupts healthy recording. The footer now names the source whose quality it summarizes.
+Camera status is available from the main preview chip and System. It keeps the recorder’s live/planned source count visible and lists source assignments, producer state, recording participation and explicitly labelled saved quality. Waiting previews now distinguish known contention, recovery, pause and stopped-recovery states; prolonged waits show elapsed time and point to Camera status / diagnostics. Covers remain opaque and recording truth remains independent of preview freshness. Status is read-only and never forces camera retries or interrupts healthy recording. The Settings footer names the source whose quality it summarizes; the main footer now concentrates on storage and camera problems.
 
 Settings now distinguish immediate actions from navigation, confirm resets with their exact scope, and offer separate HUD picture and placement resets. Recording setup reads Vehicle model → Camera sources → Recording sources & quality → Preview layout, with the technical stream profile still available. A persistent settings banner identifies unapplied camera/preview choices and explains that quitting stops recording. Updates is a destination; Check for updates remains its action. USB logging has explicit Start/Stop actions with live status, and the 360 switch describes a session window. No existing tuning or source preference is reset by opening these pages.
 

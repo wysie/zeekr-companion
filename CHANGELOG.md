@@ -7,7 +7,13 @@ Alpha sections: one line per change, what changed and nothing else. Beta and sta
 sections: written for users, reviewed before release. Why a change was made lives in the
 commit message, not here.
 
-## [Unreleased]
+## [2.11.49-alpha.1] - 2026-10-18
+
+- Compact the main-page title/actions, pin recording and Settings controls, and group popup window controls with Open/Closed/Paused status.
+- Add a main-page preview selector using the existing saved layout and a persistent reopen-to-apply notice.
+- Separate 360 view in the main preview from the 360 window control, replacing the old shortcut-destination selector.
+- Add Expand preview with retained camera surfaces, accessible recording/status controls and Back-to-restore behavior.
+- Keep storage and camera problems in the main footer; move recording specifications into Camera status.
 
 - Keep recorder source counts visible and add read-only per-source Camera status with diagnostics access.
 - Distinguish camera startup, contention, recovery and stopped states with accessible waiting feedback.

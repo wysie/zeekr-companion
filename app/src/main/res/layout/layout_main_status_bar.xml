@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android" android:id="@+id/status_bar"
+    android:gravity="center_vertical" android:orientation="horizontal" android:paddingStart="12dp" android:paddingEnd="12dp">
+    <TextView android:id="@+id/tv_status_storage" android:layout_width="wrap_content" android:layout_height="wrap_content"
+        android:maxWidth="360dp" android:maxLines="2" android:fontFeatureSettings="tnum"
+        android:textAppearance="@style/TextAppearance.Cam.Caption" android:textColor="@color/text_secondary" />
+    <TextView android:id="@+id/tv_composite_info" android:layout_width="0dp" android:layout_height="wrap_content"
+        android:layout_weight="1" android:layout_marginStart="16dp" android:maxLines="2" android:ellipsize="end"
+        android:textAppearance="@style/TextAppearance.Cam.Caption" android:textColor="@color/text_secondary" />
+</LinearLayout>

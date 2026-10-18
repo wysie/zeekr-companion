@@ -1203,3 +1203,30 @@ Check About/Quit typography after scrolling in each theme, the floating button's
 external placement after leaving settings, physical HUD fit/factory coexistence and
 expanded/restore 360 over Android Auto. Aim back remains the owner's later check.
 Emulator UI checks passed; physical outcomes and a manual TalkBack pass are open.
+
+## Main-page trial — 2.11.49-alpha.1
+
+Compact title/actions, pinned recording and Settings/Minimise, shared preview
+selector and explicit main-360/window actions are implemented. Expansion retains
+the same TextureView, SurfaceTexture and camera-manager instance; recording/status
+controls remain reachable and Back restores the panel. The expansion session also
+survives recreation. Window labels follow actual service/window state; Paused can
+mean an enabled session is temporarily suppressed. Legacy destination and camera
+framing/mappings/profile choices are retained. The obsolete destination selector
+is replaced with explanatory text; the Settings window switch remains live.
+
+Validation: 1,493 JVM tests, all debug/test/release assemblies, release lint and
+full debug lint passed. Four new behavior/layout native checks plus light/dark
+captures, existing settings navigation/layout and camera status passed together
+(14 tests). A final targeted expansion regression additionally verifies the
+Surround + Front + Rear multi-source main layout. English/Chinese/Malay at
+1.3 font scale and 260/360dp action panels preserve text without ellipsis.
+Bounded visual inspection caught off-screen footer actions; recording and footer
+controls are now pinned around the secondary-action scroller.
+
+On-car trial: check Start/Stop and per-source counts, elapsed time, preview-selector
+Cancel/persistence/pending notice, both window controls and external close, and
+expand/restore with an ongoing recording and each side-panel position. Preview
+selection still needs reopening to rebuild the pipeline and must not change which
+sources record. Recordings, frame resolution and blind-camera correction quality
+were not changed by this UI work; that quality issue remains outstanding.

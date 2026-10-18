@@ -417,10 +417,8 @@
         <PreferenceCategory
             android:key="group_bird_open"
             android:title="@string/menu_opening">
-            <ListPreference
-                android:key="pref_bird_display"
-                android:title="@string/bird_eye_display_title"
-                app:useSimpleSummaryProvider="false" />
+            <Preference android:key="pref_bird_destinations_note" android:selectable="false"
+                android:summary="@string/main_360_destinations_help" />
             <SwitchPreferenceCompat
                 android:key="pref_bird_visible"
                 android:title="@string/menu_bird_visible"
