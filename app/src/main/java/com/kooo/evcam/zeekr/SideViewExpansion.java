@@ -24,6 +24,15 @@ public final class SideViewExpansion {
             return restore();
         }
         original = current;
+        return fit(current, screenWidth, screenHeight, margin);
+    }
+
+    /** Refit a temporary expansion after system bars/display bounds change; retain its restore point. */
+    public Geometry refit(int screenWidth, int screenHeight, int margin) {
+        return original == null ? null : fit(original, screenWidth, screenHeight, margin);
+    }
+
+    private static Geometry fit(Geometry current, int screenWidth, int screenHeight, int margin) {
         int maxWidth = Math.max(1, screenWidth - 2 * margin);
         int maxHeight = Math.max(1, screenHeight - 2 * margin);
         double scale = Math.min((double) maxWidth / Math.max(1, current.width),

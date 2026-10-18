@@ -233,6 +233,35 @@ concurrent recording at each quality setting.
 
 ## Popup window and dedicated settings (2026-10-15)
 
+### Expanded bounds correction (2026-10-18, unreleased)
+
+The owner supplied photos showing extra space below the expanded DIY 360 popup
+over Android Auto. Expansion had used app resource display height, which need not
+match the area available to a service-owned overlay. Android 11+ now uses current
+window bounds minus visible system bars/cutouts, matching the window's inset-fit
+policy. Hidden bars are not reserved. The API 28–29 fallback uses the attached
+window's visible frame, with resource metrics only before attachment.
+
+Expansion retains the 2:3 shape and small 8dp margin. Insets/configuration changes
+refit the expanded picture without collapsing it or saving expanded geometry;
+Restore recalculates normal geometry from the saved size/position. Drag and pinch
+use the same area. System bars reported by the head unit remain respected; this
+does not suppress or force-cover vehicle controls. Diagnostics include the popup
+viewport, requested rectangle and measured size. The Android Auto/009 firmware
+behavior still needs a vehicle check; software geometry checks are not proof of
+the exact cause on that installed build.
+
+Android documents that [current window metrics](https://developer.android.com/reference/android/view/WindowManager#getCurrentWindowMetrics())
+include bounds and separate insets; [inset fitting](https://developer.android.com/reference/android/view/WindowManager.LayoutParams#setFitInsetsIgnoringVisibility(boolean))
+can respect their current visibility. The implementation uses both consistently.
+
+Validation: 1,480 JVM checks, nine Android window/control checks, lint and
+debug/release assembly passed. Native regressions shorten app resource height,
+change reported insets while expanded and verify the actual on-screen bottom
+edge, retained aspect ratio and saved normal placement. Emulator screenshots
+confirm the software bounds; Android Auto on the 009 and the API 28–29 fallback
+have not been validated on a vehicle/device with those conditions.
+
 Settings → 360° camera contains the main/popup preference (main by default),
 Open/Close popup actions, quality, popup size, popup-layout reset, calibration and
 calibration/quality reset. Holding the main 360° button still opens calibration.

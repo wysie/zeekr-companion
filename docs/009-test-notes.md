@@ -1,5 +1,13 @@
 # Owner feedback: Zeekr 009
 
+2026-10-18: the owner supplied a comparison showing a bottom gap beneath the
+expanded DIY 360 popup over Android Auto. The installed version was not supplied.
+The unreleased [popup bounds correction](diy-360-view.md#expanded-bounds-correction-2026-10-18-unreleased)
+uses the current overlay area and refits on inset changes, preserving saved normal
+placement. Retest expanded/restore over Android Auto and the native home screen,
+including switching between them while expanded; leave factory climate/navigation
+controls visible. This feedback does not establish a stitching/calibration change.
+
 Latest feedback, 2026-10-18: [009 popup reference values](009-popup-reference.md)
 are supplied for future popup-only presets. HUD framing values are not confirmed;
 the owner still reports image clipping and overlap. No installed version is

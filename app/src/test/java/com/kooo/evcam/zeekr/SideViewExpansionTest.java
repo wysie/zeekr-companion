@@ -4,6 +4,21 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class SideViewExpansionTest {
+    @Test public void immersiveBoundsGrowAndShrinkExpansionWithoutChangingRestorePoint() {
+        SideViewExpansion expansion = new SideViewExpansion();
+        SideViewExpansion.Geometry normal = new SideViewExpansion.Geometry(1200, 150, 600, 900);
+        SideViewExpansion.Geometry withBars = expansion.toggle(normal, 2560, 1400, 16);
+        assertEquals(1368, withBars.height);
+        SideViewExpansion.Geometry fullscreen = expansion.refit(2560, 1600, 16);
+        assertEquals(1568, fullscreen.height);
+        assertEquals(1584, fullscreen.y + fullscreen.height);
+        assertEquals(2f / 3f, fullscreen.width / (float) fullscreen.height, .001f);
+        SideViewExpansion.Geometry barsReturned = expansion.refit(2560, 1400, 16);
+        assertEquals(withBars.width, barsReturned.width); assertEquals(withBars.height, barsReturned.height);
+        assertTrue(expansion.expanded()); assertSame(normal, expansion.restore());
+        assertNull(expansion.refit(2560, 1600, 16));
+    }
+
     @Test
     public void expandFitsTheScreenAndRestoresExactGeometry() {
         SideViewExpansion expansion = new SideViewExpansion();
