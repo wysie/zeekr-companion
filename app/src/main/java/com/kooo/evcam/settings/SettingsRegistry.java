@@ -34,6 +34,15 @@ public final class SettingsRegistry {
             entry(com.kooo.evcam.update.UpdateChannel.STABLE.value, "正式版 — 仅正式版", R.string.update_channel_stable_option),
             entry(com.kooo.evcam.update.UpdateChannel.BETA.value, "Beta — Beta 和正式版", R.string.update_channel_beta_option),
             entry(com.kooo.evcam.update.UpdateChannel.ALPHA.value, "Alpha — Alpha、Beta 和正式版", R.string.update_channel_alpha_option));
+    public static final SettingSpec PREVIEW_LAYOUT = SettingSpec.of(
+            "preview_source_mode", "预览布局", "selected",
+            entry("selected", "跟随录制来源", R.string.record_preview_selected),
+            entry("surround", "环视", R.string.record_group_surround),
+            entry("roads", "前后道路", R.string.record_group_roads),
+            entry("roadfront", "前方道路", R.string.slot_road_front),
+            entry("roadrear", "后方道路", R.string.slot_road_rear),
+            entry("cabin", "驾驶员 / 前座舱", R.string.record_preview_cabin),
+            entry("surround_roads", "环视 + 前后道路", R.string.record_preview_surround_roads));
 
     /** 录制模式。 */
     public static final SettingSpec RECORDING_MODE = SettingSpec.of(
@@ -108,6 +117,7 @@ public final class SettingsRegistry {
     /** 全部枚举型设置项，启动自检会逐个走一遍。 */
     public static final List<SettingSpec> ALL = Collections.unmodifiableList(Arrays.asList(
             UPDATE_CHANNEL,
+            PREVIEW_LAYOUT,
             RECORDING_MODE,
             CAR_MODEL,
             LANGUAGE,

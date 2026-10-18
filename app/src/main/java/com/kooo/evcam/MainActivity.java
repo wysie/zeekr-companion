@@ -436,7 +436,8 @@ public class MainActivity extends AppCompatActivity {
         //
         // 以前先看车型，后来数路数：只开一路座舱时数出来是 1，摆成环视的四宫格，那一路座舱没地方显示、也没建；
         // 只开两路座舱时数出来是 2，按槽位号挂的是环视和前座舱（2026-10-16）。
-        enabledLanes = com.kooo.evcam.profile.RecordSpecs.enabledCameraKeys(new ProfileStore(this).current());
+        enabledLanes = com.kooo.evcam.profile.ProfileChannels.of(new ProfileStore(this).current(),
+                new AppConfig(this).getPreviewSourceMode()).previewKeys;
         if (PreviewSlots.singleLayout(enabledLanes)) {
             // 只启用了环视：一路合成流，由 FourLaneContainer 重画成四宫格
             layoutId = R.layout.activity_main_zeekr_7x;
