@@ -226,6 +226,7 @@ public class SettingsHeadersFragment extends PreferenceFragmentCompat {
                 title.setTextSize(TypedValue.COMPLEX_UNIT_PX,
                         getContext().getResources().getDimension(R.dimen.text_body));
                 title.setMaxLines(2); // Wrap long translations rather than shrinking the label.
+                if("pref_exit".equals(getKey()))title.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(),R.color.recording_text));
             }
             // 激活态会传给所有子控件：底色、图标、字一起变
             holder.itemView.setActivated(selected);

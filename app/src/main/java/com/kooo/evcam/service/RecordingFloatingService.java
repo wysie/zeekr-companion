@@ -99,6 +99,13 @@ public class RecordingFloatingService extends Service {
     private RecordingButtonView recordingButton;
     private TextView timeTextView;
 
+    private final Runnable foregroundVisibility = () -> {
+        if(floatingContainer==null)return;
+        boolean hidden=com.kooo.evcam.ui.AppRecordingControls.coversFloatingButton();
+        int visibility=hidden?View.GONE:View.VISIBLE;
+        if(floatingContainer.getVisibility()!=visibility){if(gestures!=null)gestures.cancel();floatingContainer.setVisibility(visibility);}
+    };
+
     // 布局参数
     private WindowManager.LayoutParams layoutParams;
     private int screenWidth;
@@ -158,6 +165,7 @@ public class RecordingFloatingService extends Service {
         AppLog.d(TAG, "录制悬浮服务创建");
 
         mainHandler = new Handler(Looper.getMainLooper());
+        com.kooo.evcam.ui.AppRecordingControls.addListener(foregroundVisibility);
         appConfig = new AppConfig(this);
         gestures = new FloatingButtonGesture(new FloatingButtonGesture.Scheduler() {
             @Override public void post(Runnable task, long delayMs) {
@@ -329,6 +337,7 @@ public class RecordingFloatingService extends Service {
     @Override
     public void onDestroy() {
         com.kooo.evcam.blackbox.BlackBox.noteImportant("RecordingFloatingService onDestroy");
+        com.kooo.evcam.ui.AppRecordingControls.removeListener(foregroundVisibility);
         super.onDestroy();
         hideFloatingWindow();
 
@@ -569,6 +578,7 @@ public class RecordingFloatingService extends Service {
 
         // 添加到窗口
         try {
+            foregroundVisibility.run();
             windowManager.addView(floatingContainer, layoutParams);
             // 在不在录、什么样子只问协调器（和录制服务、前台通知同一个答案），之后的变化它会广播过来。
             // 以前靠主界面隔 500 ms 推它自己记的状态：主界面刚重建、还没对上时推的是「没在录」，

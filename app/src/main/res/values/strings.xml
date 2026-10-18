@@ -1010,7 +1010,7 @@
     <string name="set_side_output_screen">主屏</string>
     <string name="set_side_output_hud">HUD</string>
     <string name="set_side_output_both">主屏和 HUD</string>
-    <string name="set_sub_hud_title">HUD 画面</string>
+    <string name="set_sub_hud_title">HUD</string>
     <string name="set_sub_hud_summary">跟随弹窗或自定义画面；HUD 大小、比例、位置和亮度独立设置</string>
     <string name="set_hud_side_size_title">HUD 画面高度（占 HUD 高度 %）</string>
     <string name="set_hud_side_size_summary">宽度由下面的形状决定；必要时等比例缩小以完整显示</string>
@@ -1099,7 +1099,7 @@
     <string name="set_hud_side_contrast_title">HUD 画面对比度（%）</string>
     <string name="set_hud_side_contrast_summary">调高后暗部更暗，画面在 HUD 上不发白。100 为摄像头原画面。</string>
     <string name="set_hud_side_night_title">HUD 画面夜间亮度（%）</string>
-    <string name="set_hud_side_night_summary">车辆处于夜间模式时，在上面的不透明度基础上再调到此比例。100 为不调暗。</string>
+    <string name="set_hud_side_night_summary">夜间模式下对不透明度再应用此比例。100 为不额外调暗。</string>
     <string name="set_hud_side_fade_title">HUD 画面边缘渐隐（%）</string>
     <string name="set_hud_side_fade_summary">画面四边渐隐到黑的宽度，占短边的百分比。0 为硬边。HUD 上黑色不亮，渐隐处与路面融为一体。</string>
     <string name="set_hud_side_follow_title">HUD 位置跟随转向灯</string>
@@ -1262,7 +1262,7 @@
     <string name="camera_source_manual">手动 · %1$s</string>
     <string name="camera_source_legacy">旧版附加相机</string>
     <string name="set_hud_follow_popup_picture_title">跟随弹窗画面设置</string>
-    <string name="set_hud_follow_popup_picture_summary">使用弹窗的视野、朝向、旋转、镜像、方向标签、拉直及自动缩放。HUD 的尺寸、比例、位置和亮度仍独立。关闭后可单独调整 HUD 画面；已有调校会保留。</string>
+    <string name="set_hud_follow_popup_picture_summary">使用屏幕弹窗的画面设置。HUD 的位置、尺寸、亮度与对比度独立设置。</string>
     <string name="set_hud_custom_picture_title">自定义 HUD 画面</string>
     <string name="set_hud_picture_straighten_summary">仅拉直 HUD 的鱼眼画面。</string>
     <string name="set_hud_picture_auto_fit_summary">仅为 HUD 缩小视野以避免黑块；关闭后可显示相机未覆盖的黑色区域。</string>
@@ -1270,7 +1270,7 @@
     <string name="mirror_control_close">关闭超级后视镜</string>
     <string name="mirror_control_expand">放大超级后视镜</string>
     <string name="set_theme_title">主题</string>
-    <string name="set_theme_summary">为应用和相机弹窗按钮选择跟随系统、浅色或深色。字号保持一致。HUD 亮度仍使用独立设置。</string>
+    <string name="set_theme_summary">为应用和相机弹窗按钮选择跟随系统、浅色或深色。HUD 亮度单独设置。</string>
     <string name="theme_system">跟随系统</string>
     <string name="theme_light">浅色</string>
     <string name="theme_dark">深色</string>

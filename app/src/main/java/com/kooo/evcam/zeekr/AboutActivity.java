@@ -85,7 +85,7 @@ public class AboutActivity extends AppCompatActivity {
         } catch (ActivityNotFoundException | SecurityException e) {
             // 车机上常常没有浏览器，退而把链接显示出来让用户自己抄
             AppLog.w(TAG, "无法打开链接: " + url, e);
-            Toast.makeText(this, url, Toast.LENGTH_LONG).show();
+            com.kooo.evcam.ui.ExternalLinks.showCopyLink(this,url);
         }
     }
 

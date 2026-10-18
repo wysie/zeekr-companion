@@ -45,6 +45,7 @@
             android:textAppearance="@style/TextAppearance.Cam.Title"
             android:textColor="@color/text_primary"
             android:textStyle="bold" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/in_app_record_stop" style="@style/Widget.Cam.IconButton" android:layout_width="48dp" android:layout_height="48dp" android:contentDescription="@string/record_stop" app:icon="@drawable/ic_record_stop" app:iconTint="@color/recording_text" android:visibility="gone" />
     </LinearLayout>
 
     <View

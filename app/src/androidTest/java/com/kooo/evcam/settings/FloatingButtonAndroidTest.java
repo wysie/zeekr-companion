@@ -121,6 +121,28 @@ public class FloatingButtonAndroidTest {
             f.tap(); main(() -> call(f.service, "hideFloatingWindow")); SystemClock.sleep(400); f.expect();
         }
     }
+    @Test public void supportedForegroundPageHidesOverlayAndRestoresSavedPlacement() throws Exception {
+        org.junit.Assume.assumeTrue(android.os.Build.PRODUCT.contains("sdk")||android.os.Build.HARDWARE.contains("ranchu"));
+        try(Fixture f=new Fixture()) {
+            final Runnable[] listener={null};final int[] placement=new int[4];
+            main(()->{try{listener[0]=(Runnable)get(f.service,"foregroundVisibility");
+                com.kooo.evcam.ui.AppRecordingControls.addListener(listener[0]);
+                WindowManager.LayoutParams params=(WindowManager.LayoutParams)get(f.service,"layoutParams");placement[0]=params.x;placement[1]=params.y;
+                placement[2]=f.config.getRecordingFloatingX();placement[3]=f.config.getRecordingFloatingY();
+            }catch(Exception e){throw new AssertionError(e);}});
+            try {
+                try(ActivityScenario<com.kooo.evcam.ui.CameraStatusActivity> scenario=ActivityScenario.launch(com.kooo.evcam.ui.CameraStatusActivity.class)) {
+                    InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+                    main(()->{listener[0].run();assertEquals(View.GONE,f.view.getVisibility());assertTrue(f.view.isAttachedToWindow());});
+                }
+                SystemClock.sleep(250);main(()->{listener[0].run();assertEquals(View.VISIBLE,f.view.getVisibility());
+                    try{WindowManager.LayoutParams params=(WindowManager.LayoutParams)get(f.service,"layoutParams");assertEquals(placement[0],params.x);assertEquals(placement[1],params.y);}catch(Exception e){throw new AssertionError(e);}
+                    assertEquals(placement[2],f.config.getRecordingFloatingX());assertEquals(placement[3],f.config.getRecordingFloatingY());
+                });
+            } finally {main(()->com.kooo.evcam.ui.AppRecordingControls.removeListener(listener[0]));}
+        }
+    }
+
     @Test public void settingsExposeThreeActionsAndPersistOptionalDoubleTap() {
         Context context = target(); AppConfig config = new AppConfig(context);
         String oldDouble = config.getFloatingDoubleTapAction(); boolean oldEnabled = config.isRecordingFloatingEnabled();

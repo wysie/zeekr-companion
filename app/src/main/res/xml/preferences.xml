@@ -364,120 +364,40 @@
                 android:summary="@string/menu_popup_gestures"
                 android:selectable="false" />
         </PreferenceScreen>
-        <PreferenceScreen
-            android:key="sub_side_hud"
-            android:title="@string/set_sub_hud_title"
-            android:summary="@string/set_sub_hud_summary">
-            <SwitchPreferenceCompat
-                android:key="pref_hud_follow_popup_picture"
-                android:title="@string/set_hud_follow_popup_picture_title"
-                android:summary="@string/set_hud_follow_popup_picture_summary" />
-            <PreferenceCategory
-                android:key="group_hud_custom_picture"
-                android:title="@string/set_hud_custom_picture_title">
-                <SwitchPreferenceCompat
-                    android:key="pref_hud_picture_straighten"
-                    android:title="@string/set_side_popup_straighten_title"
-                    android:summary="@string/set_hud_picture_straighten_summary" />
-                <SwitchPreferenceCompat
-                    android:key="pref_hud_picture_auto_fit"
-                    android:title="@string/set_side_popup_auto_fit_title"
-                    android:summary="@string/set_hud_picture_auto_fit_summary" />
-                <SeekBarPreference
-                    android:key="pref_hud_picture_fov"
-                    android:title="@string/set_side_popup_fov_title"
-                    app:showSeekBarValue="true" />
-                <SeekBarPreference
-                    android:key="pref_hud_picture_yaw"
-                    android:title="@string/set_side_popup_yaw_title"
-                    app:showSeekBarValue="true" />
-                <SeekBarPreference
-                    android:key="pref_hud_picture_pitch"
-                    android:title="@string/set_side_popup_pitch_title"
-                    app:showSeekBarValue="true" />
-                <SeekBarPreference
-                    android:key="pref_hud_picture_rotation_left"
-                    android:title="@string/set_side_popup_rotation_left_title"
-                    app:showSeekBarValue="true" />
-                <SeekBarPreference
-                    android:key="pref_hud_picture_rotation_right"
-                    android:title="@string/set_side_popup_rotation_right_title"
-                    app:showSeekBarValue="true" />
-                <SwitchPreferenceCompat
-                    android:key="pref_hud_side_mirror"
-                    android:title="@string/set_hud_side_mirror_title"
-                    android:summary="@string/set_hud_side_mirror_summary" />
-                <SwitchPreferenceCompat
-                    android:key="pref_hud_picture_label"
-                    android:title="@string/set_rearview_camera_label_title"
-                    android:summary="@string/set_hud_picture_label_summary" />
+        <PreferenceScreen android:key="sub_side_hud" android:title="@string/set_sub_hud_title" android:summary="@string/set_sub_hud_summary">
+            <PreferenceCategory android:key="group_hud_source" android:title="@string/ui_hud_picture_source">
+                <SwitchPreferenceCompat android:key="pref_hud_follow_popup_picture" android:title="@string/set_hud_follow_popup_picture_title" android:summary="@string/set_hud_follow_popup_picture_summary" />
+                <Preference android:key="pref_hud_edit_screen" android:title="@string/ui_hud_edit_screen" />
+                <Preference android:key="pref_hud_reset_picture" android:title="@string/ui_hud_reset_picture" android:summary="@string/ui_hud_picture_reset_scope" />
             </PreferenceCategory>
-            <PreferenceCategory
-                android:key="group_hud_picture"
-                android:title="@string/menu_picture">
-                <SeekBarPreference
-                    android:key="pref_hud_side_contrast"
-                    android:title="@string/set_hud_side_contrast_title"
-                    android:summary="@string/set_hud_side_contrast_summary"
-                    app:showSeekBarValue="true" />
-                <SeekBarPreference
-                    android:key="pref_hud_side_contrast_night"
-                    android:title="@string/set_hud_side_contrast_night_title"
-                    android:summary="@string/set_hud_side_contrast_night_summary"
-                    app:showSeekBarValue="true" />
-                <SeekBarPreference
-                    android:key="pref_hud_side_night"
-                    android:title="@string/set_hud_side_night_title"
-                    android:summary="@string/set_hud_side_night_summary"
-                    app:showSeekBarValue="true" />
-                <SeekBarPreference
-                    android:key="pref_hud_side_opacity"
-                    android:title="@string/set_hud_side_opacity_title"
-                    android:summary="@string/set_hud_side_opacity_summary"
-                    app:showSeekBarValue="true" />
-                <SeekBarPreference
-                    android:key="pref_hud_side_fade"
-                    android:title="@string/set_hud_side_fade_title"
-                    android:summary="@string/set_hud_side_fade_summary"
-                    app:showSeekBarValue="true" />
+            <PreferenceCategory android:key="group_hud_custom_picture" android:title="@string/ui_hud_custom_framing">
+                <SwitchPreferenceCompat android:key="pref_hud_picture_straighten" android:title="@string/set_side_popup_straighten_title" android:summary="@string/set_hud_picture_straighten_summary" />
+                <SwitchPreferenceCompat android:key="pref_hud_picture_auto_fit" android:title="@string/set_side_popup_auto_fit_title" android:summary="@string/set_hud_picture_auto_fit_summary" />
+                <SeekBarPreference android:key="pref_hud_picture_fov" android:title="@string/set_side_popup_fov_title" app:showSeekBarValue="true" />
+                <SeekBarPreference android:key="pref_hud_picture_yaw" android:title="@string/set_side_popup_yaw_title" app:showSeekBarValue="true" />
+                <SeekBarPreference android:key="pref_hud_picture_pitch" android:title="@string/set_side_popup_pitch_title" app:showSeekBarValue="true" />
+                <SeekBarPreference android:key="pref_hud_picture_rotation_left" android:title="@string/set_side_popup_rotation_left_title" app:showSeekBarValue="true" />
+                <SeekBarPreference android:key="pref_hud_picture_rotation_right" android:title="@string/set_side_popup_rotation_right_title" app:showSeekBarValue="true" />
+                <SwitchPreferenceCompat android:key="pref_hud_side_mirror" android:title="@string/set_hud_side_mirror_title" android:summary="@string/set_hud_side_mirror_summary" />
+                <SwitchPreferenceCompat android:key="pref_hud_picture_label" android:title="@string/set_rearview_camera_label_title" android:summary="@string/set_hud_picture_label_summary" />
             </PreferenceCategory>
-            <PreferenceCategory
-                android:key="group_hud_placement"
-                android:title="@string/menu_placement">
-                <SeekBarPreference
-                    android:key="pref_hud_side_size"
-                    android:title="@string/set_hud_side_size_title"
-                    android:summary="@string/set_hud_side_size_summary"
-                    app:showSeekBarValue="true" />
-                <SeekBarPreference
-                    android:key="pref_hud_side_shape"
-                    android:title="@string/set_hud_side_shape_title"
-                    android:summary="@string/set_hud_side_shape_summary"
-                    app:showSeekBarValue="true" />
-                <SeekBarPreference
-                    android:key="pref_hud_side_left"
-                    android:title="@string/set_hud_side_left_title"
-                    android:summary="@string/set_hud_side_left_summary"
-                    app:showSeekBarValue="true" />
-                <SeekBarPreference
-                    android:key="pref_hud_side_vertical"
-                    android:title="@string/set_hud_side_vertical_title"
-                    android:summary="@string/set_hud_side_vertical_summary"
-                    app:showSeekBarValue="true" />
-                <SwitchPreferenceCompat
-                    android:key="pref_hud_side_follow"
-                    android:title="@string/set_hud_side_follow_title"
-                    android:summary="@string/set_hud_side_follow_summary" />
+            <PreferenceCategory android:key="group_hud_placement" android:title="@string/ui_hud_position_size">
+                <SeekBarPreference android:key="pref_hud_side_size" android:title="@string/set_hud_side_size_title" android:summary="@string/set_hud_side_size_summary" app:showSeekBarValue="true" />
+                <SeekBarPreference android:key="pref_hud_side_shape" android:title="@string/set_hud_side_shape_title" android:summary="@string/set_hud_side_shape_summary" app:showSeekBarValue="true" />
+                <SeekBarPreference android:key="pref_hud_side_left" android:title="@string/set_hud_side_left_title" android:summary="@string/set_hud_side_left_summary" app:showSeekBarValue="true" />
+                <SeekBarPreference android:key="pref_hud_side_vertical" android:title="@string/set_hud_side_vertical_title" android:summary="@string/set_hud_side_vertical_summary" app:showSeekBarValue="true" />
+                <SwitchPreferenceCompat android:key="pref_hud_side_follow" android:title="@string/set_hud_side_follow_title" android:summary="@string/set_hud_side_follow_summary" />
+                <Preference android:key="pref_hud_reset_placement" android:title="@string/ui_hud_reset_placement" android:summary="@string/ui_hud_placement_reset_scope" />
             </PreferenceCategory>
-            <Preference android:key="pref_hud_reset_picture" android:title="@string/ui_hud_reset_picture" android:summary="@string/ui_hud_picture_reset_scope" />
-            <Preference android:key="pref_hud_reset_placement" android:title="@string/ui_hud_reset_placement" android:summary="@string/ui_hud_placement_reset_scope" />
-            <PreferenceCategory
-                android:key="group_hud_advanced"
-                android:title="@string/menu_advanced_experimental">
-                <SwitchPreferenceCompat
-                    android:key="pref_hud_during_factory"
-                    android:title="@string/set_hud_during_factory_title"
-                    android:summary="@string/set_hud_during_factory_summary" />
+            <PreferenceCategory android:key="group_hud_picture" android:title="@string/ui_hud_tone">
+                <SeekBarPreference android:key="pref_hud_side_contrast" android:title="@string/set_hud_side_contrast_title" android:summary="@string/set_hud_side_contrast_summary" app:showSeekBarValue="true" />
+                <SeekBarPreference android:key="pref_hud_side_contrast_night" android:title="@string/set_hud_side_contrast_night_title" android:summary="@string/set_hud_side_contrast_night_summary" app:showSeekBarValue="true" />
+                <SeekBarPreference android:key="pref_hud_side_night" android:title="@string/set_hud_side_night_title" android:summary="@string/set_hud_side_night_summary" app:showSeekBarValue="true" />
+                <SeekBarPreference android:key="pref_hud_side_opacity" android:title="@string/set_hud_side_opacity_title" android:summary="@string/set_hud_side_opacity_summary" app:showSeekBarValue="true" />
+            </PreferenceCategory>
+            <PreferenceCategory android:key="group_hud_advanced" android:title="@string/menu_advanced_experimental">
+                <SeekBarPreference android:key="pref_hud_side_fade" android:title="@string/set_hud_side_fade_title" android:summary="@string/set_hud_side_fade_summary" app:showSeekBarValue="true" />
+                <SwitchPreferenceCompat android:key="pref_hud_during_factory" android:title="@string/set_hud_during_factory_title" android:summary="@string/set_hud_during_factory_summary" />
             </PreferenceCategory>
         </PreferenceScreen>
         <Preference
@@ -692,11 +612,16 @@
             android:defaultValue="true"
             android:title="@string/set_auto_start_title"
             android:summary="@string/set_auto_start_summary" />
+        <PreferenceScreen android:key="sub_troubleshooting" android:title="@string/ui_troubleshooting" android:summary="@string/ui_troubleshooting_summary">
         <Preference android:key="pref_camera_status" android:title="@string/camera_status_title" android:summary="@string/camera_status_summary" />
         <Preference
             android:key="pref_diagnostics"
             android:title="@string/set_diagnostics_title"
             android:summary="@string/set_diagnostics_summary" />
+            <Preference android:key="pref_usb_session" android:title="@string/ui_usb_session" android:summary="@string/ui_usb_session_summary" />
+            <Preference android:key="pref_camera_research" android:title="@string/dev_camera_display_title" android:summary="@string/dev_camera_display_summary" />
+            <Preference android:key="pref_research_help" android:selectable="false" android:summary="@string/ui_research_requires_developer" />
+        </PreferenceScreen>
         <Preference
             android:key="pref_vehicle_info"
             android:title="@string/set_vehicle_info_title"
