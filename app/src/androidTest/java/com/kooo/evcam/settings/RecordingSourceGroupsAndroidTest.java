@@ -203,6 +203,7 @@ public class RecordingSourceGroupsAndroidTest {
    scenario.onActivity(a->{ProfileEditorFragment e=install(a);ref.set(e);e.selectCamera("manual");});
    onView(withText(R.string.record_source_change)).perform(scrollTo(),click());
    onView(withText(startsWith(target.getString(R.string.opt_camera_id,"0")))).perform(click());
+   onView(withText(R.string.action_ok)).perform(click());
    scenario.onActivity(a->{assertEquals("0",config.getSourceCameraId("manual"));ref.get().selectCamera("manual");});
    onView(withText(R.string.record_source_change)).perform(scrollTo(),click());onView(withText(R.string.action_cancel)).perform(click());
    scenario.onActivity(a->{assertEquals("0",new AppConfig(target).getSourceCameraId("manual"));install(a).selectCamera("manual");});

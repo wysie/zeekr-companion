@@ -358,20 +358,20 @@ public class CameraManagerHolder {
         ZeekrCameraLocator.Result located = ZeekrCameraLocator.locate(service);
         AppLog.i(TAG, "极氪合成流探测结果（相机列表 " + java.util.Arrays.toString(ids) + "）:\n" + located.diagnostics);
 
-        String overrideComposite = config.getCameraOverride(CameraSlots.KEY_SURROUND);
-        String overrideCabin1 = config.getCameraOverride(CameraSlots.KEY_CABIN_FRONT);
-        String overrideCabin2 = config.getCameraOverride(CameraSlots.KEY_CABIN_REAR);
-        if (shape.sources.get(CameraProfile.ROLE_COMPOSITE) != null) overrideComposite = shape.sources.get(CameraProfile.ROLE_COMPOSITE);
-        if (shape.sources.get(CameraProfile.ROLE_CABIN_1) != null) overrideCabin1 = shape.sources.get(CameraProfile.ROLE_CABIN_1);
-        if (shape.sources.get(CameraProfile.ROLE_CABIN_2) != null) overrideCabin2 = shape.sources.get(CameraProfile.ROLE_CABIN_2);
+        if (located.found()) config.setDetectedSurroundId(located.cameraId);
+        String overrideComposite = shape.sources.get(CameraProfile.ROLE_COMPOSITE);
+        String overrideCabin1 = shape.sources.get(CameraProfile.ROLE_CABIN_1);
+        String overrideCabin2 = shape.sources.get(CameraProfile.ROLE_CABIN_2);
         String overrides = ZeekrMultiPlan.Stored.overridesKey(overrideComposite, overrideCabin1, overrideCabin2);
         String storedText = config.getStoredSlotMap(shape.carModel);
         ZeekrMultiPlan.Stored stored = ZeekrMultiPlan.Stored.decode(storedText);
         ZeekrMultiPlan plan = shape.mapping009
-                ? ZeekrMultiPlan.observed009(ids, located.found() ? located.cameraId : null,
+                ? ZeekrMultiPlan.observed009(ids, located.found() ? located.cameraId : config.getDetectedSurroundId(),
                         overrideComposite, overrideCabin1, overrideCabin2)
                 : ZeekrMultiPlan.choose(ids, located.found() ? located.cameraId : null,
                         overrideComposite, overrideCabin1, overrideCabin2, stored);
+        plan = plan.withSourceChoices(ids, located.found() ? located.cameraId : config.getDetectedSurroundId(),
+                overrideComposite, overrideCabin1, overrideCabin2);
         AppLog.i(TAG, "槽位分配:\n" + plan.explanation + "-> " + plan);
 
         // 合成流尺寸：探测到的就是环视这一路，用探测的；环视不在列表里（探测不到它）用存下的

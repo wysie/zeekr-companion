@@ -86,6 +86,18 @@ public final class DiagnosticsJson {
         meta.put("vehicle_name_mode", new com.kooo.evcam.AppConfig(context).getVehicleNameMode());
         meta.put("vehicle_profile_mode", new com.kooo.evcam.AppConfig(context).getVehicleProfileMode());
         meta.put("vehicle_profile_resolved", new com.kooo.evcam.AppConfig(context).getVehicleModel().name());
+        com.kooo.evcam.AppConfig sources = new com.kooo.evcam.AppConfig(context);
+        JSONObject mapping = new JSONObject();
+        for (String role : com.kooo.evcam.profile.RecordingSources.ALL_ROLES) {
+            JSONObject choice = new JSONObject();
+            String selected = sources.getSourceCameraId(role);
+            choice.put("selection", selected == null ? "automatic" : selected.isEmpty() ? "unassigned" : "manual");
+            choice.put("manual_id", selected == null ? JSONObject.NULL : selected);
+            String resolved = com.kooo.evcam.profile.ProfileSizes.cameraIdFor(context, role);
+            choice.put("resolved_id", resolved == null ? JSONObject.NULL : resolved); mapping.put(role, choice);
+        }
+        meta.put("camera_sources", mapping);
+        meta.put("detected_surround_id", sources.getDetectedSurroundId() == null ? JSONObject.NULL : sources.getDetectedSurroundId());
         meta.put("vehicle_display_name", com.kooo.evcam.ui.VehicleLabels.name(context));
         try {
             PackageManager pm = context.getPackageManager();

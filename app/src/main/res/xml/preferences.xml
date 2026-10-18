@@ -25,6 +25,10 @@
                 android:key="pref_profile_editor"
                 android:title="@string/set_profile_editor_title"
                 android:summary="@string/set_profile_editor_summary" />
+            <Preference
+                android:key="pref_camera_sources"
+                android:title="@string/camera_sources_title"
+                android:summary="@string/camera_sources_entry" />
             <ListPreference
                 android:key="pref_preview_layout"
                 android:title="@string/record_preview_layout"
@@ -694,8 +698,8 @@
             android:title="@string/menu_camera_research">
             <Preference
                 android:key="pref_camera_mapping"
-                android:title="@string/set_camera_mapping_title"
-                android:summary="@string/set_camera_mapping_summary" />
+                android:title="@string/camera_sources_title"
+                android:summary="@string/camera_sources_entry" />
             <Preference
                 android:key="pref_camera_display_tools"
                 android:title="@string/dev_camera_display_title"

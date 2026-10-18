@@ -44,6 +44,9 @@ public final class StreamLayoutTable {
 
     /** 合成流那一路的相机 id；还没认出来时为 null。 */
     private static volatile String compositeCameraId;
+    private static volatile String detectedCompositeCameraId;
+    public static String detectedCompositeCameraId() { return detectedCompositeCameraId; }
+    public static void setDetectedCompositeCameraId(String id) { detectedCompositeCameraId = id; }
 
     private StreamLayoutTable() {
     }
@@ -101,5 +104,6 @@ public final class StreamLayoutTable {
     /** 回到「还没认出哪一路是合成流」的状态。测试用，跳车型时也用得上。 */
     public static void reset() {
         compositeCameraId = null;
+        detectedCompositeCameraId = null;
     }
 }

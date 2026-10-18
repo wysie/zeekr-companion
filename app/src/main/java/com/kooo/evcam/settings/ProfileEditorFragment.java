@@ -286,6 +286,11 @@ public class ProfileEditorFragment extends Fragment {
         }
     }
 
+    @Override public void onResume() {
+        super.onResume();
+        if (store != null) { profile = store.current(); refresh(); }
+    }
+
     private String presetName(QualityPreset preset) {
         switch (preset) {
             case SAVE_SPACE: return getString(R.string.editor_quality_space);
@@ -339,6 +344,15 @@ public class ProfileEditorFragment extends Fragment {
             renderCameras(); toast(getString(R.string.msg_restart_required));
         }));
         cameraRow.addView(preview, new LinearLayout.LayoutParams(-1, -2));
+        android.widget.Button sources = (android.widget.Button)LayoutInflater.from(context).inflate(R.layout.item_record_source_action, cameraRow, false);
+        sources.setText(R.string.camera_sources_title);
+        sources.setOnClickListener(v -> {
+            androidx.fragment.app.Fragment page = new CameraSourcesFragment();
+            if (getParentFragment() instanceof SettingsShellFragment)
+                ((SettingsShellFragment)getParentFragment()).openDetail(page, getString(R.string.camera_sources_title));
+            else getParentFragmentManager().beginTransaction().replace(R.id.fragment_container, page).addToBackStack(null).commit();
+        });
+        cameraRow.addView(sources, new LinearLayout.LayoutParams(-1, -2));
         LinearLayout row = null;
         for (int i = 0; i < GROUPS.length; i++) {
             String group = GROUPS[i];
@@ -390,66 +404,18 @@ public class ProfileEditorFragment extends Fragment {
         return false;
     }
     private void selectSource(String role, boolean enableGroup) {
-        java.util.List<String> ids = new java.util.ArrayList<>();
-        try {
-            android.hardware.camera2.CameraManager manager = (android.hardware.camera2.CameraManager) requireContext().getSystemService(Context.CAMERA_SERVICE);
-            java.util.Collections.addAll(ids, manager.getCameraIdList());
-            // Known configured sources can disappear from the advertised list while held.
-            java.util.Set<String> choices = new java.util.LinkedHashSet<>(ids);
-            choices.addAll(requireContext().getSharedPreferences("camera_discovery", Context.MODE_PRIVATE)
-                    .getStringSet("captured_ids", java.util.Collections.emptySet()));
-            if (new AppConfig(requireContext()).is009CameraMappingEnabled()) java.util.Collections.addAll(choices,"0","1","2","3");
-            for (CameraProfile c : profile.cameras) {
-                String configured = cameraIdFor(c.role); if (configured != null) choices.add(configured);
+        CameraSourcesFragment.pick(requireContext(), role, profile, () -> {
+            profile = store.current();
+            if (enableGroup && cameraIdFor(role) != null) {
+                boolean complete = true;
+                for (String member : groupRoles(groupOf(role))) complete &= cameraIdFor(member) != null;
+                if (complete) {
+                    for (String member : groupRoles(groupOf(role))) profile.camera(member).enabled = true;
+                    store.save(profile);
+                }
             }
-            ids.clear(); ids.addAll(choices);
-        } catch (Exception e) { toast(getString(R.string.msg_camera_list_failed)); return; }
-        String[] labels = new String[ids.size() + 2]; labels[0] = getString(R.string.opt_camera_auto);
-        labels[1] = getString(R.string.record_source_unassigned);
-        for (int i = 0; i < ids.size(); i++) {
-            String id = ids.get(i); labels[i + 2] = getString(R.string.opt_camera_id, id);
-            if (new AppConfig(requireContext()).is009CameraMappingEnabled()) {
-                int name = "0".equals(id) ? R.string.slot_road_front : "1".equals(id) ? R.string.slot_road_rear
-                        : "2".equals(id) ? R.string.record_group_cabin : "3".equals(id) ? R.string.record_group_surround : 0;
-                if (name != 0) labels[i + 2] += " — " + getString(name);
-            }
-        }
-        CamDialogs.show(new MaterialAlertDialogBuilder(requireContext(), R.style.Theme_Cam_MaterialAlertDialog)
-                .setTitle(getString(R.string.record_source_pick, roleName(role)))
-                .setItems(labels, (dialog, index) -> {
-                    String picked = index == 0 ? null : index == 1 ? "" : ids.get(index - 2);
-                    String resolved = picked == null ? ProfileSizes.automaticCameraIdFor(requireContext(), role) : picked;
-                    if (resolved != null && !resolved.isEmpty()) for (CameraProfile c : profile.cameras) {
-                        if ((c.enabled || com.kooo.evcam.profile.ProfileChannels.of(profile,
-                                new AppConfig(requireContext()).getPreviewSourceMode()).keys.contains(
-                                        com.kooo.evcam.profile.RecordingSources.key(c.role)))
-                                && !c.role.equals(role) && resolved.equals(cameraIdFor(c.role))) {
-                            toast(getString(R.string.record_source_duplicate)); return;
-                        }
-                    }
-                    new AppConfig(requireContext()).setSourceCameraId(role, picked);
-                    if (cameraIdFor(role) == null) {
-                        profile.camera(role).enabled = false;
-                        if (CameraProfile.ROLE_ROAD_FRONT.equals(groupOf(role)))
-                            for (String member : groupRoles(groupOf(role))) profile.camera(member).enabled = false;
-                    }
-                    if (enableGroup && cameraIdFor(role) != null) {
-                        boolean complete = true;
-                        for (String member : groupRoles(groupOf(role))) complete &= cameraIdFor(member) != null;
-                        if (complete) for (String member : groupRoles(groupOf(role))) profile.camera(member).enabled = true;
-                    }
-                    commit(); toast(getString(R.string.msg_mapping_saved));
-                }).setNegativeButton(R.string.action_cancel, null));
-    }
-
-    /** 这一路录成什么样，一行写完。 */
-    private String recordSummary(CameraProfile camera) {
-        int bitrate = estimatedBitrate(camera, camera.record.fps, camera.record.bitrate);
-        int[] size = resolvedSource(camera.role, camera.record);
-        String landing = size == null ? getString(R.string.editor_resolved_by_camera)
-                : landingSize(camera, size);
-        return landing + " · " + fpsLabel(camera.record.fps)
-                + " · " + TargetBitrate.format(bitrate);
+            refresh();
+        });
     }
 
     private String landingSize(CameraProfile camera, int[] source) {

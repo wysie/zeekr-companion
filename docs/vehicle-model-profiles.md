@@ -22,6 +22,10 @@ infers a vehicle from camera IDs, stream dimensions or a display number.
 | Cabin | ID 2, monochrome; one confirmed feed | Front cabin ID 0 and rear cabin ID 1 in the documented head unit |
 | Second 009 cabin | Not identified; unassigned | Two-cabin discovery retained |
 
+Surround detection now takes priority over the 009 ID-3 fallback; an explicit
+manual source still wins. Automatic reset clears the explicit choice and returns
+to discovery. See [shared mapping and resets](shared-camera-sources.md).
+
 The 7X runtime retains the existing surround-signature/cabin discovery path,
 rather than forcing the table IDs on every firmware. An unknown model uses that
 generic discovery path and leaves new dedicated road roles unassigned. Manual

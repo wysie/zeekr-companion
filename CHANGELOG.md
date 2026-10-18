@@ -9,6 +9,12 @@ commit message, not here.
 
 ## Unreleased
 
+## [2.11.46-alpha.1] - 2026-10-18
+
+- Unify Camera sources across Recording & photos, the stream editor and Developer options, preserving effective manual choices.
+- Add per-source Automatic reset and Reset all to automatic without changing recording switches, preview layout or quality.
+- Prefer detected surround feeds over model fallback IDs and keep detection separate from manual selection.
+
 - Expose the saved Preview layout under Recording & photos and in the stream editor, with current-choice highlighting, confirmation/cancel and a combined Surround + Front + Rear option.
 - Save preview changes without rewriting recording profiles; preserve existing source, quality, recording and preview selections across upgrades and model changes.
 

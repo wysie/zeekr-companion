@@ -47,8 +47,7 @@ public class DeveloperSettingsTest {
         ROWS.put("pref_screen_off_recording", Arrays.asList("screen_off_recording"));
         ROWS.put("pref_screen_off_wake_hours", Arrays.asList("screen_off_wake_min"));
         // 画面调节的参数只在开着时用到，不按没存过算（理由见 DEVELOPER_KEYS）
-        ROWS.put("pref_camera_mapping", Arrays.asList("zeekr_camera_override_front",
-                "zeekr_camera_override_back", "zeekr_camera_override_left"));
+        ROWS.put("pref_camera_mapping", NONE); // Opens the ordinary shared Camera sources page.
         ROWS.put("pref_permissions", NONE);
         ROWS.put("pref_camera_display_tools", NONE);
         ROWS.put("pref_raw_frame_dump", Arrays.asList("raw_frame_dump"));

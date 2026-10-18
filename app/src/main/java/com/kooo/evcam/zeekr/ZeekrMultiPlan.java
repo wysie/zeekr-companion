@@ -62,7 +62,8 @@ public final class ZeekrMultiPlan {
     /** Explicit opt-in from the owner's exported 009 images; never inferred from Android model names. */
     public static ZeekrMultiPlan observed009(String[] listed, String compositeDetected,
                                             String compositeOverride, String driverOverride, String extraOverride) {
-        String composite = compositeOverride == null ? "3" : compositeOverride;
+        String composite = compositeOverride == null
+                ? com.kooo.evcam.profile.SourceMappings.automaticSurround(compositeDetected, true) : compositeOverride;
         String driver = driverOverride == null ? "2" : driverOverride;
         String extra = extraOverride;
         if (composite.equals(driver)) driver = null;
@@ -72,8 +73,23 @@ public final class ZeekrMultiPlan {
         for (String id : new String[]{composite,driver,extra}) if (id != null && !available.contains(id)) missing.add(id);
         boolean real = composite.equals(compositeDetected) || (compositeDetected == null && "3".equals(composite));
         return new ZeekrMultiPlan(composite,driver,extra,real,
-                "Owner-selected 009 mapping: 3 surround, 2 driver; road feeds 0/1 not assigned as cabins. Manual overrides retained.\n",
+                "009 defaults: detected surround first, fallback 3; cabin 2, roads 0/1. Manual overrides retained.\n",
                 false,missing);
+    }
+
+    /** Apply canonical manual/Unassigned choices even when temporarily absent from the advertised list. */
+    public ZeekrMultiPlan withSourceChoices(String[] listed, String detected,
+                                            String surround, String frontCabin, String rearCabin) {
+        String c = surround == null ? compositeId : surround.isEmpty() ? null : surround;
+        String f = frontCabin == null ? cabin1Id : frontCabin.isEmpty() ? null : frontCabin;
+        String r = rearCabin == null ? cabin2Id : rearCabin.isEmpty() ? null : rearCabin;
+        if (f != null && f.equals(c)) f = null;
+        if (r != null && (r.equals(c) || r.equals(f))) r = null;
+        boolean real = c != null && (c.equals(detected) || c.equals(compositeId) && compositeIsReal);
+        List<String> absent = new ArrayList<>();
+        java.util.Set<String> available = new java.util.HashSet<>(java.util.Arrays.asList(listed));
+        for (String id : new String[]{c,f,r}) if (id != null && !available.contains(id)) absent.add(id);
+        return new ZeekrMultiPlan(c,f,r,real,explanation,fromStored,absent);
     }
 
     /**
