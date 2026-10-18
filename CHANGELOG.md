@@ -9,6 +9,8 @@ commit message, not here.
 
 ## Unreleased
 
+## [2.11.47-alpha.1] - 2026-10-18
+
 - Add Interface → Theme with Follow system, Light and Dark; apply the selected palette to camera-popup controls while keeping menu font sizes unchanged.
 
 - Fit the expanded 360 popup to current overlay bounds and visible system bars, avoiding extra bottom space from stale app heights.
