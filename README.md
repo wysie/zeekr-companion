@@ -161,3 +161,9 @@ Settings → Floating button adds Double tap alongside Tap and Long press. It st
 off, preserving immediate single taps and existing assignments. Assigning Double
 tap makes a single tap wait briefly so only one action fires. Dragging, multiple
 fingers, cancellation and removing the window cancel pending actions.
+### Side camera auto-fit
+
+The side-camera settings add Auto-fit to avoid black patches, on by default.
+Turning it off retains the requested field of view and aim; missing source
+coverage is black and never borrows pixels from adjacent composite lanes.
+Existing angles, placement, camera ownership and recording are unchanged.
