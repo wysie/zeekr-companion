@@ -35,6 +35,8 @@ public class MultiCameraManager {
 
     private final Context context;
     private final Map<String, SingleCamera> cameras = new LinkedHashMap<>();
+    /** Published membership for availability callbacks and camera-thread diagnostics. */
+    private volatile List<SingleCamera> initializedCameras = java.util.Collections.emptyList();
     private final List<String> activeCameraKeys = new ArrayList<>();
     private int maxOpenCameras = DEFAULT_MAX_OPEN_CAMERAS;
     /** 放了（{@link #release}）。见 {@link #isReleased}。 */
@@ -1986,6 +1988,11 @@ public class MultiCameraManager {
         return cameras.get(position);
     }
 
+    /** Every initialized source, including road/manual roles; not just the legacy four slots. */
+    List<SingleCamera> initializedCameras() {
+        return initializedCameras;
+    }
+
     // ------------------------------------------------------------------ 主界面的预览画布、后视镜的画布（2.11 阶段 4a、4b）
     // 主界面、超级后视镜只声明、撤回自己的画布，再叫醒调度；带不带、什么时候摘由调度定（channel-logic §一、§二.4）。
     // 以前画布一就绪、一销毁就 setTextureView + recreateSession，是调度之外的又一个动手方。
@@ -2266,6 +2273,7 @@ public class MultiCameraManager {
             SingleCamera camera = new SingleCamera(context, entry.getValue(), views.get(entry.getKey()));
             camera.setCameraPosition(entry.getKey()); cameras.put(entry.getKey(), camera);
         }
+        initializedCameras = java.util.Collections.unmodifiableList(new ArrayList<>(cameras.values()));
         
         AppLog.d(TAG, "共初始化 " + cameras.size() + " 个摄像头");
 
@@ -5343,6 +5351,7 @@ public class MultiCameraManager {
         } finally {
             // 4. 清理集合（确保执行）
             cameras.clear();
+            initializedCameras = java.util.Collections.emptyList();
             setRecording(false);
             AppLog.d(TAG, "All resources released");
         }
