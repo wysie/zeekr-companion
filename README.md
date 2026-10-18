@@ -134,6 +134,10 @@ mirror replacement on my 009; other changes still need on-car verification. See
 [test notes](docs/009-test-notes.md) for the scope of that feedback. Compatibility
 with other models and firmware versions is not established.
 
+The owner's [009 popup reference values](docs/009-popup-reference.md) are recorded
+for a future popup-only preset; they are not HUD recommendations or new defaults.
+The latest report still has HUD image clipping and factory-graphics overlap.
+
 **Clone `main` and build APKs from `main`.** It contains the combined installable
 fork; `upstream-main` tracks dts88's unmodified code, and `ferix-main` tracks
 Ferix's unmodified CAMCORDER source. Individual contribution branches stay separate;

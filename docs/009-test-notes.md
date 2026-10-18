@@ -1,5 +1,10 @@
 # Owner feedback: Zeekr 009
 
+Latest feedback, 2026-10-18: [009 popup reference values](009-popup-reference.md)
+are supplied for future popup-only presets. HUD framing values are not confirmed;
+the owner still reports image clipping and overlap. No installed version is
+inferred from that report, and no runtime defaults are changed by these notes.
+
 2026-10-13, personal APK 2.11.6-personal-alpha:
 
 - Camera labels reported working well.

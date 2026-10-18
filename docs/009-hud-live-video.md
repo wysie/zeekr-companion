@@ -1,5 +1,11 @@
 # 009 live HUD video and layout
 
+Latest owner feedback (2026-10-18): the HUD image is **still clipped and overlaps
+factory graphics**. No confirmed HUD tuning values or installed build were supplied
+with this report. The [new 009 popup reference](009-popup-reference.md) applies only
+to the centre-screen popup; it must not be presented as a HUD preset. Earlier
+software-bound checks below do not establish that physical clipping is resolved.
+
 The owner has confirmed live side-camera video on their 009 windscreen HUD and
 supplied phone photos with/without the camera. This supersedes the earlier
 identification-card-only finding. It establishes that head unit, not every 009
