@@ -24,7 +24,7 @@
     <string name="set_section_system">Sistem</string>
     <string name="set_section_about">Perihal &amp; penghargaan</string>
     <string name="set_car_model_title">Profil strim</string>
-    <string name="set_profile_editor_title">Edit profil strim</string>
+    <string name="set_profile_editor_title">Sumber rakaman &amp; kualiti</string>
     <string name="set_profile_editor_summary">Kualiti rakaman, tetapan setiap kamera dan susun atur skrin utama</string>
     <string name="set_photo_jpeg_title">Gunakan output JPEG untuk foto</string>
     <string name="set_photo_jpeg_summary">Mengambil foto daripada output JPEG kamera pada saiz terbesar. Jika dimatikan, foto diambil daripada pratonton pada resolusi pratonton. Berkuat kuasa selepas apl dimulakan semula.</string>

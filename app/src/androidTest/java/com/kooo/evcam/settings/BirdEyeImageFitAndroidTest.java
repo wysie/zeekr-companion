@@ -115,7 +115,12 @@ public class BirdEyeImageFitAndroidTest {
             capture("009-profile-auto.png");
             scenario.onActivity(activity->{
                 SettingsShellFragment shell=(SettingsShellFragment)activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
-                page(shell).findPreference("pref_bird_reset_calibration").performClick();
+                page(shell).scrollToPreference("pref_bird_reset_calibration");
+            });
+            onView(withText(R.string.bird_eye_calibration_reset)).perform(click());
+            onView(withText(R.string.ui_reset_confirm)).perform(click());
+            scenario.onActivity(activity->{
+                SettingsShellFragment shell=(SettingsShellFragment)activity.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                 assertTrue(config.imageFitted());assertEquals("-1",((ListPreference)page(shell).findPreference("pref_bird_profile")).getValue());
                 assertTrue(((ListPreference)page(shell).findPreference("pref_bird_profile")).getSummary().toString().contains("009"));
             });

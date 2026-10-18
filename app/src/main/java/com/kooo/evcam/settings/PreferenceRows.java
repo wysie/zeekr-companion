@@ -45,6 +45,8 @@ final class PreferenceRows {
     }
 
     private static final String EXTRA_ROW = "cam_row";
+    private static final String ROW_ACTION = "action";
+    static void markAction(Preference preference) { preference.getExtras().putString(EXTRA_ROW, ROW_ACTION); }
     private static final String ROW_VALUE = "value";
     private static final String ROW_PRIMARY = "primary";
     private static final String ROW_SENTRY = "sentry";
@@ -86,7 +88,9 @@ final class PreferenceRows {
             }
             String row = preference.peekExtras() != null
                     ? preference.peekExtras().getString(EXTRA_ROW) : null;
-            if (ROW_PRIMARY.equals(row)) {
+            if (ROW_ACTION.equals(row)) {
+                preference.setLayoutResource(R.layout.pref_row_action);
+            } else if (ROW_PRIMARY.equals(row)) {
                 preference.setLayoutResource(R.layout.pref_row_primary);
             } else if (ROW_SENTRY.equals(row)) {
                 preference.setLayoutResource(R.layout.pref_row_sentry);

@@ -35,7 +35,7 @@
     <string name="set_section_system">系统</string>
     <string name="set_section_about">关于与致谢</string>
     <string name="set_car_model_title">视频流配置</string>
-    <string name="set_profile_editor_title">编辑视频流配置</string>
+    <string name="set_profile_editor_title">录制来源与画质</string>
     <string name="set_profile_editor_summary">录制画质、各路摄像头参数和主界面画面布局</string>
     <string name="set_photo_jpeg_title">拍照使用 JPEG 输出</string>
     <string name="set_photo_jpeg_summary">使用摄像头的 JPEG 输出，按最大尺寸拍照；关闭后从预览画面截取，分辨率与预览相同。重启应用后生效。</string>

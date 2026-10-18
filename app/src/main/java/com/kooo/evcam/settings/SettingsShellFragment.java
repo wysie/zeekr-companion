@@ -99,6 +99,16 @@ public class SettingsShellFragment extends Fragment implements
         refreshTitle();
     }
 
+    private final android.os.Handler pendingUi = new android.os.Handler(android.os.Looper.getMainLooper());
+    private final Runnable pendingRefresh = new Runnable() { public void run() {
+        View view=getView();if(view==null||getContext()==null)return;
+        View banner=view.findViewById(R.id.settings_pending_changes);
+        boolean pending=com.kooo.evcam.camera.CameraManagerHolder.getInstance().hasPendingChannelChange(requireContext());
+        banner.setVisibility(pending?View.VISIBLE:View.GONE);pendingUi.postDelayed(this,1000);
+    }};
+    @Override public void onStart(){super.onStart();pendingUi.post(pendingRefresh);}
+    @Override public void onStop(){pendingUi.removeCallbacks(pendingRefresh);super.onStop();}
+
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {
         super.onSaveInstanceState(outState);

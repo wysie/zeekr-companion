@@ -52,6 +52,12 @@
         android:layout_height="1dp"
         android:background="@color/line" />
 
+    <TextView android:id="@+id/settings_pending_changes" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:paddingStart="20dp" android:paddingEnd="20dp" android:paddingTop="8dp" android:paddingBottom="8dp"
+        android:text="@string/ui_pending_camera_changes" android:textAppearance="@style/TextAppearance.Cam.Body"
+        android:textColor="@color/text_primary" android:background="@color/sunken" android:visibility="gone"
+        android:accessibilityLiveRegion="polite" />
+
     <androidx.slidingpanelayout.widget.SlidingPaneLayout
         android:id="@+id/settings_sliding_pane"
         android:layout_width="match_parent"
