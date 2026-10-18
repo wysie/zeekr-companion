@@ -119,7 +119,9 @@ public final class BirdEyeCalibrationDialog {
             com.kooo.evcam.ui.CamDialogs.paintNow(dialog);
             dialog.getButton(AlertDialog.BUTTON_NEUTRAL).setOnClickListener(v -> {
                 if (!BirdEyePreview.canConfigure()) return;
-                config.reset(); rebuild.run(); changed.run();
+                com.kooo.evcam.ui.ResetConfirmation.show(context,context.getString(R.string.bird_eye_reset),R.string.ui_360_reset_scope,()->{
+                    if(!BirdEyePreview.canConfigure())return;config.reset();rebuild.run();changed.run();
+                });
             });
         });
         com.kooo.evcam.telemetry.Telemetry.Listener guard = readings -> {

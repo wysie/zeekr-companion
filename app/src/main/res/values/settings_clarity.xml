@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_updates_title">Updates</string>
+    <string name="ui_reset_confirm">Reset</string>
+    <string name="ui_side_reset_scope">Reset blind-spot activation/timing, output, screen/HUD picture and window tuning. Keep the feature enabled state, vehicle, camera mappings and recordings.</string>
+    <string name="ui_mirror_reset_scope">Reset camera choice, framing, labels, controls and window position/size. Keep the enabled state, recording selections and footage.</string>
+    <string name="ui_360_reset_scope">Reset 360 calibration, projection selection and 360 quality. Keep the car illustration, popup window, source mappings and recordings.</string>
+    <string name="ui_window_reset_scope">Reset this window’s saved size and position. Keep its current open state, picture and camera sources.</string>
+    <string name="ui_floating_reset_scope">Reset floating-button position, size and time-text size. Keep its enabled state, actions, opacity and recordings.</string>
+    <string name="ui_hud_reset_picture">Reset HUD picture</string>
+    <string name="ui_hud_reset_placement">Reset HUD position &amp; size</string>
+    <string name="ui_hud_picture_reset_scope">Follow the screen picture and clear custom HUD framing, rotation, mirroring and labels. Keep HUD position, size, brightness and contrast.</string>
+    <string name="ui_hud_placement_reset_scope">Reset HUD position, size, aspect and indicator-side following for the current vehicle. Keep picture, brightness, contrast and output selection.</string>
+    <string name="ui_pending_camera_changes">Saved camera/preview choices — quit and reopen to apply. Quitting stops recording.</string>
+    <string name="ui_start_logging">Start USB logging</string>
+    <string name="ui_stop_logging">Stop USB logging</string>
+    <string name="ui_window_open">Open now — this is a live window for the current session. Close it with × or this switch.</string>
+    <string name="ui_window_closed">Closed — open a live 360 window for this session. Projection and window settings are saved separately.</string>
+</resources>

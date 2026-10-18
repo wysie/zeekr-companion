@@ -143,10 +143,12 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     };
     private void refreshDriveLogging() {
         if (!isAdded() || appConfig == null) return;
-        SwitchPreferenceCompat toggle = findPreference("pref_drive_logging");
+        Preference toggle = findPreference("pref_drive_logging");
         if (toggle != null) {
-            toggle.setChecked(com.kooo.evcam.telemetry.DriveLogService.isEnabled());
+            boolean running = com.kooo.evcam.telemetry.DriveLogService.isEnabled();
+            toggle.setTitle(running ? R.string.ui_stop_logging : R.string.ui_start_logging);
             toggle.setEnabled(!com.kooo.evcam.telemetry.DriveLogService.isStopping());
+            toggle.setSummary(com.kooo.evcam.telemetry.DriveLogService.status(requireContext()));
         }
         Preference status = findPreference("pref_drive_logging_status");
         if (status != null) status.setSummary(com.kooo.evcam.telemetry.DriveLogService.status(requireContext()));
@@ -202,6 +204,12 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     // ------------------------------------------------------------------ 录制
 
     private void bindRecording() {
+        onClick("pref_vehicle_setup", pref -> {
+            if(getParentFragment() instanceof SettingsShellFragment)
+                ((SettingsShellFragment)getParentFragment()).showSection("screen_system");
+        });
+        Preference vehicle = findPreference("pref_vehicle_setup");
+        if(vehicle!=null)vehicle.setSummary(com.kooo.evcam.ui.VehicleLabels.name(requireContext()));
         bindCarModel();
         onClick("pref_camera_sources", pref -> openFragment(new CameraSourcesFragment(), R.string.camera_sources_title));
         bindEnum("pref_preview_layout", SettingsRegistry.PREVIEW_LAYOUT, appConfig.getPreviewSourceMode(), value -> {
@@ -962,12 +970,18 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                     appConfig.setHudSideOpacityPercent(value);
                     com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
                 });
-        onClick("pref_side_popup_reset", pref -> {
+        onClick("pref_side_popup_reset", pref -> confirmReset(pref, R.string.ui_side_reset_scope, () -> {
             appConfig.resetSidePopupSettings();
             com.kooo.evcam.zeekr.SideViewPopupService.resetConfig();
             bindSidePopup();
             toast(getString(R.string.msg_side_popup_reset));
-        });
+        }));
+        onClick("pref_hud_reset_picture", pref -> confirmReset(pref, R.string.ui_hud_picture_reset_scope, () -> {
+            appConfig.resetHudPicture(); com.kooo.evcam.zeekr.SideViewPopupService.applyConfig(); bindSidePopup();
+        }));
+        onClick("pref_hud_reset_placement", pref -> confirmReset(pref, R.string.ui_hud_placement_reset_scope, () -> {
+            appConfig.resetHudPlacement(); com.kooo.evcam.zeekr.SideViewPopupService.applyConfig(); bindSidePopup();
+        }));
         refreshSideNavigation();
     }
 
@@ -1093,7 +1107,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                     pushSize();
                 });
 
-        onClick("pref_rearview_reset", pref -> {
+        onClick("pref_rearview_reset", pref -> confirmReset(pref, R.string.ui_mirror_reset_scope, () -> {
             appConfig.resetRearViewLayout();
             bindRearView();
             if (getContext() != null && appConfig.isRearViewEnabled()) {
@@ -1102,7 +1116,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                 RearViewMirrorService.start(getContext());
             }
             toast(getString(R.string.msg_rearview_reset));
-        });
+        }));
     }
 
     private void refreshCameraLabels() {
@@ -1287,7 +1301,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     }
 
     private void bindFloatingReset() {
-        onClick("pref_reset_floating", pref -> {
+        onClick("pref_reset_floating", pref -> confirmReset(pref, R.string.ui_floating_reset_scope, () -> {
             // 以前清的是旧「主屏悬浮窗」那几个键，合并后的按钮根本不读它们 ——
             // 点了提示「已重置」，按钮纹丝不动。现在清按钮自己的位置、大小、字号，
             // 并让它当场挪回默认位置（右上角）
@@ -1303,7 +1317,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                 textSize.setValue(appConfig.getRecordingFloatingTimeTextSizeSp());
             }
             toast(getString(R.string.msg_floating_reset));
-        });
+        }));
     }
 
     // ------------------------------------------------------------------ 系统
@@ -1437,17 +1451,17 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         }
         onClick("pref_bird_calibrate", pref -> com.kooo.evcam.zeekr.BirdEyeCalibrationDialog.show(requireContext(),
                 this::refreshBirdEyePopup));
-        onClick("pref_bird_reset_layout", pref -> {
+        onClick("pref_bird_reset_layout", pref -> confirmReset(pref, R.string.ui_window_reset_scope, () -> {
             window.resetLayout(); com.kooo.evcam.zeekr.BirdEyePopupService.applyLayout();
             SeekBarPreference size = findPreference("pref_bird_popup_size"); if (size != null) size.setValue(window.size());
-        });
-        onClick("pref_bird_reset_calibration", pref -> {
+        }));
+        onClick("pref_bird_reset_calibration", pref -> confirmReset(pref, R.string.ui_360_reset_scope, () -> {
             config.reset();
             ListPreference quality = findPreference("pref_bird_quality");
             if (quality != null) { quality.setValue(Integer.toString(config.quality())); quality.setSummary(quality.getEntry()); }
             ListPreference profile = findPreference("pref_bird_profile");
             if (profile != null) { profile.setValue(config.projectionMode()); refreshBirdEyeProjectionSummary(config); }
-        });
+        }));
     }
 
     private void refreshBirdEyeProjectionSummary(com.kooo.evcam.zeekr.BirdEyeConfig config) {
@@ -1471,7 +1485,10 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             if (quality != null) { quality.setValue(Integer.toString(config.quality())); quality.setSummary(quality.getEntry()); }
         }
         SwitchPreferenceCompat visible = findPreference("pref_bird_visible");
-        if (visible != null) visible.setChecked(com.kooo.evcam.zeekr.BirdEyePopupService.isRunning());
+        if (visible != null) {
+            boolean open=com.kooo.evcam.zeekr.BirdEyePopupService.isRunning();visible.setChecked(open);
+            visible.setSummary(open?R.string.ui_window_open:R.string.ui_window_closed);
+        }
         SeekBarPreference size = findPreference("pref_bird_popup_size");
         if (size != null && getContext() != null) {
             size.setValue(new com.kooo.evcam.zeekr.BirdEyeWindowConfig(requireContext()).size());
@@ -1595,16 +1612,11 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         bindSwitch("pref_raw_frame_dump", appConfig.isRawFrameDumpEnabled(),
                 appConfig::setRawFrameDumpEnabled);
 
-        SwitchPreferenceCompat driveLog = findPreference("pref_drive_logging");
-        if (driveLog != null) {
-            driveLog.setPersistent(false);
-            driveLog.setOnPreferenceChangeListener((pref,value) -> {
-                if (Boolean.TRUE.equals(value)) com.kooo.evcam.telemetry.DriveLogService.start(requireContext());
-                else com.kooo.evcam.telemetry.DriveLogService.stop(requireContext());
-                refreshDriveLogging();
-                return false; // The service, including startup failures, owns the actual state.
-            });
-        }
+        onClick("pref_drive_logging", pref -> {
+            if(com.kooo.evcam.telemetry.DriveLogService.isEnabled())com.kooo.evcam.telemetry.DriveLogService.stop(requireContext());
+            else com.kooo.evcam.telemetry.DriveLogService.start(requireContext());
+            refreshDriveLogging();
+        });
         refreshDriveLogging();
 
         // 信号普查：开就挂全部功能号记变化，关就停；到点自己停时开关也关（见 SignalScanControl）
@@ -1978,11 +1990,17 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         return names;
     }
 
+    private void confirmReset(Preference preference, int scope, Runnable reset) {
+        com.kooo.evcam.ui.ResetConfirmation.show(requireContext(), preference.getTitle(), scope, reset);
+    }
+
     private void onClick(String key, Action action) {
         Preference pref = findPreference(key);
         if (pref == null) {
             return;
         }
+        if (key.contains("reset") || java.util.Arrays.asList("pref_check_update", "pref_archive", "pref_repair_mp4", "pref_drive_logging").contains(key))
+            PreferenceRows.markAction(pref);
         pref.setOnPreferenceClickListener(preference -> {
             action.run(preference);
             return true;

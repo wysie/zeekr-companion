@@ -36,6 +36,7 @@ public class CameraSourcesFragment extends PreferenceFragmentCompat {
             }); screen.addPreference(row);
         }
         Preference reset = new Preference(context); reset.setKey("reset_sources");
+        PreferenceRows.markAction(reset);
         reset.setTitle(R.string.camera_sources_reset); reset.setSummary(R.string.camera_sources_reset_note);
         reset.setOnPreferenceClickListener(pref -> {
             CamDialogs.show(new MaterialAlertDialogBuilder(context, R.style.Theme_Cam_MaterialAlertDialog)

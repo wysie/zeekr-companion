@@ -2059,6 +2059,21 @@ public class AppConfig {
                 !prefs.contains(KEY_HUD_SIDE_MIRROR) && !prefs.contains(KEY_HUD_CUSTOM_PICTURE));
     }
 
+    /** Restore only HUD image inheritance/custom framing; window and tone stay untouched. */
+    public void resetHudPicture() {
+        SharedPreferences.Editor edit=prefs.edit().remove(KEY_HUD_CUSTOM_PICTURE).remove(KEY_HUD_SIDE_MIRROR)
+                .putBoolean(KEY_HUD_FOLLOW_PICTURE,true);
+        for(String key:prefs.getAll().keySet())if(key.startsWith(HUD_PICTURE_PREFIX))edit.remove(key);
+        edit.apply();
+    }
+    /** Restore the current vehicle's placement/aspect; keep picture, tone and output choices. */
+    public void resetHudPlacement() {
+        SharedPreferences.Editor edit=prefs.edit();
+        for(String key:new String[]{KEY_HUD_SIDE_SIZE,KEY_HUD_SIDE_SHAPE,KEY_HUD_SIDE_LEFT,KEY_HUD_SIDE_VERTICAL,KEY_HUD_SIDE_FOLLOW})
+            edit.remove(hudLayoutKey(key));
+        edit.apply();
+    }
+
     private android.content.SharedPreferences.Editor seedHudPicture(android.content.SharedPreferences.Editor edit) {
         return edit.putBoolean(KEY_HUD_CUSTOM_PICTURE, true)
                 .putInt(HUD_PICTURE_PREFIX + "fov", getSidePopupFov())

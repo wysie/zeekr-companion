@@ -24,7 +24,7 @@
     <string name="set_section_system">System</string>
     <string name="set_section_about">About &amp; credits</string>
     <string name="set_car_model_title">Stream profile</string>
-    <string name="set_profile_editor_title">Edit stream profile</string>
+    <string name="set_profile_editor_title">Recording sources &amp; quality</string>
     <string name="set_profile_editor_summary">Recording quality, per-camera settings and main-screen layout</string>
     <string name="set_photo_jpeg_title">Use JPEG output for photos</string>
     <string name="set_photo_jpeg_summary">Takes photos from the camera\'s JPEG output at the largest size. When off, photos are captured from the preview at preview resolution. Takes effect after restarting the app.</string>

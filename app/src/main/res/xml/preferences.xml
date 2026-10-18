@@ -16,19 +16,15 @@
         <PreferenceCategory
             android:key="group_recording_cameras"
             android:title="@string/menu_cameras">
-            <ListPreference
-                android:key="pref_car_model"
-                android:title="@string/set_car_model_title"
-                android:summary="%s"
-                app:useSimpleSummaryProvider="false" />
-            <Preference
-                android:key="pref_profile_editor"
-                android:title="@string/set_profile_editor_title"
-                android:summary="@string/set_profile_editor_summary" />
+            <Preference android:key="pref_vehicle_setup" android:title="@string/vehicle_profile_title" />
             <Preference
                 android:key="pref_camera_sources"
                 android:title="@string/camera_sources_title"
                 android:summary="@string/camera_sources_entry" />
+            <Preference
+                android:key="pref_profile_editor"
+                android:title="@string/set_profile_editor_title"
+                android:summary="@string/set_profile_editor_summary" />
             <ListPreference
                 android:key="pref_preview_layout"
                 android:title="@string/record_preview_layout"
@@ -37,6 +33,11 @@
                 android:key="pref_preview_layout_help"
                 android:summary="@string/record_preview_help"
                 android:selectable="false" />
+            <ListPreference
+                android:key="pref_car_model"
+                android:title="@string/set_car_model_title"
+                android:summary="%s"
+                app:useSimpleSummaryProvider="false" />
         </PreferenceCategory>
         <PreferenceCategory
             android:key="group_recording_auto"
@@ -468,6 +469,8 @@
                     android:title="@string/set_hud_side_follow_title"
                     android:summary="@string/set_hud_side_follow_summary" />
             </PreferenceCategory>
+            <Preference android:key="pref_hud_reset_picture" android:title="@string/ui_hud_reset_picture" android:summary="@string/ui_hud_picture_reset_scope" />
+            <Preference android:key="pref_hud_reset_placement" android:title="@string/ui_hud_reset_placement" android:summary="@string/ui_hud_placement_reset_scope" />
             <PreferenceCategory
                 android:key="group_hud_advanced"
                 android:title="@string/menu_advanced_experimental">
@@ -765,7 +768,7 @@
                 android:key="pref_raw_frame_dump"
                 android:title="@string/dev_raw_frame_title"
                 android:summary="@string/dev_raw_frame_summary" />
-            <SwitchPreferenceCompat
+            <Preference
                 android:key="pref_drive_logging"
                 android:title="@string/drive_log_title"
                 android:summary="@string/drive_log_summary" />
@@ -810,7 +813,7 @@
     -->
     <PreferenceScreen
         android:key="screen_update"
-        android:title="@string/set_check_update_title">
+        android:title="@string/ui_updates_title">
         <Preference
             android:key="pref_check_update"
             android:title="@string/set_check_update_title" />
