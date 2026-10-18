@@ -196,3 +196,6 @@ The existing default remains Beta plus Stable; previous beta-switch choices are
 preserved. Alpha requires explicit selection and is never inferred from the
 installed version. Unknown choices fall back to Stable. Tags and GitHub pre-release
 flags must agree; the update repository and release naming remain unchanged.
+### Shared camera sources
+
+Recording → Camera sources and the Developer mapping entry now open the same per-role picker. Automatic retains capability-based Surround detection and existing cabin ordering; Unassigned disables an assignment explicitly; a Camera ID overrides it. Reset confirms before clearing mappings and keeps recording selections and image tuning. Active legacy developer overrides migrate once. Saved mappings apply when the camera pipeline is reopened; they do not interrupt recording. Road Front, Road Rear and Manual roles are reserved for the recording/preview follow-ups; their Automatic assignments remain unknown rather than guessing IDs or vehicle compatibility. Camera2 enumeration and retained assignments are evidence of IDs, not proof of physical orientation or simultaneous-camera support.
