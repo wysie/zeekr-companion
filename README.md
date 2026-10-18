@@ -173,3 +173,10 @@ Settings → Interface → Theme offers Follow system (default), Light and Dark.
 Confirm a choice to apply it; Cancel preserves the current theme. The selected
 palette also colours camera-direction badges and the side-popup Close button.
 Camera pixels and recording files remain unchanged.
+### Super mirror window controls
+
+Super mirror has accessible Close and Expand/Restore corner buttons. Close uses
+the existing mirror enable control. Expansion is temporary: Restore and reopening
+return to the saved normal placement, and gesture changes while expanded are not
+saved over it. Existing drag, pinch, docking and camera selection remain available.
+Very narrow windows retain Close and hide Expand until widened.

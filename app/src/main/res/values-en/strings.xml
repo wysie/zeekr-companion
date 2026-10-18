@@ -960,4 +960,9 @@
     <string name="theme_system">Follow system</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>
+    <string name="side_control_close">Dismiss this side view</string>
+    <string name="side_control_expand">Expand side view</string>
+    <string name="side_control_restore">Restore window size</string>
+    <string name="mirror_control_close">Turn off Super mirror</string>
+    <string name="mirror_control_expand">Expand Super mirror</string>
 </resources>
