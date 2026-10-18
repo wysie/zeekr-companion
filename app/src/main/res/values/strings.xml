@@ -1,7 +1,7 @@
 <resources xmlns:tools="http://schemas.android.com/tools" tools:locale="zh">
-    <!-- wysie Edition identity; application ID, signing and storage names remain compatible. -->
-    <string name="app_name">极氪即刻 — wysie Edition</string>
-    <string name="app_name_full">极氪即刻 — wysie Edition</string>
+    <!-- Zeekr Companion identity; application ID, signing and storage names remain compatible. -->
+    <string name="app_name">Zeekr Companion</string>
+    <string name="app_name_full">Zeekr Companion</string>
     <string name="accessibility_service_description">用于「开机自启动」，帮助应用在后台持续运行。\n\n本服务不读取、不操作任何界面内容，也不收集任何信息。</string>
 
     <!-- 极氪合成流模式 -->
@@ -478,7 +478,7 @@
     <string name="msg_select_photos_first">请先选择要分享的照片</string>
     <string name="msg_no_photos_to_share">没有可分享的照片</string>
     <string name="action_share_photos">分享照片</string>
-    <string name="msg_share_photo_subject">来自极氪即刻的照片 — wysie Edition</string>
+    <string name="msg_share_photo_subject">来自 Zeekr Companion 的照片</string>
     <string name="msg_no_share_target">未找到可用于分享的应用</string>
     <string name="msg_file_unreadable">文件不存在或无法读取</string>
 
@@ -489,7 +489,6 @@
     <string name="nav_group_system">系统</string>
     <string name="nav_settings">设置</string>
     <string name="nav_header_subtitle">车机版环视记录仪</string>
-    <string name="nav_header_alt_name">Zeekr Shortcut — wysie Edition</string>
     <string name="lane_surround">环视</string>
     <string name="player_title">录像回放</string>
     <string name="player_prev">上一条</string>
@@ -595,7 +594,7 @@
     <string name="msg_restart_required">重启应用后生效</string>
 
     <!-- 主界面（统一骨架） -->
-    <string name="main_title">极氪即刻\nwysie Edition</string>
+    <string name="main_title">Zeekr Companion</string>
     <string name="record_start">开始录制</string>
     <string name="record_stop">停止录制</string>
     <string name="record_preparing">正在准备…</string>

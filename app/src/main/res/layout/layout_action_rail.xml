@@ -23,9 +23,6 @@
             android:layout_height="wrap_content" android:text="@string/main_brand_name"
             android:textAppearance="@style/TextAppearance.Cam.Body" android:textStyle="bold"
             android:textColor="@color/text_primary" />
-        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
-            android:text="@string/main_brand_edition" android:textAppearance="@style/TextAppearance.Cam.Caption"
-            android:textColor="@color/text_secondary" />
     </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView

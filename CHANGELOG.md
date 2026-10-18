@@ -7,6 +7,12 @@ Alpha sections: one line per change, what changed and nothing else. Beta and sta
 sections: written for users, reviewed before release. Why a change was made lives in the
 commit message, not here.
 
+## [2.11.50-alpha.1] - 2026-10-18
+
+- Rename the app to Zeekr Companion in every language and remove the edition line from the main screen and drawer.
+- Keep wysie’s maintainer introduction and explicit dts88 fork attribution in About, alongside Ferix and EVCam credits.
+- Name new release titles and APK downloads Zeekr Companion while retaining update compatibility, settings and storage folders.
+
 ## [2.11.49-alpha.1] - 2026-10-18
 
 - Compact the main-page title/actions, pin recording and Settings controls, and group popup window controls with Open/Closed/Paused status.

@@ -10,8 +10,8 @@ class ReleasePackagingTest(unittest.TestCase):
         for version, prerelease in [("2.11.42-alpha.1", True), ("2.11.42-beta.2", True), ("2.11.42", False)]:
             identity = release_identity(version)
             self.assertEqual("v" + version, identity["tag"])
-            self.assertEqual(f"ZeekrShortcut-wysie-{version}.apk", identity["filename"])
-            self.assertEqual("Zeekr Shortcut — wysie Edition " + version, identity["title"])
+            self.assertEqual(f"ZeekrCompanion-{version}.apk", identity["filename"])
+            self.assertEqual("Zeekr Companion " + version, identity["title"])
             self.assertEqual(prerelease, identity["prerelease"])
 
     def test_refuses_ambiguous_names(self):

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="main_brand_name">极氪即刻</string>
-    <string name="main_brand_edition">wysie Edition</string>
+    <string name="main_brand_name">Zeekr Companion</string>
     <string name="main_preview_selection">预览：%1$s</string>
     <string name="main_preview_choice_help">仅更改已保存的预览布局，录制选择保持不变。退出并重新打开以应用；退出会停止录制。</string>
     <string name="main_360_view">360 视图</string>

@@ -17,7 +17,7 @@ import os
 import re
 import sys
 
-APP_NAME = "Zeekr Shortcut — wysie Edition"
+APP_NAME = "Zeekr Companion"
 REPO = "https://github.com/wysie/zeekr-shortcut-car"
 
 
@@ -108,7 +108,7 @@ def main():
     out.append("")
     out.append("For the original, more thoroughly tested version, use "
                "[dts88’s releases](https://github.com/dts88/zeekr-shortcut-car/releases). "
-               "Report wysie Edition issues in [this repository](" + REPO + "/issues).")
+               "Report Zeekr Companion issues in [this repository](" + REPO + "/issues).")
     out.append("")
     out.append("Released under **GPL-3.0**, based on "
                "[EVCam](https://github.com/suyunkai/EVCam) by suyunkai.")

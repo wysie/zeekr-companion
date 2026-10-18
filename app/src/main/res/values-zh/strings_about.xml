@@ -6,9 +6,9 @@
 -->
 <!-- 中文界面用这一份 -->
 <resources>
-    <string name="about_tagline">我是 wysie，这是我维护的极氪即刻个人版本。我主要在自己的 ZEEKR 009 上使用，加入了自己的改进、实验功能，以及从开源社区改编的贡献。</string>
+    <string name="about_tagline">我是 wysie，负责维护 Zeekr Companion，这是基于 dts88 的极氪即刻（Zeekr Shortcut）的分支。我主要在自己的 ZEEKR 009 上使用，加入了自己的改进、实验功能，以及从开源社区改编的贡献。</string>
     <string name="about_project_title">项目与下载</string>
-    <string name="about_project_body">下方分别是我的源码与下载、dts88 的原始项目，以及 Ferix 的 CAMCORDER 项目。反馈 wysie Edition 的问题时，请使用我的仓库，并附上从「设置 → 系统 → 诊断信息」导出的报告。</string>
+    <string name="about_project_body">下方分别是我的源码与下载、dts88 的原始项目，以及 Ferix 的 CAMCORDER 项目。反馈 Zeekr Companion 的问题时，请使用我的仓库，并附上从「设置 → 系统 → 诊断信息」导出的报告。</string>
     <string name="about_storage_title">关于 U 盘</string>
     <string name="about_storage_body">录像只写入 U 盘，不写入车机内置存储（开发者选项除外）：录制会持续写入数据，而内置存储的写入寿命有限，损坏后无法更换。\n\n• 随车附带的 U 盘可满足基本录制需求。\n\n• 如需更高码率或更长保存时间，又不想占用原车 U 盘，可在左侧 Type-C 接口另接一个 U 盘或固态硬盘，车机自动识别，可随时拔出。\n\n• 下车后哨兵模式开启期间，只有 USB-A 接口保持供电；Type-C 接口的 U 盘随之断电，录像自动改存到 USB-A 接口的 U 盘。\n\n• 已实测可用：128 GB U 盘；NVMe 固态硬盘（读写更快，基本消除写入瓶颈，发热略高）。\n\n• 傲腾（Optane）M10 系列性价比高，但容量小，约可保存最近 20 小时的录像（视容量和码率而定）。</string>
     <string name="about_privacy_title">隐私与联网</string>
@@ -22,7 +22,7 @@
     <string name="about_credits_evcam">感谢 suyunkai 和 EVCam 贡献者提供相机、录制及悬浮窗的底层基础。本版本继续以 GNU GPL v3.0 开源发布，源码和署名信息可在项目仓库中查看。</string>
     <string name="about_coffee_title">支持原作者 dts88</string>
     <string name="about_coffee_body">如果想给原作者 dts88 打赏，可以 PayNow 到 9271 6786。该号码属于 dts88。打赏完全自愿，不影响任何功能。</string>
-    <string name="about_link_fork_label">wysie Edition — 源码与下载</string>
+    <string name="about_link_fork_label">Zeekr Companion — 源码与下载</string>
     <string name="about_link_upstream_label">dts88 的原始项目 — 测试更充分的版本</string>
     <string name="about_link_ferix_label">Ferix 的 CAMCORDER — 源码与下载</string>
     <string name="about_credits_ferix">特别感谢 Ferix — FerixzTanz（Felix Tan）— 的 CAMCORDER 项目及最初的转向侧视摄像头功能。本版本改编了他的 HUD、发送到手机、车辆信号扫描、录制工具、相册和界面改进。他的贡献是这个版本的重要基础。</string>

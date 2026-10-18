@@ -1,4 +1,4 @@
-# Zeekr Shortcut — wysie Edition
+# Zeekr Companion
 
 This is [wysie's personal fork](https://github.com/wysie/zeekr-shortcut-car) of
 [Zeekr Shortcut by dts88](https://github.com/dts88/zeekr-shortcut-car), maintained
@@ -21,12 +21,20 @@ dts88’s original version is the more thoroughly tested option. This custom for
 by wysie is primarily for personal use and adds experimental features; its vehicle
 testing is more limited. Neither project is an official ZEEKR product.
 
-The in-app About page introduces wysie Edition in my own voice, thanks dts88,
+The in-app About page introduces Zeekr Companion in my own voice, thanks dts88,
 Ferix and the EVCam contributors up front, and links to their projects.
 Credits links include dts88 and Ferix beside their acknowledgements; Projects and
-downloads lists wysie Edition, dts88's original project, then Ferix's CAMCORDER.
+downloads lists Zeekr Companion, dts88's original project, then Ferix's CAMCORDER.
 Original community acknowledgements are retained and attributed to dts88’s project. Its
 optional PayNow tip, **9271 6786**, goes to **dts88, the original author**.
+
+The app is now named **Zeekr Companion** in every language, without a “by wysie”
+or edition line on the main screen. About identifies wysie as maintainer and clearly
+credits this fork’s origin in dts88’s Zeekr Shortcut, alongside Ferix and EVCam.
+Future APKs use `ZeekrCompanion-<version>.apk`. The repository, updater destination,
+application ID, signing certificate, preferences and `ZeekrShortcutApp` folders stay
+compatible with existing installations. Existing download links remain valid.
+Logo concepts are being reviewed; the installed icon has not changed yet.
 
 Current test download: [wysie Edition 2.11.49-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.49-alpha.1).
 For in-app delivery, select **Updates → Update channel → Alpha**; Beta and Stable
@@ -182,10 +190,10 @@ Settings sidebar entries, including About & credits and Quit app, use the same
 font size on every row binding. Long labels wrap onto two lines rather than
 shrinking, with row height growing as needed for larger system fonts.
 
-Release naming uses **Zeekr Shortcut — wysie Edition** for the app and release title,
+Release naming uses **Zeekr Companion** for the app and release title,
 `vX.Y.Z-alpha.N` / `vX.Y.Z-beta.N` / `vX.Y.Z` for tags, and
-`ZeekrShortcut-wysie-X.Y.Z-alpha.N.apk` (or the matching beta/stable version) for downloads.
-Alpha/beta releases are marked Pre-release; alpha is never offered by the updater.
+`ZeekrCompanion-X.Y.Z-alpha.N.apk` (or the matching beta/stable version) for downloads.
+Alpha/beta releases are marked Pre-release; Alpha updates require choosing the Alpha channel.
 Each release includes a `.apk.sha256` checksum. Existing release links, application ID,
 signing identity, settings and the `ZeekrShortcutApp` storage folders are retained.
 
@@ -388,7 +396,7 @@ plan; the existing identity is retained for compatibility. The updater now requi
 GitHub asset size and SHA-256 to match and uses HTTPS through redirects. Old assets
 without a digest are refused by the in-app downloader; manual alpha installs remain unchanged.
 
-Download the `ZeekrShortcut-wysie-<version>.apk` asset from the release page and sideload it through App Lab.
+Download the `ZeekrCompanion-<version>.apk` asset from the release page and sideload it through App Lab.
 When the installer finishes, tap **Back** at the top left, not **Open**. Otherwise the head unit's
 installer gets stuck and later installs or updates fail.
 

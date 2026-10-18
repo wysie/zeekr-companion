@@ -8,20 +8,20 @@ from pathlib import Path
 import re
 import shutil
 
-APP_NAME = "Zeekr Shortcut — wysie Edition"
+APP_NAME = "Zeekr Companion"
 _NUMBER = r"(?:0|[1-9][0-9]*)"
 VERSION = re.compile(rf"{_NUMBER}\.{_NUMBER}\.{_NUMBER}(?:-(alpha|beta)\.([1-9][0-9]*))?")
 
 
 def release_identity(version):
     if not isinstance(version, str) or not VERSION.fullmatch(version):
-        raise ValueError("Use X.Y.Z, X.Y.Z-alpha.N or X.Y.Z-beta.N for wysie Edition releases")
+        raise ValueError("Use X.Y.Z, X.Y.Z-alpha.N or X.Y.Z-beta.N for Zeekr Companion releases")
     return {
         "version": version,
         "tag": "v" + version,
         "title": APP_NAME + " " + version,
         "prerelease": "-" in version,
-        "filename": f"ZeekrShortcut-wysie-{version}.apk",
+        "filename": f"ZeekrCompanion-{version}.apk",
     }
 
 
@@ -29,7 +29,7 @@ def stage(metadata_path, output_dir, expected_tag=None):
     metadata_path, output_dir = Path(metadata_path), Path(output_dir)
     metadata = json.loads(metadata_path.read_text(encoding="utf-8"))
     if metadata.get("variantName") != "release" or metadata.get("applicationId") != "io.github.dts88.zeekrshortcut":
-        raise ValueError("Expected the signed wysie Edition release variant and existing application ID")
+        raise ValueError("Expected the signed Zeekr Companion release variant and existing application ID")
     elements = metadata.get("elements", [])
     if len(elements) != 1 or elements[0].get("filters"):
         raise ValueError("Expected exactly one universal APK")
