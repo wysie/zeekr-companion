@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_brand_name">Zeekr Shortcut</string>
+    <string name="main_brand_edition">wysie Edition</string>
+    <string name="main_preview_selection">Pratonton: %1$s</string>
+    <string name="main_preview_choice_help">Hanya menukar susun atur pratonton tersimpan. Pilihan rakaman tidak berubah. Keluar dan buka semula untuk digunakan; keluar menghentikan rakaman.</string>
+    <string name="main_360_view">Paparan 360</string>
+    <string name="main_straighten_preview">Luruskan pratonton</string>
+    <string name="main_windows">Tetingkap</string>
+    <string name="main_mirror_window">Cermin super</string>
+    <string name="main_360_window">Tetingkap 360</string>
+    <string name="main_window_open">Terbuka</string>
+    <string name="main_window_closed">Ditutup</string>
+    <string name="main_window_paused">Dijeda</string>
+    <string name="main_expand_preview">Besarkan pratonton</string>
+    <string name="main_restore_controls">Pulihkan kawalan</string>
+    <string name="main_360_destinations_help">Di halaman utama, Paparan 360 menukar pratonton; Tetingkap 360 membuka tetingkap berasingan. Suis di sini juga membuka atau menutup tetingkap itu.</string>
+</resources>

@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="main_brand_name">极氪即刻</string>
+    <string name="main_brand_edition">wysie Edition</string>
+    <string name="main_preview_selection">预览：%1$s</string>
+    <string name="main_preview_choice_help">仅更改已保存的预览布局，录制选择保持不变。退出并重新打开以应用；退出会停止录制。</string>
+    <string name="main_360_view">360 视图</string>
+    <string name="main_straighten_preview">预览校正</string>
+    <string name="main_windows">悬浮窗口</string>
+    <string name="main_mirror_window">超级后视镜</string>
+    <string name="main_360_window">360 窗口</string>
+    <string name="main_window_open">已打开</string>
+    <string name="main_window_closed">已关闭</string>
+    <string name="main_window_paused">已暂停</string>
+    <string name="main_expand_preview">展开预览</string>
+    <string name="main_restore_controls">恢复控件</string>
+    <string name="main_360_destinations_help">主界面的“360 视图”用于当前预览，“360 窗口”用于独立悬浮窗。此处的开关也可打开或关闭悬浮窗。</string>
+</resources>

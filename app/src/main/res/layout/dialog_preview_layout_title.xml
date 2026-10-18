@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical"
+    android:paddingStart="24dp" android:paddingEnd="24dp" android:paddingTop="20dp" android:paddingBottom="8dp">
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/record_preview_layout" android:textAppearance="@style/TextAppearance.Cam.Title"
+        android:textColor="@color/text_primary" />
+    <TextView android:id="@+id/preview_choice_help" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="8dp" android:textAppearance="@style/TextAppearance.Cam.Caption" android:textColor="@color/text_secondary" />
+</LinearLayout>

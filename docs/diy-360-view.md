@@ -262,8 +262,8 @@ edge, retained aspect ratio and saved normal placement. Emulator screenshots
 confirm the software bounds; Android Auto on the 009 and the API 28–29 fallback
 have not been validated on a vehicle/device with those conditions.
 
-Settings → 360° camera contains the main/popup preference (main by default),
-Open/Close popup actions, quality, popup size, popup-layout reset, calibration and
+Settings → 360° camera contains the live popup switch, quality, popup size,
+popup-layout reset, calibration and
 calibration/quality reset. Holding the main 360° button still opens calibration.
 Popup placement uses a separate store; calibration/quality reset does not reset
 popup placement, mirror/side-view preferences or the selected display mode.
@@ -299,3 +299,14 @@ local before/after verification possible without substituting a phone screenshot
 or a straightened image for raw camera pixels. Keep inputs and results private;
 the supplied 009 daytime comparison verifies reduced overlap, not calibration
 accuracy or ground distance. The front bodywork band remains a known limitation.
+
+## Explicit main-page actions — 2026-10-18
+
+The main-page **360 view** action always selects DIY 360 in the main preview;
+**Windows → 360 window** toggles the independent manual window. Opening the window
+returns the main preview to its grid, and selecting main 360 closes the window,
+retaining the existing single-visible-renderer behavior. The legacy
+main/popup shortcut-destination setting is no longer exposed because the actions
+are explicit; its stored value and window geometry are retained. This does not
+change projection, calibration, capture resolution, factory yielding or recording.
+The window still requires the mapped Surround source to be available.

@@ -10,37 +10,29 @@
   主操作只有录制一个：它大一档（132dp），状态由左侧的点（圆 ⇄ 方）和外圈分段进度环表示，
   红色只出现在那一小块上 —— 红标的是「正在录」这件事，不是这个按钮。
 -->
-<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:id="@+id/action_rail"
     android:layout_width="@dimen/rail_width"
     android:layout_height="match_parent"
-    android:fillViewport="true">
+    android:orientation="vertical">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
-
-    <!--
-      应用名。原来在标题栏左侧，标题栏拆掉之后它归到这一列的顶上 ——
-      这一列本来就是「这个界面能做的事」，名字挂在最上面不占画面。
-    -->
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="@dimen/gutter"
-        android:ellipsize="end"
-        android:maxLines="3"
-        android:text="@string/main_title"
-        android:textColor="@color/text_primary"
-        android:textAppearance="@style/TextAppearance.Cam.Title"
-        android:textStyle="bold" />
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:paddingBottom="12dp">
+        <TextView android:id="@+id/main_brand" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:text="@string/main_brand_name"
+            android:textAppearance="@style/TextAppearance.Cam.Body" android:textStyle="bold"
+            android:textColor="@color/text_primary" />
+        <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+            android:text="@string/main_brand_edition" android:textAppearance="@style/TextAppearance.Cam.Caption"
+            android:textColor="@color/text_secondary" />
+    </LinearLayout>
 
     <com.google.android.material.card.MaterialCardView
         android:id="@+id/btn_start_record"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/record_button_height"
+        android:layout_height="wrap_content"
+        android:minHeight="112dp"
         android:clickable="true"
         android:contentDescription="@string/record_start"
         android:focusable="true"
@@ -52,7 +44,9 @@
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
+            android:layout_height="wrap_content"
+            android:minHeight="112dp"
+            android:paddingTop="12dp" android:paddingBottom="12dp"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:paddingStart="22dp"
@@ -94,7 +88,7 @@
                     android:id="@+id/record_title"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:text="@string/record_start"
                     android:textColor="@color/text_primary"
                     android:textAppearance="@style/TextAppearance.Cam.Title"
@@ -106,7 +100,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="4dp"
                     android:fontFeatureSettings="tnum"
-                    android:maxLines="1"
+                    android:maxLines="2"
                     android:textColor="@color/text_secondary"
                     android:textAppearance="@style/TextAppearance.Cam.Caption" />
 
@@ -124,70 +118,111 @@
         </LinearLayout>
     </com.google.android.material.card.MaterialCardView>
 
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="vertical" android:paddingBottom="8dp">
+        <TextView android:id="@+id/camera_status_chip" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:minHeight="48dp" android:padding="10dp"
+            android:gravity="center_vertical" android:background="@drawable/bg_chip_neutral"
+            android:text="@string/camera_status_title" android:textColor="@color/text_primary"
+            android:textAppearance="@style/TextAppearance.Cam.Body" android:clickable="true" android:focusable="true" />
+        <TextView android:id="@+id/tv_recording_stats" android:layout_width="match_parent"
+            android:layout_height="wrap_content" android:paddingStart="10dp" android:paddingEnd="10dp"
+            android:textAppearance="@style/TextAppearance.Cam.Caption" android:textColor="@color/text_secondary"
+            android:fontFeatureSettings="tnum" android:visibility="gone" />
+    </LinearLayout>
+
+    <ScrollView android:id="@+id/main_actions_scroll" android:layout_width="match_parent"
+        android:layout_height="0dp" android:layout_weight="1" android:fillViewport="true">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:orientation="vertical">
+    <com.google.android.material.button.MaterialButton android:id="@+id/btn_preview_layout"
+        style="@style/Widget.Cam.RailSmall" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:minHeight="56dp" android:paddingTop="8dp"
+        android:paddingBottom="8dp" android:text="@string/record_preview_layout" android:gravity="start|center_vertical"
+        app:icon="@drawable/ic_expand_more" app:iconGravity="end" />
+    <TextView android:id="@+id/main_preview_pending" android:layout_width="match_parent"
+        android:layout_height="wrap_content" android:padding="8dp" android:text="@string/ui_pending_camera_changes"
+        android:textAppearance="@style/TextAppearance.Cam.Caption" android:textColor="@color/text_secondary"
+        android:accessibilityLiveRegion="polite" android:visibility="gone" />
+
     <!-- 拍照独占一行：四宫格键撤了，放大一格改成直接点画面 -->
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btn_take_photo"
-        style="@style/Widget.Cam.RailTile"
+        style="@style/Widget.Cam.RailSmall"
         android:layout_width="match_parent"
-        android:layout_height="@dimen/rail_tile_height"
-        android:layout_marginTop="@dimen/gutter"
+        android:layout_height="wrap_content"
+        android:minHeight="56dp"
+        android:layout_marginTop="8dp"
         android:text="@string/rail_photo"
         app:icon="@drawable/ic_camera" />
 
-    <LinearLayout
+    <com.kooo.evcam.ui.WrappingActionRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="@dimen/gutter"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal">
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_video_playback"
-            style="@style/Widget.Cam.RailTile"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/rail_tile_height"
+            style="@style/Widget.Cam.RailSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        android:minHeight="56dp"
             android:layout_marginEnd="6dp"
-            android:layout_weight="1"
+
             android:text="@string/nav_video_playback"
             app:icon="@drawable/ic_video" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_photo_playback"
-            style="@style/Widget.Cam.RailTile"
-            android:layout_width="0dp"
-            android:layout_height="@dimen/rail_tile_height"
+            style="@style/Widget.Cam.RailSmall"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+        android:minHeight="56dp"
             android:layout_marginStart="6dp"
-            android:layout_weight="1"
+
             android:text="@string/nav_photo_playback"
             app:icon="@drawable/ic_photo" />
-    </LinearLayout>
+    </com.kooo.evcam.ui.WrappingActionRow>
 
     <!--
       环视画面的鱼眼校正，和图片回看、视频回看上那个是同一个开关。只改屏幕上的样子，
       录像不动。按钮自己管点击和颜色（FisheyeToggleButton），MainActivity 不用接线；
       画面那边由 FourLaneContainer 自己听开关。先放在这里试效果，位置以后再定。
     -->
-    <LinearLayout
+    <com.kooo.evcam.ui.WrappingActionRow
         android:layout_width="match_parent"
-        android:layout_height="@dimen/rail_small_height"
-        android:layout_marginTop="@dimen/gutter"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
         android:orientation="horizontal">
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btn_bird_eye"
             style="@style/Widget.Cam.RailSmall"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content" android:minHeight="56dp"
             android:layout_marginEnd="@dimen/gutter"
-            android:text="@string/bird_eye_button"
+            android:text="@string/main_360_view"
             android:contentDescription="@string/bird_eye_button_description" />
         <com.kooo.evcam.ui.FisheyeToggleButton
             android:id="@+id/btn_fisheye"
             style="@style/Widget.Cam.RailSmall"
-            android:layout_width="0dp"
-            android:layout_weight="1"
-            android:layout_height="match_parent"
-            android:text="@string/photo_fisheye" />
-    </LinearLayout>
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content" android:minHeight="56dp"
+            android:text="@string/main_straighten_preview" />
+    </com.kooo.evcam.ui.WrappingActionRow>
+
+    <TextView android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:text="@string/main_windows" android:paddingTop="8dp" android:paddingBottom="4dp"
+        android:textAppearance="@style/TextAppearance.Cam.Caption" android:textColor="@color/text_secondary" />
+    <com.kooo.evcam.ui.WrappingActionRow android:layout_width="match_parent" android:layout_height="wrap_content">
+        <com.google.android.material.button.MaterialButton android:id="@+id/btn_main_mirror"
+            style="@style/Widget.Cam.RailSmall" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:minHeight="56dp" android:text="@string/main_mirror_window" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/btn_main_360_window"
+            style="@style/Widget.Cam.RailSmall" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:minHeight="56dp" android:text="@string/main_360_window" />
+    </com.kooo.evcam.ui.WrappingActionRow>
 
     <!--
       车辆状态（试验性，设置 → 界面）：用信息条的图标显示哨兵模式、刹车 / 油门、驾驶辅助、喇叭。
@@ -204,10 +239,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_gravity="top|center_horizontal"
-            android:layout_marginTop="@dimen/gutter"
+            android:layout_marginTop="8dp"
             android:layout_marginBottom="@dimen/gutter"
             android:visibility="gone" />
     </FrameLayout>
+
+    </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -218,7 +256,7 @@
             android:id="@+id/btn_settings"
             style="@style/Widget.Cam.RailSmall"
             android:layout_width="0dp"
-            android:layout_height="@dimen/rail_small_height"
+            android:layout_height="56dp"
             android:layout_marginEnd="@dimen/gutter"
             android:layout_weight="1"
             android:text="@string/rail_settings"
@@ -234,10 +272,9 @@
             android:id="@+id/btn_minimize"
             style="@style/Widget.Cam.IconButton"
             android:layout_width="@dimen/rail_small_height"
-            android:layout_height="@dimen/rail_small_height"
+            android:layout_height="56dp"
             android:contentDescription="@string/cd_minimize"
             app:icon="@drawable/ic_minimize"
             app:iconTint="@color/text_secondary" />
     </LinearLayout>
-    </LinearLayout>
-</ScrollView>
+</LinearLayout>

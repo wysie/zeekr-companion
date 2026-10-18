@@ -111,6 +111,13 @@ public class RearViewMirrorService extends Service {
         return instance != null;
     }
 
+    /** Read-only window presentation state for the main-page control. */
+    public static boolean isWindowVisible() {
+        RearViewMirrorService service = instance;
+        return service != null && service.mirrorView != null && service.mirrorView.isShowing()
+                && !service.mirrorView.isHiddenForSidePopup() && service.mirrorView.getVisibility() == android.view.View.VISIBLE;
+    }
+
     /** Presentation only: never changes the enabled setting, camera claim, lane or saved layout. */
     public static void setHiddenForSidePopup(boolean hidden) {
         RearViewMirrorService svc = instance;
