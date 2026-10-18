@@ -1,8 +1,6 @@
 # UI and UX review for later work
 
-Status: deferred at the owner's request on 2026-10-18. These recommendations
-are not implemented or included in a release merely because they appear here.
-Resume with the batches below when the owner asks to continue.
+Status: resumed with the owner’s authorization on 2026-10-18. Implementation and validation are recorded below; remaining items are still open until checked. No new release is implied by this document.
 
 Astra 6 reviewed the combined fork at `aaf267f3` / `v2.11.47-alpha.1`
 (Android version code 330), using source and existing emulator captures. Preserve
@@ -179,3 +177,7 @@ Use bounded review passes and fix evidence-backed issues. Keep camera startup
 diagnosis separate from cosmetic changes. Do not mark any item complete without
 checking its implementation and validation; saving this backlog authorizes no
 new app feature or release.
+
+## Resumed implementation
+
+Camera truth/recovery batch: implemented a persistent recorder live/planned count and ordinary Camera status page, per-source recording/producer facts and saved-quality scope, differentiated known waiting/recovery/stopped states, elapsed prolonged waiting, accessible state announcements and diagnostics access. The black stale-image cover and scheduler behavior are retained. Native API 32 tests verify partial/loss/recovery count presentation, read-only status/recreation and stale-cover/live-preview accessibility. JVM/debug/test/release assembly and release lint pass. Physical camera startup, HUD/factory coexistence and Android Auto remain owner checks. Other batches below remain in progress.

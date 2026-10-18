@@ -6,4 +6,5 @@ import android.graphics.SurfaceTexture;
 public interface LivePreview {
     void noteFrame(SurfaceTexture source);
     void resetFrames();
+    default void setSourceKey(String key) {}
 }

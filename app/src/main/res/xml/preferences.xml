@@ -689,6 +689,7 @@
             android:defaultValue="true"
             android:title="@string/set_auto_start_title"
             android:summary="@string/set_auto_start_summary" />
+        <Preference android:key="pref_camera_status" android:title="@string/camera_status_title" android:summary="@string/camera_status_summary" />
         <Preference
             android:key="pref_diagnostics"
             android:title="@string/set_diagnostics_title"

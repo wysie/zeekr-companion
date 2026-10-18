@@ -201,6 +201,13 @@
                             android:textAppearance="@style/TextAppearance.Cam.Body"
                             android:visibility="gone" />
 
+                        <TextView android:id="@+id/camera_status_chip" android:layout_width="wrap_content"
+                            android:layout_height="wrap_content" android:minHeight="48dp" android:maxWidth="400dp"
+                            android:layout_gravity="top|end" android:layout_marginTop="64dp" android:layout_marginEnd="16dp"
+                            android:padding="12dp" android:gravity="center" android:maxLines="2" android:focusable="true"
+                            android:background="@drawable/bg_chip_recording" android:textColor="@color/recording_text"
+                            android:textAppearance="@style/TextAppearance.Cam.Body" android:text="@string/camera_status_title" />
+
                         <!--
                           ⑤ 状态条压在画面底边上（见 docs/ui-spec.md）。它在这一层，
                           所以横跨整个画面区，而不是只盖住环视那一格。

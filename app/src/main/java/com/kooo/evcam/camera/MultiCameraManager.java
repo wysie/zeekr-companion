@@ -706,6 +706,14 @@ public class MultiCameraManager {
      * 这个录像意图此刻的样子（主线程）：在录 / 准备中 / 等待摄像头、计划、在录的几路、开录落定没有、状态条那一句
      * （{@link RecordingLanes#summarize}）。没在录是 {@link RecordingLanes.Summary#NONE}。变了会告诉 {@link LaneListener}。
      */
+    /** Main-thread snapshot for UI only. A streaming producer does not prove a fresh preview. */
+    public CameraUiState sourceUiState(String key) {
+        SingleCamera source = cameras.get(key);
+        return CameraUiState.of(isBuilt(), source!=null, scheduler.condition(key),
+                scheduler.releasedByDark(key)||scheduler.cannotOpen(key),
+                source!=null&&source.isCameraOpened(), source!=null&&source.hasFramesWithin(2500));
+    }
+
     public RecordingLanes.Summary laneSummary() {
         return summary;
     }

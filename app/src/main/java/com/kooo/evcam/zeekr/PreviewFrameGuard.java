@@ -15,6 +15,17 @@ final class PreviewFrameGuard {
     private final Paint text = new Paint(Paint.ANTI_ALIAS_FLAG);
     private final String waiting;
     private boolean attached;
+    private String sourceKey, announcement;
+    private long waitingSince;
+    private android.text.StaticLayout messageLayout;
+    private String messageText;
+    private int messageWidth;
+    void setSourceKey(String key) { sourceKey=key; }
+    private com.kooo.evcam.camera.CameraUiState sourceState() {
+        com.kooo.evcam.camera.MultiCameraManager manager=com.kooo.evcam.camera.CameraManagerHolder.getInstance().getCameraManager();
+        return manager==null||sourceKey==null?com.kooo.evcam.camera.CameraUiState.STARTING:manager.sourceUiState(sourceKey);
+    }
+
     private final Runnable tick = new Runnable() {
         @Override public void run() {
             if (!attached) return;
@@ -32,7 +43,7 @@ final class PreviewFrameGuard {
     }
     void attach() { attached = true; reset(); owner.removeCallbacks(tick); owner.post(tick); }
     void detach() { attached = false; owner.removeCallbacks(tick); reset(); }
-    void reset() { frames.reset(); owner.invalidate(); }
+    void reset() { frames.reset(); waitingSince=SystemClock.elapsedRealtime(); owner.invalidate(); }
     void observe(SurfaceTexture source) {
         if (!attached || !owner.isShown()) { reset(); return; }
         try { frames.observe(source, source.getTimestamp(), SystemClock.elapsedRealtime()); }
@@ -40,9 +51,35 @@ final class PreviewFrameGuard {
         owner.invalidate();
     }
     void cover(Canvas canvas, boolean force) {
-        if (!force && frames.fresh(SystemClock.elapsedRealtime())) return;
+        long now=SystemClock.elapsedRealtime();
+        if (!force && frames.fresh(now)) {
+            waitingSince=0; announce(owner.getContext().getString(R.string.camera_preview_live)); return;
+        }
+        if(waitingSince==0)waitingSince=now;
+        com.kooo.evcam.camera.CameraUiState state=sourceState();
+        boolean prolonged=now-waitingSince>=10000;
+        int resource=state==com.kooo.evcam.camera.CameraUiState.STREAMING ? R.string.camera_preview_waiting
+          : (state==com.kooo.evcam.camera.CameraUiState.STARTING||state==com.kooo.evcam.camera.CameraUiState.WAITING)
+             ? (prolonged?R.string.camera_state_waiting:R.string.camera_state_starting):state.text;
+        String semantic=owner.getContext().getString(resource);
+        if(prolonged)semantic+="\n"+owner.getContext().getString(R.string.camera_waiting_status_link);
+        announce(semantic);
+        String shown=semantic+(prolonged?"\n"+owner.getContext().getString(R.string.camera_waiting_elapsed,(now-waitingSince)/1000):"");
         canvas.drawColor(Color.BLACK);
-        float baseline = owner.getHeight() / 2f - (text.ascent() + text.descent()) / 2f;
-        canvas.drawText(waiting, owner.getWidth() / 2f, baseline, text);
+        int width=Math.max(1,owner.getWidth()-24);
+        if(messageLayout==null||!shown.equals(messageText)||messageWidth!=width){
+            android.text.TextPaint paint=new android.text.TextPaint(text);
+            messageLayout=android.text.StaticLayout.Builder.obtain(shown,0,shown.length(),paint,width)
+              .setAlignment(android.text.Layout.Alignment.ALIGN_CENTER).setIncludePad(false).build();
+            messageText=shown;messageWidth=width;
+        }
+        canvas.save();canvas.translate(12,Math.max(0,(owner.getHeight()-messageLayout.getHeight())/2f));
+        messageLayout.draw(canvas);canvas.restore();
+    }
+    private void announce(String value) {
+        if(value.equals(announcement))return;announcement=value;
+        // Announce state transitions, never every elapsed second. Preserve child controls in the tree.
+        owner.setContentDescription(value);owner.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
+        androidx.core.view.ViewCompat.setStateDescription(owner,value);
     }
 }
