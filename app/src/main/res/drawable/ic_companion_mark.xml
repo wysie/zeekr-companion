@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Approved linked-companions geometry without launcher safe-zone padding.
+     The first loop follows the current text colour for contrast in both themes. -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="32dp" android:height="32dp"
+    android:viewportWidth="448" android:viewportHeight="448">
+    <group android:translateX="-158" android:translateY="-126">
+        <path android:fillColor="@color/text_primary"
+            android:pathData="M304,182 H381 C424,182 424,245 381,245 H305 C264,245 234,272 234,312 C234,352 264,382 304,382 H418 Q425,382 421,392 C402,426 363,444 324,444 H301 C227,444 168,392 168,313 C168,235 228,182 304,182 Z" />
+        <path android:fillColor="#F0622D"
+            android:pathData="M449,254 H454 C534,254 596,311 596,386 C596,460 535,518 455,518 H381 C340,518 340,455 381,455 H455 C499,455 530,425 530,386 C530,346 499,315 455,315 H437 C408,315 389,333 382,355 Q380,361 372,361 H327 Q318,361 321,350 C335,294 387,254 449,254 Z" />
+    </group>
+</vector>

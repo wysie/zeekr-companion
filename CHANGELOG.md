@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Show the Companion logo beside the main-page title, with contrasting light/dark colours.
+
 - Give paired main-page actions equal widths and matching heights while retaining normal-size wrapped labels.
 
 - Separate the recording and Camera status actions with consistent spacing and matching corners in idle and recording states.
