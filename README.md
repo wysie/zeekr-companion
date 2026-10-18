@@ -147,6 +147,10 @@ and experiments later removed. It links local commits, reasons and verified rele
 inclusion. Update it on every external review, including reviews with no imports;
 tracking a source branch does not mean all its changes are in this fork.
 
+Settings sidebar entries, including About & credits and Quit app, use the same
+font size on every row binding. Long labels wrap onto two lines rather than
+shrinking, with row height growing as needed for larger system fonts.
+
 Release naming uses **Zeekr Shortcut — wysie Edition** for the app and release title,
 `vX.Y.Z-alpha.N` / `vX.Y.Z-beta.N` / `vX.Y.Z` for tags, and
 `ZeekrShortcut-wysie-X.Y.Z-alpha.N.apk` (or the matching beta/stable version) for downloads.

@@ -9,6 +9,8 @@ commit message, not here.
 
 ## Unreleased
 
+- Keep About & credits, Quit app and settings sections at a consistent sidebar font size after scrolling; wrap long labels without shrinking them.
+
 - Add an optional floating-button double-tap action and Do nothing choice, preserving immediate single taps when double tap is off.
 
 ## [2.11.46-alpha.1] - 2026-10-18

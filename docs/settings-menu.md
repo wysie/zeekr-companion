@@ -6,6 +6,20 @@ options (when enabled), and Updates. About & credits remains a direct destinatio
 Headings group rows without another tap. Only the four named child pages below
 add navigation depth; their native Back button returns to their parent.
 
+All sidebar entries, including About & credits and Quit app, bind the same Body
+font size with autosizing disabled. Long labels wrap to two lines, and row height
+grows for larger system fonts. Rebinding a recycled row restores its size; About
+and Quit are direct actions, not smaller secondary labels.
+
+Typography validation: a native regression deliberately gives a reused title a
+smaller/autosized font, then rebinds section and action labels; the old binder
+retained the smaller size, while the updated binder restores the shared size.
+Measurements cover normal/1.3× system fonts and day/night contexts. Real sidebar
+scroll-to-bottom/top/bottom checks and screenshots verify About/Quit in both
+themes without invoking either action. Both new checks and three existing native
+layout tests pass, alongside 1,472 JVM tests, lint and debug/release builds. This
+does not establish the exact cause of the owner's older-build screenshot.
+
 | Main category | Groups and options |
 | --- | --- |
 | Recording & photos | Cameras: stream profile, profile editor with independent recording groups; shared Camera sources and Automatic reset; Preview layout with saved selection and separate help; model defaults live under System. Automatic recording: launch, driver arrival, driver departure. Screen off: keep recording. Photos: JPEG output. **Stamps & driving information →** app stamp, plate switch/text, timestamp, specifications, information bar and signal-selection shortcut. |
