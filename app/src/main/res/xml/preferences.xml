@@ -233,6 +233,13 @@
                 android:dependency="pref_side_view"
                 android:title="@string/side_auto_fit_title"
                 android:summary="@string/side_auto_fit_summary" />
+            <ListPreference android:key="pref_side_popup_aspect" android:dependency="pref_side_view"
+                android:title="@string/popup_aspect_title" android:summary="%s" />
+            <SeekBarPreference android:key="pref_side_popup_size" android:dependency="pref_side_view"
+                android:title="@string/popup_size_title" app:showSeekBarValue="true" />
+            <SwitchPreferenceCompat android:key="pref_side_popup_adjustable" android:dependency="pref_side_view"
+                android:title="@string/popup_adjustable_title" android:summary="@string/popup_adjustable_summary" />
+            <Preference android:key="pref_side_popup_reset" android:title="@string/popup_reset_title" />
 
             <SeekBarPreference
                 android:key="pref_side_view_min_speed"

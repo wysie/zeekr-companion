@@ -965,4 +965,14 @@
     <string name="side_control_restore">Restore window size</string>
     <string name="mirror_control_close">Turn off Super mirror</string>
     <string name="mirror_control_expand">Expand Super mirror</string>
+    <string name="popup_aspect_title">Popup aspect ratio</string>
+    <string name="popup_aspect_wide">Ultra-wide 11:5 (default)</string>
+    <string name="popup_aspect_landscape">Landscape 16:9</string>
+    <string name="popup_aspect_square">Square 1:1</string>
+    <string name="popup_aspect_portrait">Portrait 3:4</string>
+    <string name="popup_size_title" formatted="false">Popup height (% of screen)</string>
+    <string name="popup_adjustable_title">Allow dragging and pinch resizing</string>
+    <string name="popup_adjustable_summary">Off uses fixed placement. On saves the position and size you adjust.</string>
+    <string name="popup_reset_title">Reset popup layout</string>
+    <string name="popup_reset_message">Restore default shape, height and placement. Keep camera enablement, gesture choice and picture angles.</string>
 </resources>

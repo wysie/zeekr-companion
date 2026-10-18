@@ -180,3 +180,12 @@ the existing mirror enable control. Expansion is temporary: Restore and reopenin
 return to the saved normal placement, and gesture changes while expanded are not
 saved over it. Existing drag, pinch, docking and camera selection remain available.
 Very narrow windows retain Close and hide Expand until widened.
+### Optional side-popup layout
+
+Side-camera settings offer square, portrait, landscape and ultra-wide shapes plus
+a popup height control. Defaults retain 11:5, 33% screen height and fixed placement.
+Allow dragging and pinch resizing is off by default; enabling it retains a shared
+manual position/size. Turning it off restores side-based placement while retaining
+manual coordinates. Reset popup layout confirms first and resets geometry only,
+leaving camera enablement, gesture choice and picture angles intact. Camera
+surfaces, factory/reverse yielding and recording are unchanged.
