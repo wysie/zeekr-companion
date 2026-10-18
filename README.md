@@ -47,6 +47,8 @@ signing certificate for an in-place update. New behavior still needs on-car test
 
 The main page now keeps a compact identity, the recording control and Camera status
 at the top of the control panel, with Settings/Minimise pinned at the bottom.
+Recording and Camera status are separate actions with an 8dp gap and matching
+card corners, including while recording; Camera status retains its live-source tint.
 Secondary actions scroll only when needed. **Preview** opens the same selector as
 Settings: saved preview choices do not change recording groups or quality, and a
 persistent notice explains when reopening is required. **360 view** changes the

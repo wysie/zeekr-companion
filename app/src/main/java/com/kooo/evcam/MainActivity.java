@@ -2751,7 +2751,7 @@ public class MainActivity extends AppCompatActivity {
         if(status!=null){
             com.kooo.evcam.camera.RecordingLanes.Summary lanes = recordingCoordinator.summary();
             status.setText(com.kooo.evcam.ui.CameraStatusText.progress(this, lanes));
-            status.setBackgroundResource(lanes != null && !lanes.liveKeys.isEmpty() ? R.drawable.bg_chip_recording : R.drawable.bg_chip_neutral);
+            status.setActivated(lanes != null && !lanes.liveKeys.isEmpty());
             status.setTextColor(androidx.core.content.ContextCompat.getColor(this,
                     lanes != null && !lanes.liveKeys.isEmpty() ? R.color.recording_text : R.color.text_primary));
             status.setOnClickListener(v->startActivity(new Intent(this,com.kooo.evcam.ui.CameraStatusActivity.class)));}
