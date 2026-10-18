@@ -32,6 +32,120 @@ public class BirdEyePopupAndroidTest {
         return null;
     }
     private WindowManager.LayoutParams params(View view) { return (WindowManager.LayoutParams)view.getLayoutParams(); }
+
+    @Test public void expandedViewUsesNativeAreaEvenWhenAppResourceHeightIsShorter() throws Exception {
+        exerciseViewport(false);
+    }
+
+    @Test public void insetChangesRefitExpansionWithoutSavingItOrLeavingExpandedMode() throws Exception {
+        exerciseViewport(true);
+    }
+
+    /** A shortened resource height models the stale app metrics observed over immersive projection apps. */
+    private void exerciseViewport(boolean changeInsets) throws Exception {
+        org.junit.Assume.assumeTrue(android.os.Build.VERSION.SDK_INT >= 30);
+        Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
+        shell("appops set " + target.getPackageName() + " SYSTEM_ALERT_WINDOW allow");
+        WindowManager real = (WindowManager) target.getSystemService(Context.WINDOW_SERVICE);
+        android.view.WindowMetrics nativeMetrics = real.getCurrentWindowMetrics();
+        AtomicReference<android.view.WindowMetrics> metrics = new AtomicReference<>(nativeMetrics);
+        if (changeInsets) {
+            android.graphics.Insets nav = nativeMetrics.getWindowInsets().getInsets(android.view.WindowInsets.Type.navigationBars());
+            metrics.set(new android.view.WindowMetrics(nativeMetrics.getBounds(),
+                    new android.view.WindowInsets.Builder(nativeMetrics.getWindowInsets())
+                            .setInsets(android.view.WindowInsets.Type.navigationBars(), android.graphics.Insets.of(
+                                    nav.left, nav.top, nav.right, nav.bottom + 180))
+                            .setVisible(android.view.WindowInsets.Type.navigationBars(), true).build()));
+        }
+        WindowManager manager = (WindowManager) java.lang.reflect.Proxy.newProxyInstance(
+                WindowManager.class.getClassLoader(), new Class<?>[]{WindowManager.class}, (proxy, method, args) -> {
+                    if (method.getName().equals("getCurrentWindowMetrics")) return metrics.get();
+                    try { return method.invoke(real, args); }
+                    catch (java.lang.reflect.InvocationTargetException e) { throw e.getCause(); }
+                });
+        android.util.DisplayMetrics shortMetrics = new android.util.DisplayMetrics();
+        shortMetrics.setTo(target.getResources().getDisplayMetrics()); shortMetrics.heightPixels -= 240;
+        android.content.res.Resources resources = new android.content.res.Resources(target.getAssets(), shortMetrics,
+                new android.content.res.Configuration(target.getResources().getConfiguration()));
+        Context staleAppContext = new android.content.ContextWrapper(target) {
+            @Override public android.content.res.Resources getResources() { return resources; }
+            @Override public Object getSystemService(String name) {
+                return Context.WINDOW_SERVICE.equals(name) ? manager : super.getSystemService(name);
+            }
+        };
+        Context context = new ContextThemeWrapper(staleAppContext, R.style.Theme_Cam);
+        android.content.SharedPreferences preferences = target.getSharedPreferences("bird_eye_window", Context.MODE_PRIVATE);
+        java.util.Map<String, ?> original = preferences.getAll();
+        BirdEyeWindowConfig config = new BirdEyeWindowConfig(context);
+        config.resetLayout(); config.setSize(40); config.position(400, 150);
+        java.util.Map<String, ?> saved = preferences.getAll();
+        AtomicReference<BirdEyePopupView> current = new AtomicReference<>();
+        main(() -> { BirdEyePopupView view = new BirdEyePopupView(context, () -> {});
+            current.set(view); view.show(); });
+        try {
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            main(() -> control(current.get(), context.getString(R.string.side_control_expand)).performClick());
+            assertExpandedViewport(current.get(), metrics.get());
+            if (changeInsets) {
+                int oldHeight = params(current.get()).height;
+                main(() -> {
+                    metrics.set(nativeMetrics);
+                    current.get().dispatchApplyWindowInsets(nativeMetrics.getWindowInsets());
+                });
+                InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+                assertExpandedViewport(current.get(), nativeMetrics);
+                assertTrue("Expansion grows when reserved system-bar space disappears", params(current.get()).height > oldHeight);
+            }
+            main(() -> {
+                assertNotNull(control(current.get(), context.getString(R.string.side_control_restore)));
+                assertEquals("Viewport refitting never overwrites normal placement", saved, preferences.getAll());
+            });
+            if ("true".equals(InstrumentationRegistry.getArguments().getString("captureViewport"))) {
+                android.os.SystemClock.sleep(400);
+                shell("screencap -p /sdcard/Download/zeekr-360-viewport-" + (changeInsets ? "changed" : "native") + ".png");
+            }
+            main(() -> {
+                control(current.get(), context.getString(R.string.side_control_restore)).performClick();
+                assertEquals(400, params(current.get()).x); assertEquals(150, params(current.get()).y);
+                assertEquals(saved, preferences.getAll());
+                assertNotNull(control(current.get(), context.getString(R.string.side_control_expand)));
+            });
+        } finally {
+            main(() -> current.get().detach());
+            android.content.SharedPreferences.Editor edit = preferences.edit().clear();
+            for (java.util.Map.Entry<String, ?> entry : original.entrySet()) {
+                if (entry.getValue() instanceof Integer) edit.putInt(entry.getKey(), (Integer) entry.getValue());
+                else if (entry.getValue() instanceof Boolean) edit.putBoolean(entry.getKey(), (Boolean) entry.getValue());
+            }
+            assertTrue(edit.commit());
+        }
+    }
+
+    private void assertExpandedViewport(BirdEyePopupView view, android.view.WindowMetrics metrics) {
+        android.graphics.Insets bars = metrics.getWindowInsets().getInsets(
+                android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout());
+        int availableHeight = metrics.getBounds().height() - bars.top - bars.bottom;
+        int margin = view.getResources().getDimensionPixelSize(R.dimen.side_control_margin);
+        main(() -> {
+            assertEquals(availableHeight - 2 * margin, params(view).height);
+            assertEquals(availableHeight - margin, params(view).y + params(view).height);
+            assertEquals(2f / 3f, params(view).width / (float) params(view).height, .002f);
+            assertEquals(android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout(),
+                    params(view).getFitInsetsTypes());
+            assertFalse(params(view).isFitInsetsIgnoringVisibility());
+        });
+        long deadline = android.os.SystemClock.uptimeMillis() + 4000;
+        AtomicBoolean settled = new AtomicBoolean();
+        while (!settled.get() && android.os.SystemClock.uptimeMillis() < deadline) {
+            main(() -> {
+                int[] location = new int[2]; view.getLocationOnScreen(location);
+                settled.set(view.getHeight() == params(view).height
+                        && location[1] + view.getHeight() == metrics.getBounds().bottom - bars.bottom - margin);
+            });
+            if (!settled.get()) android.os.SystemClock.sleep(20);
+        }
+        assertTrue("Actual overlay bottom must reach the available bottom margin", settled.get());
+    }
     private void twoPointers(View view, long time, int action, float left, float right) {
         MotionEvent.PointerProperties[] properties = new MotionEvent.PointerProperties[2];
         MotionEvent.PointerCoords[] coords = new MotionEvent.PointerCoords[2];

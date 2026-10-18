@@ -3,6 +3,8 @@ package com.kooo.evcam.zeekr;
 import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.PixelFormat;
+import android.graphics.Rect;
+import android.os.Build;
 import android.util.Size;
 import android.view.Gravity;
 import android.view.MotionEvent;
@@ -10,6 +12,7 @@ import android.view.ScaleGestureDetector;
 import android.view.ViewConfiguration;
 import android.view.ViewGroup;
 import android.view.WindowManager;
+import android.view.WindowInsets;
 import com.kooo.evcam.AutoFitTextureView;
 import com.kooo.evcam.R;
 
@@ -28,6 +31,8 @@ final class BirdEyePopupView extends ViewGroup {
     private int downWindowX, downWindowY;
     private final int slop;
     private boolean attached, multiTouch;
+    private Size viewport;
+    private final Runnable refreshViewport = this::refreshViewport;
 
     BirdEyePopupView(Context context, Runnable close) {
         super(context);
@@ -66,14 +71,22 @@ final class BirdEyePopupView extends ViewGroup {
                 WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                 PixelFormat.TRANSLUCENT);
         params.gravity = Gravity.TOP | Gravity.START;
+        if (Build.VERSION.SDK_INT >= 30) {
+            // Geometry is relative to this same fitted area. Never subtract bars twice or reserve hidden bars.
+            params.setFitInsetsTypes(WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+            params.setFitInsetsIgnoringVisibility(false);
+        }
+        viewport = availableSize();
         place();
         windows.addView(this, params);
         attached = true;
+        post(refreshViewport);
     }
 
     void detach() {
         if (!attached) return;
         attached = false;
+        removeCallbacks(refreshViewport);
         preview.release();
         windows.removeView(this);
     }
@@ -89,18 +102,51 @@ final class BirdEyePopupView extends ViewGroup {
 
     void recalibrate() { preview.invalidateCalibration(); }
     android.graphics.Bitmap photo() { return preview.photo(); }
-    String describe() { return preview.describeState(); }
+    String describe() {
+        return preview.describeState() + " popupViewport=" + viewport
+                + " popupParams=" + (params == null ? "none" : params.x + "," + params.y + " "
+                + params.width + "x" + params.height) + " popupMeasured=" + getWidth() + "x" + getHeight();
+    }
+
+    private Size availableSize() {
+        if (Build.VERSION.SDK_INT >= 30) {
+            android.view.WindowMetrics metrics = windows.getCurrentWindowMetrics();
+            Rect bounds = metrics.getBounds();
+            android.graphics.Insets bars = metrics.getWindowInsets().getInsets(
+                    WindowInsets.Type.systemBars() | WindowInsets.Type.displayCutout());
+            return new Size(Math.max(1, bounds.width() - bars.left - bars.right),
+                    Math.max(1, bounds.height() - bars.top - bars.bottom));
+        }
+        // Before API 30, the attached overlay's visible frame is more useful than app resource metrics.
+        Rect frame = new Rect();
+        if (attached) getWindowVisibleDisplayFrame(frame);
+        return frame.width() > 0 && frame.height() > 0 ? new Size(frame.width(), frame.height())
+                : new Size(Math.max(1, getResources().getDisplayMetrics().widthPixels),
+                        Math.max(1, getResources().getDisplayMetrics().heightPixels));
+    }
+
+    private void refreshViewport() {
+        if (!attached) return;
+        Size next = availableSize();
+        if (next.equals(viewport)) return;
+        viewport = next;
+        if (expansion.expanded()) setGeometry(expansion.refit(viewport.getWidth(), viewport.getHeight(), margin()));
+        else place();
+        windows.updateViewLayout(this, params);
+        invalidate();
+    }
+
+    private int margin() { return getResources().getDimensionPixelSize(R.dimen.side_control_margin); }
 
     void applyLayout() {
         expansion.restore(); controls.setExpanded(false);
-        if (attached) { place(); windows.updateViewLayout(this, params); }
+        if (attached) { viewport = availableSize(); place(); windows.updateViewLayout(this, params); }
         invalidate();
     }
 
     private void place() {
-        int sw = getResources().getDisplayMetrics().widthPixels;
-        int sh = getResources().getDisplayMetrics().heightPixels;
-        int margin = getResources().getDimensionPixelSize(R.dimen.side_control_margin);
+        int sw = viewport.getWidth(), sh = viewport.getHeight();
+        int margin = margin();
         int minWidth = 2 * getResources().getDimensionPixelSize(R.dimen.side_control_target) + 4 * margin;
         int width = Math.min(Math.max(1, sw - 2 * margin), Math.max(minWidth, Math.round(sh * config.size() / 150f)));
         int height = Math.min(Math.max(1, sh - 2 * margin), Math.round(width * 1.5f));
@@ -110,12 +156,18 @@ final class BirdEyePopupView extends ViewGroup {
     }
 
     private void expand() {
-        SideViewExpansion.Geometry next = expansion.toggle(new SideViewExpansion.Geometry(params.x, params.y,
-                params.width, params.height), getResources().getDisplayMetrics().widthPixels,
-                getResources().getDisplayMetrics().heightPixels,
-                getResources().getDimensionPixelSize(R.dimen.side_control_margin));
-        params.x = next.x; params.y = next.y; params.width = next.width; params.height = next.height;
+        refreshViewport();
+        if (expansion.expanded()) {
+            expansion.restore(); place();
+        } else {
+            setGeometry(expansion.toggle(new SideViewExpansion.Geometry(params.x, params.y,
+                    params.width, params.height), viewport.getWidth(), viewport.getHeight(), margin()));
+        }
         controls.setExpanded(expansion.expanded()); windows.updateViewLayout(this, params);
+    }
+
+    private void setGeometry(SideViewExpansion.Geometry next) {
+        params.x = next.x; params.y = next.y; params.width = next.width; params.height = next.height;
     }
 
     @Override public boolean dispatchTouchEvent(MotionEvent event) {
@@ -138,9 +190,9 @@ final class BirdEyePopupView extends ViewGroup {
         if (event.getActionMasked() == MotionEvent.ACTION_MOVE && event.getPointerCount() == 1
                 && !multiTouch && !pinch.isInProgress() && !expansion.expanded()) {
             params.x = SidePopupSizing.clampPosition(downWindowX + Math.round(event.getRawX() - downX),
-                    getResources().getDisplayMetrics().widthPixels, params.width);
+                    viewport.getWidth(), params.width);
             params.y = SidePopupSizing.clampPosition(downWindowY + Math.round(event.getRawY() - downY),
-                    getResources().getDisplayMetrics().heightPixels, params.height);
+                    viewport.getHeight(), params.height);
             config.position(params.x, params.y); windows.updateViewLayout(this, params);
         }
         return true;
@@ -156,7 +208,13 @@ final class BirdEyePopupView extends ViewGroup {
         drawChild(canvas, controls, getDrawingTime());
     }
     @Override protected void onConfigurationChanged(android.content.res.Configuration c) {
-        super.onConfigurationChanged(c); applyLayout();
+        super.onConfigurationChanged(c); post(refreshViewport);
     }
-    @Override protected void onDetachedFromWindow() { preview.release(); super.onDetachedFromWindow(); }
+    @Override public WindowInsets onApplyWindowInsets(WindowInsets insets) {
+        post(refreshViewport);
+        return super.onApplyWindowInsets(insets);
+    }
+    @Override protected void onDetachedFromWindow() {
+        removeCallbacks(refreshViewport); preview.release(); super.onDetachedFromWindow();
+    }
 }
