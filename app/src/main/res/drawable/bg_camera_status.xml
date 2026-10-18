@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Full-width status action: match the recording card corners in every state. -->
+<ripple xmlns:android="http://schemas.android.com/apk/res/android"
+    android:color="@color/nav_ripple_color">
+    <item>
+        <selector>
+            <item android:state_activated="true">
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/recording_quiet" />
+                    <corners android:radius="@dimen/corner_radius" />
+                </shape>
+            </item>
+            <item>
+                <shape android:shape="rectangle">
+                    <solid android:color="@color/sunken" />
+                    <corners android:radius="@dimen/corner_radius" />
+                </shape>
+            </item>
+        </selector>
+    </item>
+</ripple>

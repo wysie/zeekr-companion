@@ -7,6 +7,10 @@ Alpha sections: one line per change, what changed and nothing else. Beta and sta
 sections: written for users, reviewed before release. Why a change was made lives in the
 commit message, not here.
 
+## [Unreleased]
+
+- Separate the recording and Camera status actions with consistent spacing and matching corners in idle and recording states.
+
 ## [2.11.50-alpha.1] - 2026-10-19
 
 - Add the approved linked-companions launcher logo with matching themed and notification icons.
