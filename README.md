@@ -133,6 +133,9 @@ camera views, including the low-speed 360 window, still take priority. Factory
 stitched 360 access and obstacle-warning signals remain research topics, not
 implemented features. The scanner helps research warning signals; it does not
 provide obstacle detection or the factory stitched camera feed.
+The [blind-spot investigation](docs/blind-spot-side-view.md) records an unidentified
+ADAS signal changing near the owner's possible right-side warning on October 18;
+its side and warning/clear values remain unverified, so it does not trigger a camera.
 See [factory 360 research and the collection tool](https://github.com/wysie/zeekr-shortcut-car/tree/research/factory-360-view)
 for the current investigation and the device information needed next.
 
