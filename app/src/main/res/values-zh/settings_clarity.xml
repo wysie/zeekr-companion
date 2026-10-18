@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_updates_title">更新</string>
+    <string name="ui_reset_confirm">重置</string>
+    <string name="ui_side_reset_scope">重置盲区摄像头的触发/计时、输出、屏幕/HUD 画面及窗口设置。保留启用状态、车型、摄像头映射和录像。</string>
+    <string name="ui_mirror_reset_scope">重置摄像头选择、取景、标签、控件及窗口位置/大小。保留启用状态、录制选择和录像。</string>
+    <string name="ui_360_reset_scope">重置 360 标定、投影选择及 360 画质。保留车辆图像、弹窗、来源映射和录像。</string>
+    <string name="ui_window_reset_scope">重置此窗口已保存的大小和位置。保留当前打开状态、画面和摄像头来源。</string>
+    <string name="ui_floating_reset_scope">重置悬浮按钮的位置、大小及时间文字大小。保留启用状态、操作、透明度和录像。</string>
+    <string name="ui_hud_reset_picture">重置 HUD 画面</string>
+    <string name="ui_hud_reset_placement">重置 HUD 位置与大小</string>
+    <string name="ui_hud_picture_reset_scope">跟随屏幕画面，清除自定义 HUD 取景、旋转、镜像和标签。保留 HUD 位置、大小、亮度和对比度。</string>
+    <string name="ui_hud_placement_reset_scope">重置当前车型的 HUD 位置、大小、比例及随转向灯切换侧边的设置。保留画面、亮度、对比度和输出选择。</string>
+    <string name="ui_pending_camera_changes">摄像头/预览选择已保存 — 退出并重新打开以应用。退出会停止录制。</string>
+    <string name="ui_start_logging">开始 USB 日志</string>
+    <string name="ui_stop_logging">停止 USB 日志</string>
+    <string name="ui_window_open">当前已打开 — 这是本次会话的实时窗口。可用 × 或此开关关闭。</string>
+    <string name="ui_window_closed">当前已关闭 — 为本次会话打开实时 360 窗口。投影与窗口设置分别保存。</string>
+</resources>

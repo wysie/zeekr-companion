@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_hud_picture_source">Sumber gambar</string>
+    <string name="ui_hud_custom_framing">Bingkai tersuai</string>
+    <string name="ui_hud_position_size">Kedudukan dan saiz</string>
+    <string name="ui_hud_tone">Kecerahan dan kontras</string>
+    <string name="ui_hud_edit_screen">Edit gambar skrin</string>
+    <string name="ui_hud_inherited_picture">Gambar skrin: lebar pandangan %1$d° · arah belakang %2$d° · arah atas %3$d°. Tetingkap dan tona HUD kekal berasingan.</string>
+    <string name="ui_troubleshooting">Penyelesaian masalah</string>
+    <string name="ui_troubleshooting_summary">Status kamera, diagnostik tersimpan dan sesi log USB yang dimulakan secara nyata.</string>
+    <string name="ui_usb_session">Sesi penyelesaian masalah USB</string>
+    <string name="ui_usb_session_summary">Mula/hentikan log USB berterusan untuk perjalanan. Memerlukan mod Pembangun.</string>
+    <string name="ui_usb_session_help">Mulakan sesi log USB, pandu, kemudian hentikannya. Fail ditulis ke USB sepanjang sesi; tiada permulaan automatik. Mod Pembangun diperlukan. Membuka halaman ini tidak merekod isyarat atau menguji kamera.</string>
+    <string name="ui_research_requires_developer">Aktifkan mod Pembangun dalam Sistem untuk menggunakan log isyarat USB dan penyelidikan kamera/paparan.</string>
+    <string name="ui_browser_unavailable">Tiada pelayar tersedia</string>
+    <string name="ui_copy_link">Salin pautan</string>
+    <string name="ui_last_export">Diagnostik terakhir disimpan:\n%1$s</string>
+    <string name="ui_send_saved_report">Hantar laporan tersimpan</string>
+    <string name="ui_copy_file_location">Salin lokasi fail</string>
+</resources>

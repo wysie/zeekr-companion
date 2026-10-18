@@ -2743,7 +2743,12 @@ public class MainActivity extends AppCompatActivity {
                     ? View.VISIBLE : View.GONE);
         }
         android.widget.TextView status=findViewById(R.id.camera_status_chip);
-        if(status!=null){status.setText(com.kooo.evcam.ui.CameraStatusText.progress(this,recordingCoordinator.summary()));
+        if(status!=null){
+            com.kooo.evcam.camera.RecordingLanes.Summary lanes = recordingCoordinator.summary();
+            status.setText(com.kooo.evcam.ui.CameraStatusText.progress(this, lanes));
+            status.setBackgroundResource(lanes != null && !lanes.liveKeys.isEmpty() ? R.drawable.bg_chip_recording : R.drawable.bg_chip_neutral);
+            status.setTextColor(androidx.core.content.ContextCompat.getColor(this,
+                    lanes != null && !lanes.liveKeys.isEmpty() ? R.color.recording_text : R.color.text_primary));
             status.setOnClickListener(v->startActivity(new Intent(this,com.kooo.evcam.ui.CameraStatusActivity.class)));}
         renderCompositeInfoCell();
     }

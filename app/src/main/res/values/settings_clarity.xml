@@ -1,19 +1,19 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="ui_updates_title">Updates</string>
-    <string name="ui_reset_confirm">Reset</string>
-    <string name="ui_side_reset_scope">Reset blind-spot activation/timing, output, screen/HUD picture and window tuning. Keep the feature enabled state, vehicle, camera mappings and recordings.</string>
-    <string name="ui_mirror_reset_scope">Reset camera choice, framing, labels, controls and window position/size. Keep the enabled state, recording selections and footage.</string>
-    <string name="ui_360_reset_scope">Reset 360 calibration, projection selection and 360 quality. Keep the car illustration, popup window, source mappings and recordings.</string>
-    <string name="ui_window_reset_scope">Reset this window’s saved size and position. Keep its current open state, picture and camera sources.</string>
-    <string name="ui_floating_reset_scope">Reset floating-button position, size and time-text size. Keep its enabled state, actions, opacity and recordings.</string>
-    <string name="ui_hud_reset_picture">Reset HUD picture</string>
-    <string name="ui_hud_reset_placement">Reset HUD position &amp; size</string>
-    <string name="ui_hud_picture_reset_scope">Follow the screen picture and clear custom HUD framing, rotation, mirroring and labels. Keep HUD position, size, brightness and contrast.</string>
-    <string name="ui_hud_placement_reset_scope">Reset HUD position, size, aspect and indicator-side following for the current vehicle. Keep picture, brightness, contrast and output selection.</string>
-    <string name="ui_pending_camera_changes">Saved camera/preview choices — quit and reopen to apply. Quitting stops recording.</string>
-    <string name="ui_start_logging">Start USB logging</string>
-    <string name="ui_stop_logging">Stop USB logging</string>
-    <string name="ui_window_open">Open now — this is a live window for the current session. Close it with × or this switch.</string>
-    <string name="ui_window_closed">Closed — open a live 360 window for this session. Projection and window settings are saved separately.</string>
+    <string name="ui_updates_title">更新</string>
+    <string name="ui_reset_confirm">重置</string>
+    <string name="ui_side_reset_scope">重置盲区摄像头的触发/计时、输出、屏幕/HUD 画面及窗口设置。保留启用状态、车型、摄像头映射和录像。</string>
+    <string name="ui_mirror_reset_scope">重置摄像头选择、取景、标签、控件及窗口位置/大小。保留启用状态、录制选择和录像。</string>
+    <string name="ui_360_reset_scope">重置 360 标定、投影选择及 360 画质。保留车辆图像、弹窗、来源映射和录像。</string>
+    <string name="ui_window_reset_scope">重置此窗口已保存的大小和位置。保留当前打开状态、画面和摄像头来源。</string>
+    <string name="ui_floating_reset_scope">重置悬浮按钮的位置、大小及时间文字大小。保留启用状态、操作、透明度和录像。</string>
+    <string name="ui_hud_reset_picture">重置 HUD 画面</string>
+    <string name="ui_hud_reset_placement">重置 HUD 位置与大小</string>
+    <string name="ui_hud_picture_reset_scope">跟随屏幕画面，清除自定义 HUD 取景、旋转、镜像和标签。保留 HUD 位置、大小、亮度和对比度。</string>
+    <string name="ui_hud_placement_reset_scope">重置当前车型的 HUD 位置、大小、比例及随转向灯切换侧边的设置。保留画面、亮度、对比度和输出选择。</string>
+    <string name="ui_pending_camera_changes">摄像头/预览选择已保存 — 退出并重新打开以应用。退出会停止录制。</string>
+    <string name="ui_start_logging">开始 USB 日志</string>
+    <string name="ui_stop_logging">停止 USB 日志</string>
+    <string name="ui_window_open">当前已打开 — 这是本次会话的实时窗口。可用 × 或此开关关闭。</string>
+    <string name="ui_window_closed">当前已关闭 — 为本次会话打开实时 360 窗口。投影与窗口设置分别保存。</string>
 </resources>

@@ -38,13 +38,13 @@ PR #31 reorganizes only existing upstream settings. It does not include the fork
 blind spot or 360 sections. The source-tracking branches remain unmodified; update
 them by fast-forward and integrate selected changes separately into the fork.
 
-## Candidates after the first batch
+## Initial assessment after the first batch (historical)
 
 Reviewed on 2026-10-18 against upstream main
 `0697bc76b6f1c57a2e66f7b79112dca19050c477` (2.13.1-alpha), with fork main at
 `3992cedc`. GitHub still reports all eleven PRs #28–#38 open; label PR #17 is
 merged and side-view PR #19 is closed in favour of upstream's implementation.
-These are proposals, not newly submitted PRs or validated upstream port branches.
+The following was the initial proposal. The submitted and validated second batch is recorded below.
 
 | Candidate | Fork evidence | Upstream gap and proposed independent scope |
 | --- | --- | --- |
@@ -101,3 +101,48 @@ confirmation, and keep DIY 360 calibration, guessed warning triggers and 009 HUD
 routing outside this small contribution batch. Blind-spot side/state decoding
 remains research; neither approximate owner timing nor SDK names justify an
 automatic warning trigger.
+
+## Second batch submitted — 2026-10-18
+
+All eleven PRs below are open submissions against dts88 main
+`0697bc76b6f1c57a2e66f7b79112dca19050c477`. They contain upstream-only ports,
+without wysie branding, version numbers or updater destinations. Existing PR heads
+#28–#38, #17 and #19 were preserved. Optional popup resizing and Alpha updates
+retain upstream defaults and are presented as opt-in product choices.
+
+| PR | Branch / submitted head | Dependency |
+| --- | --- | --- |
+| [#44 — Ignore replaced-session results when tracking camera liveness](https://github.com/dts88/zeekr-shortcut-car/pull/44) | `contrib/12-stale-session-progress` · `1d1643fe` | Current upstream main |
+| [#45 — Keep sidebar typography and Activity font resources consistent](https://github.com/dts88/zeekr-shortcut-car/pull/45) | `contrib/13-menu-typography` · `bd274ed4` | Current upstream main |
+| [#46 — Add optional double-tap actions to the floating button](https://github.com/dts88/zeekr-shortcut-car/pull/46) | `contrib/14-floating-double-tap` · `7d219ec6` | Current upstream main |
+| [#47 — Make side-camera auto-fit optional while retaining safe lane clipping](https://github.com/dts88/zeekr-shortcut-car/pull/47) | `contrib/15-side-auto-fit` · `f25f3966` | Current upstream main |
+| [#48 — Add Follow system, Light and Dark app theme choices](https://github.com/dts88/zeekr-shortcut-car/pull/48) | `contrib/16-app-theme` · `7ea6b296` | Current upstream main |
+| [#49 — Add Close and temporary Expand/Restore controls to Super mirror](https://github.com/dts88/zeekr-shortcut-car/pull/49) | `contrib/17-mirror-controls` · `5009ccd3` | Current upstream main |
+| [#50 — Offer configurable popup shapes and opt-in drag/pinch resizing](https://github.com/dts88/zeekr-shortcut-car/pull/50) | `contrib/18-popup-layout` · `a985a97a` | Current upstream main |
+| [#51 — Offer Stable, Beta and Alpha update channels](https://github.com/dts88/zeekr-shortcut-car/pull/51) | `contrib/19-update-channels` · `2a83de5f` | Current upstream main |
+| [#52 — Add exterior source roles and shared camera mapping](https://github.com/dts88/zeekr-shortcut-car/pull/52) | `contrib/20-camera-sources` · `e4d12add` | Current upstream main |
+| [#53 — Combine recording source groups and support road-only playback](https://github.com/dts88/zeekr-shortcut-car/pull/53) | `contrib/21-recording-groups` · `6faedfa2` | #52 |
+| [#54 — Select preview layouts independently of recording sources](https://github.com/dts88/zeekr-shortcut-car/pull/54) | `contrib/22-preview-layout` · `b98340df` | #52 |
+
+#53 and #54 each include #52; they do not depend on each other. The first eight
+ports and #52 build independently from upstream main. Shared files can still
+require merge resolutions: README and resource additions, settings registration,
+debug test-host declarations, popup/auto-fit binding and identical generic preview
+plumbing. When combining #53/#54, deduplicate `record_group_roads` in default and
+Chinese resources. Existing camera choices and tuning survive migration; unknown
+exterior IDs stay unassigned rather than inheriting 009 assumptions on a 7X.
+
+Each head passed its own JVM suite, debug/test/release assembly, release lint and
+relevant native tests before submission. The combined
+[review branch](https://github.com/wysie/zeekr-shortcut-car/tree/review/upstream-pr-round2-20261018)
+at `42ac97d766756dba7f1613f8cc5a1eb3a33ed1fc` passed 1,180 JVM tests and 29
+relevant API 32 native regressions in one process, plus all builds and release lint.
+The unchanged template instrumentation test has an incorrect historical application-ID
+expectation and was excluded. Full debug lint retains upstream errors; comparison
+found zero new error fingerprints (856 baseline, 854 combined). This does not claim
+a clean full-debug lint run or physical camera validation.
+
+No incoming upstream/Ferix runtime change was imported by this outgoing batch.
+USB signal logging remains a separate prospective contribution requiring scanner
+prerequisites and Ferix attribution. DIY 360 fitting, 009 HUD routing and unconfirmed
+blind-spot warning decoding are excluded.

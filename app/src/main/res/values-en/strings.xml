@@ -623,7 +623,7 @@
     <!-- Interface section · first-launch side question · record unavailable · status bar -->
     <string name="set_section_interface">Interface</string>
     <string name="set_reduce_motion_title">Less motion while recording</string>
-    <string name="set_reduce_motion_summary">Turns off transitions and other decorative animation while recording, leaving the GPU to the encoder. The record button and progress ring still animate.</string>
+    <string name="set_reduce_motion_summary">Turns off decorative transitions while recording. The record button and progress ring still animate.</string>
     <string name="set_vehicle_status_title">Vehicle status (experimental)</string>
     <string name="set_vehicle_status_summary">Shows horn, flash-to-pass and hazard lights below Straighten on the main screen, using the Driving info bar icons; the horn signal can\'t be read yet</string>
     <string name="set_fisheye_projection_title">Fisheye projection</string>

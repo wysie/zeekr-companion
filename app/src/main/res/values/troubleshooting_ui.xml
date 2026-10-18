@@ -1,20 +1,20 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="ui_hud_picture_source">Picture source</string>
-    <string name="ui_hud_custom_framing">Custom framing</string>
-    <string name="ui_hud_position_size">Position &amp; size</string>
-    <string name="ui_hud_tone">Brightness &amp; contrast</string>
-    <string name="ui_hud_edit_screen">Edit screen picture</string>
-    <string name="ui_hud_inherited_picture">Screen picture: view width %1$d° · aim back %2$d° · aim up %3$d°. HUD window and tone stay independent.</string>
-    <string name="ui_troubleshooting">Troubleshooting</string>
-    <string name="ui_troubleshooting_summary">Camera status, saved diagnostics and an explicit USB logging session.</string>
-    <string name="ui_usb_session">USB troubleshooting session</string>
-    <string name="ui_usb_session_summary">Start/stop continuous USB logs for a drive. Requires Developer mode.</string>
-    <string name="ui_usb_session_help">Start one USB logging session, drive, then stop it. Files are written to USB while the session runs; there is no automatic startup. Developer mode is required. Opening this page does not log signals or probe cameras.</string>
-    <string name="ui_research_requires_developer">Enable Developer mode in System to use USB signal logging and camera/display research.</string>
-    <string name="ui_browser_unavailable">No browser available</string>
-    <string name="ui_copy_link">Copy link</string>
-    <string name="ui_last_export">Last saved diagnostics:\n%1$s</string>
-    <string name="ui_send_saved_report">Send saved report</string>
-    <string name="ui_copy_file_location">Copy file location</string>
+    <string name="ui_hud_picture_source">画面来源</string>
+    <string name="ui_hud_custom_framing">自定义取景</string>
+    <string name="ui_hud_position_size">位置与大小</string>
+    <string name="ui_hud_tone">亮度与对比度</string>
+    <string name="ui_hud_edit_screen">编辑屏幕画面</string>
+    <string name="ui_hud_inherited_picture">屏幕画面：视野宽度 %1$d° · 向后 %2$d° · 向上 %3$d°。HUD 窗口与亮度/对比度保持独立。</string>
+    <string name="ui_troubleshooting">故障排查</string>
+    <string name="ui_troubleshooting_summary">摄像头状态、已保存的诊断及手动开始的 USB 日志会话。</string>
+    <string name="ui_usb_session">USB 故障排查会话</string>
+    <string name="ui_usb_session_summary">开始/停止整段行程的连续 USB 日志。需要开发者模式。</string>
+    <string name="ui_usb_session_help">开始 USB 日志会话，行驶后再停止。会话期间文件持续写入 USB，不会自动启动。需要开发者模式。打开此页面不会记录信号或探测摄像头。</string>
+    <string name="ui_research_requires_developer">请在“系统”中启用开发者模式，以使用 USB 信号日志和摄像头/显示屏研究工具。</string>
+    <string name="ui_browser_unavailable">没有可用的浏览器</string>
+    <string name="ui_copy_link">复制链接</string>
+    <string name="ui_last_export">上次保存的诊断：\n%1$s</string>
+    <string name="ui_send_saved_report">发送已保存的报告</string>
+    <string name="ui_copy_file_location">复制文件位置</string>
 </resources>
