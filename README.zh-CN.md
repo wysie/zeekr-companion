@@ -1,8 +1,8 @@
-# 极氪即刻 — wysie Edition
+# Zeekr Companion
 
 新标签采用 `vX.Y.Z-alpha.N`、`vX.Y.Z-beta.N` 或 `vX.Y.Z`；alpha 和 beta 在 GitHub 标记为预发布。应用 ID、签名及 `ZeekrShortcutApp` 存储目录保持兼容。
 
-wysie Edition 是 wysie 维护的个人定制分支，基于 [dts88 的原项目](https://github.com/dts88/zeekr-shortcut-car)，
+Zeekr Companion 是 wysie 维护的个人定制分支，基于 [dts88 的原项目](https://github.com/dts88/zeekr-shortcut-car)，
 主要用于自己的极氪 009。原应用面向极氪 7X；本分支的新增功能和测试范围见
 [英文说明](README.md)。原项目及其贡献者、EVCam 作者和 FerixzTanz 的贡献均保留署名，
 详见 [来源与致谢](NOTICE.md)。本分支与原项目均非极氪官方产品。
@@ -90,7 +90,7 @@ wysie Edition 是 wysie 维护的个人定制分支，基于 [dts88 的原项目
   新的完整 APK 从 `main` 构建，发布标签指向对应的源代码提交。
   个人 Alpha 版本需要手动安装，不在应用内自动更新范围内。
 
-在发布页下载 `ZeekrShortcut-wysie-<版本号>.apk`，通过 App Lab 侧载安装。安装完成后请点左上角「返回」，
+在发布页下载 `ZeekrCompanion-<版本号>.apk`，通过 App Lab 侧载安装。安装完成后请点左上角「返回」，
 不要点「打开」，否则车机安装器会卡住，之后的安装或更新会失败。
 
 自行构建需要 JDK 17+ 与 Android SDK（compileSdk 36）：
@@ -153,6 +153,6 @@ bash ./gradlew assembleRelease
 新增实验性 HUD 侧视（移植自 Ferix 的 PR #14）：在“盲区摄像头”中选择主屏、HUD 或两者。默认仅主屏。HUD 默认镜像，可独立关闭；“HUD 画面”可调大小、形状、位置和透明度。仅使用已开启且可公开投影、尺寸为 1440×480 或明确命名为 HUD 的屏幕，不仅凭 id 3 判断。不可用时回退主屏。HUD 不受本应用速度门槛限制，但倒车、原厂画面和泊车辅助仍优先。关闭主屏侧视会同时暂时收起 HUD；取消转向再打灯才恢复。重置侧视设置也恢复主屏输出和 HUD 默认值。009 兼容性和画面尚未实车验证。
 
 
-### wysie Edition 更新通道
+### Zeekr Companion 更新通道
 
 设置 → 检查更新 → 更新通道可选择：正式版（仅正式版）、Beta（Beta 和正式版）或 Alpha（Alpha、Beta 和正式版）。新安装默认正式版；升级保留旧版 Beta 开关及既有安装的默认开启行为。Alpha 需要主动选择，不会根据已安装版本自动启用。只在点击检查更新时查询，并且只提供较新的版本。旧版应用尚无此选项时，Alpha 仍需手动安装。

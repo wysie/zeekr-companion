@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="main_brand_name">Zeekr Shortcut</string>
-    <string name="main_brand_edition">wysie Edition</string>
+    <string name="main_brand_name">Zeekr Companion</string>
     <string name="main_preview_selection">Pratonton: %1$s</string>
     <string name="main_preview_choice_help">Hanya menukar susun atur pratonton tersimpan. Pilihan rakaman tidak berubah. Keluar dan buka semula untuk digunakan; keluar menghentikan rakaman.</string>
     <string name="main_360_view">Paparan 360</string>

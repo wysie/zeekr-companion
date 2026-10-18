@@ -1,4 +1,4 @@
-name: Build wysie Edition APK
+name: Build Zeekr Companion APK
 
 on:
   push:
@@ -62,7 +62,7 @@ jobs:
       - name: Build release APK
         run: ./gradlew assembleRelease --stacktrace
 
-      - name: Stage wysie Edition APK
+      - name: Stage Zeekr Companion APK
         id: apk
         env:
           RELEASE_TAG: ${{ github.ref_type == 'tag' && github.ref_name || '' }}
@@ -75,7 +75,7 @@ jobs:
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: ZeekrShortcut-wysie-apk
+          name: ZeekrCompanion-apk
           path: |
             ${{ steps.apk.outputs.path }}
             ${{ steps.apk.outputs.checksum }}
@@ -93,7 +93,7 @@ jobs:
       - name: Download built APK
         uses: actions/download-artifact@v4
         with:
-          name: ZeekrShortcut-wysie-apk
+          name: ZeekrCompanion-apk
       # 打 tag 时自动发布 Release，车机/手机可直接下载安装
       # Release 正文由 CHANGELOG.md 里对应版本的小节自动生成，
       # 这样每个版本的说明就是它自己的改动，而不是每次都一样的模板。

@@ -11,7 +11,7 @@
 set -euo pipefail
 
 REPO_NAME="${REPO_NAME:-zeekr-shortcut-car}"
-DESCRIPTION="极氪即刻（车机版）（Zeekr Shortcut (Car Version)）- 极氪车机环视记录仪：把车机那条 360° 合成流录下来，并提供回放与超级后视镜。代码基座为 EVCam (GPL-3.0)。"
+DESCRIPTION="Zeekr Companion (a fork of Zeekr Shortcut by dts88) - 极氪车机环视记录仪：把车机那条 360° 合成流录下来，并提供回放与超级后视镜。代码基座为 EVCam (GPL-3.0)。"
 
 cd "$(dirname "$0")"
 

@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="main_brand_name">Zeekr Shortcut</string>
-    <string name="main_brand_edition">wysie Edition</string>
+    <string name="main_brand_name">Zeekr Companion</string>
     <string name="main_preview_selection">Preview: %1$s</string>
     <string name="main_preview_choice_help">This changes the saved preview layout only. Recording selections stay unchanged. Quit and reopen to apply; quitting stops recording.</string>
     <string name="main_360_view">360 view</string>

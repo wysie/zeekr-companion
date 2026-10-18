@@ -12,6 +12,7 @@ outgoing PRs; neither index substitutes for the other.
 | Branch | Purpose |
 | --- | --- |
 | `main` | Combined installable fork: completed features, fork version numbers, update source and build configuration |
+| `feature/companion-branding` | Zeekr Companion display name, About attribution and compatible APK/release naming; logo selection remains separate |
 | `feature/main-page-controls` | Compact main page, shared preview selector, explicit popup controls and expanded preview with retained camera views and accessible recording controls |
 | `fix/camera-status-and-recovery` | Read-only recorder/producer status, persistent live/planned counts and truthful accessible waiting states; no retry-policy changes |
 | `fix/settings-semantics-and-setup` | Scoped confirmed resets, canonical setup order, live actions and persistent pending-source notice |
@@ -146,7 +147,7 @@ bash ./gradlew :app:testDebugUnitTest assembleRelease
 
 The build workflow runs on pushes to `main` and `feature/**`, and on pull requests
 targeting `main`; its APK artifact is
-`ZeekrShortcut-wysie-apk`. Increment `versionCode` and update `versionName` before each new
+`ZeekrCompanion-apk`. Increment `versionCode` and update `versionName` before each new
 installable release. The existing signing key preserves update compatibility.
 
 Fetch dts88's updates into `upstream/main` and fast-forward `upstream-main`. Review
@@ -200,12 +201,12 @@ are recorded in port commits and `NOTICE.md`. See `docs/ferix-feature-ports.md`.
 New combined releases use `vX.Y.Z-alpha.N`, `vX.Y.Z-beta.N` or `vX.Y.Z` tags on
 `main`. Historical `fork-…` and `personal-build-…` release tags/downloads remain valid.
 
-## wysie Edition release naming
+## Zeekr Companion release naming
 
-- Display/release identity: **Zeekr Shortcut — wysie Edition** (Chinese: 极氪即刻 — wysie Edition).
+- Display/release identity: **Zeekr Companion** in every language, without an author suffix.
 - Android `versionName`: `X.Y.Z-alpha.N`, `X.Y.Z-beta.N`, or stable `X.Y.Z`; increment `versionCode` for every installable release. Keep application ID and signing identity.
 - Git tag: exactly `v` plus the built `versionName`, e.g. `v2.11.42-alpha.1`. Do not rename existing tags or assets.
-- Public APK: `ZeekrShortcut-wysie-<versionName>.apk`, plus the matching `.apk.sha256`. Stage it locally with `python3 .github/scripts/package_release.py`; CI uses that same script and rejects a tag/version mismatch. Gradle's `app-release.apk` is an intermediate build output.
-- Release title: `Zeekr Shortcut — wysie Edition <versionName>`. Generate its body with `.github/scripts/release_notes.py`; retain dts88, FerixzTanz and EVCam credits.
+- Public APK: `ZeekrCompanion-<versionName>.apk`, plus the matching `.apk.sha256`. Stage it locally with `python3 .github/scripts/package_release.py`; CI uses that same script and rejects a tag/version mismatch. Gradle's `app-release.apk` is an intermediate build output.
+- Release title: `Zeekr Companion <versionName>`. Generate its body with `.github/scripts/release_notes.py`; retain dts88, FerixzTanz and EVCam credits.
 - The tag workflow creates a draft with canonical asset names. Review validation/notes, then publish alpha/beta with Pre-release on and Latest off. Stable uses Pre-release off; beta/stable require the owner's explicit release-channel decision. Alpha remains the default **publication channel**; this is independent of the in-app Update channel preference.
 - The updater reads this fork's releases and requires consistent pre-release flags/tags. Its Update channel setting permits Stable only, Beta plus Stable, or Alpha plus Beta plus Stable. Fresh installs start on Stable; upgrades preserve the legacy beta choice, and Alpha is explicit opt-in. Unknown channels stay excluded. Historical fork tags/installed personal versions remain comparable. Upstream contribution branches retain upstream branding and release rules.

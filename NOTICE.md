@@ -1,7 +1,8 @@
 # 来源、致谢与许可证说明
 
-本文件说明极氪即刻（车机版）（Zeekr Shortcut (Car Version)）的每一部分从哪里来、
-受什么许可约束。
+本文件说明 Zeekr Companion 的各部分来源与许可。此应用由 wysie 维护，
+是 [dts88 的极氪即刻（Zeekr Shortcut）](https://github.com/dts88/zeekr-shortcut-car) 的分支。
+原项目、FerixzTanz/CAMCORDER 与 EVCam 的来源、署名及许可说明保留如下。
 
 ---
 
