@@ -9,6 +9,8 @@ commit message, not here.
 
 ## Unreleased
 
+- Add Close and temporary Expand/Restore controls to normal Super mirror, matching the blind-side popup.
+
 - Add HUD Follow popup picture settings with optional saved custom tuning; keep HUD size, shape, placement and tone independent.
 
 - Add dts88’s project link beside his About-page credit and Ferix’s CAMCORDER link below dts88 under Projects and downloads.

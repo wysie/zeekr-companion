@@ -47,7 +47,7 @@
     <string name="set_photo_limit_message">Disemak setiap jam: apabila melebihi had, foto paling lama dibersihkan secara automatik. Hanya foto tidak dikunci yang diambil oleh apl ini dipadam. Biarkan kosong atau isi 0 untuk tiada had.</string>
     <string name="set_storage_usage_title">Folder video</string>
     <string name="set_storage_usage_no_drive">Tiada pemacu USB ditemui</string>
-    <string name="set_rearview_summary">Menunjukkan mana-mana kamera sekeliling dalam tetingkap terapung; paparan belakang dicerminkan kiri-kanan, seperti cermin pandang belakang dalaman</string>
+    <string name="set_rearview_summary">Menunjukkan kamera sekeliling dalam tetingkap terapung; paparan belakang dicerminkan seperti cermin dalaman. Butang sudut membesarkan/memulihkan dan menutupnya. Tutup mematikan Cermin super; hidupkan semula di sini, menu atau butang terapung.</string>
     <string name="set_rearview_button_mode_title">Mod butang</string>
     <string name="set_rearview_button_mode_summary">Bertukar ke paparan depan, belakang, kiri atau kanan apabila kawasan atas, bawah, kiri atau kanan diketik</string>
     <string name="set_rearview_front_rear_title">Depan dan belakang sahaja</string>
@@ -1260,4 +1260,6 @@
     <string name="set_hud_picture_straighten_summary">Betulkan herotan mata ikan pada gambar HUD sahaja.</string>
     <string name="set_hud_picture_auto_fit_summary">Kecilkan pandangan HUD jika perlu untuk mengelakkan kawasan hitam. Matikan untuk mengekalkan liputan yang diminta dengan kawasan hitam di luar imej kamera.</string>
     <string name="set_hud_picture_label_summary">Tunjukkan label arah kamera pada HUD sahaja.</string>
+    <string name="mirror_control_close">Matikan Cermin super</string>
+    <string name="mirror_control_expand">Besarkan Cermin super</string>
 </resources>

@@ -47,7 +47,7 @@
     <string name="set_photo_limit_message">Checked every hour: when over the cap, the oldest photos are cleaned up automatically. Only unlocked photos taken by this app are deleted. Leave blank or enter 0 for no limit.</string>
     <string name="set_storage_usage_title">Video folder</string>
     <string name="set_storage_usage_no_drive">No USB drive found</string>
-    <string name="set_rearview_summary">Shows any surround camera in a floating window; the rear view is mirrored left to right, like the interior mirror</string>
+    <string name="set_rearview_summary">Shows any surround camera in a floating window; the rear view is mirrored like the interior mirror. Corner buttons expand/restore and close it. Close turns Super mirror off; turn it back on here, from the menu or the floating button.</string>
     <string name="set_rearview_button_mode_title">Button mode</string>
     <string name="set_rearview_button_mode_summary">Switches to the front, rear, left or right view when the top, bottom, left or right area is tapped</string>
     <string name="set_rearview_front_rear_title">Front and rear only</string>
@@ -1283,4 +1283,6 @@
     <string name="set_hud_picture_straighten_summary">Correct fisheye distortion in the HUD picture only.</string>
     <string name="set_hud_picture_auto_fit_summary">Narrow the HUD view when needed to avoid black patches. Turn off to keep the requested coverage with black areas where the camera has no image.</string>
     <string name="set_hud_picture_label_summary">Show the camera direction label on the HUD only.</string>
+    <string name="mirror_control_close">Turn off Super mirror</string>
+    <string name="mirror_control_expand">Expand Super mirror</string>
 </resources>

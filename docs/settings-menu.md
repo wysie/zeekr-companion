@@ -58,6 +58,21 @@ Super mirror and Floating button keep their persistent enable switches. Blind sp
 camera keeps its automatic-feature switch; X dismisses the current signal activation,
 which re-arms after cancellation and signalling again.
 
+Normal Super mirror now has the same corner controls as the side popup. Close
+turns the mirror enable switch off (including while Settings is visible); its
+existing menu/settings/floating-button action reopens it. Expand/Restore preserves
+aspect ratio and the saved normal position/size. Expanded geometry is temporary:
+restore before drag/pinch/camera-switch gestures. Entering a blind-side replacement
+restores normal mirror geometry first; dismissing that replacement returns to it
+without turning Super mirror off. Its camera label sits below the corner controls.
+Docked tabs hide the buttons and keep their existing tap/pull-out behavior.
+At very narrow widths, Expand hides to leave Close usable; pinch wider to expose
+both. Native checks exercise actual button touches, saved geometry, replacement
+transitions, size changes, body drag/pinch, docking and real service close/reopen
+with the Settings switch visible. Day/night normal and expanded windows were
+visually checked on the emulator; in-car camera operation is not established by
+these checks.
+
 **Show 360° popup** is a non-persistent session switch. It opens/closes the existing
 service; X, startup rejection and service shutdown update it. Factory camera,
 screen-off and probe suspension retain the session intent until it can resume.

@@ -58,7 +58,7 @@
     <string name="set_photo_limit_message">每小时检查一次，超出上限时自动清理最旧的照片，仅删除本应用拍摄且未锁定的照片。留空或填 0 表示不限制。</string>
     <string name="set_storage_usage_title">录像保存路径</string>
     <string name="set_storage_usage_no_drive">未检测到 U 盘</string>
-    <string name="set_rearview_summary">悬浮显示环视中的任一路画面；后视画面左右镜像，与车内后视镜一致</string>
+    <string name="set_rearview_summary">悬浮显示环视中的任一路画面；后视画面左右镜像，与车内后视镜一致。角落按钮可放大、还原或关闭。关闭会关掉超级后视镜，可在这里、菜单或悬浮按钮重新开启。</string>
     <string name="set_rearview_button_mode_title">按键模式</string>
     <string name="set_rearview_button_mode_summary">点击上、下、左、右区域分别切换到前、后、左、右画面</string>
     <string name="set_rearview_front_rear_title">只显示前后视</string>
@@ -1267,4 +1267,6 @@
     <string name="set_hud_picture_straighten_summary">仅拉直 HUD 的鱼眼画面。</string>
     <string name="set_hud_picture_auto_fit_summary">仅为 HUD 缩小视野以避免黑块；关闭后可显示相机未覆盖的黑色区域。</string>
     <string name="set_hud_picture_label_summary">仅在 HUD 上显示前、后、左或右方向标签。</string>
+    <string name="mirror_control_close">关闭超级后视镜</string>
+    <string name="mirror_control_expand">放大超级后视镜</string>
 </resources>

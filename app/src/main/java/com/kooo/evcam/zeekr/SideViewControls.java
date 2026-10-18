@@ -16,6 +16,9 @@ import com.kooo.evcam.settings.Languages;
 /** Native accessible corner buttons above the camera picture. */
 final class SideViewControls extends FrameLayout {
     private final ImageButton expand;
+    private final ImageButton close;
+    private boolean mirrorMode;
+    private boolean expanded;
     private final int targetSize;
     private final int margin;
 
@@ -25,7 +28,8 @@ final class SideViewControls extends FrameLayout {
         margin = getResources().getDimensionPixelSize(R.dimen.side_control_margin);
         expand = button(R.drawable.ic_side_expand, R.string.side_control_expand, onExpand);
         addButton(expand, Gravity.START);
-        addButton(button(R.drawable.ic_side_close, R.string.side_control_close, onClose), Gravity.END);
+        close = button(R.drawable.ic_side_close, R.string.side_control_close, onClose);
+        addButton(close, Gravity.END);
         setExpanded(false);
     }
 
@@ -65,9 +69,18 @@ final class SideViewControls extends FrameLayout {
     }
 
     void setExpanded(boolean expanded) {
+        this.expanded = expanded;
         expand.setImageResource(expanded ? R.drawable.ic_side_restore : R.drawable.ic_side_expand);
         expand.setContentDescription(Languages.localized(getContext()).getString(
-                expanded ? R.string.side_control_restore : R.string.side_control_expand));
+                expanded ? R.string.side_control_restore : mirrorMode
+                        ? R.string.mirror_control_expand : R.string.side_control_expand));
+    }
+
+    void setMirrorMode(boolean mirrorMode) {
+        this.mirrorMode = mirrorMode;
+        close.setContentDescription(Languages.localized(getContext()).getString(
+                mirrorMode ? R.string.mirror_control_close : R.string.side_control_close));
+        setExpanded(expanded);
     }
 
     int barHeight() {
