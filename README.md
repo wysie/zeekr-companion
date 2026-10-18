@@ -45,6 +45,7 @@ release numbers remain independent of upstream.
 
 ## Additions in this fork
 
+- **Consistent main-screen font resources:** retain the existing main-screen text enlargement in an Activity-local configuration before loading views. Theme changes and returning from About no longer depend on mutating resources after startup; sidebar actions retain the same Body style as categories. The intermittent owner-reported smaller labels still need confirmation on the car.
 - **Camera startup handover and recovery:** briefly retain Surround-first startup while it is being released, without blocking other sources beyond three seconds. A configured session returning errors without frames uses the existing eight-second no-progress budget; slow starts without those errors retain their full startup window. Late results from a replaced session cannot postpone recovery. Hardware disconnects can still take longer; see [validation and limits](docs/owner-dump-2026-10-18.md).
 - **Complete source ownership reporting:** availability checks and diagnostic open lists include dedicated road and manual sources, rather than only the legacy Surround/cabin slots. This prevents our own extra feeds being labelled as another app's cameras. It does not establish the cause of the observed 009 startup stalls. See [October 18 dump findings and side-image framing comparisons](docs/owner-dump-2026-10-18.md).
 
