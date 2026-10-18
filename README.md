@@ -1,8 +1,12 @@
 # Zeekr Companion
 
-This is [wysie's personal fork](https://github.com/wysie/zeekr-shortcut-car) of
-[Zeekr Shortcut by dts88](https://github.com/dts88/zeekr-shortcut-car), maintained
-primarily for use on my ZEEKR 009. Credit for the original Zeekr application goes
+<img src="docs/branding/companion-icon.svg" alt="Zeekr Companion logo" width="96" height="96">
+
+Camera recording, live camera windows and vehicle utilities for ZEEKR head units.
+
+**Zeekr Companion** is maintained by [wysie](https://github.com/wysie/zeekr-shortcut-car)
+and is a fork of [Zeekr Shortcut by dts88](https://github.com/dts88/zeekr-shortcut-car).
+I primarily use and test it on my ZEEKR 009. Credit for the original Zeekr application goes
 to dts88 and its contributors; the underlying EVCam project is by
 [suyunkai and contributors](https://github.com/suyunkai/EVCam). Full attribution
 and license details are in [NOTICE.md](NOTICE.md).
@@ -28,14 +32,15 @@ downloads lists Zeekr Companion, dts88's original project, then Ferix's CAMCORDE
 Original community acknowledgements are retained and attributed to dts88’s project. Its
 optional PayNow tip, **9271 6786**, goes to **dts88, the original author**.
 
-The app is now named **Zeekr Companion** in every language, without a “by wysie”
-or edition line on the main screen. About identifies wysie as maintainer and clearly
-credits this fork’s origin in dts88’s Zeekr Shortcut, alongside Ferix and EVCam.
-Future APKs use `ZeekrCompanion-<version>.apk`. The repository, updater destination,
-application ID, signing certificate, preferences and `ZeekrShortcutApp` folders stay
-compatible with existing installations. Existing download links remain valid.
-The launcher uses the approved linked-companions logo, with matching Android themed
-and notification icons. [Vector artwork and colours](docs/branding/README.md) are included.
+Zeekr Companion was previously distributed as **Zeekr Shortcut — wysie Edition**.
+The app now uses the Companion name and linked-companions logo in every language,
+with matching Android themed and notification icons. [Vector artwork and colours](docs/branding/README.md) are included.
+Downloads use `ZeekrCompanion-<version>.apk`. The Android package ID remains
+`io.github.dts88.zeekrshortcut`, with the existing signing certificate, preferences
+and `ZeekrShortcutApp` folders for in-place updates. The repository and update
+source remain [wysie/zeekr-shortcut-car](https://github.com/wysie/zeekr-shortcut-car);
+existing download links remain valid.
+
 The app-name watermark on new recordings and normal photos uses **Zeekr Companion**
 plus the version; existing footage keeps its original burned-in text. The logo itself
 is not added to the footage. Raw developer exports retain their existing behavior.
@@ -387,8 +392,8 @@ to turn on the phone's hotspot and connect the car to it.
 This page does not cover that.
 
 - **Original upstream builds:** [dts88's releases](https://github.com/dts88/zeekr-shortcut-car/releases).
-- **This personal fork:** download the desired APK from
-  [this fork's releases](https://github.com/wysie/zeekr-shortcut-car/releases).
+- **Zeekr Companion:** download the desired APK from
+  [Zeekr Companion releases](https://github.com/wysie/zeekr-shortcut-car/releases).
   New combined APKs are built from `main`; each release tag identifies its exact source commit.
   In builds with **Update channel**, choose Stable, Beta or Alpha under Settings → Check for updates. Stable includes stable releases only; Beta includes beta and stable; Alpha includes all three. Older builds with the beta switch still need manual alpha installation.
 
