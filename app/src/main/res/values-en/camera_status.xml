@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camera_status_title">Camera status</string>
+    <string name="camera_status_diagnostics">Save diagnostics…</string>
+    <string name="camera_status_summary">See which sources are recording and which cameras are waiting.</string>
+    <string name="camera_recording_count">Recording sources: %1$d of %2$d</string>
+    <string name="camera_status_help">Recording counts come from the recorder, not the preview. A waiting preview can coexist with a working recorder. Recovery follows camera availability; stopped recovery resumes only after the scheduler receives a new eligibility event. Quit and reopen only when ready to stop recording.</string>
+    <string name="camera_state_starting">Starting camera</string>
+    <string name="camera_state_waiting">Still waiting for live video</string>
+    <string name="camera_state_streaming">Camera frames available</string>
+    <string name="camera_state_in_use">Camera in use or blocked by another app</string>
+    <string name="camera_state_recovering">Reconnecting camera</string>
+    <string name="camera_state_stopped">Automatic recovery stopped; waiting for camera availability or a new session</string>
+    <string name="camera_state_paused">Camera paused or unavailable in the current app/screen state</string>
+    <string name="camera_state_not_active">Source absent from the running pipeline; check mapping and reopen to apply changes</string>
+    <string name="camera_state_unassigned">Unassigned</string>
+    <string name="camera_preview_live">Live preview</string>
+    <string name="camera_preview_waiting">Camera frames available; waiting for preview</string>
+    <string name="camera_waiting_elapsed">Waiting %1$d s</string>
+    <string name="camera_waiting_status_link">Use Camera status for details and diagnostics</string>
+    <string name="camera_saved_assignment">Saved assignment: %1$s</string>
+    <string name="camera_saved_quality">Saved quality: %1$s · %2$s fps · %3$s bitrate</string>
+    <string name="camera_source_recording">Recording now</string>
+    <string name="camera_source_pending">Selected for this recording; not writing now</string>
+    <string name="camera_source_not_recording">Not part of the current recording</string>
+</resources>

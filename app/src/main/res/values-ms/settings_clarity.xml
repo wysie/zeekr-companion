@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_updates_title">Kemas kini</string>
+    <string name="ui_reset_confirm">Tetapkan semula</string>
+    <string name="ui_side_reset_scope">Tetapkan semula pengaktifan/pemasa, output, gambar skrin/HUD dan tetingkap kamera titik buta. Kekalkan status diaktifkan, kenderaan, pemetaan kamera dan rakaman.</string>
+    <string name="ui_mirror_reset_scope">Tetapkan semula pilihan kamera, bingkai, label, kawalan serta kedudukan/saiz tetingkap. Kekalkan status diaktifkan, pilihan rakaman dan video.</string>
+    <string name="ui_360_reset_scope">Tetapkan semula penentukuran 360, pilihan unjuran dan kualiti 360. Kekalkan ilustrasi kereta, tetingkap timbul, pemetaan sumber dan rakaman.</string>
+    <string name="ui_window_reset_scope">Tetapkan semula saiz dan kedudukan tetingkap ini. Kekalkan status terbuka, gambar dan sumber kamera.</string>
+    <string name="ui_floating_reset_scope">Tetapkan semula kedudukan, saiz butang terapung dan saiz teks masa. Kekalkan status diaktifkan, tindakan, kelegapan dan rakaman.</string>
+    <string name="ui_hud_reset_picture">Tetapkan semula gambar HUD</string>
+    <string name="ui_hud_reset_placement">Tetapkan semula kedudukan dan saiz HUD</string>
+    <string name="ui_hud_picture_reset_scope">Ikut gambar skrin dan padam bingkai, putaran, pencerminan dan label HUD tersuai. Kekalkan kedudukan, saiz, kecerahan dan kontras HUD.</string>
+    <string name="ui_hud_placement_reset_scope">Tetapkan semula kedudukan, saiz, nisbah dan ikut sisi isyarat HUD untuk kenderaan semasa. Kekalkan gambar, kecerahan, kontras dan pilihan output.</string>
+    <string name="ui_pending_camera_changes">Pilihan kamera/pratonton disimpan — keluar dan buka semula untuk digunakan. Keluar menghentikan rakaman.</string>
+    <string name="ui_start_logging">Mulakan log USB</string>
+    <string name="ui_stop_logging">Hentikan log USB</string>
+    <string name="ui_window_open">Terbuka sekarang — tetingkap langsung untuk sesi semasa. Tutup dengan × atau suis ini.</string>
+    <string name="ui_window_closed">Ditutup — buka tetingkap 360 langsung untuk sesi ini. Tetapan unjuran dan tetingkap disimpan berasingan.</string>
+</resources>

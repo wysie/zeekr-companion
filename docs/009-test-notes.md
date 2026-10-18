@@ -1186,3 +1186,20 @@ Navigation verifies the old enable switch is absent; settings snapshots were
 reviewed. Owner photos and emulator outputs remain private under artifacts.
 The new physical layout, optical clipping and in-car cadence still need testing.
 See [current HUD behavior and evidence](009-hud-live-video.md).
+
+## UI clarity follow-up — 2026-10-18, unreleased
+
+Camera status now distinguishes recorder participation from preview freshness.
+On the next affected startup, inspect the persistent live/planned count and each
+source in Camera status before saving diagnostics. A waiting preview alone is not
+evidence that its recorder failed. Observe actual Surround and road output files.
+
+Check reset Cancel preserves tuning; HUD picture reset leaves placement/tone; HUD
+placement reset leaves custom framing. Reopen after a pending camera-change notice
+only when ready to stop recording. System troubleshooting does not start logging
+until Start USB logging is chosen. Confirm a stopped session leaves USB files.
+
+Check About/Quit typography after scrolling in each theme, the floating button's
+external placement after leaving settings, physical HUD fit/factory coexistence and
+expanded/restore 360 over Android Auto. Aim back remains the owner's later check.
+Emulator UI checks passed; physical outcomes and a manual TalkBack pass are open.

@@ -6,7 +6,7 @@
   就是这个排法：一眼扫下来左边是问题、右边是答案。值用的是 summary 这个 id，
   所以 ListPreference 的「%s」、代码里 setSummary 的值都照常落在这里。
 -->
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<com.kooo.evcam.settings.ValuePreferenceRow xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
@@ -37,7 +37,7 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="16dp"
         android:ellipsize="end"
-        android:gravity="end"
+        android:gravity="start"
         android:maxWidth="360dp"
         android:maxLines="2"
         android:textColor="@color/pref_summary"
@@ -57,4 +57,4 @@
         android:importantForAccessibility="no"
         android:src="@drawable/ic_chevron_right"
         app:tint="@color/text_tertiary" />
-</LinearLayout>
+</com.kooo.evcam.settings.ValuePreferenceRow>

@@ -12,6 +12,10 @@ outgoing PRs; neither index substitutes for the other.
 | Branch | Purpose |
 | --- | --- |
 | `main` | Combined installable fork: completed features, fork version numbers, update source and build configuration |
+| `fix/camera-status-and-recovery` | Read-only recorder/producer status, persistent live/planned counts and truthful accessible waiting states; no retry-policy changes |
+| `fix/settings-semantics-and-setup` | Scoped confirmed resets, canonical setup order, live actions and persistent pending-source notice |
+| `fix/hud-and-troubleshooting-ui` | HUD groups, explicit USB troubleshooting, persistent diagnostic paths and foreground stop-control policy |
+| `fix/ui-clarity-verification` | Evidence-backed long-value wrapping, translated clarity copy, theme/font/native verification and outgoing contribution record |
 | `feature/automatic-360-projection` | Automatic/Manual/009 projection intent with model-aware defaults, preserved explicit/legacy manual tuning and inactive-7X reporting |
 | `feature/floating-double-tap` | Optional double-tap action with delayed single-tap arbitration only when assigned; preserve existing tap/hold choices, dragging and cancellation |
 | `upstream-main` | Unmodified dts88 code; tracks `upstream/main` and updates by fast-forward only |

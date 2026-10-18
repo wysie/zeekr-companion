@@ -7,6 +7,17 @@ Alpha sections: one line per change, what changed and nothing else. Beta and sta
 sections: written for users, reviewed before release. Why a change was made lives in the
 commit message, not here.
 
+## [Unreleased]
+
+- Keep recorder source counts visible and add read-only per-source Camera status with diagnostics access.
+- Distinguish camera startup, contention, recovery and stopped states with accessible waiting feedback.
+- Confirm scoped resets and show pending camera/preview changes until reopening applies them.
+- Clarify camera setup order, live-window controls, logging actions and Updates navigation.
+- Group HUD controls and add System troubleshooting with persistent diagnostic export paths and sharing.
+- Hide the external floating button on supported app screens with reserved recording-stop controls.
+- Wrap long setting values below their labels and translate new status/reset/troubleshooting text.
+- Give About links consistent touch targets and a copyable fallback when no browser is available.
+
 ## [2.11.48-alpha.1] - 2026-10-18
 
 - Isolate the main-screen font scale before loading views and retain uniform sidebar text through theme changes and recreation.

@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camera_status_title">Status kamera</string>
+    <string name="camera_status_diagnostics">Simpan diagnostik…</string>
+    <string name="camera_status_summary">Lihat sumber yang sedang merakam dan kamera yang masih menunggu.</string>
+    <string name="camera_recording_count">Sumber rakaman: %1$d daripada %2$d</string>
+    <string name="camera_status_help">Bilangan rakaman mengikut perakam, bukan pratonton. Pratonton yang menunggu boleh berlaku semasa rakaman berjalan. Pemulihan bergantung pada ketersediaan kamera; selepas pemulihan berhenti, peristiwa kelayakan baharu diperlukan. Keluar dan buka semula hanya apabila bersedia untuk menghentikan rakaman.</string>
+    <string name="camera_state_starting">Memulakan kamera</string>
+    <string name="camera_state_waiting">Masih menunggu video langsung</string>
+    <string name="camera_state_streaming">Bingkai kamera tersedia</string>
+    <string name="camera_state_in_use">Kamera digunakan atau disekat oleh aplikasi lain</string>
+    <string name="camera_state_recovering">Menyambung semula kamera</string>
+    <string name="camera_state_stopped">Pemulihan automatik berhenti; menunggu kamera tersedia atau sesi baharu</string>
+    <string name="camera_state_paused">Kamera dijeda atau tidak tersedia dalam keadaan aplikasi/skrin semasa</string>
+    <string name="camera_state_not_active">Sumber tiada dalam saluran aktif; semak pemetaan dan buka semula untuk menggunakan perubahan</string>
+    <string name="camera_state_unassigned">Tidak ditetapkan</string>
+    <string name="camera_preview_live">Pratonton langsung</string>
+    <string name="camera_preview_waiting">Bingkai kamera tersedia; menunggu pratonton</string>
+    <string name="camera_waiting_elapsed">Menunggu %1$d s</string>
+    <string name="camera_waiting_status_link">Gunakan Status kamera untuk butiran dan diagnostik</string>
+    <string name="camera_saved_assignment">Penetapan tersimpan: %1$s</string>
+    <string name="camera_saved_quality">Kualiti tersimpan: %1$s · %2$s fps · kadar bit %3$s</string>
+    <string name="camera_source_recording">Sedang merakam</string>
+    <string name="camera_source_pending">Dipilih untuk rakaman ini; belum menulis</string>
+    <string name="camera_source_not_recording">Bukan sebahagian daripada rakaman semasa</string>
+</resources>

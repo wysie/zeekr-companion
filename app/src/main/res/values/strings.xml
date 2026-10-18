@@ -618,7 +618,7 @@
     <!-- 界面分区 · 首次启动问舵位 · 录制键不可用 · 状态条 -->
     <string name="set_section_interface">界面</string>
     <string name="set_reduce_motion_title">录制时减少动效</string>
-    <string name="set_reduce_motion_summary">录制时关闭界面过渡、画面缩放等装饰动效，减少 GPU 占用；录制键和进度环不受影响</string>
+    <string name="set_reduce_motion_summary">录制时关闭装饰动效；录制键和进度环仍会显示动画。</string>
     <string name="set_vehicle_status_title">车辆状态（试验性）</string>
     <string name="set_vehicle_status_summary">在主界面「鱼眼校正」下方，以行驶信息条的图标显示喇叭、闪远光和双闪；喇叭信号暂无法读取</string>
     <string name="set_fisheye_projection_title">鱼眼校正方式</string>
