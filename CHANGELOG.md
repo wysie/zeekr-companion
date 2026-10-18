@@ -9,6 +9,7 @@ commit message, not here.
 
 ## Unreleased
 
+- Preserve Surround-first startup during a brief availability handover and recover failed zero-frame sessions sooner; ignore stale-session progress.
 - Include road/manual sources in camera ownership checks, availability replay and diagnostic open lists.
 
 ## [2.11.47-alpha.1] - 2026-10-18

@@ -85,6 +85,45 @@ public class ChannelRulesTest {
 
     // ================================================================= 该开
 
+    @Test public void initialHandoverDoesNotStartRearBeforeSurroundIsReleased() {
+        claim(Holder.PREVIEW); declarePreviews();
+        w.startupHandoverUntil = w.now + ChannelRules.QUIET_MS;
+        surround.serviceFree = false; surround.serviceWordAt = w.now;
+        Decision waiting = round();
+        assertEquals(Move.WAIT, waiting.move);
+        assertEquals(Why.STARTUP_HANDOVER, waiting.why);
+        assertEquals(ChannelRules.QUIET_MS, waiting.ms);
+        assertEquals(0, count(Move.OPEN));
+        at(400); surround.serviceFree = true; surround.serviceWordAt = w.now;
+        w.lastOthersChangeAt = w.now;
+        assertEquals(Why.QUIET, round().why);
+        at(400 + ChannelRules.QUIET_MS);
+        Decision first = round();
+        assertEquals(Move.OPEN, first.move);
+        assertEquals(Collections.singletonList(SUR), first.keys);
+    }
+
+    @Test public void factoryHeldSurroundDoesNotBlockOtherSourcesBeyondInitialWindow() {
+        claim(Holder.PREVIEW); declarePreviews();
+        w.startupHandoverUntil = w.now + ChannelRules.QUIET_MS;
+        surround.serviceFree = false; surround.serviceWordAt = w.now;
+        assertEquals(Why.STARTUP_HANDOVER, round().why);
+        at(ChannelRules.QUIET_MS);
+        Decision first = round();
+        assertEquals(Move.OPEN, first.move);
+        assertEquals(Collections.singletonList(REAR), first.keys);
+        assertTrue("Factory-held Surround is never opened by this wait", surround.mark != null);
+    }
+
+    @Test public void readySurroundAndRoadOnlyRequestsHaveNoNewStartupDelay() {
+        w.startupHandoverUntil = w.now + ChannelRules.QUIET_MS;
+        claim(Holder.PREVIEW); declarePreviews();
+        assertEquals(Collections.singletonList(SUR), round().keys);
+        w.holders.clear(); claim(Holder.RECORDING); w.recordPlan.add(REAR);
+        surround.serviceFree = false; surround.serviceWordAt = w.now;
+        assertEquals(Collections.singletonList(REAR), round().keys);
+    }
+
     @Test public void developerProbeClosesInOrderNeverReopensAndRestoresClaimsOnRelease() {
         claim(Holder.PREVIEW);
         streamingAll();
@@ -2444,6 +2483,41 @@ public class ChannelRulesTest {
     }
 
     // ================================================================= 一步做完没有
+
+    @Test public void failedZeroFrameStartupUsesExistingNoProgressBudget() {
+        claim(Holder.MIRROR);
+        Decision open = round(); startOnly(open);
+        at(300); opened(surround, open.outputs);
+        surround.failedBeforeFirstFrame = true;
+        at(300 + CameraLiveness.STUCK_MS - 1);
+        surround.progressAgeMs = CameraLiveness.STUCK_MS - 1;
+        assertEquals(Outcome.RUNNING, ChannelRules.outcome(w));
+        at(300 + CameraLiveness.STUCK_MS);
+        surround.progressAgeMs = CameraLiveness.STUCK_MS;
+        assertEquals(Outcome.TIMED_OUT, ChannelRules.outcome(w));
+        ChannelRules.finish(w, ChannelRules.outcome(w));
+        assertNull(w.step);
+    }
+
+    @Test public void slowStartsWithoutCurrentErrorsKeepTheirFullStartupBudget() {
+        claim(Holder.MIRROR);
+        Decision open = round(); startOnly(open);
+        at(300); opened(surround, open.outputs);
+        at(300 + CameraLiveness.STUCK_MS); surround.progressAgeMs = CameraLiveness.STUCK_MS;
+        assertEquals(Outcome.RUNNING, ChannelRules.outcome(w));
+        surround.failedBeforeFirstFrame = true;
+        frame(surround);
+        assertEquals("Successful current frame wins over earlier failures", Outcome.DONE, ChannelRules.outcome(w));
+    }
+
+    @Test public void previousSessionErrorsCannotShortenAnUnconfiguredReplacement() {
+        claim(Holder.MIRROR); streaming(surround, mirror);
+        surround.progressAgeMs = CameraLiveness.STUCK_MS;
+        Decision rescue = round(); startOnly(rescue);
+        surround.failedBeforeFirstFrame = true; surround.firstFrameAt = 0;
+        at(CameraLiveness.STUCK_MS); surround.progressAgeMs = CameraLiveness.STUCK_MS;
+        assertEquals(Outcome.RUNNING, ChannelRules.outcome(w));
+    }
 
     @Test
     public void anOpenIsDoneOnItsFirstFrameAndFailedOnAnOpenFailure() {
