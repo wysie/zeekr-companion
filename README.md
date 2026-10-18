@@ -155,3 +155,9 @@ Sidebar destinations and About/Quit actions retain the same Body size when rows
 are recycled. Long labels wrap to two lines instead of autoshrinking. MainActivity
 keeps its existing 1.2× font scale in a local configuration before view inflation;
 other screens retain their own scale. Theme changes do not select a smaller font.
+### Optional floating-button double tap
+
+Settings → Floating button adds Double tap alongside Tap and Long press. It starts
+off, preserving immediate single taps and existing assignments. Assigning Double
+tap makes a single tap wait briefly so only one action fires. Dragging, multiple
+fingers, cancellation and removing the window cancel pending actions.
