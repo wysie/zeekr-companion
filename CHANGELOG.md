@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Give paired main-page actions equal widths and matching heights while retaining normal-size wrapped labels.
+
 - Separate the recording and Camera status actions with consistent spacing and matching corners in idle and recording states.
 
 ## [2.11.50-alpha.1] - 2026-10-19
