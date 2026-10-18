@@ -189,3 +189,10 @@ manual position/size. Turning it off restores side-based placement while retaini
 manual coordinates. Reset popup layout confirms first and resets geometry only,
 leaving camera enablement, gesture choice and picture angles intact. Camera
 surfaces, factory/reverse yielding and recording are unchanged.
+### Update channels
+
+Updates offers Stable only, Beta plus Stable, or Alpha plus Beta plus Stable.
+The existing default remains Beta plus Stable; previous beta-switch choices are
+preserved. Alpha requires explicit selection and is never inferred from the
+installed version. Unknown choices fall back to Stable. Tags and GitHub pre-release
+flags must agree; the update repository and release naming remain unchanged.
