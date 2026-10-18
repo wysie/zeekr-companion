@@ -48,6 +48,7 @@
             android:text="@string/diag_subtitle"
             android:textColor="@color/text_tertiary"
             android:textAppearance="@style/TextAppearance.Cam.Caption" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/in_app_record_stop" style="@style/Widget.Cam.IconButton" android:layout_width="48dp" android:layout_height="48dp" android:contentDescription="@string/record_stop" app:icon="@drawable/ic_record_stop" app:iconTint="@color/recording_text" android:visibility="gone" />
     </LinearLayout>
 
     <View
@@ -56,7 +57,7 @@
         android:background="@color/line" />
 
     <!-- 操作按钮 -->
-    <LinearLayout
+    <com.kooo.evcam.ui.WrappingActionRow
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
@@ -69,60 +70,60 @@
         <com.google.android.material.button.MaterialButton
             android:id="@+id/diagnostics_save"
             style="@style/Widget.Cam.RailSmall"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:minHeight="52dp"
             android:maxLines="2"
             android:singleLine="false"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:layout_marginEnd="8dp"
-            android:layout_weight="1"
             android:text="@string/diag_btn_save" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/diagnostics_copy"
             style="@style/Widget.Cam.RailSmall"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:minHeight="52dp"
             android:maxLines="2"
             android:singleLine="false"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:layout_marginEnd="8dp"
-            android:layout_weight="1"
             android:text="@string/diag_btn_copy" />
 
         <!-- 和照片、视频回看同一个「发送到手机」：扫码，手机上点下载 -->
         <com.google.android.material.button.MaterialButton
             android:id="@+id/diagnostics_send_phone"
             style="@style/Widget.Cam.RailSmall"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:minHeight="52dp"
             android:maxLines="2"
             android:singleLine="false"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:layout_marginEnd="8dp"
-            android:layout_weight="1"
             android:text="@string/action_send_to_phone" />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/diagnostics_refresh"
             style="@style/Widget.Cam.RailSmall"
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
             android:minHeight="52dp"
             android:maxLines="2"
             android:singleLine="false"
             android:paddingTop="10dp"
             android:paddingBottom="10dp"
             android:layout_marginEnd="8dp"
-            android:layout_weight="1"
             android:text="@string/diag_btn_refresh" />
-    </LinearLayout>
+        <com.google.android.material.button.MaterialButton android:id="@+id/diagnostics_share_saved" style="@style/Widget.Cam.RailSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/ui_send_saved_report" android:visibility="gone" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/diagnostics_copy_path" style="@style/Widget.Cam.RailSmall" android:layout_width="wrap_content" android:layout_height="wrap_content" android:minHeight="48dp" android:text="@string/ui_copy_file_location" android:visibility="gone" />
+    </com.kooo.evcam.ui.WrappingActionRow>
+
+    <TextView android:id="@+id/diagnostics_export_result" android:layout_width="match_parent" android:layout_height="wrap_content" android:paddingStart="20dp" android:paddingEnd="20dp" android:paddingBottom="8dp" android:textAppearance="@style/TextAppearance.Cam.Body" android:textColor="@color/text_primary" android:textIsSelectable="true" android:accessibilityLiveRegion="polite" android:visibility="gone" />
 
     <!-- 报告正文：等宽字体，横竖都能滚，垫在一块卡片上 -->
     <ScrollView

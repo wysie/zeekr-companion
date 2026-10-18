@@ -982,6 +982,9 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         onClick("pref_hud_reset_placement", pref -> confirmReset(pref, R.string.ui_hud_placement_reset_scope, () -> {
             appConfig.resetHudPlacement(); com.kooo.evcam.zeekr.SideViewPopupService.applyConfig(); bindSidePopup();
         }));
+        onClick("pref_hud_edit_screen", pref -> openFragment(forSection("sub_side_image"), R.string.ui_hud_edit_screen));
+        Preference inherited=findPreference("pref_hud_edit_screen");
+        if(inherited!=null)inherited.setSummary(getString(R.string.ui_hud_inherited_picture,appConfig.getSidePopupFov(),appConfig.getSidePopupYaw(),appConfig.getSidePopupPitch()));
         refreshSideNavigation();
     }
 
@@ -1525,6 +1528,10 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             }
         });
         // 诊断信息放在系统里：它是给所有人导出报告用的
+        onClick("pref_usb_session", pref -> openFragment(new UsbLogSessionFragment(),R.string.ui_usb_session));
+        onClick("pref_camera_research", pref -> startActivity(new Intent(requireContext(),com.kooo.evcam.developer.CameraDisplayToolsActivity.class)));
+        Preference research=findPreference("pref_camera_research");if(research!=null)research.setVisible(DeveloperMode.isUnlocked());
+        Preference researchHelp=findPreference("pref_research_help");if(researchHelp!=null)researchHelp.setVisible(!DeveloperMode.isUnlocked());
         onClick("pref_camera_status", pref -> startActivity(new Intent(requireContext(), com.kooo.evcam.ui.CameraStatusActivity.class)));
         onClick("pref_diagnostics", pref ->
                 startActivity(new Intent(getContext(), DiagnosticsActivity.class)));

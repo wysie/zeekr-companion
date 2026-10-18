@@ -26,6 +26,7 @@ public class ZeekrShortcutApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        com.kooo.evcam.ui.AppRecordingControls.install(this);
         com.kooo.evcam.settings.AppTheme.apply(new AppConfig(this).getThemeMode());
         com.kooo.evcam.settings.DeveloperMode.init(this);
         // 信号普查开着的话接着记（进程被杀过、车机重启过）；到点了就关

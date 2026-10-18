@@ -28,13 +28,14 @@
             app:icon="@drawable/ic_back" />
 
         <TextView
-            android:layout_width="wrap_content"
+            android:layout_width="0dp" android:layout_weight="1"
             android:layout_height="wrap_content"
             android:layout_marginStart="14dp"
             android:text="@string/about_title"
             android:textColor="@color/text_primary"
             android:textAppearance="@style/TextAppearance.Cam.Title"
             android:textStyle="bold" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/in_app_record_stop" style="@style/Widget.Cam.IconButton" android:layout_width="48dp" android:layout_height="48dp" android:contentDescription="@string/record_stop" app:icon="@drawable/ic_record_stop" app:iconTint="@color/recording_text" android:visibility="gone" />
     </LinearLayout>
 
     <View
@@ -139,6 +140,7 @@
                 android:id="@+id/about_link_evcam"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="48dp" android:gravity="center_vertical" android:focusable="true"
                 android:layout_marginTop="8dp"
                 android:padding="4dp"
                 android:text="github.com/suyunkai/EVCam"
@@ -149,6 +151,7 @@
                 android:id="@+id/about_link_gpl"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:minHeight="48dp" android:gravity="center_vertical" android:focusable="true"
                 android:layout_marginTop="4dp"
                 android:padding="4dp"
                 android:text="gnu.org/licenses/gpl-3.0.html"

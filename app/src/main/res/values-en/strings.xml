@@ -1026,7 +1026,7 @@
     <string name="set_side_output_screen">Screen</string>
     <string name="set_side_output_hud">HUD</string>
     <string name="set_side_output_both">Screen and HUD</string>
-    <string name="set_sub_hud_title">HUD picture</string>
+    <string name="set_sub_hud_title">HUD</string>
     <string name="set_sub_hud_summary">Follow popup or customize the picture; separate HUD size, shape, placement and brightness</string>
     <string name="set_hud_side_size_title">HUD picture height (% of HUD height)</string>
     <string name="set_hud_side_size_summary">Width follows the shape below; scales down if needed to fit the HUD</string>
@@ -1115,7 +1115,7 @@
     <string name="set_hud_side_contrast_title">HUD picture contrast (%)</string>
     <string name="set_hud_side_contrast_summary">Higher makes the dark parts darker, so the picture does not wash out on the HUD. 100 is the camera\'s own picture</string>
     <string name="set_hud_side_night_title">HUD picture brightness at night (%)</string>
-    <string name="set_hud_side_night_summary">Applied on top of the opacity above while the car is in night mode. 100 turns it off</string>
+    <string name="set_hud_side_night_summary">Night-mode multiplier applied to the opacity setting. 100 means no extra dimming.</string>
     <string name="set_hud_side_fade_title">HUD picture edge fade (%)</string>
     <string name="set_hud_side_fade_summary">How far the edges fade to black, as a share of the shorter side. 0 is a hard edge. Black does not light up on a HUD, so the fade blends into the road</string>
     <string name="set_hud_side_follow_title">Follow indicator side on HUD</string>
@@ -1278,7 +1278,7 @@
     <string name="camera_source_manual">Manual · %1$s</string>
     <string name="camera_source_legacy">Legacy additional camera</string>
     <string name="set_hud_follow_popup_picture_title">Follow popup picture settings</string>
-    <string name="set_hud_follow_popup_picture_summary">Use popup view width, aim, rotation, mirroring, labels, Straighten and Auto-fit. HUD size, aspect ratio, position and brightness stay separate. Turn off to customize the HUD picture; previous custom values are kept.</string>
+    <string name="set_hud_follow_popup_picture_summary">Use the screen popup’s picture settings. HUD position, size, brightness and contrast stay independent.</string>
     <string name="set_hud_custom_picture_title">Custom HUD picture</string>
     <string name="set_hud_picture_straighten_summary">Correct fisheye distortion in the HUD picture only.</string>
     <string name="set_hud_picture_auto_fit_summary">Narrow the HUD view when needed to avoid black patches. Turn off to keep the requested coverage with black areas where the camera has no image.</string>
@@ -1286,7 +1286,7 @@
     <string name="mirror_control_close">Turn off Super mirror</string>
     <string name="mirror_control_expand">Expand Super mirror</string>
     <string name="set_theme_title">Theme</string>
-    <string name="set_theme_summary">Choose Follow system, Light or Dark for the app and camera-popup controls. Font sizes stay the same. HUD brightness still follows its separate settings.</string>
+    <string name="set_theme_summary">Choose Follow system, Light or Dark for the app and camera-popup controls. HUD brightness is separate.</string>
     <string name="theme_system">Follow system</string>
     <string name="theme_light">Light</string>
     <string name="theme_dark">Dark</string>

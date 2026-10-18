@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ui_hud_picture_source">Picture source</string>
+    <string name="ui_hud_custom_framing">Custom framing</string>
+    <string name="ui_hud_position_size">Position &amp; size</string>
+    <string name="ui_hud_tone">Brightness &amp; contrast</string>
+    <string name="ui_hud_edit_screen">Edit screen picture</string>
+    <string name="ui_hud_inherited_picture">Screen picture: view width %1$d° · aim back %2$d° · aim up %3$d°. HUD window and tone stay independent.</string>
+    <string name="ui_troubleshooting">Troubleshooting</string>
+    <string name="ui_troubleshooting_summary">Camera status, saved diagnostics and an explicit USB logging session.</string>
+    <string name="ui_usb_session">USB troubleshooting session</string>
+    <string name="ui_usb_session_summary">Start/stop continuous USB logs for a drive. Requires Developer mode.</string>
+    <string name="ui_usb_session_help">Start one USB logging session, drive, then stop it. Files are written to USB while the session runs; there is no automatic startup. Developer mode is required. Opening this page does not log signals or probe cameras.</string>
+    <string name="ui_research_requires_developer">Enable Developer mode in System to use USB signal logging and camera/display research.</string>
+    <string name="ui_browser_unavailable">No browser available</string>
+    <string name="ui_copy_link">Copy link</string>
+    <string name="ui_last_export">Last saved diagnostics:\n%1$s</string>
+    <string name="ui_send_saved_report">Send saved report</string>
+    <string name="ui_copy_file_location">Copy file location</string>
+</resources>

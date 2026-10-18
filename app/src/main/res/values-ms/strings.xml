@@ -1003,7 +1003,7 @@
     <string name="set_side_output_screen">Skrin</string>
     <string name="set_side_output_hud">HUD</string>
     <string name="set_side_output_both">Skrin dan HUD</string>
-    <string name="set_sub_hud_title">Gambar HUD</string>
+    <string name="set_sub_hud_title">HUD</string>
     <string name="set_sub_hud_summary">Ikut gambar tetingkap timbul atau sesuaikan; saiz, nisbah, kedudukan dan kecerahan HUD berasingan</string>
     <string name="set_hud_side_size_title">Ketinggian gambar HUD (% daripada tinggi HUD)</string>
     <string name="set_hud_side_size_summary">Lebar mengikut bentuk di bawah; dikecilkan mengikut nisbah jika perlu supaya muat</string>
@@ -1092,7 +1092,7 @@
     <string name="set_hud_side_contrast_title">Kontras gambar HUD (%)</string>
     <string name="set_hud_side_contrast_summary">Lebih tinggi menjadikan bahagian gelap lebih gelap, supaya gambar tidak pudar pada HUD. 100 ialah gambar asal kamera</string>
     <string name="set_hud_side_night_title">Kecerahan gambar HUD pada waktu malam (%)</string>
-    <string name="set_hud_side_night_summary">Dikenakan di atas kelegapan di atas apabila kereta dalam mod malam. 100 untuk mematikan</string>
+    <string name="set_hud_side_night_summary">Pengganda mod malam untuk tetapan kelegapan. 100 bermaksud tiada pemalapan tambahan.</string>
     <string name="set_hud_side_fade_title">Pudar tepi gambar HUD (%)</string>
     <string name="set_hud_side_fade_summary">Jarak tepi memudar ke hitam, sebagai peratusan sisi yang lebih pendek. 0 ialah tepi keras. Warna hitam tidak menyala pada HUD, jadi pudaran menyatu dengan jalan</string>
     <string name="set_hud_side_follow_title">Ikut sisi isyarat pada HUD</string>
@@ -1255,7 +1255,7 @@
     <string name="camera_source_manual">Manual · %1$s</string>
     <string name="camera_source_legacy">Kamera tambahan lama</string>
     <string name="set_hud_follow_popup_picture_title">Ikut tetapan gambar pop timbul</string>
-    <string name="set_hud_follow_popup_picture_summary">Gunakan lebar pandangan, arah, putaran, pencerminan, label, pelurusan dan muat automatik pop timbul. Saiz, nisbah, kedudukan dan kecerahan HUD kekal berasingan. Matikan untuk menyesuaikan gambar HUD; nilai tersuai lama dikekalkan.</string>
+    <string name="set_hud_follow_popup_picture_summary">Gunakan tetapan gambar tetingkap skrin. Kedudukan, saiz, kecerahan dan kontras HUD kekal berasingan.</string>
     <string name="set_hud_custom_picture_title">Gambar HUD tersuai</string>
     <string name="set_hud_picture_straighten_summary">Betulkan herotan mata ikan pada gambar HUD sahaja.</string>
     <string name="set_hud_picture_auto_fit_summary">Kecilkan pandangan HUD jika perlu untuk mengelakkan kawasan hitam. Matikan untuk mengekalkan liputan yang diminta dengan kawasan hitam di luar imej kamera.</string>
@@ -1263,7 +1263,7 @@
     <string name="mirror_control_close">Matikan Cermin super</string>
     <string name="mirror_control_expand">Besarkan Cermin super</string>
     <string name="set_theme_title">Tema</string>
-    <string name="set_theme_summary">Pilih Ikut sistem, Cerah atau Gelap untuk aplikasi dan kawalan tetingkap kamera. Saiz fon kekal sama. Kecerahan HUD masih menggunakan tetapan berasingan.</string>
+    <string name="set_theme_summary">Pilih Ikut sistem, Cerah atau Gelap untuk aplikasi dan kawalan tetingkap kamera. Kecerahan HUD berasingan.</string>
     <string name="theme_system">Ikut sistem</string>
     <string name="theme_light">Cerah</string>
     <string name="theme_dark">Gelap</string>

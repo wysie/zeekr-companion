@@ -50,6 +50,9 @@ public class DiagnosticsActivity extends AppCompatActivity {
     private static final String TAG = "DiagnosticsActivity";
 
     private TextView reportView;
+    private TextView exportResult;
+    private Button shareSaved;
+    private File lastExport;
     private Button saveButton;
     private Button copyButton;
     private Button sendPhoneButton;
@@ -65,6 +68,11 @@ public class DiagnosticsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_diagnostics);
 
         reportView = findViewById(R.id.diagnostics_report);
+        exportResult=findViewById(R.id.diagnostics_export_result);shareSaved=findViewById(R.id.diagnostics_share_saved);
+        shareSaved.setOnClickListener(v->{if(lastExport!=null&&lastExport.isFile())com.kooo.evcam.share.PhoneShare.show(this,lastExport,getString(R.string.diag_send_phone_note));});
+        findViewById(R.id.diagnostics_copy_path).setOnClickListener(v->{if(lastExport!=null){ClipboardManager clipboard=(ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+            if(clipboard!=null)clipboard.setPrimaryClip(ClipData.newPlainText(getString(R.string.ui_copy_file_location),lastExport.getAbsolutePath()));}});
+        refreshExportResult();
         saveButton = findViewById(R.id.diagnostics_save);
         copyButton = findViewById(R.id.diagnostics_copy);
         sendPhoneButton = findViewById(R.id.diagnostics_send_phone);
@@ -221,15 +229,25 @@ public class DiagnosticsActivity extends AppCompatActivity {
 
             AppLog.i(TAG, "诊断报告已保存: " + out.getAbsolutePath()
                     + "（" + out.length() / 1024 + " KB）");
+            getSharedPreferences("diagnostic_exports",MODE_PRIVATE).edit().putString("path",out.getAbsolutePath()).remove("error").apply();
             toast(getString(R.string.diag_saved, out.getAbsolutePath()));
             return out;
         } catch (Exception e) {
             AppLog.e(TAG, "保存诊断报告失败", e);
             String reason = com.kooo.evcam.ui.FailureReason.of(this, e);
-            toast(reason != null ? getString(R.string.diag_save_failed, reason)
-                    : getString(R.string.diag_cannot_save));
+            String failure=reason!=null?getString(R.string.diag_save_failed,reason):getString(R.string.diag_cannot_save);
+            getSharedPreferences("diagnostic_exports",MODE_PRIVATE).edit().putString("error",failure).apply();toast(failure);
             return null;
         }
+    }
+
+    private void refreshExportResult() {
+        android.content.SharedPreferences saved=getSharedPreferences("diagnostic_exports",MODE_PRIVATE);
+        String path=saved.getString("path",null), error=saved.getString("error",null);lastExport=path==null?null:new File(path);
+        String text=(error==null?"":error+"\n")+(path==null?"":getString(R.string.ui_last_export,path));
+        exportResult.setText(text);exportResult.setVisibility(text.isEmpty()?View.GONE:View.VISIBLE);
+        shareSaved.setVisibility(path==null?View.GONE:View.VISIBLE);shareSaved.setEnabled(lastExport!=null&&lastExport.isFile());
+        findViewById(R.id.diagnostics_copy_path).setVisibility(path==null?View.GONE:View.VISIBLE);
     }
 
     private void copyReport() {
@@ -261,6 +279,8 @@ public class DiagnosticsActivity extends AppCompatActivity {
         new Thread(() -> {
             File out = saveReport();
             mainHandler.post(() -> {
+                if(isFinishing()||isDestroyed())return;
+                refreshExportResult();
                 if (then != null && out != null) {
                     then.accept(out);
                 }
