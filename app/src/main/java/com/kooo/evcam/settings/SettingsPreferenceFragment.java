@@ -854,6 +854,47 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                     com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
                 });
         bindSideOutput();
+        bindSwitch("pref_hud_follow_popup_picture", appConfig.isHudFollowingPopupPicture(), value -> {
+            appConfig.setHudFollowingPopupPicture(value);
+            com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+            bindSidePopup();
+        });
+        Preference customHud = findPreference("group_hud_custom_picture");
+        if (customHud != null) customHud.setVisible(!appConfig.isHudFollowingPopupPicture());
+        bindSwitch("pref_hud_picture_straighten", appConfig.isHudSideStraighten(), value -> {
+            appConfig.setHudSideStraighten(value);
+            refreshHudAutoFit();
+            com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+        });
+        bindSwitch("pref_hud_picture_auto_fit", appConfig.isHudSideAutoFit(), value -> {
+            appConfig.setHudSideAutoFit(value);
+            com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+        });
+        bindSlider("pref_hud_picture_fov", Math.round(com.kooo.evcam.zeekr.SideViewProjection.MIN_FOV_DEGREES),
+                Math.round(com.kooo.evcam.zeekr.SideViewProjection.MAX_FOV_DEGREES), appConfig.getHudSideFov(), "°", value -> {
+                    appConfig.setHudSideFov(value); com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+                });
+        bindSlider("pref_hud_picture_yaw", -maxYaw, maxYaw, appConfig.getHudSideYaw(), "°", value -> {
+            appConfig.setHudSideYaw(value); com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+        });
+        bindSlider("pref_hud_picture_pitch", -maxPitch, maxPitch, appConfig.getHudSidePitch(), "°", value -> {
+            appConfig.setHudSidePitch(value); com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+        });
+        bindSlider("pref_hud_picture_rotation_left", -90, 90,
+                appConfig.getHudSideRotation(com.kooo.evcam.zeekr.LaneCycle.LEFT), "°", value -> {
+                    appConfig.setHudSideRotation(com.kooo.evcam.zeekr.LaneCycle.LEFT, value);
+                    com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+                });
+        bindSlider("pref_hud_picture_rotation_right", -90, 90,
+                appConfig.getHudSideRotation(com.kooo.evcam.zeekr.LaneCycle.RIGHT), "°", value -> {
+                    appConfig.setHudSideRotation(com.kooo.evcam.zeekr.LaneCycle.RIGHT, value);
+                    com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+                });
+        bindSwitch("pref_hud_picture_label", appConfig.isHudSideCameraLabelEnabled(), value -> {
+            appConfig.setHudSideCameraLabelEnabled(value);
+            com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+        });
+        refreshHudAutoFit();
         bindSwitch("pref_hud_side_mirror", appConfig.isHudSideMirrored(), value -> {
             appConfig.setHudSideMirrored(value);
             com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
@@ -919,6 +960,11 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             toast(getString(R.string.msg_side_popup_reset));
         });
         refreshSideNavigation();
+    }
+
+    private void refreshHudAutoFit() {
+        Preference fit = findPreference("pref_hud_picture_auto_fit");
+        if (fit != null) fit.setEnabled(appConfig.isHudSideStraighten());
     }
 
     private void refreshSideAutoFit() {

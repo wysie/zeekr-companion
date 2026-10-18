@@ -1758,7 +1758,10 @@ public class AppConfig {
 
     /** Restore tuning and layout while retaining the feature's current on/off state. */
     public void resetSidePopupSettings() {
-        prefs.edit()
+        android.content.SharedPreferences.Editor pictureReset = prefs.edit()
+                .remove(KEY_HUD_FOLLOW_PICTURE).remove(KEY_HUD_CUSTOM_PICTURE);
+        for (String key : prefs.getAll().keySet()) if (key.startsWith(HUD_PICTURE_PREFIX)) pictureReset.remove(key);
+        pictureReset
                 .remove(KEY_SIDE_POPUP_REPLACE_MIRROR)
                 .remove(KEY_SIDE_POPUP_HIDE_MIRROR)
                 .remove(KEY_SIDE_POPUP_MIRROR)
@@ -2043,13 +2046,99 @@ public class AppConfig {
         prefs.edit().putInt(hudLayoutKey(KEY_HUD_SIDE_VERTICAL), Math.max(0, Math.min(100, percent))).apply();
     }
 
-    /** HUD 上侧视左右翻转（像门镜），默认翻：看 HUD 和看门镜是同一眼，方向得一致。 */
+    private static final String KEY_HUD_FOLLOW_PICTURE = "hud_follow_popup_picture";
+    private static final String KEY_HUD_CUSTOM_PICTURE = "hud_custom_picture_initialized";
+    private static final String HUD_PICTURE_PREFIX = "hud_picture_";
+
+    /** New installs follow the popup; preserve an explicitly saved legacy HUD mirror choice. */
+    public boolean isHudFollowingPopupPicture() {
+        return prefs.getBoolean(KEY_HUD_FOLLOW_PICTURE,
+                !prefs.contains(KEY_HUD_SIDE_MIRROR) && !prefs.contains(KEY_HUD_CUSTOM_PICTURE));
+    }
+
+    private android.content.SharedPreferences.Editor seedHudPicture(android.content.SharedPreferences.Editor edit) {
+        return edit.putBoolean(KEY_HUD_CUSTOM_PICTURE, true)
+                .putInt(HUD_PICTURE_PREFIX + "fov", getSidePopupFov())
+                .putInt(HUD_PICTURE_PREFIX + "yaw", getSidePopupYaw())
+                .putInt(HUD_PICTURE_PREFIX + "pitch", getSidePopupPitch())
+                .putInt(HUD_PICTURE_PREFIX + "rotation_left", getSidePopupRotation(com.kooo.evcam.zeekr.LaneCycle.LEFT))
+                .putInt(HUD_PICTURE_PREFIX + "rotation_right", getSidePopupRotation(com.kooo.evcam.zeekr.LaneCycle.RIGHT))
+                .putBoolean(HUD_PICTURE_PREFIX + "straighten", isSidePopupStraighten())
+                .putBoolean(HUD_PICTURE_PREFIX + "auto_fit", isSidePopupAutoFit())
+                .putBoolean(HUD_PICTURE_PREFIX + "label", isRearViewCameraLabelEnabled())
+                .putBoolean(KEY_HUD_SIDE_MIRROR, prefs.getBoolean(KEY_HUD_SIDE_MIRROR, isSidePopupMirrored()));
+    }
+
+    private void ensureHudPicture() {
+        if (!prefs.getBoolean(KEY_HUD_CUSTOM_PICTURE, false)) seedHudPicture(prefs.edit()).apply();
+    }
+
+    public void setHudFollowingPopupPicture(boolean follow) {
+        android.content.SharedPreferences.Editor edit = prefs.edit();
+        // Remember the prior independent picture before following, or seed it on first customization.
+        if (!prefs.getBoolean(KEY_HUD_CUSTOM_PICTURE, false)
+                && (!follow || !isHudFollowingPopupPicture())) seedHudPicture(edit);
+        edit.putBoolean(KEY_HUD_FOLLOW_PICTURE, follow).apply();
+    }
+
+    private android.content.SharedPreferences.Editor hudPictureEditor() {
+        android.content.SharedPreferences.Editor edit = prefs.edit();
+        if (!prefs.getBoolean(KEY_HUD_CUSTOM_PICTURE, false)) seedHudPicture(edit);
+        return edit.putBoolean(KEY_HUD_FOLLOW_PICTURE, false);
+    }
+
+    private int hudPictureInt(String field, int fallback, int min, int max) {
+        if (isHudFollowingPopupPicture()) return fallback;
+        ensureHudPicture();
+        return Math.max(min, Math.min(max, prefs.getInt(HUD_PICTURE_PREFIX + field, fallback)));
+    }
+    private boolean hudPictureBoolean(String field, boolean fallback) {
+        if (isHudFollowingPopupPicture()) return fallback;
+        ensureHudPicture();
+        return prefs.getBoolean(HUD_PICTURE_PREFIX + field, fallback);
+    }
+    public int getHudSideFov() {
+        return hudPictureInt("fov", getSidePopupFov(), Math.round(com.kooo.evcam.zeekr.SideViewProjection.MIN_FOV_DEGREES),
+                Math.round(com.kooo.evcam.zeekr.SideViewProjection.MAX_FOV_DEGREES));
+    }
+    public void setHudSideFov(int value) { hudPictureEditor().putInt(HUD_PICTURE_PREFIX + "fov", value).apply(); }
+    public int getHudSideYaw() {
+        int max = Math.round(com.kooo.evcam.zeekr.SideViewProjection.MAX_YAW_DEGREES);
+        return hudPictureInt("yaw", getSidePopupYaw(), -max, max);
+    }
+    public void setHudSideYaw(int value) { hudPictureEditor().putInt(HUD_PICTURE_PREFIX + "yaw", value).apply(); }
+    public int getHudSidePitch() {
+        int max = Math.round(com.kooo.evcam.zeekr.SideViewProjection.MAX_PITCH_DEGREES);
+        return hudPictureInt("pitch", getSidePopupPitch(), -max, max);
+    }
+    public void setHudSidePitch(int value) { hudPictureEditor().putInt(HUD_PICTURE_PREFIX + "pitch", value).apply(); }
+    public int getHudSideRotation(int lane) {
+        String field = lane == com.kooo.evcam.zeekr.LaneCycle.LEFT ? "rotation_left"
+                : lane == com.kooo.evcam.zeekr.LaneCycle.RIGHT ? "rotation_right" : null;
+        return field == null ? 0 : hudPictureInt(field, getSidePopupRotation(lane), -90, 90);
+    }
+    public void setHudSideRotation(int lane, int value) {
+        String field = lane == com.kooo.evcam.zeekr.LaneCycle.LEFT ? "rotation_left"
+                : lane == com.kooo.evcam.zeekr.LaneCycle.RIGHT ? "rotation_right" : null;
+        if (field != null) hudPictureEditor().putInt(HUD_PICTURE_PREFIX + field,
+                com.kooo.evcam.zeekr.SideViewRotation.clamp(value)).apply();
+    }
+    public boolean isHudSideStraighten() { return hudPictureBoolean("straighten", isSidePopupStraighten()); }
+    public void setHudSideStraighten(boolean value) { hudPictureEditor().putBoolean(HUD_PICTURE_PREFIX + "straighten", value).apply(); }
+    public boolean isHudSideAutoFit() { return hudPictureBoolean("auto_fit", isSidePopupAutoFit()); }
+    public void setHudSideAutoFit(boolean value) { hudPictureEditor().putBoolean(HUD_PICTURE_PREFIX + "auto_fit", value).apply(); }
+    public boolean isHudSideCameraLabelEnabled() { return hudPictureBoolean("label", isRearViewCameraLabelEnabled()); }
+    public void setHudSideCameraLabelEnabled(boolean value) { hudPictureEditor().putBoolean(HUD_PICTURE_PREFIX + "label", value).apply(); }
+
+    /** Effective flip follows the popup or uses the independently saved HUD picture. */
     public boolean isHudSideMirrored() {
+        if (isHudFollowingPopupPicture()) return isSidePopupMirrored();
+        ensureHudPicture();
         return prefs.getBoolean(KEY_HUD_SIDE_MIRROR, true);
     }
 
     public void setHudSideMirrored(boolean on) {
-        prefs.edit().putBoolean(KEY_HUD_SIDE_MIRROR, on).apply();
+        hudPictureEditor().putBoolean(KEY_HUD_SIDE_MIRROR, on).apply();
     }
 
     /** HUD 上画面的不透明度，20..100。 */

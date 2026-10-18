@@ -38,13 +38,19 @@ does not establish the exact cause of the owner's older-build screenshot.
 - **Image & framing:** straighten, view width, aim back/up and high-angle crop note,
   separate left/right rotation, centre-screen mirroring, shared camera labels.
 - **Popup window:** aspect ratio (Square 1:1, Portrait 3:4, Landscape 4:3, Wide 16:9, Extra wide 2.2:1), height/position and drag/pinch/expand/close guidance. Square remains the default; resizing and expand/restore retain the chosen shape.
-- **HUD picture:** Picture (mirror, contrast, night brightness, opacity, edge fade);
+- **HUD picture:** Follow popup picture settings; Custom HUD picture (visible when
+  following is off: Straighten, Auto-fit, view width, aim, rotations, mirror, label);
+  Picture (contrast, night brightness, opacity, edge fade);
   Placement (height, shape, horizontal/vertical position, follow indicator side);
-  Advanced experimental routing (009 mapping and factory-view coexistence).
+  Advanced experimental routing (factory-view coexistence).
 
 Timing/prewarming remain on the parent because their effects are not limited to
-popup geometry. Screen and HUD mirroring remain separate. The camera-label rows
-in Super mirror and Image & framing read and write the same AppConfig setting.
+popup geometry. HUD picture follows popup tuning by default unless an explicitly
+saved legacy HUD mirror preference needs preserving. Turning following off seeds
+the current popup picture on first use; later switches restore previous custom
+values. HUD layout and tone stay independent in both modes. The camera-label rows
+in Super mirror and Image & framing read and write the same AppConfig setting;
+custom HUD labels have their own preference.
 
 ## Window controls and reset scopes
 
@@ -62,7 +68,8 @@ destination, calibration or saved geometry. There is no new boot/indicator trigg
 - Super mirror reset retains enable state and resets its own framing/window and
   controls, including camera labels shared with the blind-spot popup.
 - Blind spot reset retains enable state and shared labels, and resets screen/HUD
-  output, picture, timing and popup placement.
+  output, picture, timing and popup placement, clears saved HUD custom tuning and
+  returns to following the popup.
 - 360 popup-layout reset changes placement/size only. Calibration reset also resets
   rendering quality, but not popup placement or preferred destination.
 - Floating-button reset retains its existing position/size/timer-text scope.

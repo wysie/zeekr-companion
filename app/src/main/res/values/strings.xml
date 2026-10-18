@@ -1005,13 +1005,13 @@
     <string name="set_side_popup_mirror_summary">在侧视弹窗和超级后视镜替换画面中左右翻转。默认关闭；录像不受影响。</string>
     <string name="side_popup_no_picture">没有实时画面</string>
     <string name="set_hud_side_mirror_title">HUD 画面左右翻转（像门镜）</string>
-    <string name="set_hud_side_mirror_summary">默认开：看 HUD 和看门镜是同一眼，方向一致不用想</string>
+    <string name="set_hud_side_mirror_summary">仅左右翻转自定义 HUD 画面，不改变主屏弹窗的翻转设置或录像。</string>
     <string name="set_side_output_title">侧视画面显示在</string>
     <string name="set_side_output_screen">主屏</string>
     <string name="set_side_output_hud">HUD</string>
     <string name="set_side_output_both">主屏和 HUD</string>
     <string name="set_sub_hud_title">HUD 画面</string>
-    <string name="set_sub_hud_summary">显示屏、悬浮窗层级、位置、对比度、夜间亮度和边缘渐隐</string>
+    <string name="set_sub_hud_summary">跟随弹窗或自定义画面；HUD 大小、比例、位置和亮度独立设置</string>
     <string name="set_hud_side_size_title">HUD 画面高度（占 HUD 高度 %）</string>
     <string name="set_hud_side_size_summary">宽度由下面的形状决定；必要时等比例缩小以完整显示</string>
     <string name="set_hud_side_shape_title">HUD 画面形状（宽 ÷ 高，%）</string>
@@ -1261,4 +1261,10 @@
     <string name="camera_source_automatic">自动 · %1$s</string>
     <string name="camera_source_manual">手动 · %1$s</string>
     <string name="camera_source_legacy">旧版附加相机</string>
+    <string name="set_hud_follow_popup_picture_title">跟随弹窗画面设置</string>
+    <string name="set_hud_follow_popup_picture_summary">使用弹窗的视野、朝向、旋转、镜像、方向标签、拉直及自动缩放。HUD 的尺寸、比例、位置和亮度仍独立。关闭后可单独调整 HUD 画面；已有调校会保留。</string>
+    <string name="set_hud_custom_picture_title">自定义 HUD 画面</string>
+    <string name="set_hud_picture_straighten_summary">仅拉直 HUD 的鱼眼画面。</string>
+    <string name="set_hud_picture_auto_fit_summary">仅为 HUD 缩小视野以避免黑块；关闭后可显示相机未覆盖的黑色区域。</string>
+    <string name="set_hud_picture_label_summary">仅在 HUD 上显示前、后、左或右方向标签。</string>
 </resources>

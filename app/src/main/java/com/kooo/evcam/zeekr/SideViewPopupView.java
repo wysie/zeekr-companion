@@ -276,14 +276,21 @@ public class SideViewPopupView extends ViewGroup {
     }
 
     protected boolean readMirrored() { return appConfig.isSidePopupMirrored(); }
+    protected boolean readStraighten() { return appConfig.isSidePopupStraighten(); }
+    protected boolean readAutoFit() { return appConfig.isSidePopupAutoFit(); }
+    protected boolean readCameraLabel() { return appConfig.isRearViewCameraLabelEnabled(); }
+    protected int readFov() { return appConfig.getSidePopupFov(); }
+    protected int readYaw() { return appConfig.getSidePopupYaw(); }
+    protected int readPitch() { return appConfig.getSidePopupPitch(); }
+    protected int readRotation(int side) { return appConfig.getSidePopupRotation(side); }
 
     protected boolean showControls() { return true; }
 
     private void readConfig() {
-        straighten = appConfig.isSidePopupStraighten();
-        viewFov = appConfig.getSidePopupFov();
-        yaw = appConfig.getSidePopupYaw();
-        pitch = appConfig.getSidePopupPitch();
+        straighten = readStraighten();
+        viewFov = readFov();
+        yaw = readYaw();
+        pitch = readPitch();
     }
 
     protected void attachAt(int side, boolean show) {
@@ -645,10 +652,10 @@ public class SideViewPopupView extends ViewGroup {
         Paint tone = pictureTone();
         float fade = HudEdgeFade.widthPx(edgeFadePercent(), width, height);
         if (tone != null || fade > 0f) canvas.saveLayer(0f, 0f, width, height, tone);
-        int rotation = appConfig.getSidePopupRotation(lane);
+        int rotation = readRotation(lane);
         int inner = SideViewRotation.begin(canvas, straighten ? 0 : rotation, width, height, readMirrored());
         if (straighten) {
-            boolean autoFit = appConfig.isSidePopupAutoFit();
+            boolean autoFit = readAutoFit();
             framing.configure(viewFov, yaw, pitch, lane, (float) width / height, rotation,
                     autoFit);
             // 虚拟相机转过去（往后、往上）再拉直，见 SideViewProjection
@@ -685,7 +692,7 @@ public class SideViewPopupView extends ViewGroup {
             if (showControls()) drawChild(canvas, controls, getDrawingTime());
             return;
         }
-        if (appConfig.isRearViewCameraLabelEnabled()) {
+        if (readCameraLabel()) {
             cameraLabel.drawBottom(canvas, lane, width, height);
         }
         sideArrow.draw(canvas, lane, indicatorDisplay, width, height);
