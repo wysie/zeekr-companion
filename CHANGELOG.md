@@ -9,6 +9,8 @@ commit message, not here.
 
 ## Unreleased
 
+- Add an optional floating-button double-tap action and Do nothing choice, preserving immediate single taps when double tap is off.
+
 ## [2.11.46-alpha.1] - 2026-10-18
 
 - Unify Camera sources across Recording & photos, the stream editor and Developer options, preserving effective manual choices.

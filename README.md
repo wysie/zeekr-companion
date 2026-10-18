@@ -473,6 +473,16 @@ The side camera displays an upright left/right arrow between the top corner cont
 
 ## Night theme and floating record button
 
+Settings → Floating button → Actions offers **Tap**, **Double tap** and **Long press**.
+Each can open the app, start/stop recording, take a photo, toggle Super mirror or
+do nothing. Double tap defaults to **Do nothing**, preserving immediate single taps
+and existing tap/hold assignments. Assigning a double-tap action makes a single
+tap wait briefly for Android's double-tap timeout; a recognised double tap runs
+only its own action. Long press stays at 600 ms. Dragging, cancelled/multi-finger
+touches and hiding the button cancel pending gestures. Actions apply without an
+app restart; position lock still allows gestures but prevents moving the button.
+See [gesture behavior and validation](docs/floating-button-gestures.md).
+
 Night mode uses a black page/main panel with darker settings rows and a distinct selected-row shade. Day layout and primary colors are retained; setting descriptions have stronger contrast. The floating record button has a smaller, thinner icon and no shadow; its background stays neutral while live recording uses a red ring/stop icon. The current upstream waiting-for-cameras state remains grey.
 
 ## Whole-project review and data handling
