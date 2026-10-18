@@ -7,7 +7,7 @@ Alpha sections: one line per change, what changed and nothing else. Beta and sta
 sections: written for users, reviewed before release. Why a change was made lives in the
 commit message, not here.
 
-## [2.11.50-alpha.1] - 2026-10-18
+## [2.11.50-alpha.1] - 2026-10-19
 
 - Add the approved linked-companions launcher logo with matching themed and notification icons.
 - Rename the app to Zeekr Companion in every language and remove the edition line from the main screen and drawer.
