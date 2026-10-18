@@ -36,8 +36,11 @@ application ID, signing certificate, preferences and `ZeekrShortcutApp` folders 
 compatible with existing installations. Existing download links remain valid.
 The launcher uses the approved linked-companions logo, with matching Android themed
 and notification icons. [Vector artwork and colours](docs/branding/README.md) are included.
+The app-name watermark on new recordings and normal photos uses **Zeekr Companion**
+plus the version; existing footage keeps its original burned-in text. The logo itself
+is not added to the footage. Raw developer exports retain their existing behavior.
 
-Current test download: [wysie Edition 2.11.49-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.49-alpha.1).
+Current test download: [Zeekr Companion 2.11.50-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.50-alpha.1).
 For in-app delivery, select **Updates → Update channel → Alpha**; Beta and Stable
 channels deliberately exclude this release. It retains the application ID and
 signing certificate for an in-place update. New behavior still needs on-car testing.
