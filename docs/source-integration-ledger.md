@@ -115,6 +115,7 @@ remains. See [009 test notes](009-test-notes.md).
 | Review date | Source boundaries | Outcome |
 | --- | --- | --- |
 | 2026-10-18 | dts88 `0697bc76`; Ferix `3f9c7e40` | No new main heads since the preceding review. Backfilled this ledger; PR #41 remains partial/adapted, #43 and #25 remain outside the fork, #39 is an unimported cosmetic candidate. No runtime import or new APK in this documentation change. |
+| 2026-10-18, outgoing contribution review | dts88 `0697bc76b6f1c57a2e66f7b79112dca19050c477`; Ferix `3f9c7e4033627aad53cd3f614c5643de7ac78040` | GitHub main heads remain unchanged. Compared post-batch fork work through `3992cedc` with current upstream and PR status: #28–#38 are still open. Recorded eight scoped candidates and larger/deferred work in the outgoing index. Upstream's fixed popup and exclusion of alpha updates are deliberate policies, requiring discussion before those feature PRs. No source import, tracker movement, outgoing PR creation, runtime change or APK. Existing release-48 tests do not validate unbuilt upstream ports. |
 
 For **every external update review**, even when nothing is imported:
 
