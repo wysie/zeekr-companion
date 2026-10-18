@@ -943,4 +943,9 @@
     <string name="set_rearview_camera_label_summary">在窗口左上角显示当前画面的方向</string>
     <string name="side_auto_fit_title">自动适配以避免黑边</string>
     <string name="side_auto_fit_summary">开启时会缩小视野以适配画面；关闭时保留请求视野，缺失区域显示为黑色。</string>
+    <string name="set_theme_title">主题</string>
+    <string name="set_theme_summary">选择跟随系统、浅色或深色外观。摄像头画面不受影响。</string>
+    <string name="theme_system">跟随系统</string>
+    <string name="theme_light">浅色</string>
+    <string name="theme_dark">深色</string>
 </resources>

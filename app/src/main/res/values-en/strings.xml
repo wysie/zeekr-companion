@@ -955,4 +955,9 @@
     <string name="set_rearview_camera_label_summary">Shows the direction of the current view in the top-left corner of the window</string>
     <string name="side_auto_fit_title">Auto-fit to avoid black patches</string>
     <string name="side_auto_fit_summary">On narrows the view when necessary. Off keeps the requested width and shows missing areas in black.</string>
+    <string name="set_theme_title">Theme</string>
+    <string name="set_theme_summary">Choose Follow system, Light or Dark. Camera video is unchanged.</string>
+    <string name="theme_system">Follow system</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
 </resources>

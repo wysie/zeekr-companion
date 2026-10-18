@@ -167,3 +167,9 @@ The side-camera settings add Auto-fit to avoid black patches, on by default.
 Turning it off retains the requested field of view and aim; missing source
 coverage is black and never borrows pixels from adjacent composite lanes.
 Existing angles, placement, camera ownership and recording are unchanged.
+### App appearance
+
+Settings → Interface → Theme offers Follow system (default), Light and Dark.
+Confirm a choice to apply it; Cancel preserves the current theme. The selected
+palette also colours camera-direction badges and the side-popup Close button.
+Camera pixels and recording files remain unchanged.
