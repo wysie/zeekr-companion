@@ -28,7 +28,7 @@ downloads lists wysie Edition, dts88's original project, then Ferix's CAMCORDER.
 Original community acknowledgements are retained and attributed to dts88’s project. Its
 optional PayNow tip, **9271 6786**, goes to **dts88, the original author**.
 
-Current test download: [wysie Edition 2.11.46-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.46-alpha.1).
+Current test download: [wysie Edition 2.11.47-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.47-alpha.1).
 For in-app delivery, select **Updates → Update channel → Alpha**; Beta and Stable
 channels deliberately exclude this release. It retains the application ID and
 signing certificate for an in-place update. New behavior still needs on-car testing.
