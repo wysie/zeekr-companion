@@ -9,6 +9,7 @@ commit message, not here.
 
 ## [2.11.50-alpha.1] - 2026-10-18
 
+- Add the approved linked-companions launcher logo with matching themed and notification icons.
 - Rename the app to Zeekr Companion in every language and remove the edition line from the main screen and drawer.
 - Keep wysie’s maintainer introduction and explicit dts88 fork attribution in About, alongside Ferix and EVCam credits.
 - Name new release titles and APK downloads Zeekr Companion while retaining update compatibility, settings and storage folders.
