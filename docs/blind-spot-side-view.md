@@ -19,6 +19,41 @@ trigger: detecting an obstacle warning even when no indicator is active.
 - The current reader uses `com.ecarx.xui.adaptapi.car.Car`, its function/sensor
   managers, subscriptions and periodic reconciliation. It is read-only.
 
+## October 18 owner correlation candidate
+
+The owner recalls a warning around 16:34, probably on the right. This is an
+approximate recollection, not a timed confirmation of a particular signal.
+The continuous 16:27:56–16:58:52 drive capture contains actual callbacks for
+`IADAS.SETTING_FUNC_ASYAL_INDCR` (`0x28084400`), rather than only an SDK-name hint.
+Its zone `0x00000080` changes between values 1 and 2 around that time:
+
+| Value 1 timestamp | Next value 2 timestamp | Concurrent turn-indicator evidence |
+| --- | --- | --- |
+| 16:34:07.319 | 16:34:07.445 | Right indicator still selected; turns off at 16:34:07.578 |
+| 16:34:31.230 | 16:34:33.085 | Right indicator selected throughout |
+| 16:34:56.442 | 16:34:57.993 | Indicator already off at 16:34:56.211 |
+
+The selected-indicator comparison uses the nonflashing
+`SETTING_FUNC_LIGHT_INDCR_STS` (`0x2A091500`), not the individual lamp's blink
+phase. The app's right-side popup/HUD opens at 16:34:02.8, 16:34:13.0,
+16:34:28.2 and 16:34:52.3 were triggered by turn indicators; those app messages
+are not obstacle-warning detections. There is no callback for this candidate
+during the exact 16:30 minute, though other vehicle data is present.
+
+Across the continuous capture, this function produces 41 value-1 and 40 value-2
+callbacks for zone `0x00000080`, with transitions observed while the selected
+indicator is off, left, right and hazards. One value-1 callback for zone
+`0x00000008` occurs at 16:48:30.028. Neither the zones' meaning nor whether 1 or 2
+means warning/clear has been established. Do not map `0x80` to right or activate
+a camera from these values based on one approximate owner recollection.
+
+This is a candidate to investigate alongside the named blind-spot IDs, not an
+identified blind-spot decoder. A repeat observation with a timestamp and observed
+side, ideally including a warning without the turn indicator, can distinguish it
+from other ADAS state changes. SDK/firmware metadata could also establish the
+function's semantics. Unknown/stale values must remain unknown until verified.
+The owner dump stays private; no raw log or vehicle image is included here.
+
 ## Public leads, not verified 009 signals
 
 The [AutoService analysis](https://github.com/Mikhail2092/geely-third-party-software-analysis/blob/main/apps/AutoService/analysis/report.en.md)
