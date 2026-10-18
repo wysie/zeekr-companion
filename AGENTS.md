@@ -15,6 +15,11 @@
 - Credit imported contributions and preserve their authorship where possible.
   Update `NOTICE.md`, the changelog and test notes when applicable. Do not claim
   vehicle testing or compatibility beyond the available evidence.
+- For every dts88/Ferix update review, update `docs/source-integration-ledger.md`,
+  including reviews with no imports. Record exact reviewed heads, adopted/partial/
+  deferred/skipped/retired decisions, reasons, fork modifications, local commits
+  and validation limits. Keep changed decisions visible. Source-mirror updates
+  are not app integrations; mark release inclusion only after checking its tag.
 - Follow `FORK_WORKFLOW.md` for integration, builds and releases. Validate the
   combined result before releasing and retain the existing signing identity for
   update compatibility.

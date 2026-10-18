@@ -3,6 +3,12 @@
 The remotes are `origin` (wysie's fork), `upstream` (dts88's repository), and
 `ferix` (FerixzTanz/CAMCORDER).
 
+The [source integration ledger](docs/source-integration-ledger.md) is the maintained
+incoming-change record. Consult it before proposing imports: it distinguishes full
+merges, adapted/partial ports, deferred/skipped changes and retired experiments.
+The [upstream contribution index](docs/upstream-contributions.md) instead tracks
+outgoing PRs; neither index substitutes for the other.
+
 | Branch | Purpose |
 | --- | --- |
 | `main` | Combined installable fork: completed features, fork version numbers, update source and build configuration |
@@ -136,12 +142,25 @@ targeting `main`; its APK artifact is
 `ZeekrShortcut-wysie-apk`. Increment `versionCode` and update `versionName` before each new
 installable release. The existing signing key preserves update compatibility.
 
-Fetch dts88's updates into `upstream/main`, fast-forward `upstream-main`, and then
-merge `upstream-main` into `main`. Resolve conflicts while retaining the fork's
-features and build configuration. Push each branch to `origin` explicitly; never
+Fetch dts88's updates into `upstream/main` and fast-forward `upstream-main`. Review
+the incoming changes against the ledger before integrating. For a complete import,
+merge the source mirror on an integration branch based on `main`; for selective
+ports, apply/adapt only the recorded scope there. Resolve conflicts while retaining
+the fork's features and build configuration. Validate, commit and merge the finished
+integration branch into `main` with `--no-ff`. Push the integration branch and `main`
+to `origin` explicitly; never
 push the combined fork to the `upstream` remote. Keep `main` buildable and use
 release tags to identify the exact source of downloadable APKs. Existing
 `personal-build-…` release tags and downloads remain valid.
+
+Every external update review must update `docs/source-integration-ledger.md`, even
+when no source changes are imported. Record the date, exact heads/range reviewed,
+decisions and reasons, adopted/excluded scope, fork modifications, local commits
+and validation/vehicle limits. Distinguish still-unassessed work from deliberate
+omissions. Keep the history when a skipped change is later adapted or an experiment
+is removed. Verify release-tag ancestry before marking an import included in an
+APK; do not infer integration from source-mirror position, a merged source PR or a
+raw count of commits ahead/behind.
 
 Whenever a feature is added or changed, update `README.md` in the same change:
 describe the behavior, where to enable/configure it, defaults that matter, and

@@ -1,5 +1,11 @@
 # Ferix feature ports
 
+These are chronological implementation notes. For current import/skip/retirement
+decisions and reviewed source heads, use the [source integration ledger](source-integration-ledger.md).
+Later entries can supersede an earlier exclusion. In particular, upstream PR #25
+is now merged upstream (not imported here), and the owner has since confirmed
+009 HUD identification/live video; see [current HUD evidence](009-hud-live-video.md).
+
 Recorded on 2026-10-14. Sources are from FerixzTanz/CAMCORDER at
 `c6d8b6335799ca863a186f2530a45748827864b9`. The fork retains dts88's upstream
 `571a2a9904d73bed382f592a98f6e1ca45478d29` recording/channel framework.
