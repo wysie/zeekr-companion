@@ -1,11 +1,22 @@
 # Zeekr Companion
 
+<img src="docs/branding/companion-icon.svg" alt="Zeekr Companion 标志" width="96" height="96">
+
+为极氪车机提供相机录制、实时相机窗口和车辆工具。
+
 新标签采用 `vX.Y.Z-alpha.N`、`vX.Y.Z-beta.N` 或 `vX.Y.Z`；alpha 和 beta 在 GitHub 标记为预发布。应用 ID、签名及 `ZeekrShortcutApp` 存储目录保持兼容。
 
-Zeekr Companion 是 wysie 维护的个人定制分支，基于 [dts88 的原项目](https://github.com/dts88/zeekr-shortcut-car)，
+Zeekr Companion 是 wysie 维护的个人定制分支，基于 [dts88 的极氪即刻（Zeekr Shortcut）](https://github.com/dts88/zeekr-shortcut-car)，
 主要用于自己的极氪 009。原应用面向极氪 7X；本分支的新增功能和测试范围见
 [英文说明](README.md)。原项目及其贡献者、EVCam 作者和 FerixzTanz 的贡献均保留署名，
 详见 [来源与致谢](NOTICE.md)。本分支与原项目均非极氪官方产品。
+
+本应用之前以 **Zeekr Shortcut — wysie Edition** 发布，现在各语言统一使用
+**Zeekr Companion** 名称与双 C 标志；[矢量图与配色](docs/branding/README.md) 随源码提供。
+新的 APK 文件名为 `ZeekrCompanion-<版本号>.apk`。Android 应用 ID 仍为
+`io.github.dts88.zeekrshortcut`，签名、设置和 `ZeekrShortcutApp` 存储目录保持兼容。
+仓库与更新来源仍为 [wysie/zeekr-shortcut-car](https://github.com/wysie/zeekr-shortcut-car)。
+新录像和普通照片中的应用名水印使用 Zeekr Companion，旧文件中的文字不会改变。
 
 特别感谢 [FerixzTanz（Felix Tan）](https://github.com/FerixzTanz)：侧视功能基于他的
 [原始 PR #4](https://github.com/dts88/zeekr-shortcut-car/pull/4)，手机分享、信号扫描、
@@ -86,9 +97,9 @@ Zeekr Companion 是 wysie 维护的个人定制分支，基于 [dts88 的原项�
 **开始之前**：你需要事先知道怎么通过 App Lab 把应用侧载到车机上，本页不介绍这一步。
 
 - **原项目版本：** [dts88 的发布页](https://github.com/dts88/zeekr-shortcut-car/releases)。
-- **本个人分支：** [本分支的发布页](https://github.com/wysie/zeekr-shortcut-car/releases)。
+- **Zeekr Companion：** [Zeekr Companion 发布页](https://github.com/wysie/zeekr-shortcut-car/releases)。
   新的完整 APK 从 `main` 构建，发布标签指向对应的源代码提交。
-  个人 Alpha 版本需要手动安装，不在应用内自动更新范围内。
+  在「设置 → 检查更新 → 更新通道」选择 Alpha，即可接收 Alpha、Beta 和正式版；没有此选项的旧版仍需手动安装 Alpha。
 
 在发布页下载 `ZeekrCompanion-<版本号>.apk`，通过 App Lab 侧载安装。安装完成后请点左上角「返回」，
 不要点「打开」，否则车机安装器会卡住，之后的安装或更新会失败。
@@ -144,7 +155,7 @@ bash ./gradlew assembleRelease
 本仓库第一个 commit 就是 EVCam 的完整工作树，此后所有改动均以 diff 可见。
 按 GPL-3.0 要求，本应用同样以 GPL-3.0 发布并公开全部源代码。
 
-把 App Lab 的合成流拆成四宫格并渲染出来，是本项目独立实现的。
+将 App Lab 合成流拆成四宫格并渲染的基础实现来自 dts88 的原项目。
 
 来源、第三方组件许可与边界说明见 [NOTICE.md](NOTICE.md)，完整条款见 [LICENSE](LICENSE)。
 
