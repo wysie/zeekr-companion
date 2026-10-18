@@ -9,6 +9,8 @@ commit message, not here.
 
 ## Unreleased
 
+- Add dts88’s project link beside his About-page credit and Ferix’s CAMCORDER link below dts88 under Projects and downloads.
+
 - Add model-aware Automatic 360 projection: use the 009 fit on 009, preserve explicit choices and legacy manual lens edits, and retain tuning when returning to Automatic.
 
 - Keep About & credits, Quit app and settings sections at a consistent sidebar font size after scrolling; wrap long labels without shrinking them.
