@@ -1262,4 +1262,9 @@
     <string name="set_hud_picture_label_summary">Tunjukkan label arah kamera pada HUD sahaja.</string>
     <string name="mirror_control_close">Matikan Cermin super</string>
     <string name="mirror_control_expand">Besarkan Cermin super</string>
+    <string name="set_theme_title">Tema</string>
+    <string name="set_theme_summary">Pilih Ikut sistem, Cerah atau Gelap untuk aplikasi dan kawalan tetingkap kamera. Saiz fon kekal sama. Kecerahan HUD masih menggunakan tetapan berasingan.</string>
+    <string name="theme_system">Ikut sistem</string>
+    <string name="theme_light">Cerah</string>
+    <string name="theme_dark">Gelap</string>
 </resources>

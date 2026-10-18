@@ -12,6 +12,7 @@ import android.widget.ImageButton;
 
 import com.kooo.evcam.R;
 import com.kooo.evcam.settings.Languages;
+import com.kooo.evcam.settings.AppTheme;
 
 /** Native accessible corner buttons above the camera picture. */
 final class SideViewControls extends FrameLayout {
@@ -19,6 +20,7 @@ final class SideViewControls extends FrameLayout {
     private final ImageButton close;
     private boolean mirrorMode;
     private boolean expanded;
+    private int paletteMode = -1;
     private final int targetSize;
     private final int margin;
 
@@ -46,13 +48,25 @@ final class SideViewControls extends FrameLayout {
     }
 
     private void applyTheme(ImageButton button) {
+        Context palette = AppTheme.palette(getContext());
         button.setImageTintList(ColorStateList.valueOf(
-                getResources().getColor(R.color.side_control_icon, null)));
+                palette.getResources().getColor(R.color.side_control_icon, null)));
         GradientDrawable background = new GradientDrawable();
-        background.setColor(getResources().getColor(R.color.side_control_background, null));
+        background.setColor(palette.getResources().getColor(R.color.side_control_background, null));
         background.setCornerRadius(getResources().getDimension(R.dimen.side_control_radius));
         button.setBackground(new RippleDrawable(ColorStateList.valueOf(
-                getResources().getColor(R.color.side_control_pressed, null)), background, null));
+                palette.getResources().getColor(R.color.side_control_pressed, null)), background, null));
+    }
+
+    @Override protected void onAttachedToWindow() { super.onAttachedToWindow(); AppTheme.observe(this); }
+    @Override protected void onDetachedFromWindow() { AppTheme.forget(this); super.onDetachedFromWindow(); }
+    @Override protected void dispatchDraw(android.graphics.Canvas canvas) {
+        int mode = AppTheme.nightMode(getContext());
+        if (mode != paletteMode) {
+            paletteMode = mode;
+            for (int i = 0; i < getChildCount(); i++) applyTheme((ImageButton) getChildAt(i));
+        }
+        super.dispatchDraw(canvas);
     }
 
     @Override protected void onConfigurationChanged(Configuration configuration) {

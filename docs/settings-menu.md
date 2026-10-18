@@ -11,6 +11,28 @@ font size with autosizing disabled. Long labels wrap to two lines, and row heigh
 grows for larger system fonts. Rebinding a recycled row restores its size; About
 and Quit are direct actions, not smaller secondary labels.
 
+Interface → **Theme** offers Follow system (default), Light and Dark. Choose an
+option and confirm with OK; Cancel retains the current choice. It applies to this
+app, persists across restarts and may recreate its Activity to load the palette.
+The settings sidebar uses the same 18sp Body style in both themes, with system
+font scaling retained; there are no night-specific font sizes. The existing
+About/Quit recycled-row font fix remains part of the unreleased changes.
+
+Camera-popup corner buttons, labels and indicator badges resolve the selected
+palette too. Attached corner controls repaint without removing the window or
+replacing its camera texture. The projected HUD keeps its dark-backed badges and
+separate brightness/contrast settings; camera pixels and recording files are not
+recoloured by this appearance choice. Vehicle/system theme settings are unchanged.
+This uses [AppCompat's local DayNight modes](https://developer.android.com/develop/ui/views/theming/darktheme#change_themes_in-app).
+
+The theme change passed 1,482 JVM tests, eight relevant Android checks, lint and
+debug/release builds. Native checks use the real picker/OK/Cancel and recreation,
+measure equal menu sizes across Light/Dark/System, exercise normal/1.3× fonts and
+About/Quit recycling, and retain the same mirror texture/window while changing
+its control palette. Light/dark settings and the picker were visually inspected.
+This does not identify which installed build caused the owner's perceived size
+difference or establish the behavior of every vehicle firmware.
+
 Typography validation: a native regression deliberately gives a reused title a
 smaller/autosized font, then rebinds section and action labels; the old binder
 retained the smaller size, while the updated binder restores the shared size.
@@ -28,7 +50,7 @@ does not establish the exact cause of the owner's older-build screenshot.
 | Blind spot camera | Enable; Screen/HUD/Both and mirror relationship; minimum screen-opening speed and factory priority; prewarming and close delay; **Image & framing →**, **Popup window →**, **HUD picture →**; reset. |
 | 360° camera | Experimental explanation; main-button destination; Show 360° popup; quality; Automatic / Manual / 009 image-fit projection; popup size/layout reset; calibration dialog and calibration/quality reset. Automatic follows the model unless an explicit choice or legacy manual tuning is preserved. |
 | Floating button | Enable; tap/double-tap/hold actions (including Do nothing); size, opacity and timer appearance; lock position; reset. Double tap starts off; assigning it briefly delays single taps. |
-| Interface | Language, action side, recording statistics, reduced motion, vehicle panel; in-app picture adjustments, main preview/photo/video correction method and field of view. |
+| Interface | Language; Theme (Follow system / Light / Dark); action side, recording statistics, reduced motion, vehicle panel; in-app picture adjustments, main preview/photo/video correction method and field of view. |
 | System | Vehicle model (Auto / 009 / 7X), confirmed feed/default information, app startup, Diagnostics, system/vehicle information, developer-mode enable with warning. |
 | Developer options | Recording internals: allow internal storage fallback (off by default), pipeline, H.264, wake lock and duration. Image/rendering: preview/playback GPU methods. Camera research: mapping, camera/display tools and batch exports, raw frames, USB drive logging with live status, signal scanner, camera-app logging, permissions. Maintenance: repair recordings, archive. |
 | Updates | Check for updates, include beta releases. |

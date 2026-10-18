@@ -1285,4 +1285,9 @@
     <string name="set_hud_picture_label_summary">Show the camera direction label on the HUD only.</string>
     <string name="mirror_control_close">Turn off Super mirror</string>
     <string name="mirror_control_expand">Expand Super mirror</string>
+    <string name="set_theme_title">Theme</string>
+    <string name="set_theme_summary">Choose Follow system, Light or Dark for the app and camera-popup controls. Font sizes stay the same. HUD brightness still follows its separate settings.</string>
+    <string name="theme_system">Follow system</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
 </resources>

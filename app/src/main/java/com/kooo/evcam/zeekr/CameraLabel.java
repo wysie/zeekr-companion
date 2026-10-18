@@ -44,11 +44,12 @@ final class CameraLabel {
         if (lane < 0 || lane >= names.length || width <= 0 || height <= 0) {
             return;
         }
-        int mode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        int mode = com.kooo.evcam.settings.AppTheme.nightMode(context);
         if (followSystemTheme && mode != themeMode) {
             themeMode = mode;
-            background.setColor(context.getResources().getColor(R.color.camera_label_background, null));
-            text.setColor(context.getResources().getColor(R.color.camera_label_text, null));
+            Context palette = com.kooo.evcam.settings.AppTheme.palette(context);
+            background.setColor(palette.getResources().getColor(R.color.camera_label_background, null));
+            text.setColor(palette.getResources().getColor(R.color.camera_label_text, null));
         }
         String currentLanguage = AppCompatDelegate.getApplicationLocales().toLanguageTags()
                 + ":" + context.getResources().getConfiguration().getLocales().toLanguageTags();

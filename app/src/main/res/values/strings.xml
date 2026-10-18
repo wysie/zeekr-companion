@@ -1269,4 +1269,9 @@
     <string name="set_hud_picture_label_summary">仅在 HUD 上显示前、后、左或右方向标签。</string>
     <string name="mirror_control_close">关闭超级后视镜</string>
     <string name="mirror_control_expand">放大超级后视镜</string>
+    <string name="set_theme_title">主题</string>
+    <string name="set_theme_summary">为应用和相机弹窗按钮选择跟随系统、浅色或深色。字号保持一致。HUD 亮度仍使用独立设置。</string>
+    <string name="theme_system">跟随系统</string>
+    <string name="theme_light">浅色</string>
+    <string name="theme_dark">深色</string>
 </resources>
