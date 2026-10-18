@@ -9,6 +9,8 @@ commit message, not here.
 
 ## Unreleased
 
+- Add Interface → Theme with Follow system, Light and Dark; apply the selected palette to camera-popup controls while keeping menu font sizes unchanged.
+
 - Fit the expanded 360 popup to current overlay bounds and visible system bars, avoiding extra bottom space from stale app heights.
 
 - Add Close and temporary Expand/Restore controls to normal Super mirror, matching the blind-side popup.

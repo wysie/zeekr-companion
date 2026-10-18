@@ -30,12 +30,13 @@ final class SideTurnArrow {
 
     void draw(Canvas canvas, int lane, Integer display, int width, int height) {
         if (lane != LaneCycle.LEFT && lane != LaneCycle.RIGHT) return;
-        int mode = context.getResources().getConfiguration().uiMode & Configuration.UI_MODE_NIGHT_MASK;
+        int mode = com.kooo.evcam.settings.AppTheme.nightMode(context);
         if (followSystemTheme && mode != themeMode) {
             themeMode = mode;
-            backdrop.setColor(context.getResources().getColor(R.color.side_arrow_background, null));
-            litColor = context.getResources().getColor(R.color.side_arrow_lit, null);
-            unlitColor = context.getResources().getColor(R.color.side_arrow_unlit, null);
+            Context palette = com.kooo.evcam.settings.AppTheme.palette(context);
+            backdrop.setColor(palette.getResources().getColor(R.color.side_arrow_background, null));
+            litColor = palette.getResources().getColor(R.color.side_arrow_lit, null);
+            unlitColor = palette.getResources().getColor(R.color.side_arrow_unlit, null);
         }
         float gap = Math.max(0f, width - 112f * density);
         float size = Math.min(28f * density, gap * 0.8f);
