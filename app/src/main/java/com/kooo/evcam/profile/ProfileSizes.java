@@ -192,14 +192,13 @@ public final class ProfileSizes {
         if (explicit != null) return explicit.isEmpty() ? null : explicit;
         for (String extra : RecordingSources.EXTRA_ROLES) if (extra.equals(role))
             return RecordingSources.defaultId(role, config.is009CameraMappingEnabled());
-        if (config.is009CameraMappingEnabled()) {
-            String key = cameraKeyForRole(role);
-            String manual = key == null ? null : config.getCameraOverride(key);
-            if (manual != null) return manual;
-            if (CameraProfile.ROLE_COMPOSITE.equals(role)) return "3";
-            return CameraProfile.ROLE_CABIN_1.equals(role) ? "2" : null;
+        String composite = config.getDetectedSurroundId();
+        if (CameraProfile.ROLE_COMPOSITE.equals(role)) {
+            String known = SourceMappings.automaticSurround(composite, config.is009CameraMappingEnabled());
+            if (known != null) return known;
         }
-        String composite = StreamLayoutTable.compositeCameraId();
+        if (config.is009CameraMappingEnabled())
+            return CameraProfile.ROLE_CABIN_1.equals(role) ? "2" : null;
         try {
             CameraManager manager =
                     (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);

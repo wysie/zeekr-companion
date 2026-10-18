@@ -1262,4 +1262,13 @@
     <string name="record_preview_surround_roads">Surround + Front + Rear</string>
     <string name="record_preview_cabin">Driver / front cabin</string>
     <string name="record_preview_help">Controls the main-screen cameras independently of recording. Dedicated road feeds need identified sources in Edit stream profile; 7X road feeds are not yet confirmed. Exit and reopen after changing. Existing recording and layout choices are kept.</string>
+    <string name="camera_sources_title">Camera sources</string>
+    <string name="camera_sources_entry">Automatic detection or manual camera IDs; shared with the stream editor</string>
+    <string name="camera_sources_help">One mapping for preview, recording and camera windows. Automatic clears the manual choice: Surround uses the detected feed, then the model fallback. Other sources use model defaults or discovery. Manual choices work with Developer mode off. Exit and reopen after changing. Unassigned stops recording that source (both road sources for Front + Rear).</string>
+    <string name="camera_sources_reset">Reset all to automatic</string>
+    <string name="camera_sources_reset_note">Clear manual camera assignments, including old Developer overrides. Keep vehicle model, preview layout, recording switches and picture quality. Surround returns to the detected feed; additional cameras without an automatic default will need mapping before use. Exit and reopen afterwards.</string>
+    <string name="camera_source_not_found">No automatic source identified</string>
+    <string name="camera_source_automatic">Automatic · %1$s</string>
+    <string name="camera_source_manual">Manual · %1$s</string>
+    <string name="camera_source_legacy">Legacy additional camera</string>
 </resources>

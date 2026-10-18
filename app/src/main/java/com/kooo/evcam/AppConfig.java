@@ -269,6 +269,7 @@ public class AppConfig {
         migrateUpdateChannel();
         // 开发者模式是存着的（见 DeveloperMode）；进程里谁先建 AppConfig 谁把它读进来
         com.kooo.evcam.settings.DeveloperMode.init(this.context);
+        migrateSourceMappings();
         repairInvalidSettings();
     }
     
@@ -634,39 +635,31 @@ public class AppConfig {
      * @param cameraId 相机 id；传 null 或空表示恢复自动
      */
     public void setCameraOverride(String slot, String cameraId) {
-        String key = KEY_CAMERA_OVERRIDE_PREFIX + slot;
-        if (cameraId == null || cameraId.trim().isEmpty()) {
-            prefs.edit().remove(key).apply();
-        } else {
-            prefs.edit().putString(key, cameraId).apply();
-        }
-        AppLog.d(TAG, "相机映射覆盖 " + slot + " = " + cameraId);
+        String role = com.kooo.evcam.profile.RecordingSources.role(slot);
+        if (role != null) setSourceCameraId(role, cameraId == null || cameraId.trim().isEmpty() ? null : cameraId);
     }
 
-    /** 返回 null 表示该槽位走自动分配。归开发者选项管：关着时一律自动分配。 */
+    /** Compatibility alias: one canonical mapping, independent of Developer mode. */
     public String getCameraOverride(String slot) {
-        String value = readString(KEY_CAMERA_OVERRIDE_PREFIX + slot, null);
-        return (value == null || value.trim().isEmpty()) ? null : value;
+        String role = com.kooo.evcam.profile.RecordingSources.role(slot);
+        return role == null ? null : getSourceCameraId(role);
     }
-
-    /** 是否有任何槽位被手动指定过。 */
     public boolean hasCameraOverride() {
-        for (String slot : CAMERA_OVERRIDE_SLOTS) {
-            if (getCameraOverride(slot) != null) {
-                return true;
-            }
-        }
+        for (String role : com.kooo.evcam.profile.RecordingSources.ALL_ROLES)
+            if (getSourceCameraId(role) != null) return true;
         return false;
     }
+    public void clearCameraOverrides() { resetSourceCameraIds(); }
 
-    /** 清掉所有手动指定，全部恢复自动。 */
-    public void clearCameraOverrides() {
-        SharedPreferences.Editor editor = prefs.edit();
-        for (String slot : CAMERA_OVERRIDE_SLOTS) {
-            editor.remove(KEY_CAMERA_OVERRIDE_PREFIX + slot);
+    private void migrateSourceMappings() {
+        synchronized (AppConfig.class) {
+            if (prefs.getBoolean(com.kooo.evcam.profile.SourceMappings.MIGRATED, false)) return;
+            SharedPreferences.Editor edit = prefs.edit();
+            for (java.util.Map.Entry<String,String> item : com.kooo.evcam.profile.SourceMappings.migrate(
+                    prefs.getAll(), com.kooo.evcam.settings.DeveloperMode.isUnlocked()).entrySet())
+                edit.putString(item.getKey(), item.getValue());
+            edit.putBoolean(com.kooo.evcam.profile.SourceMappings.MIGRATED, true).apply();
         }
-        editor.apply();
-        AppLog.i(TAG, "相机映射已全部恢复自动");
     }
 
     // ==================== 存下的槽位映射（2.11 阶段 6） ====================
@@ -1226,9 +1219,31 @@ public class AppConfig {
     /** Ordinary source choices remain active outside Developer mode; empty means unassigned. */
     public String getSourceCameraId(String role) { return prefs.getString("source_id_" + role, null); }
     public void setSourceCameraId(String role, String id) {
-        android.content.SharedPreferences.Editor e = prefs.edit();
-        if (id == null) e.remove("source_id_" + role); else e.putString("source_id_" + role, id);
-        e.apply();
+        synchronized (AppConfig.class) {
+            android.content.SharedPreferences.Editor e = prefs.edit();
+            if (id == null) e.remove("source_id_" + role); else e.putString("source_id_" + role, id);
+            String slot = com.kooo.evcam.profile.RecordingSources.key(role);
+            if (slot != null) e.remove(KEY_CAMERA_OVERRIDE_PREFIX + slot);
+            e.putBoolean(com.kooo.evcam.profile.SourceMappings.MIGRATED, true).apply();
+        }
+    }
+    /** Clear manual and legacy values only; preserve recorders, preview, quality and model. */
+    public void resetSourceCameraIds() {
+        synchronized (AppConfig.class) {
+            SharedPreferences.Editor e = prefs.edit();
+            for (String role : com.kooo.evcam.profile.RecordingSources.ALL_ROLES) e.remove("source_id_" + role);
+            for (String slot : CAMERA_OVERRIDE_SLOTS) e.remove(KEY_CAMERA_OVERRIDE_PREFIX + slot);
+            // Cached slot plans may contain a historical manual assignment. Rebuild from discovery.
+            for (String key : prefs.getAll().keySet()) if (key.startsWith(KEY_SLOT_MAP_PREFIX)) e.remove(key);
+            e.putBoolean(com.kooo.evcam.profile.SourceMappings.MIGRATED, true).apply();
+        }
+    }
+    public String getDetectedSurroundId() {
+        String live = com.kooo.evcam.zeekr.StreamLayoutTable.detectedCompositeCameraId();
+        return live != null ? live : prefs.getString("detected_surround_id", null);
+    }
+    public void setDetectedSurroundId(String id) {
+        if (id != null) prefs.edit().putString("detected_surround_id", id).apply();
     }
     public String getPreviewSourceMode() { return readEnum(SettingsRegistry.PREVIEW_LAYOUT); }
     public void setPreviewSourceMode(String mode) { writeEnum(SettingsRegistry.PREVIEW_LAYOUT, mode); }

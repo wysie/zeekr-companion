@@ -8,7 +8,7 @@ add navigation depth; their native Back button returns to their parent.
 
 | Main category | Groups and options |
 | --- | --- |
-| Recording & photos | Cameras: stream profile, profile editor with independent recording groups; Preview layout with saved selection and separate help; model defaults live under System. Automatic recording: launch, driver arrival, driver departure. Screen off: keep recording. Photos: JPEG output. **Stamps & driving information →** app stamp, plate switch/text, timestamp, specifications, information bar and signal-selection shortcut. |
+| Recording & photos | Cameras: stream profile, profile editor with independent recording groups; shared Camera sources and Automatic reset; Preview layout with saved selection and separate help; model defaults live under System. Automatic recording: launch, driver arrival, driver departure. Screen off: keep recording. Photos: JPEG output. **Stamps & driving information →** app stamp, plate switch/text, timestamp, specifications, information bar and signal-selection shortcut. |
 | Storage | Destination, USB power guidance, relay write; video/photo limits and usage; protected footage, flash-to-pass/hard-braking triggers and protected usage. |
 | Super mirror | Enable and guide; camera selection and button/gesture controls; correction, field of view and shared camera labels; window width/height; reset. |
 | Blind spot camera | Enable; Screen/HUD/Both and mirror relationship; minimum screen-opening speed and factory priority; prewarming and close delay; **Image & framing →**, **Popup window →**, **HUD picture →**; reset. |
@@ -97,3 +97,9 @@ settings remain. Exit and reopen after changing. The evidence row explains 009
 confirmed sources, upstream 7X surround/cabin evidence and unverified road/360
 capabilities. HUD still matches actual displays; the 009-only image fit is suspended
 without deletion on 7X. See [model defaults](vehicle-model-profiles.md).
+
+Camera sources is one shared ordinary page, linked from Recording & photos, the
+stream editor and Developer. Explicit mapping wins over detected surround, then
+model fallback. Automatic clears one override; Reset all to automatic clears all
+overrides while retaining recording/preview/quality choices. Legacy effective
+choices migrate conservatively. See [source mapping and reset](shared-camera-sources.md).

@@ -194,6 +194,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
 
     private void bindRecording() {
         bindCarModel();
+        onClick("pref_camera_sources", pref -> openFragment(new CameraSourcesFragment(), R.string.camera_sources_title));
         bindEnum("pref_preview_layout", SettingsRegistry.PREVIEW_LAYOUT, appConfig.getPreviewSourceMode(), value -> {
             appConfig.setPreviewSourceMode(value);
             toast(getString(R.string.msg_restart_required));
@@ -1464,12 +1465,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         bindSwitch("pref_force_h264", appConfig.isForceH264Encoding(),
                 value -> appConfig.setForceH264Encoding(value));
 
-        onClick("pref_camera_mapping", pref -> {
-            if (getContext() != null) {
-                SettingsDialogs.showCameraMappingDialog(
-                        getContext(), appConfig, this::updateCameraMappingSummary);
-            }
-        });
+        onClick("pref_camera_mapping", pref -> openFragment(new CameraSourcesFragment(), R.string.camera_sources_title));
         updateCameraMappingSummary();
 
     }

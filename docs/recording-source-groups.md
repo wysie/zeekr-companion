@@ -34,8 +34,10 @@ existing scheduler, fresh-frame guards and factory/reverse priority still apply.
 Existing non-surround screen-off release rules also remain in place.
 
 Tap a group to edit it. Front + Rear and multi-cabin groups have a camera selector
-inside their detail section. **Change camera source** provides Automatic,
-Unassigned and camera-ID choices without requiring Developer mode. The list is
+inside their detail section. **Change camera source** uses the shared Camera sources picker: Automatic,
+Unassigned or a camera ID without requiring Developer mode. Recording & photos
+and Developer shortcuts open the same full page, including Reset all to automatic.
+See [shared mapping, migration and resets](shared-camera-sources.md). The list is
 refreshed when opened; advertised IDs, configured sources, owner-confirmed 009
 IDs while that preset is selected, and previously captured discovery IDs are
 included. A listed/configured choice does not prove current availability. Duplicate
@@ -44,7 +46,7 @@ turns its recording off. Source/group/preview changes require exiting and reopen
 the app; ongoing recording uses its existing pipeline/settings snapshot.
 
 With System → Vehicle model set to 009 (or a positively detected 009), defaults
-are surround 3, front road 0, rear road 1 and cabin 2. An old enabled 009 mapping
+are detected surround (fallback 3), front road 0, rear road 1 and cabin 2. An old enabled 009 mapping
 is retained. The old cosmetic name never selects these exterior IDs, and they
 are not assumed on a 7X. See [selection and evidence](vehicle-model-profiles.md). Manual mapping has no
 default camera. Actual sizes remain limited to what each camera declares. New source quality starts

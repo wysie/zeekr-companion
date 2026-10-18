@@ -1246,4 +1246,13 @@
     <string name="record_preview_surround_roads">环视 + 前后道路</string>
     <string name="record_preview_cabin">驾驶员 / 前座舱</string>
     <string name="record_preview_help">主屏幕预览独立于录制选择。独立道路画面需在「编辑视频流配置」中指定已识别的来源；7X 道路来源尚未确认。更改后请退出并重新打开。保留现有录制和布局选择。</string>
+    <string name="camera_sources_title">相机来源</string>
+    <string name="camera_sources_entry">自动识别或手动指定相机 ID；与视频流编辑共用</string>
+    <string name="camera_sources_help">预览、录制和相机窗口共用一份映射。「自动」清除手动选择：环视优先使用检测到的来源，再用车型回退值；其他来源使用车型默认值或自动分配。关闭开发者模式仍保留手动选择。更改后请退出并重新打开。「未分配」会停止录制该来源（前后道路为一组）。</string>
+    <string name="camera_sources_reset">全部恢复自动</string>
+    <string name="camera_sources_reset_note">清除手动相机映射，包括旧开发者覆盖项。保留车型、预览布局、录制开关和画质。环视恢复检测到的来源；没有自动默认值的附加相机需要重新映射。之后请退出并重新打开。</string>
+    <string name="camera_source_not_found">未识别到自动来源</string>
+    <string name="camera_source_automatic">自动 · %1$s</string>
+    <string name="camera_source_manual">手动 · %1$s</string>
+    <string name="camera_source_legacy">旧版附加相机</string>
 </resources>
