@@ -7,7 +7,7 @@ Alpha sections: one line per change, what changed and nothing else. Beta and sta
 sections: written for users, reviewed before release. Why a change was made lives in the
 commit message, not here.
 
-## Unreleased
+## [2.11.48-alpha.1] - 2026-10-18
 
 - Isolate the main-screen font scale before loading views and retain uniform sidebar text through theme changes and recreation.
 - Preserve Surround-first startup during a brief availability handover and recover failed zero-frame sessions sooner; ignore stale-session progress.
