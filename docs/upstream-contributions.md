@@ -57,20 +57,44 @@ These are proposals, not newly submitted PRs or validated upstream port branches
 | Configurable side-popup shape and resizing | `c006213b` plus existing fork gesture/geometry helpers | Upstream deliberately uses fixed, non-draggable 2.2:1 placement (PR #41/#43). This is a product-policy discussion first, not a bug fix. An opt-in port should preserve the current default and adapt upstream SideViewWindow rather than replacing its lifecycle with ours. |
 | Stable / Beta / Alpha update channels | `b329e35e` | Upstream explicitly excludes alpha releases by policy. Discuss an explicit opt-in Alpha channel before submission; preserve its repository, release naming and legacy beta preference. Keep integrity PR #38 separate, though edits to shared updater files may conflict. |
 
-Each accepted candidate can start from current upstream main and build without the
+Each of those eight candidates can start from current upstream main and build without the
 other new proposals or our open batch. This does not promise conflict-free merges:
 several touch shared settings/resources. Extract only the relevant behavior, keep
 upstream defaults, credits, application ID and update destination, and validate
 each port separately before submission. Fork test results establish implementation
 evidence, not that an unbuilt upstream port passes.
 
-Larger follow-ups: continuous USB drive logging is useful but upstream lacks the
+### Dedicated exterior recording and independent preview
+
+This is also a proposed contribution and deserves priority in the next batch.
+Comparing merged PR #25/current main with our implementation confirms that it is
+additional scope: upstream enables individual composite/cabin profiles and their
+lanes, but does not provide our dedicated `roadfront`/`roadrear` roles, four
+recording groups, shared source picker or the independent named preview selector.
+Reuse PR #25's enabled-source infrastructure instead of undoing it.
+
+| Proposed PR | Scope | Dependency |
+| --- | --- | --- |
+| Exterior source roles and shared camera mapping | Add dedicated front/rear road roles, Automatic / Unassigned / explicit-ID selection and reset, duplicate-assignment checks, and inventory-based ownership. Preserve composite detection, existing cabin/manual choices, source geometry, quality profiles and historical file compatibility. A listed ID is not proof of its physical role; confirmed 009 IDs must not become generic 7X defaults. | Base on current upstream main; no dependency on the eight smaller proposals. |
+| Recording source groups | Allow Surround, Front + Rear, Cabin and Manual mapping to be combined; produce separate road clips alongside Surround when selected. Preserve stored enabled choices and tuning, start new groups off, and carry the new file roles through photos, playback, sharing and protection. | Requires the exterior-source/mapping foundation. |
+| Independent preview layout selector | Offer recording-source-following default, Surround, dedicated Front + Rear, Front only, Rear only, cabin and Surround + Front + Rear. Preview selection never changes which sources record or rewrites quality profiles; preserve existing saved layouts. | Requires the exterior-source/mapping foundation, but can be implemented without the recording-group UI PR. |
+
+These are separate review scopes, not three fully independent patches: the latter
+two share the first prerequisite. Fork evidence is `0e46f581`, `6fe6524d`,
+`ae3d64e3` and the inventory fix `a9d2b3b9`; strip their release/model-specific
+changes and adapt upstream's current pipeline instead of cherry-picking whole
+commits. Tests must cover source-only previews, recording-only combinations,
+duplicate IDs, migration, old/new footage, unavailable sources and factory
+handover. Source exports and later 009 logs establish available feeds and observed
+concurrent sessions; they do not validate every quality combination or 7X mapping.
+The new startup scheduling experiments remain outside this contribution.
+
+Continuous USB drive logging is another larger follow-up, but upstream lacks the
 underlying signal scanner, so scanner integration and the drive logger should be
-separate, explicitly dependent work with Ferix attribution. Vehicle profiles,
-shared camera mappings and recording/preview groups need comparison with merged
-PR #25 before proposing another camera-configuration model. Our complete-source
-ownership fix concerns extra fork roles; upstream's lookup still covers its four
-defined slots, so do not present that fork correction as a proven upstream bug.
+separate, explicitly dependent work with Ferix attribution. Our complete-source
+ownership fix currently concerns extra fork roles; upstream's lookup still covers
+its four defined slots. Include that correction with new exterior roles, rather
+than presenting it alone as a proven bug in the existing upstream source set.
 
 Hold the new handover/shorter failed-startup scheduling changes for on-car
 confirmation, and keep DIY 360 calibration, guessed warning triggers and 009 HUD
