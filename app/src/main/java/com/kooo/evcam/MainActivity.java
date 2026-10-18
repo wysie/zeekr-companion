@@ -259,6 +259,17 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
+    protected void attachBaseContext(Context base) {
+        // Keep the existing main-screen enlargement local and establish it before
+        // AppCompat/inflation. Mutating an already-used Resources configuration
+        // leaves existing themed contexts and their text metrics inconsistent.
+        android.content.res.Configuration local =
+                new android.content.res.Configuration(base.getResources().getConfiguration());
+        local.fontScale = 1.2f;
+        super.attachBaseContext(base.createConfigurationContext(local));
+    }
+
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
@@ -288,9 +299,6 @@ public class MainActivity extends AppCompatActivity {
         AppLog.i(TAG, "onCreate " + instanceTag() + " restored=" + (savedInstanceState != null)
                 + " cameraManagerInHolder="
                 + (com.kooo.evcam.camera.CameraManagerHolder.getInstance().getCameraManager() != null));
-
-        // 设置字体缩放比例（1.3倍）
-        adjustFontScale(1.2f);
 
         // 初始化应用配置
         appConfig = new AppConfig(this);
@@ -435,13 +443,6 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    private void adjustFontScale(float scale) {
-        android.content.res.Configuration configuration = getResources().getConfiguration();
-        configuration.fontScale = scale;
-        android.util.DisplayMetrics metrics = getResources().getDisplayMetrics();
-        getBaseContext().getResources().updateConfiguration(configuration, metrics);
-    }
-    
     /**
      * 根据车型配置设置布局
      */

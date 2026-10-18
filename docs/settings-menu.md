@@ -19,9 +19,18 @@ and Quit are direct actions, not smaller secondary labels.
 Interface → **Theme** offers Follow system (default), Light and Dark. Choose an
 option and confirm with OK; Cancel retains the current choice. It applies to this
 app, persists across restarts and may recreate its Activity to load the palette.
-The settings sidebar uses the same 18sp Body style in both themes, with system
-font scaling retained; there are no night-specific font sizes. The existing
-About/Quit recycled-row font fix remains part of the unreleased changes.
+The settings sidebar uses the same 18sp Body style in both themes; there are no
+night-specific font sizes. MainActivity retains its existing 1.2× font scale,
+now through an Activity-local configuration established before AppCompat/view
+inflation, instead of mutating an already-used resources configuration during
+onCreate. Other screens and application resources retain their own scaling.
+The About/Quit recycled-row font fix was included in release 47.
+
+Native API 32 checks cover font-resource isolation, English app locale, returning
+from the actual About screen, Activity recreation, real Light/Dark/System picker
+changes, and sidebar scrolling/rebinding with equal category/action text sizes.
+The owner's intermittent smaller-label state has not been reproduced on the
+emulator; this resource correction still needs the car check.
 
 Camera-popup corner buttons, labels and indicator badges resolve the selected
 palette too. Attached corner controls repaint without removing the window or

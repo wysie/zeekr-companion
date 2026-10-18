@@ -9,6 +9,7 @@ commit message, not here.
 
 ## Unreleased
 
+- Isolate the main-screen font scale before loading views and retain uniform sidebar text through theme changes and recreation.
 - Preserve Surround-first startup during a brief availability handover and recover failed zero-frame sessions sooner; ignore stale-session progress.
 - Include road/manual sources in camera ownership checks, availability replay and diagnostic open lists.
 
