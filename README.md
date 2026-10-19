@@ -102,8 +102,8 @@ availability. Failed cleanup/setup leaves a **Retry** action and recording stopp
 it does not claim that an unavailable vehicle feed is working.
 
 Apply covers vehicle/camera mappings, recording groups, preview source sets, native
-preview/JPEG sizes, JPEG output enablement, GPU preview correction and the GPU 360°
-backend. Saved changes made during Apply remain pending for the next Apply. Theme
+preview/JPEG sizes, JPEG output enablement and GPU preview/360°/blind-side/mirror
+routing. Saved changes made during Apply remain pending for the next Apply. Theme
 changes and UI recreation keep using the applied source set. Encoding FPS, bitrate,
 codec and recording size apply to the next recording; visual geometry, theme and
 arrangement controls keep their existing live behavior. Pending preview-only edits
@@ -122,15 +122,18 @@ for selected segments. All sidebar entries, including About and Quit, share one
 16sp style and respect system text scaling. **Blind spot camera** has **Behavior ·
 Picture · Window · HUD** tabs; changing tabs never resets settings. Picture has a
 Left/Right live settings preview with Expand/Restore and Hide/Show controls.
-It reads the existing main surround texture at up to five samples per second,
-preserving native detail for the known 1280×5140, 5120×1280 and 3840×2160 feeds before
-cropping/straightening, including when expanded. One reused sample is bounded to
-32 MiB / 8192 pixels per edge for larger feeds. It opens no camera or extra output;
-configured popup/HUD frame rates are unchanged.
+It follows the Blind-side camera rendering choice under **System → GPU image processing**.
+GPU uses a second display surface from the existing raw GL input, with the same per-pixel
+side-camera shader and no bitmap readback or extra camera output. Compatibility samples
+the existing main surround texture at up to five samples per second, retaining native
+detail for known 1280×5140, 5120×1280 and 3840×2160 feeds before correction, including
+when expanded. One reused compatibility sample is bounded to 32 MiB / 8192 pixels per
+edge. The live popup/HUD frame-rate policy and camera source mappings are unchanged.
 Choose a main preview that contains Surround and tap Apply changes if needed. The preview
 pauses for factory camera use, screen-off, lost vehicle connection or stale frames;
-the experimental GPU preview path needs to be disabled and applied to expose raw
-surround pixels for tuning. Native camera surfaces stay attached behind opaque
+in Custom mode with GPU surround correction but compatibility side rendering, enable
+Blind-side camera GPU rendering or disable Surround preview correction and apply to
+provide the raw source needed for tuning. Native camera surfaces stay attached behind opaque
 settings; hidden main fisheye/360° rendering is paused. Tuning is available with the
 automatic popup off and applies on slider release; recordings remain unchanged.
 Long explanations remain under **About picture/behavior settings**. See
@@ -184,7 +187,8 @@ release numbers remain independent of upstream.
 
 ## Additions in this fork
 
-- **GPU 360° renderer (alpha 54):** Settings → 360° camera → Picture → **360° rendering → GPU (experimental)** enables direct camera-texture projection in the main view and popup. Tap Apply changes after changing it. **CPU compatibility remains the upgrade/default choice** until the GPU route is checked on the car. It reuses the selected Manual/009 geometry, source assignments, resolution and vehicle illustration; no extra camera output is added. GPU rendering follows incoming frames with a 30 fps ceiling rather than the CPU quality caps, and samples the available camera buffer directly. Stitcher setup/draw failures retain raw output for CPU fallback when that route remains usable. A broken GL route may require selecting CPU and applying the change. Factory takeover, screen-off and stale-frame covers remain. Stitched photos copy the GPU picture only when explicitly requested; recordings remain unchanged. This is separate from the Developer GPU straightening toggles, with no measured 009/7X smoothness or power claim yet. See [implementation and validation](docs/gpu-360-renderer.md).
+- **Shared GPU image processing (unreleased):** **Settings → System → GPU image processing (experimental)** offers **Off / All / Custom** for Surround preview correction, 360° stitching, Blind-side camera (popup/HUD/Super mirror replacement), normal Super mirror and video playback correction. All/Off show effective states with individual controls disabled; Custom enables the five switches. Custom choices survive All/Off round trips. New installs start Off; upgrades preserve the previously effective legacy mix without automatically enabling new side/mirror routes. The old Developer GPU switches are removed; the 360° picture page links to the shared controls. Camera routing changes use **Apply changes**; playback uses the selection when next opened. Straighten controls and all picture tuning remain independent. New side/mirror shaders operate on raw camera textures with per-pixel aim, roll, mirroring, Auto-fit and lane-safe sampling; the settings picture uses that same shader. Existing direct/mesh/CPU paths remain available; a GL pipeline failure may require Off and Apply. Saved video pixels and recorder surfaces stay unchanged. Normal Super mirror still uses the **Surround composite stream** for all four directions, not the dedicated road-camera feeds. No 009/7X performance or simultaneous-output claim is made. See [policy, architecture and tests](docs/unified-gpu-rendering.md).
+- **GPU 360° renderer (alpha 54):** Settings → System → **GPU image processing → All**, or **Custom → 360° stitching**, enables direct camera-texture projection in the main view and popup. Tap Apply changes after changing it. New installs default to **Off**; existing effective GPU choices are retained as Custom until explicitly changed. The route still needs car validation. It reuses the selected Manual/009 geometry, source assignments, resolution and vehicle illustration; no extra camera output is added. GPU rendering follows incoming frames with a 30 fps ceiling rather than the CPU quality caps, and samples the available camera buffer directly. Stitcher setup/draw failures retain raw output for CPU fallback when that route remains usable. A broken GL route may require selecting Off, or disabling 360° stitching in Custom, and applying the change. Factory takeover, screen-off and stale-frame covers remain. Stitched photos copy the GPU picture only when explicitly requested; recordings remain unchanged. Straighten remains independent of the shared rendering policy, with no measured 009/7X smoothness or power claim yet. See [implementation and validation](docs/gpu-360-renderer.md).
 
 - **360° rendering efficiency:** pack the projection lookup into fewer arrays, skip redundant blending away from seams and use exact packed bilinear sampling. Resolution, calibration, quality caps and recording are unchanged. The complete output matches the previous renderer in synthetic Android tests; the measured compute saving is about 19% at Balanced on an ARM64 emulator, with 20% less lookup-array storage. This is not an on-car frame-rate measurement: TextureView copying still runs on the UI thread. Diagnostics now separate worker queue, publishing and total processing time. See [evidence and remaining bottlenecks](docs/360-render-performance-2026-10-19.md).
 

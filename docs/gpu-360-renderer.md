@@ -1,5 +1,9 @@
 # GPU 360° renderer — alpha 54, 2026-10-20
 
+Current unreleased settings use **System → GPU image processing → Custom →
+360° stitching**, or All. See [shared GPU processing](unified-gpu-rendering.md).
+The release-specific location below describes alpha 54.
+
 The new backend is opt-in under **Settings → 360° camera → Picture → 360° rendering
 → GPU (experimental)**. Tap Apply changes after changing it. **CPU compatibility
 remains the default**, retaining the installed camera route until the owner chooses

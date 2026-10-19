@@ -235,7 +235,7 @@ public class RearViewMirrorService extends Service {
                 + " cameraOpened=" + (camera != null && camera.isCameraOpened())
                 + " claimed=" + CameraNeeds.current().isHeld(CameraNeeds.Holder.MIRROR)
                 + " inSession=" + svc.mirrorInSession()
-                + " bindRetries=" + svc.retryCount;
+                + " bindRetries=" + svc.retryCount + " rendering=" + view.gpuState();
     }
 
     /**
@@ -552,6 +552,7 @@ public class RearViewMirrorService extends Service {
      * {@code OutputConfiguration} 对不上，那是另一种坏法。</p>
      */
     private void restoreBufferSize(SurfaceTexture surfaceTexture) {
+        if (surfaceTexture != null && PreviewDewarp.ownsOutput(surfaceTexture)) return;
         if (surfaceTexture == null || boundCamera == null) {
             return;
         }

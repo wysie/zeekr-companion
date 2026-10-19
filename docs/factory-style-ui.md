@@ -50,7 +50,13 @@ composite draws its native texture once, suspending four-lane correction and DIY
 presentation. Recording authority, source/profile mappings, HAL sizes, HUD routing,
 factory arbitration and actual side-popup rendering are unchanged.
 
-Sampling runs only while Picture is started and visible, at up to five samples per
+The shared GPU follow-up adds a raw-input EGL destination for this Picture when
+Blind-side GPU is selected under System → GPU image processing. It uses the live
+side shader without a bitmap readback or new camera output, including when the
+main surround preview has GPU correction enabled. Cancellation, source freshness
+and hide/pause guards remain. See [implementation and validation](unified-gpu-rendering.md).
+
+Compatibility sampling runs only while Picture is started and visible, at up to five samples per
 second with one reused bitmap. It preserves native 1280×5140 / 5120×1280 strips and
 3840×2160 composites; larger feeds are fitted within 8,388,608 pixels (32 MiB ARGB)
 and an 8192-pixel edge limit. The previous 2048-pixel strip cap reduced a 009 lane
@@ -66,7 +72,8 @@ composite, failed readback and stale/nonprogressing textures cover the preview.
 A source must advance before it becomes live. GPU-corrected main textures are
 explicitly unavailable for this raw sampler to avoid double correction. Select a
 main preview containing Surround and tap Apply changes if that source is not attached;
-turn experimental GPU preview correction off and apply when applicable.
+enable Blind-side GPU, or disable Surround preview correction in Custom, and apply
+when the compatibility sampler cannot access a raw source.
 
 Native-detail regression (API 32 ARM64 emulator): a real TextureView receives a
 1280×5140 buffer with alternating two-row bars; production readback retains native

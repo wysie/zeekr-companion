@@ -501,6 +501,7 @@ final class SideViewHudOutput {
 
     /** 窗口尺寸一变 TextureView 会改缓冲区尺寸，拨回会话用的那个（同主屏弹窗）。 */
     private void restoreBufferSize(SurfaceTexture surfaceTexture) {
+        if (surfaceTexture != null && PreviewDewarp.ownsOutput(surfaceTexture)) return;
         if (surfaceTexture == null || boundCamera == null) {
             return;
         }

@@ -1023,13 +1023,13 @@ public class AppConfig {
     /**
      * 主界面环视预览的鱼眼校正走 GPU 逐像素（{@code PreviewDewarp}），而不是分格近似。
      *
-     * <p>开发者选项：相机画面要先进应用自己的 GL 再显示，还没在车上验证过。归开发者选项管，
-     * 关着时按关算 —— 关掉开发者选项就回到验证过的那条路。改了要重启应用才生效。</p>
+     * <p>System GPU policy selects the backend. Camera routing changes use Apply changes.
+     * Legacy preferences retain their original developer gate until an explicit System selection.</p>
      *
      * <p>只决定算法。校正开不开还是看 {@link #isFisheyeCorrection}。</p>
      */
     public boolean isGpuFisheyePreview() {
-        return readBoolean(KEY_GPU_FISHEYE_PREVIEW, false);
+        return gpuEnabled("preview");
     }
 
     /** Developer mode alone must not grant internal fallback when USB is selected. */
@@ -1041,9 +1041,40 @@ public class AppConfig {
         prefs.edit().putBoolean(KEY_USB_INTERNAL_FALLBACK, enabled).apply();
     }
 
-    /** 360 rendering backend, independent of the Developer fisheye switches. Reopen to reroute surfaces. */
-    public boolean isGpuBirdEye() { return readBoolean(KEY_GPU_BIRD_EYE, false); }
+    /** Effective 360 backend under the shared System policy. Apply changes reroutes surfaces. */
+    public boolean isGpuBirdEye() { return gpuEnabled("360"); }
     public void setGpuBirdEye(boolean on) { prefs.edit().putBoolean(KEY_GPU_BIRD_EYE, on).apply(); }
+
+    /** Unset mode preserves the effective legacy selection without enabling new outputs. */
+    public String getGpuRenderingMode() {
+        if (prefs.contains(com.kooo.evcam.zeekr.GpuRendering.MODE))
+            return com.kooo.evcam.zeekr.GpuRendering.normalize(prefs.getString(com.kooo.evcam.zeekr.GpuRendering.MODE, "off"));
+        for (String feature : com.kooo.evcam.zeekr.GpuRendering.FEATURES)
+            if (readBoolean(com.kooo.evcam.zeekr.GpuRendering.key(feature), false)) return "custom";
+        return "off";
+    }
+    private boolean gpuEnabled(String feature) {
+        String key = com.kooo.evcam.zeekr.GpuRendering.key(feature);
+        if (!prefs.contains(com.kooo.evcam.zeekr.GpuRendering.MODE)) return readBoolean(key, false);
+        return com.kooo.evcam.zeekr.GpuRendering.enabled(getGpuRenderingMode(), prefs.getBoolean(key, false));
+    }
+    public boolean isGpuFeatureEnabled(String feature) { return gpuEnabled(feature); }
+    public boolean isGpuSide() { return gpuEnabled("side"); }
+    public boolean isGpuMirror() { return gpuEnabled("mirror"); }
+    public void setGpuRenderingMode(String mode) {
+        android.content.SharedPreferences.Editor edit = prefs.edit();
+        // Freeze the previously effective legacy choices before leaving the developer-gated policy.
+        if (!prefs.contains(com.kooo.evcam.zeekr.GpuRendering.MODE))
+            for (String feature : com.kooo.evcam.zeekr.GpuRendering.FEATURES) {
+                String key = com.kooo.evcam.zeekr.GpuRendering.key(feature);
+                edit.putBoolean(key, readBoolean(key, false));
+            }
+        edit.putString(com.kooo.evcam.zeekr.GpuRendering.MODE, com.kooo.evcam.zeekr.GpuRendering.normalize(mode)).apply();
+    }
+    public void setGpuFeature(String feature, boolean selected) {
+        if (!prefs.contains(com.kooo.evcam.zeekr.GpuRendering.MODE)) setGpuRenderingMode("custom");
+        prefs.edit().putBoolean(com.kooo.evcam.zeekr.GpuRendering.key(feature), selected).apply();
+    }
 
     public void setGpuFisheyePreview(boolean on) {
         prefs.edit().putBoolean(KEY_GPU_FISHEYE_PREVIEW, on).apply();
@@ -1051,10 +1082,10 @@ public class AppConfig {
 
     /**
      * 视频回看里环视那一格的鱼眼校正走 GPU 逐像素（{@code FisheyeVideoFrame}）。
-     * 开发者选项，同上归开发者选项管；下次打开视频回看时生效。
+     * Uses the shared System GPU policy when video playback next opens.
      */
     public boolean isGpuFisheyeVideo() {
-        return readBoolean(KEY_GPU_FISHEYE_VIDEO, false);
+        return gpuEnabled("playback");
     }
 
     public void setGpuFisheyeVideo(boolean on) {

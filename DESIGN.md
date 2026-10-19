@@ -380,3 +380,15 @@ blind-side replacement in Super mirror and the 360° window. The 360° picture s
 proportional inside the larger panel. HUD and normal mirror keep their own geometry
 policies. Native overlay bounds/insets drive expanded sizing
 and refits while system bars change.
+
+
+### Shared GPU controls, 2026-10-20
+
+System → GPU image processing owns Off / All / Custom and the five existing/new
+rendering paths. Off/All display each effective switch state without editing;
+Custom enables individual selection. Retain the custom selection through mode
+round trips. The 360° picture section links to this page; remove the competing
+Developer switches. Keep the native Settings row styles and theme tokens. The
+short visible note explains Straighten and Apply; detailed compatibility/recording
+information lives under About GPU image processing. The blind-camera settings
+picture follows its renderer and uses the shared raw-input shader when enabled.

@@ -11,6 +11,7 @@ outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
 | --- | --- |
+| `feature/unified-gpu-rendering` | Shared System GPU policy, optional native side/mirror shaders and raw-input GPU settings tap; retained compatibility and recording paths |
 | `fix/360-half-screen-expand` | Shared portrait half-screen expansion for the 360° window with retained source/calibration and exact restore |
 | `fix/blind-popup-half-screen-expand` | Temporary portrait half-screen blind popup/mirror replacement expansion, native overlay bounds and exact restore |
 | `fix/settings-preview-native-detail` | Native-detail settings readback with bounded reusable storage and actual TextureView/corrected fine-detail regression |

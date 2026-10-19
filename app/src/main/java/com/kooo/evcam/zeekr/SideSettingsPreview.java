@@ -46,6 +46,8 @@ public final class SideSettingsPreview extends LinearLayout {
     private final java.util.function.Consumer<Boolean> onExpand;
     private final CameraFrameFreshness freshness = new CameraFrameFreshness();
     private Bitmap sample;
+    private FisheyeGlPipe settingsSource, failedGpuSource;
+    private final SideGpuOutput gpuSample = new SideGpuOutput(true);
     private CompositeStreamGeometry.Plan plan;
     private boolean running, hidden, expanded;
     private int lane = LaneCycle.LEFT;
@@ -113,24 +115,25 @@ public final class SideSettingsPreview extends LinearLayout {
         show = new MaterialButton(activity);
         show.setText(R.string.side_settings_show); show.setVisibility(GONE);
         addView(show, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        show.setOnClickListener(v -> { hidden = false; stage.setVisibility(VISIBLE); show.setVisibility(GONE); sample(); });
+        show.setOnClickListener(v -> { hidden = false; picture.attachGpuTexture(); stage.setVisibility(VISIBLE); show.setVisibility(GONE); sample(); });
         TextView hint = text(R.string.side_settings_unchanged, R.style.TextAppearance_Cam_SettingsMicro);
         hint.setPadding(0, dp(10), 0, 0); hint.setTextColor(ContextCompat.getColor(activity, R.color.text_secondary));
         addView(hint, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
     }
 
     private void hidePreview() {
-        hidden = true; stage.setVisibility(GONE); show.setVisibility(VISIBLE);
+        hidden = true; clear(); picture.detachGpuTexture(); stage.setVisibility(GONE); show.setVisibility(VISIBLE);
         if (expanded) { expanded = false; expand.setIconResource(R.drawable.ic_side_expand);
             expand.setContentDescription(getContext().getString(R.string.side_settings_expand)); onExpand.accept(false); }
         clear(); message.setVisibility(GONE);
     }
 
-    public void start() { running = true; clear(); removeCallbacks(tick); post(tick); }
-    public void stop() { running = false; removeCallbacks(tick); clear(); sample = null; plan = null; }
+    public void start() { running = true; failedGpuSource = null; picture.attachGpuTexture(); clear(); removeCallbacks(tick); post(tick); }
+    public void stop() { running = false; removeCallbacks(tick); clear(); picture.detachGpuTexture(); sample = null; plan = null; }
     @Override protected void onDetachedFromWindow() { stop(); super.onDetachedFromWindow(); }
 
     private void clear() {
+        gpuSample.release(); settingsSource = null;
         freshness.reset(); copiedIdentity = null; copiedTimestamp = 0;
         picture.invalidate(); message.setVisibility(VISIBLE);
     }
@@ -150,7 +153,6 @@ public final class SideSettingsPreview extends LinearLayout {
         }
         TextureView source = activity.settingsPreviewTexture();
         if (source == null) { unavailable(R.string.side_settings_unavailable); return; }
-        if (PreviewDewarp.isActive(source)) { unavailable(R.string.side_settings_gpu); return; }
         MultiCameraManager manager = CameraManagerHolder.getInstance().getCameraManager();
         SingleCamera camera = manager != null ? manager.getCamera(CameraSlots.KEY_SURROUND) : null;
         android.util.Size size = camera != null ? camera.getPreviewSize() : null;
@@ -158,6 +160,15 @@ public final class SideSettingsPreview extends LinearLayout {
                 camera.getCameraId(), size.getWidth(), size.getHeight())) {
             unavailable(R.string.side_view_waiting_live); return;
         }
+        plan = CompositeStreamGeometry.analyse(camera.getCameraId(), size.getWidth(), size.getHeight());
+        FisheyeGlPipe shared = PreviewDewarp.rawPipeFor(source);
+        if (gpuSample.failed() && settingsSource != null) failedGpuSource = settingsSource;
+        if (config.isGpuSide() && shared != null && shared.isAlive() && shared != failedGpuSource) {
+            settingsSource = shared; sample = null;
+            picture.invalidate(); refreshGpuStatus(); return;
+        }
+        settingsSource = null; gpuSample.release();
+        if (PreviewDewarp.isActive(source)) { unavailable(R.string.side_settings_gpu); return; }
         try {
             SurfaceTexture identity = source.getSurfaceTexture();
             long timestamp = identity == null ? 0 : identity.getTimestamp();
@@ -175,6 +186,12 @@ public final class SideSettingsPreview extends LinearLayout {
         } catch (RuntimeException | OutOfMemoryError failure) {
             unavailable(R.string.side_view_waiting_live);
         }
+    }
+
+    private void refreshGpuStatus() {
+        if (settingsSource == null) return;
+        message.setText(R.string.side_view_waiting_live);
+        message.setVisibility(gpuSample.fresh(picture.gpuTexture) ? GONE : VISIBLE);
     }
 
     /** Preserve detail before the lane is cropped/straightened; never resize the live texture. */
@@ -204,7 +221,8 @@ public final class SideSettingsPreview extends LinearLayout {
         }
     }
 
-    private final class Picture extends View {
+    private final class Picture extends FrameLayout {
+        final TextureView gpuTexture;
         private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         private final FisheyeMesh mesh = new FisheyeMesh();
         private final SideViewFraming framing = new SideViewFraming();
@@ -212,9 +230,40 @@ public final class SideSettingsPreview extends LinearLayout {
         private final RectF source = new RectF(), target = new RectF();
         private final CameraLabel label = new CameraLabel(getContext(), true);
         private final SideTurnArrow arrow = new SideTurnArrow(getContext(), true);
-        Picture() { super(activity); setBackgroundColor(Color.BLACK); }
-        @Override protected void onDraw(Canvas canvas) {
-            super.onDraw(canvas);
+        Picture() {
+            super(activity); setBackgroundColor(Color.BLACK);
+            gpuTexture = new TextureView(activity);
+            addView(gpuTexture,new FrameLayout.LayoutParams(-1,-1));
+            gpuTexture.setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
+                public void onSurfaceTextureAvailable(SurfaceTexture st,int w,int h){invalidate();}
+                public void onSurfaceTextureSizeChanged(SurfaceTexture st,int w,int h){invalidate();}
+                public boolean onSurfaceTextureDestroyed(SurfaceTexture st){gpuSample.release();return true;}
+                public void onSurfaceTextureUpdated(SurfaceTexture st){refreshGpuStatus();invalidate();}
+            });
+        }
+        void attachGpuTexture() { if(gpuTexture.getParent()==null)addView(gpuTexture,new FrameLayout.LayoutParams(-1,-1)); }
+        void detachGpuTexture() { gpuSample.release();removeView(gpuTexture); }
+        @Override protected void dispatchDraw(Canvas canvas) {
+            if(settingsSource!=null && plan!=null && config.isGpuSide()) {
+                int width=getWidth(),height=getHeight();
+                if(width>0 && height>0){
+                    boolean straighten=config.isSidePopupStraighten();int rotation=config.getSidePopupRotation(lane);
+                    if(straighten)framing.configure(config.getSidePopupFov(),config.getSidePopupYaw(),config.getSidePopupPitch(),lane,
+                            (float)width/height,rotation,config.isSidePopupAutoFit());
+                    SideGpuPicture p=SideGpuPicture.side(plan,lane,width,height,straighten,config.getSidePopupFov(),
+                            config.getSidePopupYaw(),config.getSidePopupPitch(),rotation,config.isSidePopupMirrored(),framing);
+                    boolean handled=gpuSample.prepare(gpuTexture,settingsSource,p,width,height,true);
+                    if(handled){
+                        drawChild(canvas,gpuTexture,getDrawingTime());
+                        if(!gpuSample.fresh(gpuTexture))canvas.drawColor(Color.BLACK);
+                        else {if(config.isRearViewCameraLabelEnabled())label.drawBottom(canvas,lane,width,height);arrow.draw(canvas,lane,null,width,height);}
+                        return;
+                    }
+                }
+            }
+            // Drain any last queued GL frame beneath the cover until tap cancellation completes.
+            if(gpuTexture.getParent()==this)drawChild(canvas,gpuTexture,getDrawingTime());
+            canvas.drawColor(Color.BLACK);
             if (sample == null || plan == null || !freshness.fresh(SystemClock.elapsedRealtime())) return;
             float aspect = (float) SidePopupSizing.aspect(config.getSidePopupAspect());
             int width = Math.min(getWidth(), Math.round(getHeight() * aspect));

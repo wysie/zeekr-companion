@@ -197,6 +197,34 @@ public final class FisheyeGlPipe {
     private int nextRawOutput;
     private volatile boolean hasProjected;
     private long lastBirdEyeAt;
+    private EGLConfig eglConfig;
+    private volatile SideGlRequest sideRequest;
+    private SideGpuRenderer sideRenderer;
+    private boolean sideWasProjected;
+    private static final class SideTap {
+        final SurfaceTexture output;
+        volatile SideGlRequest request;
+        EGLSurface surface = EGL14.EGL_NO_SURFACE;
+        SideTap(SurfaceTexture output, SideGlRequest request) { this.output=output;this.request=request; }
+    }
+    private volatile SideTap sideTap;
+    private SideTap drawnTap;
+
+    void setSide(SideGlRequest request) {
+        SideGlRequest previous=sideRequest;sideRequest=request;
+        if(previous!=null && previous!=request)previous.cancel();
+        if(!released)handler.post(this::drawLatest);
+    }
+    void clearSide(SideGlRequest request) { if(sideRequest==request)setSide(null); }
+    void setSideTap(SurfaceTexture target, SideGlRequest request) {
+        SideTap tap=sideTap;
+        if(tap!=null && tap.output==target){SideGlRequest previous=tap.request;tap.request=request;if(previous!=request)previous.cancel();}
+        else {if(tap!=null)tap.request.cancel();sideTap=new SideTap(target,request);}
+        if(!released)handler.post(this::drawLatest);
+    }
+    void clearSideTap(SideGlRequest request) {
+        SideTap tap=sideTap;if(tap!=null && tap.request==request){tap.request.cancel();sideTap=null;if(!released)handler.post(this::drawLatest);}
+    }
 
     int inputWidth() { return inputWidth; }
     int inputHeight() { return inputHeight; }
@@ -400,6 +428,7 @@ public final class FisheyeGlPipe {
         if (!EGL14.eglChooseConfig(display, attributes, 0, configs, 0, 1, count, 0) || count[0] < 1) {
             throw new IllegalStateException("no suitable EGL config");
         }
+        eglConfig = configs[0];
         context = EGL14.eglCreateContext(display, configs[0], EGL14.EGL_NO_CONTEXT,
                 new int[]{EGL14.EGL_CONTEXT_CLIENT_VERSION, 2, EGL14.EGL_NONE}, 0);
         if (context == EGL14.EGL_NO_CONTEXT) {
@@ -483,6 +512,7 @@ public final class FisheyeGlPipe {
             AppLog.i(TAG, name + " 屏幕上那一块已经释放，只取帧不画");
             return;
         }
+        drawSideTap();
         BirdEyeGlRequest request = birdEyeRequest;
         if (birdEyeRenderer != null && (request != birdEyeRenderer.request || request.cancelled || request.failure != null)) {
             birdEyeRenderer.release(); birdEyeRenderer = null;
@@ -499,11 +529,15 @@ public final class FisheyeGlPipe {
         }
         boolean bird = birdEyeRenderer != null && request == birdEyeRenderer.request
                 && !request.cancelled && request.failure == null;
+        SideGlRequest side = sideRequest;
+        boolean projectedSide = !bird && side != null && !side.frames.cancelled && side.frames.failure == null;
+        if (!projectedSide && sideWasProjected) { output.setDefaultBufferSize(inputWidth,inputHeight);sideWasProjected=false; }
         long now = SystemClock.elapsedRealtime();
         // Latest-frame rendering only; never queue a history of camera frames. 30 fps ceiling.
         if (bird && now - lastBirdEyeAt < 33) return;
         long began = now;
         if (bird) output.setDefaultBufferSize(birdEyeRenderer.width, birdEyeRenderer.height);
+        if (projectedSide) output.setDefaultBufferSize(side.width,side.height);
         EGL14.eglQuerySurface(display, surface, EGL14.EGL_WIDTH, size, 0);
         EGL14.eglQuerySurface(display, surface, EGL14.EGL_HEIGHT, size, 1);
         GLES20.glViewport(0, 0, size[0], size[1]);
@@ -517,6 +551,10 @@ public final class FisheyeGlPipe {
                 AppLog.w(TAG, name + " 360 GPU draw failed; falling back to CPU: " + error);
                 return;
             }
+        } else if (projectedSide) {
+            try { if(sideRenderer==null)sideRenderer=new SideGpuRenderer();sideRenderer.draw(side.picture,texture,texMatrix,quad); }
+            catch(RuntimeException | OutOfMemoryError error){side.frames.failure=error.toString();side.frames.frame=null;
+                output.setDefaultBufferSize(inputWidth,inputHeight);AppLog.w(TAG,name+" side GPU failed: "+error);return;}
         } else {
             Correction c = correction;
             GLES20.glUseProgram(program);
@@ -534,20 +572,48 @@ public final class FisheyeGlPipe {
             GLES20.glDisableVertexAttribArray(positionHandle);
         }
         // Raw consumers must observe CAMERA progression, not settings-triggered redraws.
-        long marker = bird ? System.nanoTime() : input.getTimestamp();
+        long marker = bird || projectedSide ? System.nanoTime() : input.getTimestamp();
         if (!EGLExt.eglPresentationTimeANDROID(display, surface, marker)) {
             if (request != null) request.failure = "GPU output timestamp unavailable";
+            if (projectedSide) side.frames.failure = "GPU output timestamp unavailable";
         }
         if (!EGL14.eglSwapBuffers(display, surface)) {
             outputBroken = true;
             AppLog.w(TAG, name + " 画不上屏幕了 0x" + Integer.toHexString(EGL14.eglGetError())
                     + "，之后只取帧不画");
             if (request != null) request.failure = "Preview output unavailable";
+            if (projectedSide) side.frames.failure = "Preview output unavailable";
         } else if (bird) {
             lastBirdEyeAt = now; hasProjected = true;
             if (request == birdEyeRequest && !request.cancelled)
                 request.publish(new BirdEyeGlRequest.Frame(marker, sourceFreshness.changedAt(), SystemClock.elapsedRealtime() - began));
+        } else if (projectedSide) {
+            hasProjected=true;sideWasProjected=true;
+            if(side==sideRequest && !side.frames.cancelled)side.frames.publish(new BirdEyeGlRequest.Frame(marker,sourceFreshness.changedAt(),SystemClock.elapsedRealtime()-began));
         } else { rawOutputs.set(nextRawOutput++ & 7, marker); }
+    }
+
+    /** A settings-only output shares the existing raw GL input; no camera declaration or readback. */
+    private void drawSideTap() {
+        SideTap tap=sideTap;
+        if(drawnTap!=null && drawnTap!=tap){if(drawnTap.surface!=EGL14.EGL_NO_SURFACE)EGL14.eglDestroySurface(display,drawnTap.surface);drawnTap=null;}
+        if(tap==null)return;
+        SideGlRequest request=tap.request;
+        if(request.frames.cancelled || request.frames.failure!=null)return;
+        try {
+            if(tap.output.isReleased())throw new IllegalStateException("Settings output released");
+            tap.output.setDefaultBufferSize(request.width,request.height);
+            if(tap.surface==EGL14.EGL_NO_SURFACE){tap.surface=EGL14.eglCreateWindowSurface(display,eglConfig,tap.output,new int[]{EGL14.EGL_NONE},0);drawnTap=tap;}
+            if(tap.surface==EGL14.EGL_NO_SURFACE || !EGL14.eglMakeCurrent(display,tap.surface,tap.surface,context))throw new IllegalStateException("Settings EGL output unavailable");
+            int[] dimensions=new int[2];EGL14.eglQuerySurface(display,tap.surface,EGL14.EGL_WIDTH,dimensions,0);EGL14.eglQuerySurface(display,tap.surface,EGL14.EGL_HEIGHT,dimensions,1);
+            GLES20.glViewport(0,0,dimensions[0],dimensions[1]);
+            if(sideRenderer==null)sideRenderer=new SideGpuRenderer();sideRenderer.draw(request.picture,texture,texMatrix,quad);
+            long marker=System.nanoTime();
+            if(!EGLExt.eglPresentationTimeANDROID(display,tap.surface,marker)||!EGL14.eglSwapBuffers(display,tap.surface))throw new IllegalStateException("Settings swap failed");
+            if(tap==sideTap && request==tap.request && !request.frames.cancelled)
+                request.frames.publish(new BirdEyeGlRequest.Frame(marker,sourceFreshness.changedAt(),0));
+        } catch(RuntimeException | OutOfMemoryError error){request.frames.failure=error.toString();request.frames.frame=null;AppLog.w(TAG,name+" settings GPU failed: "+error);}
+        finally {EGL14.eglMakeCurrent(display,surface,surface,context);}
     }
 
     /** 屏幕上那一块释放了就收掉自己：没有人会再来要这条管线。 */
@@ -578,6 +644,10 @@ public final class FisheyeGlPipe {
                 input = null;
             }
             if (display != EGL14.EGL_NO_DISPLAY) {
+                if(sideRequest!=null){sideRequest.frames.failure="GPU pipeline released";sideRequest.cancel();}
+                if(sideTap!=null){sideTap.request.frames.failure="GPU pipeline released";sideTap.request.cancel();}
+                if(drawnTap!=null && drawnTap.surface!=EGL14.EGL_NO_SURFACE){EGL14.eglDestroySurface(display,drawnTap.surface);drawnTap=null;}
+                if(sideRenderer!=null){sideRenderer.release();sideRenderer=null;}
                 if (birdEyeRenderer != null) { birdEyeRenderer.release(); birdEyeRenderer = null; }
                 if (birdEyeRequest != null) { birdEyeRequest.failure = "GPU pipeline released"; birdEyeRequest.frame = null; }
                 if (program != 0) {

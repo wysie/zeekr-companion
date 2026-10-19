@@ -94,6 +94,7 @@ public class RearViewMirrorView extends ViewGroup {
     private final CameraLabel cameraLabel;
     private final SideViewControls sideControls;
     private final SideViewExpansion windowExpansion = new SideViewExpansion();
+    private final SideGpuOutput gpuPicture = new SideGpuOutput(false);
     private Size expandedSideViewport;
     private final Runnable refitSideExpansion = this::refitExpandedSide;
 
@@ -243,6 +244,8 @@ public class RearViewMirrorView extends ViewGroup {
      * 贴边收起时它不可见、不画（见 {@link #syncDockState()}）。窗口移走时画布由管线留着，新窗口可以用
      * {@code setSurfaceTexture} 接回上一个窗口留下的那一块（大纲 §7.7，见 RearViewMirrorService）。
      */
+    public String gpuState() { return gpuPicture.state(); }
+
     public AutoFitTextureView getTextureView() {
         return textureView;
     }
@@ -687,6 +690,7 @@ public class RearViewMirrorView extends ViewGroup {
     }
 
     @Override protected void onDetachedFromWindow() {
+        gpuPicture.release();
         removeCallbacks(refitSideExpansion);
         super.onDetachedFromWindow();
     }
@@ -710,6 +714,28 @@ public class RearViewMirrorView extends ViewGroup {
             drawFrozenHint(canvas, width, height);
             drawChild(canvas, sideControls, getDrawingTime());
             return;
+        }
+
+        int selectedLane=sideView.active()?sideView.lane():laneIndex;
+        SideGpuPicture projected;
+        if(sideView.active()) {
+            if(sideStraighten)sideFraming.configure(sideFov,sideYaw,sidePitch,selectedLane,(float)width/height,
+                    appConfig.getSidePopupRotation(selectedLane),appConfig.isSidePopupAutoFit());
+            projected=SideGpuPicture.side(plan,selectedLane,width,height,sideStraighten,sideFov,sideYaw,sidePitch,
+                    appConfig.getSidePopupRotation(selectedLane),appConfig.isSidePopupMirrored(),sideFraming);
+        } else projected=new SideGpuPicture(plan,laneIndex,viewport(),fisheyeCorrection?1:0,fovDegrees,0,0,0,
+                LaneCycle.isMirrored(laneIndex),width,height);
+        boolean gpu=gpuPicture.prepare(textureView,PreviewDewarp.rawPipeFor(textureView),projected,width,height,
+                sideView.active()?appConfig.isGpuSide():appConfig.isGpuMirror());
+        if(gpu) {
+            drawTextureOnce(canvas);frozen=!gpuPicture.fresh(textureView);
+            if(frozen)drawFrozenHint(canvas,width,height);
+            else {
+                if(appConfig.isRearViewCameraLabelEnabled())cameraLabel.drawBottom(canvas,selectedLane,width,height);
+                if(sideView.active())sideArrow.draw(canvas,selectedLane,indicatorDisplay,width,height);
+            }
+            if(flashLane>=0 && flashLevel>0f)drawTapFlash(canvas,width,height);
+            drawChild(canvas,sideControls,getDrawingTime());return;
         }
 
         if (sideView.active()) {

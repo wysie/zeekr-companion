@@ -34,6 +34,7 @@ public class BirdEyeGpuAndroidTest {
         final TextureView view;
         final View root;
         FourLaneContainer home;
+        RearViewMirrorView mirror;
         com.kooo.evcam.AppConfig config;
         boolean previousGpu;
         final AtomicReference<SurfaceTexture> output = new AtomicReference<>();
@@ -46,7 +47,8 @@ public class BirdEyeGpuAndroidTest {
         Fixture() throws Exception { this(false); }
         Fixture(boolean integrated) throws Exception { this(integrated,256,1024); }
         Fixture(boolean integrated, int width, int height) throws Exception { this(integrated,width,height,false); }
-        Fixture(boolean integrated, int width, int height, boolean popupRoute) throws Exception {
+        Fixture(boolean integrated, int width, int height, boolean popupRoute) throws Exception { this(integrated,width,height,popupRoute,false); }
+        Fixture(boolean integrated, int width, int height, boolean popupRoute, boolean mirrorWindow) throws Exception {
             sw=width; sh=height;
             Context app = InstrumentationRegistry.getInstrumentation().getTargetContext();
             try (ParcelFileDescriptor fd = InstrumentationRegistry.getInstrumentation().getUiAutomation()
@@ -63,7 +65,8 @@ public class BirdEyeGpuAndroidTest {
             main(() -> {
                 Context themed = new ContextThemeWrapper(app,com.kooo.evcam.R.style.Theme_Cam);
                 TextureView texture;
-                if (integrated) {
+                if(mirrorWindow){mirror=new RearViewMirrorView(themed,config);mirror.setSourceSize(new android.util.Size(sw,sh));texture=mirror.getTextureView();}
+                else if (integrated) {
                     home = new FourLaneContainer(themed);
                     texture = new com.kooo.evcam.AutoFitTextureView(themed);
                     home.addView(texture); home.onFinishInflate(); home.setSourceSize(sw,sh);
@@ -73,18 +76,19 @@ public class BirdEyeGpuAndroidTest {
                     public void onSurfaceTextureSizeChanged(SurfaceTexture st, int w, int h) {}
                     public boolean onSurfaceTextureDestroyed(SurfaceTexture st) { return true; }
                     public void onSurfaceTextureUpdated(SurfaceTexture st) {
-                        outputTimestamp = st.getTimestamp(); if(home!=null) home.noteFrame(st);
+                        outputTimestamp = st.getTimestamp(); if(home!=null) home.noteFrame(st);if(mirror!=null){mirror.noteFrame();mirror.invalidate();}
                     }
                 });
                 WindowManager.LayoutParams p = new WindowManager.LayoutParams(320, 480,
                         WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
                         WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE | WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,
                         PixelFormat.OPAQUE);
-                View target = home == null ? texture : home;
-                windows.addView(target, p); current.set(texture); createdRoot.set(target);
+                View target = mirrorWindow ? mirror : home == null ? texture : home;
+                if(mirrorWindow)mirror.show();else windows.addView(target, p); current.set(texture); createdRoot.set(target);
             });
             view = current.get(); root = createdRoot.get(); await("Output texture available", () -> output.get() != null);
-            if(integrated) {
+            if(mirrorWindow){producer=PreviewDewarp.optionalViewSurfaceFor(app,output.get(),new android.util.Size(sw,sh),true);pipe=PreviewDewarp.rawPipeFor(view);}
+            else if(integrated) {
                 producer = PreviewDewarp.surfaceFor("gpu-test",view,output.get(),new android.util.Size(sw,sh));
                 pipe = PreviewDewarp.rawPipeFor(view);
             } else if(popupRoute) {
@@ -123,6 +127,20 @@ public class BirdEyeGpuAndroidTest {
             assertTrue(EGLExt.eglPresentationTimeANDROID(display,surface,stamp));
             assertTrue(EGL14.eglSwapBuffers(display,surface)); return stamp;
         }
+        long patternFrame() {
+            GLES20.glViewport(0,0,sw,sh);GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+            for(int y=0;y<sh;y+=16)for(int x=0;x<sw;x+=16){
+                GLES20.glScissor(x,sh-y-16,16,16);
+                GLES20.glClearColor(x/255f,(y%256)/255f,(y/256)/3f,1);GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            }
+            GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+            long stamp=System.nanoTime();assertTrue(EGLExt.eglPresentationTimeANDROID(display,surface,stamp));
+            assertTrue(EGL14.eglSwapBuffers(display,surface));return stamp;
+        }
+        void freshSide(SideGlRequest request) {
+            for(int i=0;i<4;i++){patternFrame();SystemClock.sleep(55);}
+            await("Side shader frame acquired: "+request.frames.failure,()->request.frames.fresh(outputTimestamp,SystemClock.elapsedRealtime()));
+        }
         Bitmap bitmap() {
             AtomicReference<Bitmap> image=new AtomicReference<>(); main(() -> image.set(view.getBitmap(ow,oh)));
             assertNotNull(image.get()); return image.get();
@@ -151,6 +169,145 @@ public class BirdEyeGpuAndroidTest {
             config.setGpuBirdEye(previousGpu); StreamLayoutTable.reset();
         }
     }
+    private void assertSidePattern(Fixture f,int lane,FisheyeMesh.SourceMap reference) {
+        assertSidePattern(f.bitmap(),lane,reference);
+    }
+    private void assertSidePattern(Bitmap image,int lane,FisheyeMesh.SourceMap reference) {
+        float[] uv=new float[2];int checked=0,matched=0;
+        int width=image.getWidth(),height=image.getHeight();
+        try {
+            for(int y=12;y<height-12;y+=3)for(int x=12;x<width-12;x+=3){
+                reference.map((x+.5f)/width,(y+.5f)/height,uv);
+                int actual=image.getPixel(x,y);
+                if(uv[0]<0 || uv[0]>1 || uv[1]<0 || uv[1]>1){
+                    checked++;if(Color.red(actual)<10 && Color.green(actual)<10 && Color.blue(actual)<10)matched++;continue;
+                }
+                float sx=uv[0]*256,sy=uv[1]*256;
+                if(sx%16<3 || sx%16>13 || sy%16<3 || sy%16>13)continue;
+                int red=Math.min(240,(int)(sx/16)*16),green=Math.min(240,(int)(sy/16)*16),blue=lane*85;
+                checked++;if(Math.abs(Color.red(actual)-red)<12 && Math.abs(Color.green(actual)-green)<12 && Math.abs(Color.blue(actual)-blue)<12)matched++;
+            }
+            assertTrue("Enough detailed source samples",checked>100);
+            assertTrue("Per-pixel shader matches CPU projection: "+matched+"/"+checked,matched>checked*.98);
+        } finally {image.recycle();}
+    }
+    @Test public void sideShaderMatchesAimRollMirrorAutoFitAndRawAcrossWindowShapes() throws Exception {
+        try(Fixture f=new Fixture()) {
+            CompositeStreamGeometry.Plan plan=CompositeStreamGeometry.analyse("gpu-test",f.sw,f.sh);
+            for(int lane:new int[]{LaneCycle.LEFT,LaneCycle.RIGHT})for(int scenario=0;scenario<4;scenario++){
+                int w=scenario==0?240:scenario==1?400:160,h=240,roll=lane==LaneCycle.LEFT?30:-30;
+                boolean corrected=scenario!=3,autoFit=scenario!=2;
+                SideViewFraming framing=new SideViewFraming();framing.configure(90,50,15,lane,w/(float)h,roll,autoFit);
+                SideGpuPicture picture=SideGpuPicture.side(plan,lane,w,h,corrected,90,50,15,roll,true,framing);
+                SideGlRequest request=new SideGlRequest(picture,w,h);f.pipe.setSide(request);f.freshSide(request);
+                assertSidePattern(f,lane,(u,v,out)->{
+                    u=1-u;
+                    if(corrected)framing.sourcePoint(u,v,out);
+                    else {
+                        double angle=Math.toRadians(roll),scale=SideViewRotation.coverScale(roll,w,h);
+                        float x=u-.5f,y=v-.5f,aspect=w/(float)h;
+                        float a=(float)((Math.cos(angle)*x+Math.sin(angle)*y/aspect)/scale+.5);
+                        float b=(float)((-Math.sin(angle)*x*aspect+Math.cos(angle)*y)/scale+.5);
+                        out[0]=picture.view[0]+a*picture.view[2];out[1]=picture.view[1]+b*picture.view[3];
+                    }
+                });
+                request.cancel();f.pipe.clearSide(request);
+            }
+        }
+    }
+    @Test public void normalMirrorShaderUsesCorrectLaneViewportAndRearMirroring() throws Exception {
+        try(Fixture f=new Fixture()) {
+            CompositeStreamGeometry.Plan plan=CompositeStreamGeometry.analyse("gpu-test",f.sw,f.sh);
+            for(int lane=0;lane<4;lane++)for(boolean corrected:new boolean[]{false,true}){
+                RearViewGeometry.Viewport viewport=RearViewGeometry.Viewport.forWindow(400,180,.7f,.6f);
+                boolean mirrored=LaneCycle.isMirrored(lane);
+                SideGpuPicture picture=new SideGpuPicture(plan,lane,viewport,corrected?1:0,110,0,0,0,mirrored,400,180);
+                SideGlRequest request=new SideGlRequest(picture,400,180);f.pipe.setSide(request);f.freshSide(request);
+                assertSidePattern(f,lane,(u,v,out)->{
+                    if(mirrored)u=1-u;
+                    u=viewport.x+u*viewport.width;v=viewport.y+v*viewport.height;
+                    if(corrected)FisheyeProjection.sourcePoint(u,v,110,FisheyeProjection.PROJECTION_RECTILINEAR,out,0);
+                    else {out[0]=u;out[1]=v;}
+                });
+                request.cancel();f.pipe.clearSide(request);
+            }
+        }
+    }
+    @Test public void sideRedrawCannotRenewFrozenSourceAndFailureRetainsProducerForRawFallback() throws Exception {
+        try(Fixture f=new Fixture()) {
+            CompositeStreamGeometry.Plan plan=CompositeStreamGeometry.analyse("gpu-test",f.sw,f.sh);
+            SideViewFraming framing=new SideViewFraming();framing.configure(90,0,0,LaneCycle.LEFT,1f);
+            SideGpuPicture picture=SideGpuPicture.side(plan,LaneCycle.LEFT,240,240,true,90,0,0,0,false,framing);
+            SideGlRequest request=new SideGlRequest(picture,240,240);f.pipe.setSide(request);f.freshSide(request);
+            SurfaceTexture input=f.pipe.output();SystemClock.sleep(550);
+            SideGlRequest changed=new SideGlRequest(picture,260,260);f.pipe.setSide(changed);SystemClock.sleep(80);
+            assertFalse("A settings redraw cannot make old camera content live",changed.frames.fresh(f.outputTimestamp,SystemClock.elapsedRealtime()));
+            changed.frames.failure="Injected side renderer failure";
+            for(int i=0;i<4;i++){f.patternFrame();SystemClock.sleep(55);}
+            await("Failed shader returns an acquired raw camera buffer",()->f.pipe.rawOutputReady(f.outputTimestamp));
+            assertSame(input,f.pipe.output());assertTrue(f.producer.isValid());assertTrue(f.pipe.rawOutputReady(f.outputTimestamp));
+            f.pipe.clearSide(changed);
+        }
+    }
+    @Test public void actualSuperMirrorSwitchesGpuBetweenNormalAndBlindSideOnTheSameStream() throws Exception {
+        Context app=InstrumentationRegistry.getInstrumentation().getTargetContext();
+        android.content.SharedPreferences prefs=app.getSharedPreferences("app_config",0);java.util.Map<String,?> saved=prefs.getAll();
+        com.kooo.evcam.AppConfig config=new com.kooo.evcam.AppConfig(app);
+        config.setGpuRenderingMode("custom");config.setGpuFeature("mirror",true);config.setGpuFeature("side",true);
+        config.setRearViewLane(LaneCycle.REAR);config.setSidePopupStraighten(true);
+        try(Fixture f=new Fixture(false,256,1024,false,true)){
+            for(int i=0;i<8;i++){f.frame();SystemClock.sleep(40);}
+            assertEquals("GPU",f.mirror.gpuState());Surface producer=f.producer;
+            Bitmap image=f.bitmap();assertTrue(Color.green(image.getPixel(f.ow/2,f.oh/2))>240);image.recycle();
+            main(()->f.mirror.showSideView(LaneCycle.LEFT));
+            for(int i=0;i<8;i++){f.frame();SystemClock.sleep(40);}
+            assertEquals("GPU",f.mirror.gpuState());image=f.bitmap();assertTrue(Color.blue(image.getPixel(f.ow/2,f.oh/2))>240);image.recycle();
+            main(f.mirror::clearSideView);
+            for(int i=0;i<8;i++){f.frame();SystemClock.sleep(40);}
+            assertEquals("GPU",f.mirror.gpuState());assertSame(producer,f.producer);assertTrue(producer.isValid());
+        } finally {
+            android.content.SharedPreferences.Editor edit=prefs.edit().clear();
+            for(java.util.Map.Entry<String,?> e:saved.entrySet()){
+                Object v=e.getValue();String k=e.getKey();if(v instanceof Boolean)edit.putBoolean(k,(Boolean)v);else if(v instanceof String)edit.putString(k,(String)v);
+                else if(v instanceof Integer)edit.putInt(k,(Integer)v);else if(v instanceof Long)edit.putLong(k,(Long)v);else if(v instanceof Float)edit.putFloat(k,(Float)v);
+                else if(v instanceof java.util.Set)edit.putStringSet(k,new java.util.HashSet<>((java.util.Set<String>)v));
+            }edit.commit();
+        }
+    }
+
+    @Test public void settingsTapSharesRawInputEvenWhenMainCorrectionIsEnabled() throws Exception {
+        try(Fixture f=new Fixture()) {
+            Context app=InstrumentationRegistry.getInstrumentation().getTargetContext();
+            AtomicReference<TextureView> target=new AtomicReference<>();AtomicReference<SurfaceTexture> output=new AtomicReference<>();
+            java.util.concurrent.atomic.AtomicLong stamp=new java.util.concurrent.atomic.AtomicLong();
+            main(()->{TextureView view=new TextureView(app);view.setSurfaceTextureListener(new TextureView.SurfaceTextureListener(){
+                public void onSurfaceTextureAvailable(SurfaceTexture st,int w,int h){output.set(st);}
+                public void onSurfaceTextureSizeChanged(SurfaceTexture st,int w,int h){}
+                public boolean onSurfaceTextureDestroyed(SurfaceTexture st){return true;}
+                public void onSurfaceTextureUpdated(SurfaceTexture st){stamp.set(st.getTimestamp());}
+            });WindowManager.LayoutParams p=new WindowManager.LayoutParams(240,240,WindowManager.LayoutParams.TYPE_APPLICATION_OVERLAY,
+                    WindowManager.LayoutParams.FLAG_NOT_FOCUSABLE|WindowManager.LayoutParams.FLAG_HARDWARE_ACCELERATED,PixelFormat.OPAQUE);
+                p.gravity=Gravity.TOP|Gravity.START;p.x=500;f.windows.addView(view,p);target.set(view);});
+            await("Settings output ready",()->output.get()!=null);
+            try {
+                CompositeStreamGeometry.Plan plan=CompositeStreamGeometry.analyse("gpu-test",f.sw,f.sh);
+                SideViewFraming framing=new SideViewFraming();framing.configure(90,50,15,LaneCycle.RIGHT,1f,30,true);
+                SideGpuPicture picture=SideGpuPicture.side(plan,LaneCycle.RIGHT,240,240,true,90,50,15,30,false,framing);
+                SideGlRequest request=new SideGlRequest(picture,240,240);
+                float[] lanes=new float[16];for(int lane=0;lane<4;lane++){
+                    CompositeStreamGeometry.Lane l=plan.lane(lane);lanes[lane*4]=l.u0;lanes[lane*4+1]=l.v0;lanes[lane*4+2]=l.u1-l.u0;lanes[lane*4+3]=l.v1-l.v0;
+                }
+                f.pipe.setLanes(lanes);f.pipe.setCorrection(true,140,FisheyeProjection.PROJECTION_RECTILINEAR);
+                f.pipe.setSideTap(output.get(),request);
+                for(int i=0;i<4;i++){f.patternFrame();SystemClock.sleep(55);}
+                await("Shared settings shader acquires raw source",()->request.frames.fresh(stamp.get(),SystemClock.elapsedRealtime()));
+                AtomicReference<Bitmap> result=new AtomicReference<>();main(()->result.set(target.get().getBitmap()));
+                assertNotNull(result.get());assertSidePattern(result.get(),LaneCycle.RIGHT,framing::sourcePoint);
+                f.pipe.clearSideTap(request);assertTrue(f.producer.isValid());assertTrue(request.frames.cancelled);
+            } finally {main(()->f.windows.removeViewImmediate(target.get()));}
+        }
+    }
+
     @Test public void manualAnd009FitPreserveCompleteCameraCoverageSeamsAndMapping() throws Exception {
         try(Fixture f=new Fixture()) {
             for(boolean fit:new boolean[]{false,true}) for(int[] lanes:new int[][]{{0,1,2,3},{3,2,0,1}}) {
