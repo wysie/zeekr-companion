@@ -9,18 +9,14 @@ commit message, not here.
 
 ## [Unreleased]
 
-- Give the main camera stage the full width, move Preview/360° to the header and group recording, capture, media and window actions in a bottom dock.
-- Add staged preview presets and independent source-pane layouts while preserving recording choices and camera surfaces.
+## [2.11.51-alpha.1] - 2026-10-19
 
-- Reduce 360° CPU rendering work and lookup memory while preserving output pixels and quality; add queue, publish and total-processing timings to Diagnostics.
-
-- Use 360° consistently in main-page actions, settings and camera messages across languages.
-
-- Show the Companion logo beside the main-page title, with contrasting light/dark colours.
-
-- Give paired main-page actions equal widths and matching heights while retaining normal-size wrapped labels.
-
-- Separate the recording and Camera status actions with consistent spacing and matching corners in idle and recording states.
+- Give cameras the full main-screen width, with the Companion logo, Preview selector and direct 360° action in the header.
+- Put recording, Take photo, Gallery, Windows and contextual Straighten preview in a bottom dock, retaining the saved driver-side preference.
+- Add staged preview presets and independent Automatic, Side by side and Stacked source layouts while preserving recording choices and camera surfaces.
+- Keep camera status and storage information outside the camera picture, with visible pending-source changes and retained expanded-preview controls.
+- Reduce 360° CPU rendering work and lookup memory without changing output pixels or quality; add processing timings to Diagnostics.
+- Use 360° consistently across main-page actions, settings and camera messages in every language.
 
 ## [2.11.50-alpha.1] - 2026-10-19
 
