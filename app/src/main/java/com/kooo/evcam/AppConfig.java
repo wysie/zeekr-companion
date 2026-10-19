@@ -1245,6 +1245,16 @@ public class AppConfig {
     public void setDetectedSurroundId(String id) {
         if (id != null) prefs.edit().putString("detected_surround_id", id).apply();
     }
+    /** Presentation only; never part of the camera pipeline shape or recording profile. */
+    public String getMainPreviewArrangement() {
+        String value = prefs.getString("main_preview_arrangement", "auto");
+        return "equal".equals(value) || "stacked".equals(value) ? value : "auto";
+    }
+    public void setMainPreviewArrangement(String value) {
+        prefs.edit().putString("main_preview_arrangement",
+                "equal".equals(value) || "stacked".equals(value) ? value : "auto").apply();
+    }
+
     public String getPreviewSourceMode() { return readEnum(SettingsRegistry.PREVIEW_LAYOUT); }
     public void setPreviewSourceMode(String mode) { writeEnum(SettingsRegistry.PREVIEW_LAYOUT, mode); }
 

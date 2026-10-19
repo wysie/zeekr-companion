@@ -1,0 +1,457 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-19T01:52:03.857829+00:00",
+  "title": "Design System: Zeekr Companion",
+  "extensions": {
+    "colorMeta": {
+      "light-bg": {
+        "role": "neutral",
+        "displayName": "Light bg",
+        "purpose": "Native @color/bg; resolved from values/colors.xml."
+      },
+      "light-surface": {
+        "role": "neutral",
+        "displayName": "Light surface",
+        "purpose": "Native @color/surface; resolved from values/colors.xml."
+      },
+      "light-sunken": {
+        "role": "neutral",
+        "displayName": "Light sunken",
+        "purpose": "Native @color/sunken; resolved from values/colors.xml."
+      },
+      "light-panel": {
+        "role": "neutral",
+        "displayName": "Light panel",
+        "purpose": "Native @color/panel; resolved from values/colors.xml."
+      },
+      "light-card": {
+        "role": "neutral",
+        "displayName": "Light card",
+        "purpose": "Native @color/card; resolved from values/colors.xml."
+      },
+      "light-line": {
+        "role": "neutral",
+        "displayName": "Light line",
+        "purpose": "Native @color/line; resolved from values/colors.xml."
+      },
+      "light-text-primary": {
+        "role": "neutral",
+        "displayName": "Light text primary",
+        "purpose": "Native @color/text_primary; resolved from values/colors.xml."
+      },
+      "light-text-secondary": {
+        "role": "neutral",
+        "displayName": "Light text secondary",
+        "purpose": "Native @color/text_secondary; resolved from values/colors.xml."
+      },
+      "light-text-tertiary": {
+        "role": "neutral",
+        "displayName": "Light text tertiary",
+        "purpose": "Native @color/text_tertiary; resolved from values/colors.xml."
+      },
+      "light-energy": {
+        "role": "primary",
+        "displayName": "Light energy",
+        "purpose": "Native @color/energy; resolved from values/colors.xml."
+      },
+      "light-energy-text": {
+        "role": "primary",
+        "displayName": "Light energy text",
+        "purpose": "Native @color/energy_text; resolved from values/colors.xml."
+      },
+      "light-energy-quiet": {
+        "role": "primary",
+        "displayName": "Light energy quiet",
+        "purpose": "Native @color/energy_quiet; resolved from values/colors.xml."
+      },
+      "light-on-energy": {
+        "role": "primary",
+        "displayName": "Light on energy",
+        "purpose": "Native @color/on_energy; resolved from values/colors.xml."
+      },
+      "light-recording": {
+        "role": "secondary",
+        "displayName": "Light recording",
+        "purpose": "Native @color/recording; resolved from values/colors.xml."
+      },
+      "light-recording-quiet": {
+        "role": "secondary",
+        "displayName": "Light recording quiet",
+        "purpose": "Native @color/recording_quiet; resolved from values/colors.xml."
+      },
+      "light-recording-track": {
+        "role": "secondary",
+        "displayName": "Light recording track",
+        "purpose": "Native @color/recording_track; resolved from values/colors.xml."
+      },
+      "light-recording-text": {
+        "role": "secondary",
+        "displayName": "Light recording text",
+        "purpose": "Native @color/recording_text; resolved from values/colors.xml."
+      },
+      "light-locked": {
+        "role": "tertiary",
+        "displayName": "Light locked",
+        "purpose": "Native @color/locked; resolved from values/colors.xml."
+      },
+      "light-preview-frame-background": {
+        "role": "neutral",
+        "displayName": "Light preview frame background",
+        "purpose": "Native @color/preview_frame_background; resolved from values/colors.xml."
+      },
+      "light-nav-ripple-color": {
+        "role": "neutral",
+        "displayName": "Light nav ripple color",
+        "purpose": "Native @color/nav_ripple_color; resolved from values/colors.xml."
+      },
+      "light-dialog-guide-button-ripple": {
+        "role": "neutral",
+        "displayName": "Light dialog guide button ripple",
+        "purpose": "Native @color/dialog_guide_button_ripple; resolved from values/colors.xml."
+      },
+      "light-black": {
+        "role": "neutral",
+        "displayName": "Light black",
+        "purpose": "Native @color/black; resolved from values/colors.xml."
+      },
+      "light-white": {
+        "role": "neutral",
+        "displayName": "Light white",
+        "purpose": "Native @color/white; resolved from values/colors.xml."
+      },
+      "light-status-overlay-text": {
+        "role": "neutral",
+        "displayName": "Light status overlay text",
+        "purpose": "Native @color/status_overlay_text; resolved from values/colors.xml."
+      },
+      "light-status-overlay-text-dim": {
+        "role": "neutral",
+        "displayName": "Light status overlay text dim",
+        "purpose": "Native @color/status_overlay_text_dim; resolved from values/colors.xml."
+      },
+      "light-side-control-background": {
+        "role": "neutral",
+        "displayName": "Light side control background",
+        "purpose": "Native @color/side_control_background; resolved from values/colors.xml."
+      },
+      "light-side-control-icon": {
+        "role": "neutral",
+        "displayName": "Light side control icon",
+        "purpose": "Native @color/side_control_icon; resolved from values/colors.xml."
+      },
+      "light-side-control-pressed": {
+        "role": "neutral",
+        "displayName": "Light side control pressed",
+        "purpose": "Native @color/side_control_pressed; resolved from values/colors.xml."
+      },
+      "light-camera-label-background": {
+        "role": "neutral",
+        "displayName": "Light camera label background",
+        "purpose": "Native @color/camera_label_background; resolved from values/colors.xml."
+      },
+      "light-camera-label-text": {
+        "role": "neutral",
+        "displayName": "Light camera label text",
+        "purpose": "Native @color/camera_label_text; resolved from values/colors.xml."
+      },
+      "light-side-arrow-background": {
+        "role": "neutral",
+        "displayName": "Light side arrow background",
+        "purpose": "Native @color/side_arrow_background; resolved from values/colors.xml."
+      },
+      "light-side-arrow-lit": {
+        "role": "tertiary",
+        "displayName": "Light side arrow lit",
+        "purpose": "Native @color/side_arrow_lit; resolved from values/colors.xml."
+      },
+      "light-side-arrow-unlit": {
+        "role": "neutral",
+        "displayName": "Light side arrow unlit",
+        "purpose": "Native @color/side_arrow_unlit; resolved from values/colors.xml."
+      },
+      "dark-bg": {
+        "role": "neutral",
+        "displayName": "Dark bg",
+        "purpose": "Native @color/bg; resolved from values-night/colors.xml."
+      },
+      "dark-surface": {
+        "role": "neutral",
+        "displayName": "Dark surface",
+        "purpose": "Native @color/surface; resolved from values-night/colors.xml."
+      },
+      "dark-sunken": {
+        "role": "neutral",
+        "displayName": "Dark sunken",
+        "purpose": "Native @color/sunken; resolved from values-night/colors.xml."
+      },
+      "dark-panel": {
+        "role": "neutral",
+        "displayName": "Dark panel",
+        "purpose": "Native @color/panel; resolved from values-night/colors.xml."
+      },
+      "dark-card": {
+        "role": "neutral",
+        "displayName": "Dark card",
+        "purpose": "Native @color/card; resolved from values-night/colors.xml."
+      },
+      "dark-line": {
+        "role": "neutral",
+        "displayName": "Dark line",
+        "purpose": "Native @color/line; resolved from values-night/colors.xml."
+      },
+      "dark-text-primary": {
+        "role": "neutral",
+        "displayName": "Dark text primary",
+        "purpose": "Native @color/text_primary; resolved from values-night/colors.xml."
+      },
+      "dark-text-secondary": {
+        "role": "neutral",
+        "displayName": "Dark text secondary",
+        "purpose": "Native @color/text_secondary; resolved from values-night/colors.xml."
+      },
+      "dark-text-tertiary": {
+        "role": "neutral",
+        "displayName": "Dark text tertiary",
+        "purpose": "Native @color/text_tertiary; resolved from values-night/colors.xml."
+      },
+      "dark-energy": {
+        "role": "primary",
+        "displayName": "Dark energy",
+        "purpose": "Native @color/energy; resolved from values-night/colors.xml."
+      },
+      "dark-energy-text": {
+        "role": "primary",
+        "displayName": "Dark energy text",
+        "purpose": "Native @color/energy_text; resolved from values-night/colors.xml."
+      },
+      "dark-energy-quiet": {
+        "role": "primary",
+        "displayName": "Dark energy quiet",
+        "purpose": "Native @color/energy_quiet; resolved from values-night/colors.xml."
+      },
+      "dark-on-energy": {
+        "role": "primary",
+        "displayName": "Dark on energy",
+        "purpose": "Native @color/on_energy; resolved from values-night/colors.xml."
+      },
+      "dark-recording": {
+        "role": "secondary",
+        "displayName": "Dark recording",
+        "purpose": "Native @color/recording; resolved from values-night/colors.xml."
+      },
+      "dark-recording-quiet": {
+        "role": "secondary",
+        "displayName": "Dark recording quiet",
+        "purpose": "Native @color/recording_quiet; resolved from values-night/colors.xml."
+      },
+      "dark-recording-track": {
+        "role": "secondary",
+        "displayName": "Dark recording track",
+        "purpose": "Native @color/recording_track; resolved from values-night/colors.xml."
+      },
+      "dark-recording-text": {
+        "role": "secondary",
+        "displayName": "Dark recording text",
+        "purpose": "Native @color/recording_text; resolved from values-night/colors.xml."
+      },
+      "dark-locked": {
+        "role": "tertiary",
+        "displayName": "Dark locked",
+        "purpose": "Native @color/locked; resolved from values-night/colors.xml."
+      },
+      "dark-preview-frame-background": {
+        "role": "neutral",
+        "displayName": "Dark preview frame background",
+        "purpose": "Native @color/preview_frame_background; resolved from values-night/colors.xml."
+      },
+      "dark-nav-ripple-color": {
+        "role": "neutral",
+        "displayName": "Dark nav ripple color",
+        "purpose": "Native @color/nav_ripple_color; resolved from values-night/colors.xml."
+      },
+      "dark-dialog-guide-button-ripple": {
+        "role": "neutral",
+        "displayName": "Dark dialog guide button ripple",
+        "purpose": "Native @color/dialog_guide_button_ripple; resolved from values-night/colors.xml."
+      },
+      "dark-black": {
+        "role": "neutral",
+        "displayName": "Dark black",
+        "purpose": "Native @color/black; resolved from values-night/colors.xml."
+      },
+      "dark-white": {
+        "role": "neutral",
+        "displayName": "Dark white",
+        "purpose": "Native @color/white; resolved from values-night/colors.xml."
+      },
+      "dark-status-overlay-text": {
+        "role": "neutral",
+        "displayName": "Dark status overlay text",
+        "purpose": "Native @color/status_overlay_text; resolved from values-night/colors.xml."
+      },
+      "dark-status-overlay-text-dim": {
+        "role": "neutral",
+        "displayName": "Dark status overlay text dim",
+        "purpose": "Native @color/status_overlay_text_dim; resolved from values-night/colors.xml."
+      },
+      "dark-side-control-background": {
+        "role": "neutral",
+        "displayName": "Dark side control background",
+        "purpose": "Native @color/side_control_background; resolved from values-night/colors.xml."
+      },
+      "dark-side-control-icon": {
+        "role": "neutral",
+        "displayName": "Dark side control icon",
+        "purpose": "Native @color/side_control_icon; resolved from values-night/colors.xml."
+      },
+      "dark-side-control-pressed": {
+        "role": "neutral",
+        "displayName": "Dark side control pressed",
+        "purpose": "Native @color/side_control_pressed; resolved from values-night/colors.xml."
+      },
+      "dark-camera-label-background": {
+        "role": "neutral",
+        "displayName": "Dark camera label background",
+        "purpose": "Native @color/camera_label_background; resolved from values-night/colors.xml."
+      },
+      "dark-camera-label-text": {
+        "role": "neutral",
+        "displayName": "Dark camera label text",
+        "purpose": "Native @color/camera_label_text; resolved from values-night/colors.xml."
+      },
+      "dark-side-arrow-background": {
+        "role": "neutral",
+        "displayName": "Dark side arrow background",
+        "purpose": "Native @color/side_arrow_background; resolved from values-night/colors.xml."
+      },
+      "dark-side-arrow-lit": {
+        "role": "tertiary",
+        "displayName": "Dark side arrow lit",
+        "purpose": "Native @color/side_arrow_lit; resolved from values-night/colors.xml."
+      },
+      "dark-side-arrow-unlit": {
+        "role": "neutral",
+        "displayName": "Dark side arrow unlit",
+        "purpose": "Native @color/side_arrow_unlit; resolved from values-night/colors.xml."
+      }
+    },
+    "typographyMeta": {
+      "micro": {
+        "displayName": "Micro",
+        "purpose": "Native TextAppearance.Cam.Micro role from values/type.xml."
+      },
+      "caption": {
+        "displayName": "Caption",
+        "purpose": "Native TextAppearance.Cam.Caption role from values/type.xml."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Native TextAppearance.Cam.Body role from values/type.xml."
+      },
+      "row": {
+        "displayName": "Row",
+        "purpose": "Native TextAppearance.Cam.Row role from values/type.xml."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Native TextAppearance.Cam.Title role from values/type.xml."
+      },
+      "display": {
+        "displayName": "Display",
+        "purpose": "Native TextAppearance.Cam.Display role from values/type.xml."
+      }
+    },
+    "shadows": [
+      {
+        "name": "home-controls-flat",
+        "value": "0dp",
+        "purpose": "Explicit native home action and recording-card elevation. Dialogs retain their native window treatment."
+      }
+    ],
+    "motion": [],
+    "breakpoints": []
+  },
+  "components": [
+    {
+      "name": "Take photo · native token swatch",
+      "kind": "button",
+      "refersTo": "light-home-action",
+      "description": "Material home action: card fill, inline native icon in app, Body text; 80dp dock minimum. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
+      "html": "<button class=\"ds-light-home-action\">Take photo</button>",
+      "css": ".ds-light-home-action { background:#E6E6E8; color:#2A2B2E; font-family:Roboto,Arial,sans-serif; font-size:18px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:0; padding:10px 8px; min-height:48px; } .ds-light-home-action:hover, .ds-light-home-action:focus-visible, .ds-light-home-action:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
+    },
+    {
+      "name": "Side by side · native token swatch",
+      "kind": "button",
+      "refersTo": "light-layout-choice",
+      "description": "Unselected source-layout choice: 1dp line stroke; native app includes a 36dp vector icon. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
+      "html": "<button class=\"ds-light-layout-choice\">Side by side</button>",
+      "css": ".ds-light-layout-choice { background:#E6E6E8; color:#2A2B2E; font-family:Roboto,Arial,sans-serif; font-size:16px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:1px solid #DDDDE0; padding:10px 8px; min-height:48px; } .ds-light-layout-choice:hover, .ds-light-layout-choice:focus-visible, .ds-light-layout-choice:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
+    },
+    {
+      "name": "Automatic · native token swatch",
+      "kind": "button",
+      "refersTo": "light-layout-choice-selected",
+      "description": "Selected source-layout choice: 2dp energy stroke and native selected state description. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
+      "html": "<button class=\"ds-light-layout-choice-selected\">Automatic</button>",
+      "css": ".ds-light-layout-choice-selected { background:#FDEDE6; color:#C9491A; font-family:Roboto,Arial,sans-serif; font-size:16px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:2px solid #F0622D; padding:10px 8px; min-height:48px; } .ds-light-layout-choice-selected:hover, .ds-light-layout-choice-selected:focus-visible, .ds-light-layout-choice-selected:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
+    },
+    {
+      "name": "Start recording · native token swatch",
+      "kind": "card",
+      "refersTo": "light-record-card-idle",
+      "description": "Idle recording-card surface only; app includes progress ring, indicator and dynamic detail. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
+      "html": "<button class=\"ds-light-record-card-idle\">Start recording</button>",
+      "css": ".ds-light-record-card-idle { background:#E6E6E8; color:#2A2B2E; font-family:Roboto,Arial,sans-serif; font-size:18px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:0; padding:10px 8px; min-height:48px; } .ds-light-record-card-idle:hover, .ds-light-record-card-idle:focus-visible, .ds-light-record-card-idle:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
+    },
+    {
+      "name": "Camera status · native token swatch",
+      "kind": "custom",
+      "refersTo": "light-camera-status",
+      "description": "Status action at rest; activated app state uses recording_quiet. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
+      "html": "<button class=\"ds-light-camera-status\">Camera status</button>",
+      "css": ".ds-light-camera-status { background:#E6E6E8; color:#2A2B2E; font-family:Roboto,Arial,sans-serif; font-size:16px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:0; padding:10px 8px; min-height:48px; } .ds-light-camera-status:hover, .ds-light-camera-status:focus-visible, .ds-light-camera-status:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The live camera is the main surface",
+    "overview": "Zeekr Companion uses a quiet native Android surface with neutral light and dark themes, orange selection and action accents, and a separate recording-red vocabulary. The owner-approved linked-companions mark provides identity alongside familiar Material controls. This records the built system; it introduces no replacement font, palette or logo.",
+    "keyCharacteristics": [
+      "Semantic day/night colors resolved by Android resources.",
+      "Native system typography in six named sp roles.",
+      "Flat tonal controls, modest rounded corners and clear touch spacing.",
+      "Truthful camera, recording and pending-change states."
+    ],
+    "rules": [
+      {
+        "name": "Separate Meanings",
+        "body": "Orange marks ordinary action and selection. Red marks recording and destructive operations; amber marks locked footage.",
+        "section": "colors"
+      },
+      {
+        "name": "Native Scale",
+        "body": "Use the existing named sp roles and native system font scaling; keep literal text sizes out of new core layouts.",
+        "section": "typography"
+      },
+      {
+        "name": "Flat Controls",
+        "body": "Home action controls and the recording card remain flat at rest; tonal contrast provides separation.",
+        "section": "elevation"
+      }
+    ],
+    "dos": [
+      "Do resolve colors through the incumbent semantic Android resources in both themes.",
+      "Do use the six TextAppearance.Cam roles and preserve system font scaling.",
+      "Do keep the approved linked-companions vector mark and its geometry.",
+      "Do keep recording, preview selection and independent windows visually and behaviorally distinct.",
+      "Do keep long translated labels readable by wrapping and allowing controls to grow."
+    ],
+    "donts": [
+      "Don't replace missing or stale camera output with a fabricated vehicle scene.",
+      "Don't use recording red as an interchangeable selection accent.",
+      "Don't change recording mapping, quality, source ownership or calibrated projection when arranging preview panes.",
+      "Don't rename the Android package, signing identity, storage folder or repository as a branding side effect.",
+      "Don't claim vehicle fit, startup, frame rate or factory-camera coexistence from emulator screenshots."
+    ]
+  }
+}

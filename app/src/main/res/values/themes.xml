@@ -85,6 +85,15 @@
         <item name="android:textSize">@dimen/text_body</item>
     </style>
 
+    <style name="Widget.Cam.HomeAction" parent="Widget.Cam.RailSmall">
+        <item name="android:singleLine">false</item>
+        <item name="android:maxLines">4</item>
+        <item name="android:ellipsize">none</item>
+        <item name="android:minWidth">0dp</item>
+        <item name="android:paddingTop">10dp</item>
+        <item name="android:paddingBottom">10dp</item>
+    </style>
+
     <!-- 只有图标：菜单、退出 -->
     <style name="Widget.Cam.IconButton" parent="Widget.Cam.RailTile">
         <item name="iconGravity">textStart</item>
