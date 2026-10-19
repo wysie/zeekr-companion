@@ -1140,7 +1140,7 @@ public final class RecordingCoordinator {
             }
         }
         // 录哪几路 = 配置里启用了哪几路。这两件事本来就是同一件：关掉的相机不开、不录、不占流
-        if (CameraManagerHolder.getInstance().hasPendingChannelChange(context)) {
+        if (CameraManagerHolder.getInstance().hasPendingRecordingChange(context)) {
             refused(why, context.getString(R.string.msg_record_profile_restart), false);
             return;
         }
@@ -1175,7 +1175,7 @@ public final class RecordingCoordinator {
         if (pending != why || !startAllowed(why)) {
             return;
         }
-        if (CameraManagerHolder.getInstance().hasPendingChannelChange(context)) {
+        if (CameraManagerHolder.getInstance().hasPendingRecordingChange(context)) {
             refused(why, context.getString(R.string.msg_record_profile_restart), false);
             return;
         }
