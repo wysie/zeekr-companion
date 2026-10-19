@@ -1309,4 +1309,24 @@
     <string name="home_surround_unavailable">360° requires Surround in the applied preview. Choose a preset with Surround, then quit and reopen.</string>
     <string name="home_pending_selection">Preview: %1$s · pending</string>
     <string name="home_layout_selected">Selected</string>
+    <string name="side_tab_behavior">Behavior</string>
+    <string name="side_tab_picture">Picture</string>
+    <string name="side_tab_window">Window</string>
+    <string name="side_tab_hud">HUD</string>
+    <string name="side_picture_help">About picture settings</string>
+    <string name="side_settings_preview">Camera preview</string>
+    <string name="side_settings_unchanged">Preview and playback only. Recorded files stay unchanged.</string>
+    <string name="side_settings_unavailable">Surround is not in the active preview. Select a preview that includes Surround, then quit and reopen.</string>
+    <string name="side_settings_paused">Preview paused for the factory camera or vehicle connection.</string>
+    <string name="side_settings_show">Show preview</string>
+    <string name="side_settings_close">Hide settings preview</string>
+    <string name="side_settings_expand">Expand settings preview</string>
+    <string name="side_settings_restore">Restore picture controls</string>
+    <string name="side_settings_gpu">Settings preview needs the raw surround feed. Disable GPU preview correction and reopen the app.</string>
+    <string name="side_settings_images">Side images</string>
+    <string name="side_settings_auto_fit">Auto-fit</string>
+    <string name="side_settings_auto_fit_hint">Avoid black patches</string>
+    <string name="side_behavior_help">About behavior settings</string>
+    <string name="side_settings_output_note">Uses the screen if HUD is unavailable. Factory speed and warnings may appear over the HUD picture.</string>
+    <string name="side_settings_mirror_note">Choose whether the side view uses, keeps or temporarily hides the Super mirror window.</string>
 </resources>

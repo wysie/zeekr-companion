@@ -7,6 +7,7 @@ colors:
   light-sunken: "#E6E6E8"
   light-panel: "#FAFAFB"
   light-card: "#E6E6E8"
+  light-settings-row: "#FAFAFB"
   light-line: "#DDDDE0"
   light-text-primary: "#2A2B2E"
   light-text-secondary: "#5F6166"
@@ -40,6 +41,7 @@ colors:
   dark-sunken: "#2E3034"
   dark-panel: "#000000"
   dark-card: "#1F2023"
+  dark-settings-row: "#222326"
   dark-line: "#34373B"
   dark-text-primary: "#F0F1F2"
   dark-text-secondary: "#A3A6AB"
@@ -102,6 +104,7 @@ typography:
 rounded:
   control: "10dp"
   thumbnail-small: "6dp"
+  settings: "5dp"
 spacing:
   control-gap: "8dp"
   gutter: "12dp"
@@ -193,7 +196,7 @@ components:
 
 **Creative North Star: "The live camera is the main surface"**
 
-Zeekr Companion uses a quiet native Android surface with neutral light and dark themes, orange selection and action accents, and a separate recording-red vocabulary. The owner-approved linked-companions mark provides identity alongside familiar Material controls. This records the built system; it introduces no replacement font, palette or logo.
+Zeekr Companion uses a quiet native Android surface with neutral light and dark themes, orange selection and action accents, and a separate recording-red vocabulary. The owner-approved linked-companions mark provides identity alongside familiar Material controls. The factory-style settings/main refinement uses regular native sans-serif variants, flatter setting surfaces and small corners; the palette and approved logo remain compatible.
 
 The current main-screen composition is documented in `docs/main-screen-design.md`; it is a surface-specific direction, not a mandate to give every settings or media screen a camera stage. `PRODUCT.md` owns product context. Android XML and Java remain the implementation source of truth; these extracted tokens describe them.
 
@@ -268,7 +271,7 @@ Header controls use tonal separation and zero explicit elevation. The bottom too
 
 ## Shapes
 
-The shared control/card radius is 10dp. Small gallery thumbnails also have an existing 6dp shape variant. Source-layout choice tiles use the same 10dp corners, with an observed 1dp neutral stroke or 2dp selected orange stroke. Recording uses native circular progress and a drawn circle/stop-square indicator; this geometry conveys action and state. Keep authored vector icons and the approved linked-companions silhouette. This change adds native vector geometry and no shipping raster assets.
+The default control/card radius is 10dp. Factory-style settings rows, sidebar selections and main header actions use 5dp corners. Small gallery thumbnails also have an existing 6dp shape variant. Source-layout choice tiles use the same 10dp corners, with an observed 1dp neutral stroke or 2dp selected orange stroke. Recording uses native circular progress and a drawn circle/stop-square indicator; this geometry conveys action and state. Keep authored vector icons and the approved linked-companions silhouette. This change adds native vector geometry and no shipping raster assets.
 
 ## Components
 
@@ -314,4 +317,22 @@ The finish record is in `docs/main-screen-validation.md`. The parent verificatio
 
 Main Straighten uses a short label and native long-press tooltip; it shares preview/playback correction and never changes recorded files. Preview keeps the source/reopen warning in the fixed heading, with detailed layout/recording guidance in scrollable content. Windows buttons name their next action and retain live Open/Closed/Paused status. Driver side uses spatial Left/Right options and preserves the existing saved value/default. Playback Home explicitly returns to the camera stage; Back keeps ordinary gallery navigation. Empty video playback keeps navigation/Refresh available and disables media-dependent controls.
 
-Segmented settings use `energy_quiet` with `energy_text` and expose checked radio semantics. The light orange text is #B83E15 for sufficient contrast on tinted surfaces; dark text remains #F58A5E. Main preserves larger system font scale above its existing 1.2 minimum without mutating application resources. Gallery tiles group date/time/duration, lock and selection announcements. Native XML/Java remains authoritative; browser detector does not apply.
+Segmented settings use an orange outline with `energy_text` on the neutral track and expose checked radio semantics. The light orange text is #B83E15 for sufficient contrast on tinted surfaces; dark text remains #F58A5E. Main preserves larger system font scale above its existing 1.2 minimum without mutating application resources. Gallery tiles group date/time/duration, lock and selection announcements. Native XML/Java remains authoritative; browser detector does not apply.
+
+## Factory-style settings surface
+
+Owner-provided 009 factory menu photos and approved main/Picture mockups are the
+visual authority for this refinement. Settings rows use `settings_row`
+(#FAFAFB light / #222326 dark), 5dp corners and regular sans-serif with zero added
+letter spacing. Sidebar labels use the same 16sp Caption-derived variant for all
+categories/actions; dense explanations use 14sp, rows 18sp and the page title
+21sp. The existing font scale minimum/system growth is preserved. Do not introduce
+per-theme font sizes or autoshrink. The navigation column is 240dp.
+
+Blind spot settings use native scrolling tabs: Behavior, Picture, Window and HUD;
+selected tabs keep dark/light foreground text and a thin orange underline. The
+Picture layout uses a live read-only preview at the right with Left/Right selection
+and native Expand/Hide controls. At less than 760dp detail width, controls and
+preview stack. Preserve real content, tuning, priority, source and freshness states.
+No generated concept camera imagery ships. Missing vehicle output is a truthful
+paused/unavailable state. See `docs/factory-style-ui.md` for functional boundaries.

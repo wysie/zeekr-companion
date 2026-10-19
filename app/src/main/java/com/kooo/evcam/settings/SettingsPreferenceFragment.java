@@ -89,6 +89,15 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         return fragment;
     }
 
+    @Nullable @Override
+    public android.view.View onCreateView(@androidx.annotation.NonNull android.view.LayoutInflater inflater,
+            @Nullable android.view.ViewGroup container, @Nullable Bundle savedInstanceState) {
+        android.view.View preferences = super.onCreateView(inflater, container, savedInstanceState);
+        String section = getArguments() != null ? getArguments().getString(ARG_SECTION) : null;
+        return SideCameraSettingsPane.handles(section)
+                ? new SideCameraSettingsPane(this, preferences, section) : preferences;
+    }
+
     @Override
     public void onCreatePreferences(@Nullable Bundle savedInstanceState, @Nullable String rootKey) {
         String section = rootKey;
@@ -118,8 +127,76 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         }
         bindUpdate();
 
+        if ("screen_blind_spot_camera".equals(section)) {
+            // These destinations are now always-visible peer tabs, not nested navigation rows.
+            for (String child : new String[]{"sub_side_image", "sub_side_window", "sub_side_hud"}) {
+                Preference destination = findPreference(child);
+                if (destination != null) destination.setVisible(false);
+            }
+        }
+        if ("sub_side_image".equals(section)) compactSidePicture();
+        if ("screen_blind_spot_camera".equals(section)) compactSideBehavior();
+
         // 行样式在交给列表之前套上（车机系统式：卡片行、开关在前、值在后）
         PreferenceRows.apply(getPreferenceScreen());
+    }
+
+    private void compactSideBehavior() {
+        Preference hud = findPreference("pref_side_hud_note");
+        Preference mirror = findPreference("pref_side_popup_mirror_mode_note");
+        String detail = (hud != null ? hud.getSummary() : "") + "\n\n" + (mirror != null ? mirror.getSummary() : "");
+        if (hud != null) hud.setSummary(R.string.side_settings_output_note);
+        if (mirror != null) mirror.setSummary(R.string.side_settings_mirror_note);
+        addSideHelp("pref_side_behavior_help", R.string.side_behavior_help, detail);
+    }
+
+    private void addSideHelp(String key, int title, String message) {
+        Preference help = new Preference(requireContext());
+        help.setKey(key); help.setOrder(100);
+        help.setTitle(title); help.setIcon(R.drawable.ic_info);
+        help.setOnPreferenceClickListener(item -> {
+            com.kooo.evcam.ui.CamDialogs.show(new MaterialAlertDialogBuilder(requireContext(), R.style.Theme_Cam_MaterialAlertDialog)
+                    .setTitle(title).setMessage(message).setPositiveButton(R.string.action_close, null));
+            return true;
+        });
+        getPreferenceScreen().addPreference(help);
+    }
+
+    private void compactSidePicture() {
+        StringBuilder explanations = new StringBuilder();
+        for (String key : new String[]{"pref_side_popup_straighten", "pref_side_popup_fov", "pref_side_popup_yaw",
+                "pref_side_popup_pitch", "pref_side_popup_rotation_left", "pref_side_popup_rotation_right",
+                "pref_side_popup_mirror", "pref_side_camera_label", "pref_side_popup_auto_fit", "pref_side_popup_edge_note"}) {
+            Preference item = findPreference(key);
+            if (item == null) continue;
+            if (item.getSummary() != null)
+                explanations.append(item.getTitle()).append("\n").append(item.getSummary()).append("\n\n");
+            item.setSummary(null);
+            if ("pref_side_popup_edge_note".equals(key)) item.setVisible(false);
+        }
+        androidx.preference.PreferenceCategory framing = new androidx.preference.PreferenceCategory(requireContext());
+        framing.setTitle(R.string.menu_image_framing); framing.setOrder(0);
+        androidx.preference.PreferenceCategory images = new androidx.preference.PreferenceCategory(requireContext());
+        images.setTitle(R.string.side_settings_images); images.setOrder(1);
+        String[][] groups = {{"pref_side_popup_straighten", "pref_side_popup_fov", "pref_side_popup_yaw", "pref_side_popup_pitch"},
+                {"pref_side_popup_rotation_left", "pref_side_popup_rotation_right", "pref_side_popup_mirror", "pref_side_camera_label", "pref_side_popup_auto_fit"}};
+        java.util.List<java.util.List<Preference>> moved = new java.util.ArrayList<>();
+        for (String[] keys : groups) {
+            java.util.List<Preference> items = new java.util.ArrayList<>();
+            for (String key : keys) {
+                Preference item = findPreference(key);
+                if (item != null) { getPreferenceScreen().removePreference(item); items.add(item); }
+            }
+            moved.add(items);
+        }
+        getPreferenceScreen().addPreference(framing); getPreferenceScreen().addPreference(images);
+        androidx.preference.PreferenceCategory[] categories = {framing, images};
+        for (int i = 0; i < categories.length; i++) for (int j = 0; j < moved.get(i).size(); j++) {
+            Preference item = moved.get(i).get(j); item.setOrder(j); categories[i].addPreference(item);
+        }
+        Preference autoFit = findPreference("pref_side_popup_auto_fit");
+        if (autoFit != null) { autoFit.setTitle(R.string.side_settings_auto_fit); autoFit.setSummary(R.string.side_settings_auto_fit_hint); }
+        addSideHelp("pref_side_picture_help", R.string.side_picture_help, explanations.toString().trim());
     }
 
     @Override
@@ -159,6 +236,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     @Override
     public void onStart() {
         super.onStart();
+        if (getView() instanceof SideCameraSettingsPane) ((SideCameraSettingsPane) getView()).startPreview();
         com.kooo.evcam.zeekr.BirdEyePopupService.addStateListener(birdEyeStateChanged);
         refreshBirdEyePopup();
         rearViewStateChanged = appConfig.onChanged(this::refreshRearViewEnabled, "rearview_enabled");
@@ -168,6 +246,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
 
     @Override
     public void onStop() {
+        if (getView() instanceof SideCameraSettingsPane) ((SideCameraSettingsPane) getView()).stopPreview();
         appConfig.removeChangeListener(rearViewStateChanged);
         rearViewStateChanged = null;
         com.kooo.evcam.zeekr.BirdEyePopupService.removeStateListener(birdEyeStateChanged);
@@ -1003,7 +1082,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         if (appConfig == null) return;
         for (String key : new String[]{"sub_side_image", "sub_side_window", "sub_side_hud"}) {
             Preference page = findPreference(key);
-            if (page != null) page.setEnabled(appConfig.isSidePopupEnabled());
+            if (page != null) page.setEnabled(page == getPreferenceScreen() || appConfig.isSidePopupEnabled());
         }
     }
 

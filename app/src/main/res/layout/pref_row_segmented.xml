@@ -33,7 +33,7 @@
             android:layout_height="wrap_content"
             android:ellipsize="end"
             android:maxLines="2"
-            android:textAppearance="@style/TextAppearance.Cam.Body"
+            android:textAppearance="@style/TextAppearance.Cam.SettingsBody"
             android:textColor="@color/pref_title" />
 
         <TextView
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="2dp"
             android:maxLines="3"
-            android:textAppearance="@style/TextAppearance.Cam.Micro"
+            android:textAppearance="@style/TextAppearance.Cam.SettingsMicro"
             android:textColor="@color/pref_summary" />
     </LinearLayout>
 

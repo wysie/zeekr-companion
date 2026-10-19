@@ -373,15 +373,15 @@
   },
   "components": [
     {
-      "name": "Take photo \u00b7 native token swatch",
+      "name": "Take photo · native token swatch",
       "kind": "button",
       "refersTo": "light-home-toolbar",
-      "description": "Main toolbar action: transparent fill, inline native icon in app, Body text; 80dp dock minimum. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
+      "description": "Main toolbar action: transparent fill, inline native icon in app, Body text; 72dp dock minimum. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
       "html": "<button class=\"ds-light-home-toolbar\">Take photo</button>",
       "css": ".ds-light-home-toolbar { background:transparent; color:#2A2B2E; font-family:Roboto,Arial,sans-serif; font-size:18px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:0; padding:10px 8px; min-height:48px; } .ds-light-home-toolbar:hover, .ds-light-home-toolbar:focus-visible, .ds-light-home-toolbar:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
     },
     {
-      "name": "Side by side \u00b7 native token swatch",
+      "name": "Side by side · native token swatch",
       "kind": "button",
       "refersTo": "light-layout-choice",
       "description": "Unselected source-layout choice: 1dp line stroke; native app includes a 36dp vector icon. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
@@ -389,7 +389,7 @@
       "css": ".ds-light-layout-choice { background:#E6E6E8; color:#2A2B2E; font-family:Roboto,Arial,sans-serif; font-size:16px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:1px solid #DDDDE0; padding:10px 8px; min-height:48px; } .ds-light-layout-choice:hover, .ds-light-layout-choice:focus-visible, .ds-light-layout-choice:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
     },
     {
-      "name": "Automatic \u00b7 native token swatch",
+      "name": "Automatic · native token swatch",
       "kind": "button",
       "refersTo": "light-layout-choice-selected",
       "description": "Selected source-layout choice: 2dp energy stroke and native selected state description. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
@@ -397,7 +397,7 @@
       "css": ".ds-light-layout-choice-selected { background:#FDEDE6; color:#B83E15; font-family:Roboto,Arial,sans-serif; font-size:16px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:2px solid #F0622D; padding:10px 8px; min-height:48px; } .ds-light-layout-choice-selected:hover, .ds-light-layout-choice-selected:focus-visible, .ds-light-layout-choice-selected:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
     },
     {
-      "name": "Start recording \u00b7 native token swatch",
+      "name": "Start recording · native token swatch",
       "kind": "card",
       "refersTo": "light-record-card-idle",
       "description": "Transparent recording hit area only; app includes progress ring, indicator and dynamic detail. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
@@ -405,7 +405,7 @@
       "css": ".ds-light-record-card-idle { background:transparent; color:#2A2B2E; font-family:Roboto,Arial,sans-serif; font-size:18px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:0; padding:10px 8px; min-height:48px; } .ds-light-record-card-idle:hover, .ds-light-record-card-idle:focus-visible, .ds-light-record-card-idle:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
     },
     {
-      "name": "Camera status \u00b7 native token swatch",
+      "name": "Camera status · native token swatch",
       "kind": "custom",
       "refersTo": "light-camera-status",
       "description": "Status action at rest; activated app state uses recording_quiet. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
@@ -446,6 +446,11 @@
       {
         "name": "Applied preview and compact recording",
         "body": "The selector names applied preview sources; the reopen notice names the saved next choice. Hide inactive arrangement tiles for one source. Keep recording action and clip detail in the toolbar, with live screen-off behavior in long-press Recording details.",
+        "section": "components"
+      },
+      {
+        "name": "Factory-style settings",
+        "body": "Use regular native sans-serif, uniform 16sp sidebar labels, 5dp settings/header corners, near-white/dark rows and orange-underlined tabs. Picture uses the existing live source, never concept imagery, and stacks below 760dp detail width.",
         "section": "components"
       }
     ],

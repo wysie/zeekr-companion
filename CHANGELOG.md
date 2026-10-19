@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Apply factory-inspired settings rows, regular labels, orange-underlined tabs and compact equal-width main toolbar actions.
+- Add Blind spot camera Behavior, Picture, Window and HUD tabs with preserved saved settings.
+- Add a Left/Right settings preview using the existing surround texture, with expand/hide controls and factory/stale-frame guards.
+
 - Show the applied preview in the selector and the saved next choice in the reopen notice; avoid pending previews for equivalent source sets.
 - Explain single-source layout behavior and hide inactive source arrangement choices while retaining the saved layout.
 - Keep the recording toolbar control to action/clip detail, separate it from utility actions and move live screen-off behavior into long-press Recording details.

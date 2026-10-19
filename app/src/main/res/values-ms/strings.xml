@@ -1286,4 +1286,24 @@
     <string name="home_surround_unavailable">360° memerlukan Sekeliling dalam pratonton yang digunakan. Pilih pratetap dengan Sekeliling, kemudian keluar dan buka semula.</string>
     <string name="home_pending_selection">Pratonton: %1$s · belum digunakan</string>
     <string name="home_layout_selected">Dipilih</string>
+    <string name="side_tab_behavior">Tingkah laku</string>
+    <string name="side_tab_picture">Gambar</string>
+    <string name="side_tab_window">Tetingkap</string>
+    <string name="side_tab_hud">HUD</string>
+    <string name="side_picture_help">Perihal tetapan gambar</string>
+    <string name="side_settings_preview">Pratonton kamera</string>
+    <string name="side_settings_unchanged">Pratonton dan main balik sahaja. Fail rakaman tidak berubah.</string>
+    <string name="side_settings_unavailable">Surround tiada dalam pratonton aktif. Pilih pratonton yang merangkumi Surround, kemudian keluar dan buka semula.</string>
+    <string name="side_settings_paused">Pratonton dijeda untuk kamera kilang atau sambungan kenderaan.</string>
+    <string name="side_settings_show">Tunjukkan pratonton</string>
+    <string name="side_settings_close">Sembunyikan pratonton tetapan</string>
+    <string name="side_settings_expand">Besarkan pratonton tetapan</string>
+    <string name="side_settings_restore">Pulihkan kawalan gambar</string>
+    <string name="side_settings_gpu">Pratonton tetapan memerlukan suapan Surround asal. Matikan pembetulan pratonton GPU dan buka semula aplikasi.</string>
+    <string name="side_settings_images">Gambar sisi</string>
+    <string name="side_settings_auto_fit">Auto muat</string>
+    <string name="side_settings_auto_fit_hint">Elakkan kawasan hitam</string>
+    <string name="side_behavior_help">Perihal tetapan tingkah laku</string>
+    <string name="side_settings_output_note">Menggunakan skrin jika HUD tiada. Kelajuan dan amaran kilang mungkin muncul di atas gambar HUD.</string>
+    <string name="side_settings_mirror_note">Pilih sama ada paparan sisi menggunakan, mengekalkan atau menyembunyikan sementara tetingkap Super mirror.</string>
 </resources>

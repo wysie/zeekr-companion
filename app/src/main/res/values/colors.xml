@@ -71,4 +71,5 @@
     <color name="side_arrow_background">#E6F1F2F4</color>
     <color name="side_arrow_lit">#FF087B2C</color>
     <color name="side_arrow_unlit">#FF61656B</color>
+    <color name="settings_row">#FFFAFAFB</color>
 </resources>

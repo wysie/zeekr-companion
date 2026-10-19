@@ -4,9 +4,9 @@
  <LinearLayout android:id="@+id/main_dock_actions" android:layout_width="wrap_content" android:layout_height="wrap_content" android:orientation="horizontal" android:gravity="center_vertical" android:baselineAligned="false">
     <FrameLayout
         android:id="@+id/btn_start_record"
-        android:layout_width="0dp" android:layout_weight="1.45"
+        android:layout_width="272dp"
         android:layout_height="wrap_content"
-        android:minHeight="80dp"
+        android:minHeight="72dp"
         android:clickable="true"
         android:contentDescription="@string/record_start"
         android:focusable="true"
@@ -21,7 +21,7 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:minHeight="80dp"
+            android:minHeight="72dp"
             android:paddingTop="10dp" android:paddingBottom="10dp"
             android:gravity="center_vertical"
             android:orientation="horizontal" android:baselineAligned="false"
@@ -29,8 +29,8 @@
             android:paddingEnd="12dp">
 
             <FrameLayout
-                android:layout_width="48dp"
-                android:layout_height="48dp">
+                android:layout_width="42dp"
+                android:layout_height="42dp">
 
                 <com.google.android.material.progressindicator.CircularProgressIndicator
                     android:id="@+id/record_ring"
@@ -40,10 +40,10 @@
                     android:max="1000"
                     android:progress="0"
                     app:indicatorColor="@color/recording"
-                    app:indicatorSize="48dp"
+                    app:indicatorSize="42dp"
                     app:trackColor="@color/recording_track"
                     app:trackCornerRadius="2dp"
-                    app:trackThickness="4dp" />
+                    app:trackThickness="3dp" />
 
                 <!-- 形状在代码里画：圆角半径和缩放一起动，就是圆 ⇄ 方 -->
                 <View
@@ -68,7 +68,7 @@
                     android:text="@string/record_start"
                     android:textColor="@color/text_primary"
                     android:textAppearance="@style/TextAppearance.Cam.Body"
-                    android:textStyle="bold" />
+                    android:fontFamily="sans-serif" />
 
                 <TextView
                     android:id="@+id/record_detail"
@@ -80,12 +80,15 @@
                     android:textColor="@color/text_secondary"
                     android:textAppearance="@style/TextAppearance.Cam.Caption" />
 
-            </LinearLayout>
-        </LinearLayout>
+
+ </LinearLayout>
+
+ </LinearLayout>
     </FrameLayout>
-  <com.google.android.material.button.MaterialButton android:id="@+id/btn_take_photo" style="@style/Widget.Cam.HomeToolbarAction" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:minHeight="80dp" android:layout_marginStart="8dp" android:text="@string/rail_photo" app:icon="@drawable/ic_camera" />
-  <com.google.android.material.button.MaterialButton android:id="@+id/btn_main_gallery" style="@style/Widget.Cam.HomeToolbarAction" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:minHeight="80dp" android:layout_marginStart="8dp" android:text="@string/home_gallery" app:icon="@drawable/ic_photo" />
-  <com.google.android.material.button.MaterialButton android:id="@+id/btn_main_windows" style="@style/Widget.Cam.HomeToolbarAction" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:minHeight="80dp" android:layout_marginStart="8dp" android:text="@string/main_windows" app:icon="@drawable/ic_home_windows" />
-  <com.kooo.evcam.ui.FisheyeToggleButton android:id="@+id/btn_fisheye" app:flatToolbarAppearance="true" app:icon="@drawable/ic_home_straighten" style="@style/Widget.Cam.HomeToolbarAction" android:layout_width="0dp" android:layout_weight="1" android:layout_height="match_parent" android:minHeight="80dp" android:layout_marginStart="8dp" android:text="@string/main_straighten_preview" />
+  <com.google.android.material.button.MaterialButton android:id="@+id/btn_take_photo" style="@style/Widget.Cam.HomeToolbarAction" android:layout_width="wrap_content" android:layout_height="match_parent" android:minHeight="72dp" android:layout_marginStart="8dp" android:text="@string/rail_photo" app:icon="@drawable/ic_camera" />
+  <com.google.android.material.button.MaterialButton android:id="@+id/btn_main_gallery" style="@style/Widget.Cam.HomeToolbarAction" android:layout_width="wrap_content" android:layout_height="match_parent" android:minHeight="72dp" android:layout_marginStart="8dp" android:text="@string/home_gallery" app:icon="@drawable/ic_photo" />
+  <com.google.android.material.button.MaterialButton android:id="@+id/btn_main_windows" style="@style/Widget.Cam.HomeToolbarAction" android:layout_width="wrap_content" android:layout_height="match_parent" android:minHeight="72dp" android:layout_marginStart="8dp" android:text="@string/main_windows" app:icon="@drawable/ic_home_windows" />
+  <com.kooo.evcam.ui.FisheyeToggleButton android:id="@+id/btn_fisheye" app:flatToolbarAppearance="true" app:icon="@drawable/ic_home_straighten" style="@style/Widget.Cam.HomeToolbarAction" android:layout_width="wrap_content" android:layout_height="match_parent" android:minHeight="72dp" android:layout_marginStart="8dp" android:text="@string/main_straighten_preview" />
+  <Space android:id="@+id/main_dock_space" android:layout_width="0dp" android:layout_height="1dp" android:layout_weight="1" />
  </LinearLayout>
 </HorizontalScrollView>

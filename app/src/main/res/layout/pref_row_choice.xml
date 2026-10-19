@@ -28,7 +28,7 @@
             android:ellipsize="end"
             android:maxLines="1"
             android:textColor="@color/pref_title"
-            android:textAppearance="@style/TextAppearance.Cam.Body" />
+            android:textAppearance="@style/TextAppearance.Cam.SettingsBody" />
 
         <TextView
             android:id="@android:id/summary"
@@ -37,7 +37,7 @@
             android:layout_marginTop="3dp"
             android:maxLines="2"
             android:textColor="@color/pref_summary"
-            android:textAppearance="@style/TextAppearance.Cam.Micro" />
+            android:textAppearance="@style/TextAppearance.Cam.SettingsMicro" />
     </LinearLayout>
 
     <LinearLayout

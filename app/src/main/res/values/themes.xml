@@ -95,7 +95,15 @@
     </style>
 
     <!-- Main dock only: retain native hit areas and ripple, remove individual tile fills. -->
+    <style name="Widget.Cam.HomeHeaderAction" parent="Widget.Cam.HomeAction">
+        <item name="cornerRadius">5dp</item>
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
     <style name="Widget.Cam.HomeToolbarAction" parent="Widget.Cam.HomeAction">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:letterSpacing">0</item>
+        <item name="iconSize">24dp</item>
         <item name="backgroundTint">@android:color/transparent</item>
         <item name="strokeWidth">0dp</item>
     </style>
@@ -218,5 +226,16 @@
 <style name="ShapeAppearance.Cam.ThumbSmall" parent="ShapeAppearance.Material3.SmallComponent">
         <item name="cornerFamily">rounded</item>
         <item name="cornerSize">6dp</item>
+    </style>
+    <style name="ThemeOverlay.Cam.SettingsTabs" parent="">
+        <item name="tabStyle">@style/Widget.Cam.SettingsTabs</item>
+    </style>
+    <style name="Widget.Cam.SettingsTabs" parent="Widget.Design.TabLayout">
+        <item name="tabTextAppearance">@style/TextAppearance.Cam.SettingsBody</item>
+        <item name="tabIndicatorFullWidth">false</item>
+        <item name="tabPaddingStart">16dp</item>
+        <item name="tabPaddingEnd">16dp</item>
+        <item name="tabMinWidth">0dp</item>
+        <item name="tabBackground">@android:color/transparent</item>
     </style>
 </resources>

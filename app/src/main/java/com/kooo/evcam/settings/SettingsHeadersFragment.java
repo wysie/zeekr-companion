@@ -224,7 +224,10 @@ public class SettingsHeadersFragment extends PreferenceFragmentCompat {
                 // Reset reused/OEM-styled titles too: actions and sections use the same size.
                 TextViewCompat.setAutoSizeTextTypeWithDefaults(title, TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE);
                 title.setTextSize(TypedValue.COMPLEX_UNIT_PX,
-                        getContext().getResources().getDimension(R.dimen.text_body));
+                        getContext().getResources().getDimension(R.dimen.text_caption));
+                title.setTypeface(android.graphics.Typeface.create("sans-serif", android.graphics.Typeface.NORMAL));
+                title.setLetterSpacing(0);
+                title.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(), R.color.text_primary));
                 title.setMaxLines(2); // Wrap long translations rather than shrinking the label.
                 if("pref_exit".equals(getKey()))title.setTextColor(androidx.core.content.ContextCompat.getColor(getContext(),R.color.recording_text));
             }

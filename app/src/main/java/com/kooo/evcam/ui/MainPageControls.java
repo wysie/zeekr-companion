@@ -78,14 +78,45 @@ public final class MainPageControls implements DefaultLifecycleObserver {
             line.gravity = (left ? android.view.Gravity.END : android.view.Gravity.START) | android.view.Gravity.CENTER_VERTICAL;
             divider.setLayoutParams(line);
         }
+        View space = activity.findViewById(R.id.main_dock_space);
+        actions.removeView(space);
         for (int i = 0; i < order.length; i++) {
             View child = activity.findViewById(order[left ? i : order.length - 1 - i]);
             if (child == null) continue;
-            // Only reorder controls; camera views are never detached.
             actions.removeView(child); actions.addView(child);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) child.getLayoutParams();
             params.setMarginStart(i == 0 ? 0 : Math.round(8 * activity.getResources().getDisplayMetrics().density));
             child.setLayoutParams(params);
+        }
+        // Space separates recording from the tightly grouped utilities, on either driver side.
+        actions.addView(space, left ? 1 : actions.getChildCount() - 1);
+        actions.post(() -> sizeToolbar(activity, actions));
+        View.OnLayoutChangeListener previous = (View.OnLayoutChangeListener) actions.getTag(R.id.main_dock_actions);
+        if (previous != null) actions.removeOnLayoutChangeListener(previous);
+        View.OnLayoutChangeListener sizing = (v, l, t, r, b, ol, ot, or, ob) -> {
+            if (r - l != or - ol) sizeToolbar(activity, actions);
+        };
+        actions.setTag(R.id.main_dock_actions, sizing);
+        actions.addOnLayoutChangeListener(sizing);
+    }
+
+    private static void sizeToolbar(Activity activity, LinearLayout actions) {
+        int width = 0;
+        int[] utilities = {R.id.btn_take_photo, R.id.btn_main_gallery, R.id.btn_main_windows, R.id.btn_fisheye};
+        for (int id : utilities) {
+            TextView action = activity.findViewById(id);
+            // Do not manually remeasure an attached control: that can leave its text layout
+            // at the natural width after returning from settings without a new layout pass.
+            int natural = (int) Math.ceil(android.text.Layout.getDesiredWidth(action.getText(), action.getPaint()))
+                    + action.getCompoundPaddingLeft() + action.getCompoundPaddingRight();
+            width = Math.max(width, natural);
+        }
+        float density = activity.getResources().getDisplayMetrics().density;
+        width = Math.max(Math.round(120 * density), Math.min(Math.round(208 * density), width));
+        for (int id : utilities) {
+            View action = activity.findViewById(id);
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) action.getLayoutParams();
+            if (params.width != width) { params.width = width; action.setLayoutParams(params); }
         }
     }
 

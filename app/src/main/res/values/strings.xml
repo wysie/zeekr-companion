@@ -1293,4 +1293,24 @@
     <string name="home_surround_unavailable">360° 需要当前预览包含环视。请选择包含环视的预设，然后退出并重新打开。</string>
     <string name="home_pending_selection">预览：%1$s · 待应用</string>
     <string name="home_layout_selected">已选择</string>
+    <string name="side_tab_behavior">行为</string>
+    <string name="side_tab_picture">画面</string>
+    <string name="side_tab_window">窗口</string>
+    <string name="side_tab_hud">HUD</string>
+    <string name="side_picture_help">画面设置说明</string>
+    <string name="side_settings_preview">相机预览</string>
+    <string name="side_settings_unchanged">仅影响预览和回放，不改变录制文件。</string>
+    <string name="side_settings_unavailable">当前预览不含环视。请选择包含环视的预览，然后退出并重新打开应用。</string>
+    <string name="side_settings_paused">原厂相机正在使用或车辆未连接，预览已暂停。</string>
+    <string name="side_settings_show">显示预览</string>
+    <string name="side_settings_close">隐藏设置预览</string>
+    <string name="side_settings_expand">放大设置预览</string>
+    <string name="side_settings_restore">恢复画面控件</string>
+    <string name="side_settings_gpu">设置预览需要原始环视画面。请关闭 GPU 预览校正并重启应用。</string>
+    <string name="side_settings_images">侧面画面</string>
+    <string name="side_settings_auto_fit">自动适配</string>
+    <string name="side_settings_auto_fit_hint">避免黑色区域</string>
+    <string name="side_behavior_help">行为设置说明</string>
+    <string name="side_settings_output_note">HUD 不可用时使用主屏幕。原厂速度和警告图标可能显示在 HUD 画面上方。</string>
+    <string name="side_settings_mirror_note">选择侧视画面使用、保留或暂时隐藏超级后视镜窗口。</string>
 </resources>

@@ -158,6 +158,7 @@ public class FourLaneContainer extends ViewGroup implements LivePreview {
      */
     private final ScaleMode correctedScaleMode = ScaleMode.FILL;
     private DisplayMode displayMode = DisplayMode.GRID;
+    private boolean presentationObscured;
     private final BirdEyePreview birdEye = new BirdEyePreview(this);
     private int focusedLane;
     /** laneOrder[格子位置] = 合成流中的画面序号。 */
@@ -310,7 +311,7 @@ public class FourLaneContainer extends ViewGroup implements LivePreview {
         if (plan == null || !plan.isComposite() || PreviewDewarp.isActive(textureView)) return false;
         stopGrow();
         displayMode = DisplayMode.BIRD_EYE;
-        birdEye.start(textureView, plan);
+        if (!presentationObscured) birdEye.start(textureView, plan);
         invalidate();
         return true;
     }
@@ -535,7 +536,7 @@ public class FourLaneContainer extends ViewGroup implements LivePreview {
         lastAttached = new java.lang.ref.WeakReference<>(this);
         readFisheye();
         fisheyeListener = new AppConfig(getContext()).onFisheyeChanged(this::readFisheye);
-        if (displayMode == DisplayMode.BIRD_EYE && plan != null && plan.isComposite()) {
+        if (!presentationObscured && displayMode == DisplayMode.BIRD_EYE && plan != null && plan.isComposite()) {
             birdEye.start(textureView, plan);
         }
         AppLog.i(TAG, "attached: " + describeState());
@@ -578,7 +579,7 @@ public class FourLaneContainer extends ViewGroup implements LivePreview {
         } else {
             plan = null;
         }
-        if (displayMode == DisplayMode.BIRD_EYE && plan != null && plan.isComposite()) {
+        if (!presentationObscured && displayMode == DisplayMode.BIRD_EYE && plan != null && plan.isComposite()) {
             birdEye.start(textureView, plan);
         }
         invalidate();
@@ -617,8 +618,22 @@ public class FourLaneContainer extends ViewGroup implements LivePreview {
         }
     }
 
+    /** Keep the native consumer draining behind opaque settings without drawing four meshes
+     * or running the DIY 360 worker. The selected main display mode stays unchanged. */
+    public void setPresentationObscured(boolean obscured) {
+        if (presentationObscured == obscured) return;
+        presentationObscured = obscured;
+        if (obscured) birdEye.stop();
+        else if (displayMode == DisplayMode.BIRD_EYE && plan != null && plan.isComposite()) birdEye.start(textureView, plan);
+        invalidate();
+    }
+
     @Override
     protected void dispatchDraw(Canvas canvas) {
+        if (presentationObscured) {
+            if (textureView != null) drawChild(canvas, textureView, getDrawingTime());
+            return;
+        }
         drawPreview(canvas);
         if (displayMode != DisplayMode.BIRD_EYE)
             frameGuard.cover(canvas, plan == null && displayMode != DisplayMode.RAW);

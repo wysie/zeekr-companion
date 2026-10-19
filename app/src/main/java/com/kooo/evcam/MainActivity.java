@@ -526,7 +526,10 @@ public class MainActivity extends AppCompatActivity {
         // 「主界面可见、容器隐藏」—— 于是看起来像是自己退回了主界面，
         // 其实那一层还在，只是被盖住了。按实际在场的 Fragment 摆一次可见性。
         if (getSupportFragmentManager().findFragmentById(R.id.fragment_container) != null) {
-            recordingLayout.setVisibility(View.GONE);
+            boolean settings = getSupportFragmentManager().findFragmentById(R.id.fragment_container)
+                    instanceof com.kooo.evcam.settings.SettingsShellFragment;
+            recordingLayout.setVisibility(settings ? View.VISIBLE : View.GONE);
+            recordingLayout.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
             fragmentContainer.setVisibility(View.VISIBLE);
         }
 
@@ -557,6 +560,9 @@ public class MainActivity extends AppCompatActivity {
         // 极氪合成流：texture_front 是容器里那个普通的 TextureView，
         // 四宫格由父容器 FourLaneContainer 重画子视图实现
         compositeContainer = findViewById(R.id.composite_container);
+        if (compositeContainer != null) compositeContainer.setPresentationObscured(
+                getSupportFragmentManager().findFragmentById(R.id.fragment_container)
+                        instanceof com.kooo.evcam.settings.SettingsShellFragment);
         if (compositeContainer != null) {
             tvCompositeInfo = recordingLayout.findViewById(R.id.tv_composite_info);
             setupCompositeControls();
@@ -1423,6 +1429,8 @@ public class MainActivity extends AppCompatActivity {
         // 可能刚在设置里换了录像盘：状态条的余量按新盘重算（探测缓存已在设置里清掉）
         updateStatusLine();
         recordingLayout.setVisibility(View.VISIBLE);
+        recordingLayout.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_AUTO);
+        if (compositeContainer != null) compositeContainer.setPresentationObscured(false);
         fragmentContainer.setVisibility(View.GONE);
     }
 
@@ -1436,7 +1444,11 @@ public class MainActivity extends AppCompatActivity {
      * （权限、相机映射）就在那个子返回栈里。</p>
      */
     private void showFragment(Fragment fragment) {
-        recordingLayout.setVisibility(View.GONE);
+        // Settings is opaque. Keep native camera consumers attached behind it so Picture can
+        // sample the already-running preview without creating another camera/session output.
+        recordingLayout.setVisibility(fragment instanceof com.kooo.evcam.settings.SettingsShellFragment ? View.VISIBLE : View.GONE);
+        recordingLayout.setImportantForAccessibility(View.IMPORTANT_FOR_ACCESSIBILITY_NO_HIDE_DESCENDANTS);
+        if (compositeContainer != null) compositeContainer.setPresentationObscured(fragment instanceof com.kooo.evcam.settings.SettingsShellFragment);
         fragmentContainer.setVisibility(View.VISIBLE);
         // 进一层：沿 Z 轴放大淡入，和设置里进二级界面是同一个动作。
         // 录制中（且开着「录制时减少动效」）或系统关了动画时直接切
@@ -1500,9 +1512,11 @@ public class MainActivity extends AppCompatActivity {
     }
 
 
-    /**
-     * 显示软件设置界面
-     */
+    /** Existing composite texture only; a settings preview never initializes a pipeline. */
+    public android.view.TextureView settingsPreviewTexture() {
+        return previewChannels != null && previewChannels.previewKeys.contains("front") ? textureFront : null;
+    }
+
     private void showSettingsInterface() {
         showFragment(new com.kooo.evcam.settings.SettingsShellFragment());
     }
