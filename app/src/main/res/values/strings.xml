@@ -159,7 +159,7 @@
     <string name="vi_cell_pedals">刹车 / 油门</string>
     <string name="vi_cell_speed">车速</string>
     <string name="vi_cell_auto_hold">自动驻车</string>
-    <string name="vi_cell_stock_360">原厂 360</string>
+    <string name="vi_cell_stock_360">原厂 360°</string>
     <string name="vi_cell_sentry">哨兵模式</string>
     <string name="vi_cell_cabin">座舱</string>
     <string name="vi_cell_front_view">前灯组</string>
@@ -215,7 +215,7 @@
     <string name="vi_seat_passenger">副驾座位</string>
     <string name="vi_mirror_dip_driver">主驾后视镜倒车下翻</string>
     <string name="vi_mirror_dip_passenger">副驾后视镜倒车下翻</string>
-    <string name="vi_stock_360">原厂 360 画面</string>
+    <string name="vi_stock_360">原厂 360° 画面</string>
     <string name="vi_stock_popup">原厂画面弹出</string>
     <string name="vi_park_assist">泊车影像</string>
     <string name="vi_odometer">总里程</string>
@@ -1026,8 +1026,8 @@
     <!-- DIY ground-plane 360 prototype -->
     <string name="bird_eye_button">360°</string>
     <string name="bird_eye_back">四路画面</string>
-    <string name="bird_eye_button_description">试验性360视图。点击切换画面，长按校准。</string>
-    <string name="bird_eye_calibrate">校准360视图</string>
+    <string name="bird_eye_button_description">试验性360°视图。点击切换画面，长按校准。</string>
+    <string name="bird_eye_calibrate">校准360°视图</string>
     <string name="bird_eye_camera">选择校准的相机</string>
     <string name="bird_eye_calibration_note">实验性校准。默认值是估计值，非009实测标定。朝向：0°前、90°右、180°后、270°左。安装偏移：X正值向右，Y正值向前。选择源画面时交换相机，保持四路不同。黑色区域没有观测覆盖。修改自动保存。</string>
     <string name="bird_eye_reset">全部重置</string>
@@ -1050,21 +1050,21 @@
     <string name="bird_eye_front">前</string>
     <string name="bird_eye_waiting">等待实时相机画面</string>
     <string name="bird_eye_gpu_blocked">请关闭GPU鱼眼校正</string>
-    <string name="bird_eye_watermark">实验性 360 · 尚未校准</string>
-    <string name="bird_eye_unavailable">360需要可用的环视预览。如已启用GPU预览校正，请在开发者选项关闭并重启应用。</string>
-    <string name="bird_eye_vehicle_required">需要已连接的车辆接口才能测试或校准 360</string>
-    <string name="bird_eye_factory_active">原厂相机已开启，360暂停</string>
+    <string name="bird_eye_watermark">实验性 360° · 尚未校准</string>
+    <string name="bird_eye_unavailable">360°需要可用的环视预览。如已启用GPU预览校正，请在开发者选项关闭并重启应用。</string>
+    <string name="bird_eye_vehicle_required">需要已连接的车辆接口才能测试或校准 360°</string>
+    <string name="bird_eye_factory_active">原厂相机已开启，360°暂停</string>
     <string name="bird_eye_invalid_calibration">相机映射无效，请重置校准</string>
-    <string name="bird_eye_slow">处理过慢或内存不足，360已暂停</string>
+    <string name="bird_eye_slow">处理过慢或内存不足，360°已暂停</string>
     <string name="side_view_waiting_live">等待实时相机画面</string>
     <string name="dev_repair_backup_note">修复前的原始文件保存在录像目录的 repair-originals 子目录中。不会自动删除；空间不足时不会开始修复。</string>
-    <string name="bird_eye_photo_saved">360 预览和校准信息已保存到 ZeekrShortcutApp/Photos/360</string>
-    <string name="bird_eye_quality">360 分辨率</string>
+    <string name="bird_eye_photo_saved">360° 预览和校准信息已保存到 ZeekrShortcutApp/Photos/360</string>
+    <string name="bird_eye_quality">360° 分辨率</string>
     <string name="bird_eye_quality_low">低 — 最快</string>
     <string name="bird_eye_quality_balanced">均衡 — 默认</string>
     <string name="bird_eye_quality_full">完整 — 原生预览分辨率</string>
     <string name="bird_eye_quality_note">均衡模式在相同输出尺寸下保留更多摄像头细节。完整模式复制可用的实时画面（最高 800 万像素），最高每秒 5 帧。处理太慢时先降低帧率，再降低分辨率；低模式仍太慢则暂停。照片使用实际分辨率。提高分辨率不会修正校准。</string>
-    <string name="bird_eye_quality_reduced">360 处理太慢或内存不足，已降低分辨率。详细信息见诊断报告。</string>
+    <string name="bird_eye_quality_reduced">360° 处理太慢或内存不足，已降低分辨率。详细信息见诊断报告。</string>
     <string name="msg_record_profile_restart">相机选择已更改。请退出并重新打开应用后再录像。</string>
     <string name="dev_camera_display_title">相机与显示屏工具</string>
     <string name="dev_camera_display_summary">批量保存相机画面、显示编号测试卡；导出至 ZeekrShortcutApp/Developer</string>
@@ -1104,7 +1104,7 @@
     <string name="set_hud_side_follow_title">HUD 位置跟随转向灯</string>
     <string name="set_hud_side_follow_summary">开启后左灯靠左、右灯靠右。关闭时保持固定位置；左右位置滑块按左边计算。</string>
     <string name="set_hud_during_factory_title">原厂画面显示时保留 HUD 侧视（试验性）</string>
-    <string name="set_hud_during_factory_summary">默认关闭。原厂 360、相机弹窗或泊车辅助显示时，仅保留 HUD 侧视。倒车时仍关闭；主屏侧视仍让位。共用相机硬件可能中断画面，不会强制获取相机。</string>
+    <string name="set_hud_during_factory_summary">默认关闭。原厂 360°、相机弹窗或泊车辅助显示时，仅保留 HUD 侧视。倒车时仍关闭；主屏侧视仍让位。共用相机硬件可能中断画面，不会强制获取相机。</string>
     <string name="set_developer_mode_title">启用开发者模式</string>
     <string name="set_developer_mode_summary">警告：试验性功能和排查工具可能影响相机、录制和存储。全新安装默认关闭；重启和更新后保留选择。关闭后隐藏开发者选项，其设置不再生效，已保存的值不会删除。部分更改需重启应用。</string>
     <string name="set_side_mirror_mode_title">超级后视镜开启时</string>
@@ -1204,13 +1204,13 @@
     <string name="bird_eye_profile_manual">手动（估计默认值）</string>
     <string name="bird_eye_profile_009">009 图像拟合（实验性）</string>
     <string name="bird_eye_profile_note">自动按车型选择：009 使用实验性图像拟合，7X 或未识别车型使用手动投影。已保存的投影选择和手动镜头参数会保留。选择自动可恢复跟随车型，且不删除调校值。重置校准会清除调校并恢复自动。</string>
-    <string name="bird_eye_profile_fitted_note">当前使用 009 图像拟合。独立视野边距默认为 300，显示范围更宽；减小数值可放大。参考单位并非实测距离。可在此调整源画面和画质；编辑镜头参数请在 360 设置中选择手动。</string>
+    <string name="bird_eye_profile_fitted_note">当前使用 009 图像拟合。独立视野边距默认为 300，显示范围更宽；减小数值可放大。参考单位并非实测距离。可在此调整源画面和画质；编辑镜头参数请在 360° 设置中选择手动。</string>
 
     <string name="bird_eye_car_colour">车身颜色</string>
     <string name="bird_eye_car_green">绿色</string>
     <string name="bird_eye_car_white">白色</string>
     <string name="bird_eye_car_black">黑色</string>
-    <string name="bird_eye_car_colour_note">仅改变主界面、悬浮窗和 360 照片中的图示，不会改变相机或标定。自动模式仅使用已知车型，无法识别时显示轮廓。7X 尚未实车验证；请使用手动投影，009 图像拟合仅适用于 009。</string>
+    <string name="bird_eye_car_colour_note">仅改变主界面、悬浮窗和 360° 照片中的图示，不会改变相机或标定。自动模式仅使用已知车型，无法识别时显示轮廓。7X 尚未实车验证；请使用手动投影，009 图像拟合仅适用于 009。</string>
     <string name="bird_eye_car_model">车辆图示</string>
     <string name="bird_eye_car_auto">自动（未知车型使用轮廓）</string>
     <string name="bird_eye_car_outline">通用轮廓</string>
@@ -1243,9 +1243,9 @@
     <string name="vehicle_profile_defaults_title">车型默认值与已确认画面</string>
     <string name="vehicle_profile_summary">%1$s · 更改后请退出并重新打开</string>
     <string name="vehicle_profile_unknown">自动 · 未识别，请选择车型。</string>
-    <string name="vehicle_profile_defaults_009">009 车主导出：环视 = 相机 3，前方道路 = 0，后方道路 = 1，座舱 = 2。未确认第二路座舱。手动映射优先。HUD 独立匹配显示器并保留布局。360 自动投影使用实验性 009 图像拟合，显式选择和手动调校优先；距离精度和同时录制仍需实车验证。</string>
-    <string name="vehicle_profile_defaults_7x">上游 7X 证据：环视合成流及前、后座舱画面。自动发现相机，手动映射优先。独立前后道路画面尚未确认，需手动识别。HUD 保留独立的显示器匹配和布局。DIY 360 使用手动投影，不应用 009 图像拟合。7X 拼接对齐仍需实车测试。</string>
-    <string name="vehicle_profile_defaults_unknown">自动只接受安卓明确报告的 009 或 7X 车型名，Pixel 3a 等通用名称不能识别车型。保留手动来源和录制选择。HUD 独立检查实际显示器。DIY 360 仍为实验功能，不推断车型标定。</string>
+    <string name="vehicle_profile_defaults_009">009 车主导出：环视 = 相机 3，前方道路 = 0，后方道路 = 1，座舱 = 2。未确认第二路座舱。手动映射优先。HUD 独立匹配显示器并保留布局。360° 自动投影使用实验性 009 图像拟合，显式选择和手动调校优先；距离精度和同时录制仍需实车验证。</string>
+    <string name="vehicle_profile_defaults_7x">上游 7X 证据：环视合成流及前、后座舱画面。自动发现相机，手动映射优先。独立前后道路画面尚未确认，需手动识别。HUD 保留独立的显示器匹配和布局。DIY 360° 使用手动投影，不应用 009 图像拟合。7X 拼接对齐仍需实车测试。</string>
+    <string name="vehicle_profile_defaults_unknown">自动只接受安卓明确报告的 009 或 7X 车型名，Pixel 3a 等通用名称不能识别车型。保留手动来源和录制选择。HUD 独立检查实际显示器。DIY 360° 仍为实验功能，不推断车型标定。</string>
     <string name="vehicle_profile_stop_recording">请先停止录制，再更改车型。</string>
     <string name="record_preview_current">预览布局：%1$s</string>
     <string name="record_preview_surround_roads">环视 + 前后道路</string>

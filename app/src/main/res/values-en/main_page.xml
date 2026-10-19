@@ -3,15 +3,15 @@
     <string name="main_brand_name">Zeekr Companion</string>
     <string name="main_preview_selection">Preview: %1$s</string>
     <string name="main_preview_choice_help">This changes the saved preview layout only. Recording selections stay unchanged. Quit and reopen to apply; quitting stops recording.</string>
-    <string name="main_360_view">360 view</string>
+    <string name="main_360_view">360° view</string>
     <string name="main_straighten_preview">Straighten preview</string>
     <string name="main_windows">Windows</string>
     <string name="main_mirror_window">Super mirror</string>
-    <string name="main_360_window">360 window</string>
+    <string name="main_360_window">360° window</string>
     <string name="main_window_open">Open</string>
     <string name="main_window_closed">Closed</string>
     <string name="main_window_paused">Paused</string>
     <string name="main_expand_preview">Expand preview</string>
     <string name="main_restore_controls">Restore controls</string>
-    <string name="main_360_destinations_help">On the main page, 360 view changes the preview; 360 window opens a separate window. The switch here also opens or closes that window.</string>
+    <string name="main_360_destinations_help">On the main page, 360° view changes the preview; 360° window opens a separate window. The switch here also opens or closes that window.</string>
 </resources>

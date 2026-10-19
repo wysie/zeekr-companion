@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Use 360° consistently in main-page actions, settings and camera messages across languages.
+
 - Show the Companion logo beside the main-page title, with contrasting light/dark colours.
 
 - Give paired main-page actions equal widths and matching heights while retaining normal-size wrapped labels.

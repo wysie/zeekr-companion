@@ -144,7 +144,7 @@
     <string name="vi_cell_pedals">Brake / throttle</string>
     <string name="vi_cell_speed">Speed</string>
     <string name="vi_cell_auto_hold">Auto hold</string>
-    <string name="vi_cell_stock_360">Factory 360</string>
+    <string name="vi_cell_stock_360">Factory 360°</string>
     <string name="vi_cell_sentry">Sentry Mode</string>
     <string name="vi_cell_cabin">Cabin</string>
     <string name="vi_cell_front_view">Front lamps</string>
@@ -200,7 +200,7 @@
     <string name="vi_seat_passenger">Passenger seat</string>
     <string name="vi_mirror_dip_driver">Driver mirror, reverse tilt</string>
     <string name="vi_mirror_dip_passenger">Passenger mirror, reverse tilt</string>
-    <string name="vi_stock_360">Factory 360 view</string>
+    <string name="vi_stock_360">Factory 360° view</string>
     <string name="vi_stock_popup">Factory view pop-up</string>
     <string name="vi_park_assist">Park assist view</string>
     <string name="vi_odometer">Odometer</string>
@@ -1042,8 +1042,8 @@
     <!-- DIY ground-plane 360 prototype -->
     <string name="bird_eye_button">360°</string>
     <string name="bird_eye_back">Four cameras</string>
-    <string name="bird_eye_button_description">Experimental 360 view. Tap to switch views; hold to calibrate.</string>
-    <string name="bird_eye_calibrate">Calibrate 360 view</string>
+    <string name="bird_eye_button_description">Experimental 360° view. Tap to switch views; hold to calibrate.</string>
+    <string name="bird_eye_calibrate">Calibrate 360° view</string>
     <string name="bird_eye_camera">Camera to calibrate</string>
     <string name="bird_eye_calibration_note">Experimental calibration. Defaults are estimates, not a measured 009 calibration. Heading: 0° front, 90° right, 180° rear, 270° left. Mount offsets: positive X right, positive Y forward. Source selection swaps camera feeds to keep all four distinct. Black areas have no observed coverage. Changes save automatically.</string>
     <string name="bird_eye_reset">Reset all</string>
@@ -1066,21 +1066,21 @@
     <string name="bird_eye_front">Front</string>
     <string name="bird_eye_waiting">Waiting for live cameras</string>
     <string name="bird_eye_gpu_blocked">GPU straightening must be off</string>
-    <string name="bird_eye_watermark">Experimental 360 · uncalibrated</string>
-    <string name="bird_eye_unavailable">360 needs an active surround preview. If GPU preview straightening is enabled, turn it off in Developer options and restart the app.</string>
-    <string name="bird_eye_vehicle_required">Connect the vehicle interface to test or calibrate 360</string>
-    <string name="bird_eye_factory_active">Factory camera active — 360 paused</string>
+    <string name="bird_eye_watermark">Experimental 360° · uncalibrated</string>
+    <string name="bird_eye_unavailable">360° needs an active surround preview. If GPU preview straightening is enabled, turn it off in Developer options and restart the app.</string>
+    <string name="bird_eye_vehicle_required">Connect the vehicle interface to test or calibrate 360°</string>
+    <string name="bird_eye_factory_active">Factory camera active — 360° paused</string>
     <string name="bird_eye_invalid_calibration">Invalid camera mapping — reset calibration</string>
-    <string name="bird_eye_slow">360 paused: processing too slow or memory limited</string>
+    <string name="bird_eye_slow">360° paused: processing too slow or memory limited</string>
     <string name="side_view_waiting_live">Waiting for live camera</string>
     <string name="dev_repair_backup_note">Verified originals are kept in repair-originals inside the video folder. They are not automatically removed; repair will not start without space for the backup.</string>
-    <string name="bird_eye_photo_saved">360 preview and calibration saved to ZeekrShortcutApp/Photos/360</string>
-    <string name="bird_eye_quality">360 resolution</string>
+    <string name="bird_eye_photo_saved">360° preview and calibration saved to ZeekrShortcutApp/Photos/360</string>
+    <string name="bird_eye_quality">360° resolution</string>
     <string name="bird_eye_quality_low">Low — fastest</string>
     <string name="bird_eye_quality_balanced">Balanced — default</string>
     <string name="bird_eye_quality_full">Full — native preview resolution</string>
     <string name="bird_eye_quality_note">Balanced retains more camera detail at the same output size. Full copies the available live frame (up to 8 MP) at up to 5 fps. Slow processing first reduces frame rate, then resolution; Low pauses if still too slow. Saved photos use the active resolution. Resolution does not fix calibration.</string>
-    <string name="bird_eye_quality_reduced">360 resolution reduced because processing was too slow or memory was limited. Details are in Diagnostics.</string>
+    <string name="bird_eye_quality_reduced">360° resolution reduced because processing was too slow or memory was limited. Details are in Diagnostics.</string>
     <string name="msg_record_profile_restart">Camera selection changed. Exit and reopen the app to apply it before recording.</string>
     <string name="dev_camera_display_title">Camera and display tools</string>
     <string name="dev_camera_display_summary">Camera snapshots and numbered display tests; exports to ZeekrShortcutApp/Developer</string>
@@ -1120,7 +1120,7 @@
     <string name="set_hud_side_follow_title">Follow indicator side on HUD</string>
     <string name="set_hud_side_follow_summary">On: left signal on the left, right signal on the right; the position slider sets distance from that edge. Off: fixed position measured from the left.</string>
     <string name="set_hud_during_factory_title">Keep HUD side camera during factory views (experimental)</string>
-    <string name="set_hud_during_factory_summary">Off by default. Keeps only the HUD side camera during factory 360, camera pop-ups or parking assist. Reverse still hides it; screen views still yield. Shared camera hardware may interrupt the feed. This does not force camera access.</string>
+    <string name="set_hud_during_factory_summary">Off by default. Keeps only the HUD side camera during factory 360°, camera pop-ups or parking assist. Reverse still hides it; screen views still yield. Shared camera hardware may interrupt the feed. This does not force camera access.</string>
     <string name="set_developer_mode_title">Enable developer mode</string>
     <string name="set_developer_mode_summary">Warning: experimental features and troubleshooting tools can affect cameras, recording and storage. Off on new installs; stays as selected across restarts and updates. Turning it off hides Developer options and disables their settings without erasing saved values. Some changes require restarting the app.</string>
     <string name="set_side_mirror_mode_title">When Super mirror is active</string>
@@ -1220,13 +1220,13 @@
     <string name="bird_eye_profile_manual">Manual (estimated defaults)</string>
     <string name="bird_eye_profile_009">009 image fit (experimental)</string>
     <string name="bird_eye_profile_note">Automatic follows the vehicle model: experimental 009 image fit for 009, Manual for 7X or an unidentified car. Existing choices and manual lens edits are preserved. Select Automatic to follow the model without deleting tuning; Reset calibration clears tuning and restores Automatic.</string>
-    <string name="bird_eye_profile_fitted_note">009 image fit is active. Its separate view margin defaults to 300 for wider framing; lower values zoom in. Reference units are not measured distances. Adjust sources and quality here; select Manual in 360 settings to edit lens geometry.</string>
+    <string name="bird_eye_profile_fitted_note">009 image fit is active. Its separate view margin defaults to 300 for wider framing; lower values zoom in. Reference units are not measured distances. Adjust sources and quality here; select Manual in 360° settings to edit lens geometry.</string>
 
     <string name="bird_eye_car_colour">Car colour</string>
     <string name="bird_eye_car_green">Green</string>
     <string name="bird_eye_car_white">White</string>
     <string name="bird_eye_car_black">Black</string>
-    <string name="bird_eye_car_colour_note">Artwork only, shared by main view, popup and 360 photos; camera mapping and calibration stay unchanged. Auto uses known vehicle identity, otherwise an outline. 7X still needs vehicle testing: use Manual projection; 009 image fit is for 009 only.</string>
+    <string name="bird_eye_car_colour_note">Artwork only, shared by main view, popup and 360° photos; camera mapping and calibration stay unchanged. Auto uses known vehicle identity, otherwise an outline. 7X still needs vehicle testing: use Manual projection; 009 image fit is for 009 only.</string>
     <string name="bird_eye_car_model">Vehicle illustration</string>
     <string name="bird_eye_car_auto">Auto (outline if unknown)</string>
     <string name="bird_eye_car_outline">Generic outline</string>
@@ -1259,9 +1259,9 @@
     <string name="vehicle_profile_defaults_title">Model defaults and confirmed feeds</string>
     <string name="vehicle_profile_summary">%1$s · Exit and reopen after changing</string>
     <string name="vehicle_profile_unknown">Auto · Not identified. Choose your model.</string>
-    <string name="vehicle_profile_defaults_009">009 owner export: Surround = camera 3, Front road = 0, Rear road = 1, Cabin = 2. No second cabin feed confirmed. Manual mappings override these defaults. HUD uses its own display match and saved layout. Automatic 360 projection uses the experimental 009 fit; explicit choices and manual tuning take priority. Distance accuracy and simultaneous recording still need vehicle checks.</string>
-    <string name="vehicle_profile_defaults_7x">Upstream 7X evidence: surround composite plus front and rear cabin feeds. Camera sources are discovered, with manual mappings taking priority. Separate front/rear road feeds are unconfirmed and need manual identification. HUD keeps its own display matching/layout. DIY 360 uses Manual projection; the 009 image fit is not applied. 7X 360 alignment still needs vehicle testing.</string>
-    <string name="vehicle_profile_defaults_unknown">Auto only accepts an explicit 009 or 7X model name from Android. Generic names such as Pixel 3a do not identify the car. Existing source overrides and recording choices are kept. HUD checks actual displays independently. DIY 360 remains experimental; no model-specific calibration is inferred.</string>
+    <string name="vehicle_profile_defaults_009">009 owner export: Surround = camera 3, Front road = 0, Rear road = 1, Cabin = 2. No second cabin feed confirmed. Manual mappings override these defaults. HUD uses its own display match and saved layout. Automatic 360° projection uses the experimental 009 fit; explicit choices and manual tuning take priority. Distance accuracy and simultaneous recording still need vehicle checks.</string>
+    <string name="vehicle_profile_defaults_7x">Upstream 7X evidence: surround composite plus front and rear cabin feeds. Camera sources are discovered, with manual mappings taking priority. Separate front/rear road feeds are unconfirmed and need manual identification. HUD keeps its own display matching/layout. DIY 360° uses Manual projection; the 009 image fit is not applied. 7X 360° alignment still needs vehicle testing.</string>
+    <string name="vehicle_profile_defaults_unknown">Auto only accepts an explicit 009 or 7X model name from Android. Generic names such as Pixel 3a do not identify the car. Existing source overrides and recording choices are kept. HUD checks actual displays independently. DIY 360° remains experimental; no model-specific calibration is inferred.</string>
     <string name="vehicle_profile_stop_recording">Stop recording before changing the vehicle model.</string>
     <string name="record_preview_current">Preview layout: %1$s</string>
     <string name="record_preview_surround_roads">Surround + Front + Rear</string>
