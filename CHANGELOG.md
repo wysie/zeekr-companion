@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Match the navigation drawer to the neutral Settings styling and add a live 360° window switch beneath Super mirror.
+
 ## [2.11.54-alpha.1] - 2026-10-20
 
 - Apply saved camera/source, native-size and GPU routing changes without quitting, with shared pending banners, clip finalization, confirmation and recording resumption.

@@ -167,3 +167,29 @@ uses a standard horizontal minus, in the existing 24dp vector grid and stroke.
 Tap still calls `moveTaskToBack(true)`; long-press still invokes Quit app. The
 accessible name and named Quit app long-click action are retained. Debug assembly
 and lint pass; this artwork-only correction adds no interaction or camera changes.
+
+## Navigation drawer follow-up
+
+The drawer now uses the Settings palette and regular 18sp labels, including About
+and Quit. A compact logo header, neutral non-elevated 320dp panel, consistent native
+switches and wrapping 52dp-minimum rows replace its older independent presentation.
+Both main camera layouts share one drawer XML. The selected destination respects
+restored Settings state after Activity/theme recreation.
+
+A manual **360° window** switch sits below Super mirror and controls the same
+`BirdEyePopupService` session as Settings and Windows. The visible drawer reconciles
+that service's state through the existing main-page refresh; external stop/X and
+start/refusal update the switch. Factory/screen suspension leaves the requested
+session enabled. No boot preference, recording choice, pipeline rebuild or new
+camera mapping is introduced. Existing overlay permission and factory-priority
+checks stay in the shared popup path.
+
+Validation uses actual native NavigationView rows on a disposable API 32 tablet
+emulator: light/dark/1.3× text screenshots, stable destination font size/weight,
+switch accessibility, shared popup start/stop, unchanged pipeline/preferences and
+restored Settings selection. The emulator has no vehicle composite feed; its
+waiting view is not presented as car-camera output. Vehicle appearance still needs
+an owner check. Both native tests, all 1,514 JVM tests, lint (zero errors), and
+debug/release builds pass. The scoped UI detector reports no findings. Evidence:
+`/tmp/companion-drawer-native-final.log` and
+`/tmp/companion-drawer-validation-final.log`.

@@ -41,7 +41,7 @@
     <color name="nav_icon_tint">@color/text_secondary</color>
     <color name="nav_icon_tint_selected">@color/text_primary</color>
     <color name="nav_text_primary">@color/text_primary</color>
-    <color name="nav_section_title">@color/text_tertiary</color>
+    <color name="nav_section_title">@color/text_secondary</color>
     <color name="preview_background">@color/bg</color>
     <color name="preview_placeholder_text">@color/text_secondary</color>
     <color name="preview_controls_background">@color/bg</color>

@@ -348,3 +348,15 @@ paused/unavailable state. See `docs/factory-style-ui.md` for functional boundari
 ### Concise preview states, 2026-10-19
 
 The camera stage uses a short, distinct label for starting, waiting, busy, reconnecting, unavailable, paused, inactive and unassigned states. A longer wait adds one supporting line with elapsed seconds and a Camera status hint. Accessibility announces state/hint changes rather than every elapsed second. Camera status retains the full scheduler/mapping explanation and read-only diagnostics route. Preview and recording authority stay independent.
+
+### Navigation drawer refinement
+
+The modal drawer shares the Settings palette and typography: neutral `nav_background`,
+regular 18sp destination labels (`NavigationMenuTextAppearance` derives from SettingsBody),
+14sp secondary/group text, 21sp regular brand title and the existing Companion mark.
+Selected rows use the Settings 5dp corner radius. Disable Material active-label bolding;
+use a flat 320dp panel without drawer elevation or rounded outer corners. Both main
+source layouts include `layout_navigation_drawer.xml`. Rows remain at least 52dp tall,
+wrap to two lines and scroll for larger system fonts. The three window/control rows
+share native switches and the existing feature authorities. 360° window is a manual
+service session, rather than a persisted boot toggle or the main preview's 360° mode.
