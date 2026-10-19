@@ -6,7 +6,7 @@ Replaces the permanent action column with a full-width camera stage, header and
 bottom dock. New source-layout preferences only change existing view bounds;
 they are excluded from camera-pipeline shape and recording profiles. Existing
 source presets, mapping, per-lane framing, window placement and recording authority
-remain in their existing stores. No release tag/version or update destination changes.
+remain in their existing stores. The feature itself did not change the release version or update destination.
 
 ## Checks
 
@@ -49,4 +49,5 @@ The redesign does not claim to fix those hardware-dependent behaviors.
 All eight native main-page tests pass. The independent reviewer scored both
 reported findings resolved and returned **SHIP** for that correction pass. This
 is a scoped UI review, not certification of the whole app or either vehicle.
-The feature remains unreleased until a new version/tag/APK is published.
+Included in **v2.11.51-alpha.1**; the separate release preparation increments the
+Android version to 2.11.51-alpha.1 / 334 and retains the existing package/signing identity.
