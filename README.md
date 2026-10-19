@@ -45,7 +45,7 @@ The app-name watermark on new recordings and normal photos uses **Zeekr Companio
 plus the version; existing footage keeps its original burned-in text. The logo itself
 is not added to the footage. Raw developer exports retain their existing behavior.
 
-Current test download: [Zeekr Companion 2.11.51-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.51-alpha.1).
+Current test download: [Zeekr Companion 2.11.52-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.52-alpha.1).
 For in-app delivery, select **Updates → Update channel → Alpha**; Beta and Stable
 channels deliberately exclude this release. It retains the application ID and
 signing certificate for an in-place update. New behavior still needs on-car testing.
@@ -58,8 +58,8 @@ Gallery, Windows and contextual **Straighten** actions. A single divider
 separates it from the picture; individual controls have transparent backgrounds
 and native press/focus feedback. Recording keeps its red indicator and progress;
 Straighten uses orange text plus a checkmark when enabled; long-press explains that
-it affects preview/playback and leaves recorded files unchanged. This flat-toolbar refinement is
-newer than alpha 51 and is not yet in a downloadable release. Dock actions keep
+it affects preview/playback and leaves recorded files unchanged. These toolbar
+refinements ship in alpha 52. Dock actions keep
 normal-size wrapped labels; the saved driver-side preference puts recording on
 that side. Settings and Minimise stay in the header. Long-press Minimise still quits.
 
@@ -80,7 +80,7 @@ or Turn off) alongside its current state. Playback Home returns directly to live
 cameras, while Android Back returns to the gallery. An empty video library shows
 storage guidance and disables media-dependent actions; Refresh and navigation stay
 available. Gallery accessibility labels include video date/time, duration, lock and
-selection state. These refinements are newer than alpha 51 and need an on-car check.
+selection state. These refinements ship in alpha 52 and need an on-car check.
 
 The independent **Source layout** preference defaults to **Automatic** (the current
 large-surround-plus-smaller-sources arrangement). **Side by side** gives the surround

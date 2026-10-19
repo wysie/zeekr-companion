@@ -95,3 +95,18 @@ vertical reflow and more extreme text scales still need device confirmation.
 Final reviewer verdict: Astra approved the refreshed native main, Preview, Windows,
 Interface, header typography and empty-playback captures/source, with all six design
 findings resolved and no further material UI change requested in the reviewed scope.
+
+## Alpha 52 release validation
+
+`2.11.52-alpha.1` / code 335 packages the flat toolbar and reviewed native UI
+polish above. No additional camera or recording pipeline change is introduced by
+the version bump. The signed release rebuild, 1,494 JVM tests, three packaging
+tests and lint (zero errors) pass. Native evidence is the reviewed implementation
+above; the version bump does not imply a new vehicle test. Local APK metadata
+confirms package `io.github.dts88.zeekrshortcut`, min SDK 28, target 36, the canonical
+`ZeekrCompanion-2.11.52-alpha.1.apk` name and the retained signing certificate
+SHA-256 `a40da80a59d170caa950cf15c18c454d47a39b26989d8b640ecd745ba71bf5dc`.
+
+The tag workflow builds the downloadable artifact independently and stages a
+draft for asset, checksum, metadata, signing and notes verification before alpha
+publication. Update delivery requires the Alpha channel; Beta/Stable exclude it.
