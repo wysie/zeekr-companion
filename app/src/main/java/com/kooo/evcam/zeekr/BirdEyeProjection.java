@@ -135,8 +135,9 @@ public final class BirdEyeProjection {
      */
     public static final class Map {
         public final int width, height, sourceWidth, sourceHeight;
-        private final int[] first, second, mix;
-        private final int[] firstFraction, secondFraction;
+        // Each main entry packs address, sub-pixel fraction and seam weight. The
+        // common non-seam path reads one lookup array instead of three.
+        private final long[] first, second;
         public Map(Calibration calibration, CompositeStreamGeometry.Plan plan, int sourceWidth,
                    int sourceHeight, int width, int height) {
             if (plan == null || !plan.isComposite() || sourceWidth <= 0 || sourceHeight <= 0
@@ -145,8 +146,7 @@ public final class BirdEyeProjection {
             }
             this.width = width; this.height = height;
             this.sourceWidth = sourceWidth; this.sourceHeight = sourceHeight;
-            first = new int[width * height]; second = new int[first.length]; mix = new int[first.length];
-            firstFraction = new int[first.length]; secondFraction = new int[first.length];
+            first = new long[width * height]; second = new long[first.length];
             java.util.Arrays.fill(first, -1); java.util.Arrays.fill(second, -1);
             double[] uv = new double[2];
             double metresPerPixel = Math.max((calibration.width + 2 * calibration.margin) / width,
@@ -159,6 +159,7 @@ public final class BirdEyeProjection {
                     int at = row * width + col;
                     double a = 0, b = 0, fallbackWeight = 0;
                     int fallbackAddress = -1, fallbackFraction = 0;
+                    int firstAddress = -1, secondAddress = -1, firstFraction = 0, secondFraction = 0;
                     for (int role = 0; role < calibration.cameras.length; role++) {
                         Camera camera = calibration.cameras[role];
                         double confidence = calibration.project(role, x, y, uv);
@@ -184,14 +185,16 @@ public final class BirdEyeProjection {
                         double weight = regionWeight(role, x, y, calibration);
                         if (weight <= 0) continue;
                         if (weight > a) {
-                            b = a; second[at] = first[at]; secondFraction[at] = firstFraction[at];
-                            a = weight; first[at] = address; firstFraction[at] = fraction;
+                            b = a; secondAddress = firstAddress; secondFraction = firstFraction;
+                            a = weight; firstAddress = address; firstFraction = fraction;
                         } else if (weight > b) {
-                            b = weight; second[at] = address; secondFraction[at] = fraction;
+                            b = weight; secondAddress = address; secondFraction = fraction;
                         }
                     }
-                    if (a <= 0) { first[at] = fallbackAddress; firstFraction[at] = fallbackFraction; }
-                    mix[at] = a > 0 ? (int) Math.round(255 * b / (a + b)) : 0;
+                    if (a <= 0) { firstAddress = fallbackAddress; firstFraction = fallbackFraction; }
+                    int mix = a > 0 ? (int) Math.round(255 * b / (a + b)) : 0;
+                    first[at] = firstAddress < 0 ? -1 : ((long) firstAddress << 24) | ((long) firstFraction << 8) | mix;
+                    second[at] = secondAddress < 0 ? -1 : ((long) secondAddress << 16) | secondFraction;
                 }
             }
         }
@@ -200,10 +203,16 @@ public final class BirdEyeProjection {
                 throw new IllegalArgumentException("Frame size changed");
             }
             for (int i = 0; i < first.length; i++) {
-                if (first[i] < 0) { output[i] = 0xff000000; continue; }
-                int a = sample(source, first[i], firstFraction[i], sourceWidth);
-                int wb = mix[i], wa = 255 - wb;
-                int b = second[i] < 0 || wb == 0 ? a : sample(source, second[i], secondFraction[i], sourceWidth);
+                long entry = first[i];
+                if (entry < 0) { output[i] = 0xff000000; continue; }
+                int a = sample(source, (int) (entry >>> 24), (int) (entry >>> 8) & 65535, sourceWidth);
+                int wb = (int) entry & 255;
+                // Most pixels belong to one camera, outside the narrow seam. Blending
+                // that pixel with itself adds work but cannot change its value.
+                if (wb == 0 || second[i] < 0) { output[i] = a; continue; }
+                int wa = 255 - wb;
+                long other = second[i];
+                int b = sample(source, (int) (other >>> 16), (int) other & 65535, sourceWidth);
                 int r = (((a >> 16) & 255) * wa + ((b >> 16) & 255) * wb + 127) / 255;
                 int g = (((a >> 8) & 255) * wa + ((b >> 8) & 255) * wb + 127) / 255;
                 int blue = ((a & 255) * wa + (b & 255) * wb + 127) / 255;
@@ -220,13 +229,21 @@ public final class BirdEyeProjection {
         int d = fy == 0 ? b : fx == 0 ? c : source[at + stride + 1];
         if ((a >>> 24) != 255 || (b >>> 24) != 255 || (c >>> 24) != 255 || (d >>> 24) != 255)
             throw new IllegalArgumentException("Camera readback incomplete");
-        int result = 0xff000000;
-        for (int shift = 0; shift <= 16; shift += 8) {
-            int upper = ((a >>> shift) & 255) * (256 - fx) + ((b >>> shift) & 255) * fx;
-            int lower = ((c >>> shift) & 255) * (256 - fx) + ((d >>> shift) & 255) * fx;
-            result |= ((upper * (256 - fy) + lower * fy + 32768) >>> 16) << shift;
-        }
-        return result;
+        if (fraction == 0) return a;
+        int left = 256 - fx, top = 256 - fy;
+        int aa = left * top, bb = fx * top, cc = left * fy, dd = fx * fy;
+        // Two independent 32-bit lanes hold red and blue. Their weighted sums
+        // fit in 24 bits, so neither arithmetic nor rounding can cross lanes.
+        long rb = redBlue(a) * aa + redBlue(b) * bb + redBlue(c) * cc + redBlue(d) * dd
+                + 0x0000800000008000L;
+        // Green's unsigned 32-bit sum is bounded by 255*256*65536 + rounding.
+        int green = (a & 0xff00) * aa + (b & 0xff00) * bb
+                + (c & 0xff00) * cc + (d & 0xff00) * dd + 0x800000;
+        return 0xff000000 | (int) ((rb >>> 32) & 0xff0000)
+                | ((green >>> 16) & 0xff00) | (int) ((rb >>> 16) & 255);
+    }
+    private static long redBlue(int pixel) {
+        return ((long) (pixel & 0xff0000) << 16) | (pixel & 255);
     }
     private static boolean finite(double... values) {
         for (double v : values) if (Double.isNaN(v) || Double.isInfinite(v)) return false;

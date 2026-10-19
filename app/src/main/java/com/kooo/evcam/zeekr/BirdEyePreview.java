@@ -56,7 +56,7 @@ final class BirdEyePreview {
     private boolean running, busy;
     private int revision;
     private long displayedAt = -1, nextCaptureAt, lastReadbackMs;
-    private long lastRenderMs, lastLookupMs;
+    private long lastRenderMs, lastLookupMs, lastWorkerQueueMs, lastPublishMs, lastProcessingMs;
     private long lastPresentedAt = -1, lastPresentationGapMs = -1;
     private long copiedTimestamp;
     private android.graphics.SurfaceTexture copiedIdentity;
@@ -144,7 +144,7 @@ final class BirdEyePreview {
         if (!force && selected == requestedQuality) return;
         requestedQuality = activeQuality = selected;
         qualityFallbacks = 0; qualityReason = "none"; slow = false;
-        lastReadbackMs = lastRenderMs = lastLookupMs = 0;
+        lastReadbackMs = lastRenderMs = lastLookupMs = lastWorkerQueueMs = lastPublishMs = lastProcessingMs = 0;
         lastPresentedAt = lastPresentationGapMs = -1;
         if (plan != null) size = BirdEyeQuality.resolve(selected, plan.frameWidth, plan.frameHeight);
         performance.reset(size.intervalMs);
@@ -209,6 +209,8 @@ final class BirdEyePreview {
                 + ", pictureAgeMs=" + (displayedAt < 0 ? -1 : now - displayedAt)
                 + ", readbackMs=" + lastReadbackMs
                 + ", renderMs=" + lastRenderMs + ", lookupMs=" + lastLookupMs
+                + ", workerQueueMs=" + lastWorkerQueueMs + ", publishMs=" + lastPublishMs
+                + ", processingMs=" + lastProcessingMs + ", renderer=packed-bilinear-single-camera-fast-path"
                 + ", captureIntervalMs=" + performance.interval() + ", cadenceAdjustments=" + performance.adjustments() + ", presentationGapMs=" + lastPresentationGapMs
                 + ", qualityRequested=" + requestedQuality + ", qualityActive=" + activeQuality
                 + ", fallbacks=" + qualityFallbacks + ", qualityReason=" + qualityReason
@@ -281,10 +283,12 @@ final class BirdEyePreview {
             final Bitmap captured = source;
             final Bitmap target = output;
             final int[] capturedPixels = inputPixels, renderedPixels = outputPixels;
-            final long[] timings = new long[2];
+            final long[] timings = new long[3];
             final android.graphics.SurfaceTexture capturedIdentity = identity;
             busy = true;
+            final long queuedAt = SystemClock.elapsedRealtime();
             worker.execute(() -> {
+                timings[2] = SystemClock.elapsedRealtime() - queuedAt;
                 BirdEyeProjection.Map prepared = cached;
                 Exception failure = null;
                 boolean memoryFailure = false;
@@ -307,7 +311,7 @@ final class BirdEyePreview {
                     scheduleTick(); // Worker completion re-arms the exact capture deadline.
                     if (!running || revision != request || texture == null
                             || texture.getSurfaceTexture() != capturedIdentity) return;
-                    lastLookupMs = timings[0]; lastRenderMs = timings[1];
+                    lastLookupMs = timings[0]; lastRenderMs = timings[1]; lastWorkerQueueMs = timings[2];
                     noteState();
                     if (memoryError) { downgrade("worker memory limit"); return; }
                     if (error != null) { reportFailure(error); return; }
@@ -322,7 +326,10 @@ final class BirdEyePreview {
                     map = ready;
                     if (runtimeBlock() != BirdEyeSafetyPolicy.Block.NONE) { invalidatePicture(); return; }
                     if (!CameraFrameFreshness.freshAt(capturedAt, SystemClock.elapsedRealtime())) return;
+                    long publishBegan = SystemClock.elapsedRealtime();
                     target.setPixels(renderedPixels, 0, frameSize.outputWidth, 0, 0, frameSize.outputWidth, frameSize.outputHeight);
+                    lastPublishMs = SystemClock.elapsedRealtime() - publishBegan;
+                    lastProcessingMs = SystemClock.elapsedRealtime() - frameBegan;
                     displayedAt = capturedAt; displayedIdentity = capturedIdentity;
                     long presentedAt = SystemClock.elapsedRealtime();
                     lastPresentationGapMs = lastPresentedAt < 0 ? -1 : presentedAt - lastPresentedAt;

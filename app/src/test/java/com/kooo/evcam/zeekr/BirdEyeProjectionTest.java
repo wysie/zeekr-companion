@@ -21,6 +21,25 @@ public class BirdEyeProjectionTest {
         assertEquals(0xff808000, BirdEyeProjection.sample(pixels, 0, 128 | (128 << 8), 2));
         assertEquals(0xff800000, BirdEyeProjection.sample(pixels, 0, 128, 2));
     }
+    @Test public void packedSamplingMatchesIndependentChannelMathForEveryFraction() {
+        java.util.Random random = new java.util.Random(360);
+        for (int frame = 0; frame < 6; frame++) {
+            int[] source = frame == 0
+                    ? new int[]{0xffff0000, 0xff0000ff, 0xff00ff00, 0xffffffff}
+                    : new int[]{random.nextInt() | 0xff000000, random.nextInt() | 0xff000000,
+                            random.nextInt() | 0xff000000, random.nextInt() | 0xff000000};
+            for (int fy = 0; fy < 256; fy++) for (int fx = 0; fx < 256; fx++) {
+                int expected = 0xff000000;
+                for (int shift = 0; shift <= 16; shift += 8) {
+                    int upper = ((source[0] >>> shift) & 255) * (256 - fx) + ((source[1] >>> shift) & 255) * fx;
+                    int lower = ((source[2] >>> shift) & 255) * (256 - fx) + ((source[3] >>> shift) & 255) * fx;
+                    expected |= ((upper * (256 - fy) + lower * fy + 32768) >>> 16) << shift;
+                }
+                int actual = BirdEyeProjection.sample(source, 0, fx | (fy << 8), 2);
+                if (expected != actual) fail("Bilinear colour changed: frame=" + frame + " fx=" + fx + " fy=" + fy);
+            }
+        }
+    }
     @Test public void fullResolutionRendersFourLanesWithoutSeparatorLeakage() {
         BirdEyeQuality.Size size = BirdEyeQuality.resolve(BirdEyeQuality.FULL, 1280, 5140);
         CompositeStreamGeometry.Plan plan = CompositeStreamGeometry.analyse("surround-test", 1280, 5140);

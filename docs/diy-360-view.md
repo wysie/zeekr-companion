@@ -310,3 +310,11 @@ main/popup shortcut-destination setting is no longer exposed because the actions
 are explicit; its stored value and window geometry are retained. This does not
 change projection, calibration, capture resolution, factory yielding or recording.
 The window still requires the mapped Surround source to be available.
+
+## CPU rendering efficiency (2026-10-19)
+
+The pixel-preserving packed lookup/sampler and single-camera fast path reduce
+synthetic Android rendering cost and lookup memory without lowering quality.
+Diagnostics now separate worker queue, output publication and total processing.
+UI-thread TextureView copying and the existing per-quality frame caps remain;
+vehicle smoothness still needs measurement. See [benchmark and limits](360-render-performance-2026-10-19.md).
