@@ -125,11 +125,13 @@ public class BirdEyePopupAndroidTest {
         android.graphics.Insets bars = metrics.getWindowInsets().getInsets(
                 android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout());
         int availableHeight = metrics.getBounds().height() - bars.top - bars.bottom;
+        int availableWidth = metrics.getBounds().width() - bars.left - bars.right;
         int margin = view.getResources().getDimensionPixelSize(R.dimen.side_control_margin);
         main(() -> {
             assertEquals(availableHeight - 2 * margin, params(view).height);
             assertEquals(availableHeight - margin, params(view).y + params(view).height);
-            assertEquals(2f / 3f, params(view).width / (float) params(view).height, .002f);
+            assertEquals(Math.min(availableHeight - 2 * margin, (availableWidth - 2 * margin) / 2), params(view).width);
+            assertTrue("Half-screen expansion remains tall", params(view).height >= params(view).width);
             assertEquals(android.view.WindowInsets.Type.systemBars() | android.view.WindowInsets.Type.displayCutout(),
                     params(view).getFitInsetsTypes());
             assertFalse(params(view).isFitInsetsIgnoringVisibility());
@@ -188,6 +190,7 @@ public class BirdEyePopupAndroidTest {
                 assertTrue(expand.getWidth() >= 48 * context.getResources().getDisplayMetrics().density);
                 expand.performClick();
                 assertTrue(params(view).height >= height);
+                assertTrue(params(view).height > params(view).width);
                 assertEquals(-1, config.x()); // Expansion must never save enlarged geometry.
                 View restore = control(view, context.getString(R.string.side_control_restore));
                 assertNotNull(restore); restore.performClick();

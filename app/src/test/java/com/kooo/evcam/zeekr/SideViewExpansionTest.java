@@ -27,7 +27,7 @@ public class SideViewExpansionTest {
         assertEquals(1264, fullscreen.width); assertEquals(1568, fullscreen.height);
         assertEquals(1280, fullscreen.x); assertEquals(16, fullscreen.y);
         assertTrue(expansion.expanded()); assertSame(normal, expansion.restore());
-        // A later normal mirror/360 expansion still retains its aspect ratio.
+        // A later normal mirror expansion still retains its aspect ratio.
         SideViewExpansion.Geometry normalExpansion = expansion.toggle(normal, 2560, 1600, 16);
         assertEquals(2.2, normalExpansion.width / (double) normalExpansion.height, .01);
     }

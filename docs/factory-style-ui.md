@@ -229,7 +229,8 @@ Extremely wide displays cap panel width at its height. Insets/configuration chan
 refit the expansion while retaining its restore point. Restore returns the exact
 normal size/shape/position; no expanded aspect or size is saved. The camera picture
 reframes for the new window shape. Camera output ownership, HUD geometry, normal
-Super mirror and 360° aspect-preserving expansion are unchanged.
+Super mirror expansion is unchanged. The 360° follow-up below adopts the same
+half-screen policy.
 
 Validation: all 1,516 JVM tests, debug/test builds and lint (zero errors) pass.
 Four native emulator tests cover ultra-wide popup expansion/restore with retained
