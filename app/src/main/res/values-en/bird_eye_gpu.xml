@@ -3,5 +3,5 @@
     <string name="bird_eye_renderer">360° rendering</string>
     <string name="bird_eye_renderer_gpu">GPU (experimental)</string>
     <string name="bird_eye_renderer_cpu">CPU compatibility</string>
-    <string name="bird_eye_renderer_note">GPU processes camera frames directly, with CPU fallback if setup fails. Quit and reopen the app after changing.</string>
+    <string name="bird_eye_renderer_note">GPU processes camera frames directly, with CPU fallback if setup fails. Tap Apply changes after changing the renderer.</string>
 </resources>

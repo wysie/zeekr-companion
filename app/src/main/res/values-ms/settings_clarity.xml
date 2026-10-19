@@ -11,7 +11,7 @@
     <string name="ui_hud_reset_placement">Tetapkan semula kedudukan dan saiz HUD</string>
     <string name="ui_hud_picture_reset_scope">Ikut gambar skrin dan padam bingkai, putaran, pencerminan dan label HUD tersuai. Kekalkan kedudukan, saiz, kecerahan dan kontras HUD.</string>
     <string name="ui_hud_placement_reset_scope">Tetapkan semula kedudukan, saiz, nisbah, pangkasan tepi dalam dan ikut sisi isyarat HUD untuk kenderaan semasa. Kekalkan gambar, kecerahan, kontras dan pilihan output.</string>
-    <string name="ui_pending_camera_changes">Pilihan kamera/pratonton disimpan — keluar dan buka semula untuk digunakan. Keluar menghentikan rakaman.</string>
+    <string name="ui_pending_camera_changes">Perubahan kamera belum digunakan</string>
     <string name="ui_start_logging">Mulakan log USB</string>
     <string name="ui_stop_logging">Hentikan log USB</string>
     <string name="ui_window_open">Terbuka sekarang — tetingkap langsung untuk sesi semasa. Tutup dengan × atau suis ini.</string>

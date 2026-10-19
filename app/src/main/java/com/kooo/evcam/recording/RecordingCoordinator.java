@@ -85,7 +85,7 @@ public final class RecordingCoordinator {
      * （{@link #headUnitWoke}）：和别的黑着时的要录一样照 {@link ScreenOffPlan#startsWhileDark}，只是黑匣子里看得出是它。
      */
     public enum Why {
-        USER, FLOATING, AUTO_START, RESUME, SCREEN_ON, WOKE, DRIVE
+        USER, FLOATING, AUTO_START, RESUME, SCREEN_ON, WOKE, DRIVE, CONFIGURATION
     }
 
     /**
@@ -180,6 +180,37 @@ public final class RecordingCoordinator {
     private MultiCameraManager awaitedBuild;
     /** 这一次录像在哪一份管线上开的：停、收拾都找它，它报上来的才算数（管线换了也一样）。 */
     private MultiCameraManager attemptManager;
+    private boolean applyingCameras, resumeAfterApply;
+    private int cameraConfigurationEpoch;
+    private java.util.function.Consumer<Boolean> cameraStopReady;
+
+    /** Hold all starts until Apply finishes, retaining the request's manual/automatic origin. */
+    public void pauseForCameraChanges(java.util.function.Consumer<Boolean> ready) {
+        if (applyingCameras) { ready.accept(false); return; }
+        applyingCameras = true;
+        cameraConfigurationEpoch++;
+        resumeAfterApply = isRecording() || pending != null || resumeHold.held();
+        pending = null;
+        checkSentAtMs = 0;
+        diskWait.cancel();
+        main.removeCallbacks(poll);
+        if (lifecycle.isIdle()) { ready.accept(true); return; }
+        cameraStopReady = ready;
+        if (isRecording()) end(RecordingStops.Reason.CONFIGURATION);
+    }
+
+    public void finishCameraChanges(boolean success) {
+        boolean resume = success && resumeAfterApply && RecordingIntent.current().recordingWanted();
+        cameraStopReady = null;
+        applyingCameras = false;
+        resumeAfterApply = false;
+        dropResumeHold("camera-apply-finished");
+        if (resume) request(Why.CONFIGURATION);
+        else if (!success) noteWanted(false, "camera-apply-failed");
+        pushView();
+    }
+
+
     private final RecordingLifecycle lifecycle = new RecordingLifecycle();
 
     /**
@@ -416,7 +447,7 @@ public final class RecordingCoordinator {
 
     /** Pending starts, stopping and recovery also prevent an exclusive developer scan. Main thread. */
     public boolean busyForDeveloperProbe() {
-        return !lifecycle.isIdle() || pending != null || resumeHold.claims(false);
+        return applyingCameras || !lifecycle.isIdle() || pending != null || resumeHold.claims(false);
     }
 
     /**
@@ -607,6 +638,7 @@ public final class RecordingCoordinator {
      * <p>黑着不开的那一下只在「这一趟要录」真的变了时记一行（C9：恢复每 5 分钟例行来一次，不然一夜几十行）。</p>
      */
     public void request(Why why) {
+        if (applyingCameras) return;
         if (CameraNeeds.current().developerProbe()) {
             if (why == Why.USER) notifyRefused("Camera export is running. Stop it before recording.");
             return;
@@ -615,7 +647,7 @@ public final class RecordingCoordinator {
             BlackBox.noteImportant("Recording request blocked by settings or manual stop: " + why);
             return;
         }
-        if ((why == Why.AUTO_START || why == Why.RESUME || why == Why.SCREEN_ON || why == Why.WOKE)
+        if ((why == Why.AUTO_START || why == Why.RESUME || why == Why.CONFIGURATION || why == Why.SCREEN_ON || why == Why.WOKE)
                 && DriveSessionWatcher.driverAway()) {
             BlackBox.noteImportant("Automatic recording blocked: driver away in P (" + why + ")");
             return;
@@ -659,7 +691,7 @@ public final class RecordingCoordinator {
 
     private boolean startAllowed(Why why) {
         RecordingIntent intent = RecordingIntent.current();
-        if (why == Why.RESUME || why == Why.SCREEN_ON || why == Why.WOKE) {
+        if (why == Why.RESUME || why == Why.CONFIGURATION || why == Why.SCREEN_ON || why == Why.WOKE) {
             return intent.allowsResume(appConfig.isAutoStartRecording(), appConfig.isDriveAutoStart());
         }
         return intent.allowsStart(sourceFor(why), appConfig.isAutoStartRecording(), appConfig.isDriveAutoStart());
@@ -696,6 +728,7 @@ public final class RecordingCoordinator {
     private final Runnable poll = new Runnable() {
         @Override
         public void run() {
+            if (applyingCameras) return;
             if (pending == null) {
                 return;
             }
@@ -1155,7 +1188,9 @@ public final class RecordingCoordinator {
         if (checkSentAtMs == 0) {
             checkSentAtMs = android.os.SystemClock.elapsedRealtime();
         }
+        final int configurationEpoch = cameraConfigurationEpoch;
         StorageState.refresh(context, "start", snapshot -> {
+            if (applyingCameras || configurationEpoch != cameraConfigurationEpoch) return;
             checkSentAtMs = 0;
             startWith(snapshot, cameras, why, true);
         });
@@ -1304,8 +1339,10 @@ public final class RecordingCoordinator {
         main.removeCallbacks(poll);
         main.postDelayed(poll, REFUSED_RETRY_MS);
         // 「正在删除最旧的录像」等真要删时才弹：一个都删不掉（全锁着、删光也不够）时不该先说在删
+        final int configurationEpoch = cameraConfigurationEpoch;
         com.kooo.evcam.camera.StorageGuard.enforceAsync(context, dir,
                 () -> notifyRefused(context.getString(R.string.msg_storage_cleaning)), decision -> {
+            if (applyingCameras || configurationEpoch != cameraConfigurationEpoch) return;
             onAutomaticSettingsChanged();
             if (pending != why || !startAllowed(why)) {
                 return;  // 清理的这段时间里人停了、退出了
@@ -1353,6 +1390,12 @@ public final class RecordingCoordinator {
      * 盘满：接回去也录不下，不接。摄像头被拿走、断开不是停，不会走到这里。</p>
      */
     public void stop(RecordingStops.Reason reason) {
+        if (applyingCameras && (reason == RecordingStops.Reason.USER || reason == RecordingStops.Reason.LEFT_CAR
+                || reason == RecordingStops.Reason.SCREEN_OFF)) {
+            resumeAfterApply = false;
+            settleWanted(reason);
+            cancelPending(reason.name());
+        }
         boolean wasRecording = isRecording();
         if (!wasRecording && pending == null) {
             return;
@@ -1418,7 +1461,7 @@ public final class RecordingCoordinator {
                 + BlackBox.afterScreenOff());
         AppLog.d(TAG, "录制已停止（" + reason + "）");
 
-        boolean willResume = resumeAfter(reason);
+        boolean willResume = reason == RecordingStops.Reason.CONFIGURATION ? resumeAfterApply : resumeAfter(reason);
         // 判了自动接回：录像要的几样留到接回开录、或者确定不接了
         resumeHold.onStopped(willResume);
         // 不接回、也没别人在等：这一次连同「要录」都到头了
@@ -1457,6 +1500,11 @@ public final class RecordingCoordinator {
         main.removeCallbacks(stopDeadline);
         attemptManager = null;
         AppLog.d(TAG, "停录收拾完（" + why + "）");
+        if (cameraStopReady != null) {
+            java.util.function.Consumer<Boolean> ready = cameraStopReady;
+            cameraStopReady = null;
+            ready.accept(!"deadline".equals(why));
+        }
         if (pending != null) {
             main.removeCallbacks(poll);
             main.post(poll);

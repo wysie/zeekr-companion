@@ -185,6 +185,25 @@ public class BirdEyeGpuAndroidTest {
             } finally { again.release(); }
         }
     }
+    @Test public void cameraApplyReleasesGpuProducerBeforeReusingRetainedPopupTexture() throws Exception {
+        try(Fixture f=new Fixture(false,256,1024,true)) {
+            BirdEyeGlRequest request=f.install(true,new int[]{0,1,2,3}); f.fresh(request);
+            // Emulate scheduler-confirmed native camera closure before removing its GL route.
+            EGL14.eglMakeCurrent(f.display,EGL14.EGL_NO_SURFACE,EGL14.EGL_NO_SURFACE,EGL14.EGL_NO_CONTEXT);
+            assertTrue(EGL14.eglDestroySurface(f.display,f.surface));
+            f.surface=EGL14.EGL_NO_SURFACE; f.producer.release(); f.producer=null;
+            PreviewDewarp.releaseAll();
+            assertNull("Old route is no longer discoverable",PreviewDewarp.rawPipeFor(f.view));
+            Surface raw=new Surface(f.output.get());
+            try {
+                android.graphics.Canvas canvas=raw.lockCanvas(null); canvas.drawColor(Color.MAGENTA); raw.unlockCanvasAndPost(canvas);
+                await("A direct producer can draw into the retained output after GPU Apply",()->{
+                    Bitmap image=f.view.getBitmap(16,16); if(image==null)return false;
+                    int colour=image.getPixel(8,8);image.recycle();return Color.red(colour)>240&&Color.blue(colour)>240&&Color.green(colour)<15;
+                });
+            } finally { raw.release(); }
+        }
+    }
     @Test public void native009BufferExcludesSeparatorPixelsAndPreservesProjection() throws Exception {
         try(Fixture f=new Fixture(false,1280,5140)) {
             BirdEyeGlRequest request=f.install(true,new int[]{0,1,2,3});f.fresh(request);

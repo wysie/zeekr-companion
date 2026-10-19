@@ -20,6 +20,8 @@ public final class RecordingStops {
     public enum Reason {
         /** 人停的：点了停止、点了退出、远程让停。 */
         USER,
+        /** Deliberate in-app camera configuration change; not a recovery failure. */
+        CONFIGURATION,
         /**
          * 因熄屏停的（{@link ScreenOffPlan}）：车机要睡（屏幕黑着时安卓熄屏，哨兵模式没开、车没在走）时现在停（车机几秒后就断电，
          * 2026-10-10）；熄屏持续录制、开发者熄屏录制都关着（{@link ScreenOffPlan#keepsRecording}），或者计划里没有环视，

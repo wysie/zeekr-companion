@@ -27,7 +27,7 @@
     <string name="set_profile_editor_title">Recording sources &amp; quality</string>
     <string name="set_profile_editor_summary">Recording quality, per-camera settings and main-screen layout</string>
     <string name="set_photo_jpeg_title">Use JPEG output for photos</string>
-    <string name="set_photo_jpeg_summary">Takes photos from the camera\'s JPEG output at the largest size. When off, photos are captured from the preview at preview resolution. Takes effect after restarting the app.</string>
+    <string name="set_photo_jpeg_summary">Takes photos from the camera\'s JPEG output at the largest size. When off, photos are captured from the preview at preview resolution. Tap Apply changes after changing camera settings.</string>
     <string name="set_watermark_title">Timestamp</string>
     <string name="set_watermark_on">Adds the date and time to videos and photos; not shown in the preview</string>
     <string name="set_watermark_off">No date and time on videos or photos</string>
@@ -263,7 +263,7 @@
     <string name="opt_model_zeekr_multi">Zeekr (surround + front and rear cabin)</string>
 
     <!-- Settings prompts and dialogs -->
-    <string name="msg_stream_changed">Stream profile set to “%1$s”. Takes effect after restarting the app.</string>
+    <string name="msg_stream_changed">Stream profile set to “%1$s”. Tap Apply changes after changing camera settings.</string>
     <string name="msg_relay_dev_only">Requires developer options (writes to internal storage first)</string>
     <string name="msg_dev_only">Requires developer options</string>
     <string name="dlg_internal_title">Use internal storage?</string>
@@ -333,8 +333,8 @@
     <string name="slot_cabin_rear">Rear cabin</string>
     <string name="action_save">Save</string>
     <string name="action_all_auto">All automatic</string>
-    <string name="msg_mapping_saved">Camera mapping saved. Takes effect after restarting the app.</string>
-    <string name="msg_mapping_cleared">Automatic assignment restored. Takes effect after restarting the app.</string>
+    <string name="msg_mapping_saved">Camera mapping saved. Tap Apply changes after changing camera settings.</string>
+    <string name="msg_mapping_cleared">Automatic assignment restored. Tap Apply changes after changing camera settings.</string>
     <string name="msg_language_hint">You can change this later in Settings → Interface → Language</string>
 
     <!-- Main interface -->
@@ -596,7 +596,7 @@
     <string name="set_plate_hint">Up to 10 letters or digits</string>
     <string name="set_plate_empty">Not set</string>
     <string name="msg_plate_cleaned">Saved as %1$s</string>
-    <string name="msg_restart_required">Takes effect after restarting the app</string>
+    <string name="msg_restart_required">Camera changes saved. Tap Apply changes.</string>
 
     <!-- Main screen (shared skeleton) -->
     <string name="main_title">Zeekr Companion</string>
@@ -686,7 +686,7 @@
     <string name="editor_fit_fit">Fit · whole picture, with margins</string>
     <string name="editor_fit_fill">Fill · fills the cell, excess cropped</string>
     <string name="editor_quality_title">Recording quality</string>
-    <string name="editor_quality_summary">Frame rate and bitrate for all cameras. Tune a camera below.</string>
+    <string name="editor_quality_summary">Frame rate and bitrate for all cameras. Tune a camera below. Recording quality changes apply to the next recording.</string>
     <string name="editor_quality_current">current</string>
     <string name="editor_quality_gb_unit">GB / hour</string>
     <string name="editor_quality_hours_unit">hours left on USB drive</string>
@@ -697,7 +697,7 @@
     <string name="editor_quality_sharp">Sharpest</string>
     <string name="editor_quality_sharp_note">No frame rate cap, high bitrate; most detail</string>
     <string name="editor_cameras_title">Cameras on: %1$d</string>
-    <string name="editor_cameras_summary">Cameras that are off aren\'t recorded and use no space; tap a card to adjust that camera. Switch changes take effect after restarting the app.</string>
+    <string name="editor_cameras_summary">Cameras that are off aren\'t recorded and use no space; tap a card to adjust that camera. Tap Apply changes after changing camera settings.</string>
     <string name="editor_camera_tuned">custom</string>
     <string name="editor_open_lanes">Layout</string>
     <string name="editor_detail_title">%1$s · settings</string>
@@ -898,7 +898,7 @@
     <string name="dev_raw_frame_title">Also save the raw frame</string>
     <string name="dev_raw_frame_summary">Saves the unmodified captured frame and geometry note to ZeekrCompanion/Photos/Raw for analysing camera layout and lens parameters</string>
     <string name="dev_gpu_fisheye_preview_title">Preview: per-pixel fisheye correction on the GPU</string>
-    <string name="dev_gpu_fisheye_preview_summary">Corrects the live surround view pixel by pixel on the GPU, rendered through the app GL pipeline, as straight as photo playback instead of in patches. Picks the method only; the Straighten button still turns correction on and off. Takes effect after restarting the app.</string>
+    <string name="dev_gpu_fisheye_preview_summary">Corrects the live surround view pixel by pixel on the GPU, rendered through the app GL pipeline, as straight as photo playback instead of in patches. Picks the method only; the Straighten button still turns correction on and off. Tap Apply changes after changing camera settings.</string>
     <string name="dev_gpu_fisheye_video_title">Video playback: per-pixel fisheye correction on the GPU</string>
     <string name="dev_gpu_fisheye_video_summary">Corrects the surround view in video playback pixel by pixel on the GPU. Picks the method only; the Straighten button still turns correction on and off. Takes effect the next time video playback opens.</string>
     <string name="dev_camera_suspects_title">Log apps that may be using a camera</string>
@@ -1065,7 +1065,7 @@
     <string name="bird_eye_waiting">Waiting for live cameras</string>
     <string name="bird_eye_gpu_blocked">GPU straightening must be off</string>
     <string name="bird_eye_watermark">Experimental 360° · uncalibrated</string>
-    <string name="bird_eye_unavailable">360° needs an active surround preview. If GPU preview straightening is enabled, turn it off in Developer options and restart the app.</string>
+    <string name="bird_eye_unavailable">360° needs an active surround preview. If GPU preview correction prevents it, disable that option and tap Apply changes.</string>
     <string name="bird_eye_vehicle_required">Connect the vehicle interface to test or calibrate 360°</string>
     <string name="bird_eye_factory_active">Factory camera active — 360° paused</string>
     <string name="bird_eye_invalid_calibration">Invalid camera mapping — reset calibration</string>
@@ -1079,7 +1079,7 @@
     <string name="bird_eye_quality_full">Full — native preview resolution</string>
     <string name="bird_eye_quality_note">Balanced retains more camera detail at the same output size. Full copies the available live frame (up to 8 MP) at up to 5 fps. Slow processing first reduces frame rate, then resolution; Low pauses if still too slow. Saved photos use the active resolution. Resolution does not fix calibration.</string>
     <string name="bird_eye_quality_reduced">360° resolution reduced because processing was too slow or memory was limited. Details are in Diagnostics.</string>
-    <string name="msg_record_profile_restart">Camera selection changed. Exit and reopen the app to apply it before recording.</string>
+    <string name="msg_record_profile_restart">Camera selection changed. Tap Apply changes above the preview or in Settings before recording.</string>
     <string name="dev_camera_display_title">Camera and display tools</string>
     <string name="dev_camera_display_summary">Camera snapshots and numbered display tests; exports to ZeekrCompanion/Developer</string>
     <string name="dev_camera_display_help">Stop recording and close the factory camera first.\n\nCamera export checks advertised IDs, reported physical/availability IDs and numeric candidates 0–15 (at most 48 candidates, 3 minutes). It saves one uncorrected image per accessible candidate, supported sizes and failures. Invalid, unavailable and permission-denied IDs are logged; no private permission or factory-buffer access is bypassed. This app’s regular feeds are temporarily released.\n\nDisplay identification starts with a main-screen card, followed by individual public secondary displays. Record where each card appeared or that it was not seen. Saved PNGs are generated cards, not screenshots. Camera mappings and HUD settings stay unchanged.\n\nFiles: ZeekrCompanion/Developer on the selected storage.</string>
@@ -1120,7 +1120,7 @@
     <string name="set_hud_during_factory_title">Keep HUD side camera during factory views (experimental)</string>
     <string name="set_hud_during_factory_summary">Off by default. Keeps only the HUD side camera during factory 360°, camera pop-ups or parking assist. Reverse still hides it; screen views still yield. Shared camera hardware may interrupt the feed. This does not force camera access.</string>
     <string name="set_developer_mode_title">Enable developer mode</string>
-    <string name="set_developer_mode_summary">Warning: experimental features and troubleshooting tools can affect cameras, recording and storage. Off on new installs; stays as selected across restarts and updates. Turning it off hides Developer options and disables their settings without erasing saved values. Some changes require restarting the app.</string>
+    <string name="set_developer_mode_summary">Warning: experimental features and troubleshooting tools can affect cameras, recording and storage. Off on new installs; stays as selected across restarts and updates. Turning it off hides Developer options and disables their settings without erasing saved values. Camera changes use the Apply changes action.</string>
     <string name="set_side_mirror_mode_title">When Super mirror is active</string>
     <string name="set_side_mirror_mode_summary">Use its window for the side camera, keep both windows, or hide Super mirror while the separate popup is visible. A HUD picture alone leaves Super mirror visible.</string>
     <string name="set_side_mirror_replace">Use its window</string>
@@ -1198,8 +1198,8 @@
     <string name="set_hud_side_contrast_night_title">HUD picture contrast at night</string>
     <string name="set_hud_side_contrast_night_summary">Uses a separate contrast value when the car reports night mode. 100 keeps the original picture; higher values can hide dark detail.</string>
     <string name="set_009_camera_mapping_title">009 camera mapping (verified export)</string>
-    <string name="set_009_camera_mapping_summary">Off by default. Maps camera 3 to Surround and 2 to Driver camera. Leaves the second additional slot unmapped unless manually assigned; exterior road cameras 0/1 are not cabins. Based on one 009 export; exit and reopen after changing.</string>
-    <string name="msg_009_mapping_restart">Exit and reopen the app to apply camera mapping.</string>
+    <string name="set_009_camera_mapping_summary">Off by default. Maps camera 3 to Surround and 2 to Driver camera. Leaves the second additional slot unmapped unless manually assigned; exterior road cameras 0/1 are not cabins. Based on one 009 export; Tap Apply changes afterwards.</string>
+    <string name="msg_009_mapping_restart">Tap Apply changes to use the saved camera mapping.</string>
     <string name="slot_driver_camera">Driver camera</string>
     <string name="slot_road_front">Forward road camera</string>
     <string name="slot_road_rear">Rearward road camera</string>
@@ -1252,10 +1252,10 @@
     <string name="record_cabin_009_note">One cabin feed is confirmed on this 009. A second cabin feed has not been identified.</string>
     <string name="record_preview_layout">Preview layout</string>
     <string name="record_preview_selected">Selected recording sources</string>
-    <string name="record_groups_help">Choose multiple recording groups. Front + Rear uses separate road cameras, not surround crops. Preview layout is independent of recording. Source changes take effect after restarting the app.</string>
+    <string name="record_groups_help">Choose multiple recording groups. Front + Rear uses separate road cameras, not surround crops. Preview layout is independent of recording. Tap Apply changes after changing camera settings.</string>
     <string name="vehicle_profile_title">Vehicle model</string>
     <string name="vehicle_profile_defaults_title">Model defaults and confirmed feeds</string>
-    <string name="vehicle_profile_summary">%1$s · Exit and reopen after changing</string>
+    <string name="vehicle_profile_summary">%1$s · Apply changes after selecting</string>
     <string name="vehicle_profile_unknown">Auto · Not identified. Choose your model.</string>
     <string name="vehicle_profile_defaults_009">009 owner export: Surround = camera 3, Front road = 0, Rear road = 1, Cabin = 2. No second cabin feed confirmed. Manual mappings override these defaults. HUD uses its own display match and saved layout. Automatic 360° projection uses the experimental 009 fit; explicit choices and manual tuning take priority. Distance accuracy and simultaneous recording still need vehicle checks.</string>
     <string name="vehicle_profile_defaults_7x">Upstream 7X evidence: surround composite plus front and rear cabin feeds. Camera sources are discovered, with manual mappings taking priority. Separate front/rear road feeds are unconfirmed and need manual identification. HUD keeps its own display matching/layout. DIY 360° uses Manual projection; the 009 image fit is not applied. 7X 360° alignment still needs vehicle testing.</string>
@@ -1264,12 +1264,12 @@
     <string name="record_preview_current">Preview layout: %1$s</string>
     <string name="record_preview_surround_roads">Surround + Front + Rear</string>
     <string name="record_preview_cabin">Driver / front cabin</string>
-    <string name="record_preview_help">Controls the main-screen cameras independently of recording. Dedicated road feeds need identified sources in Edit stream profile; 7X road feeds are not yet confirmed. Exit and reopen after changing. Existing recording and layout choices are kept.</string>
+    <string name="record_preview_help">Controls the main-screen cameras independently of recording. Dedicated road feeds need identified sources in Edit stream profile; 7X road feeds are not yet confirmed. Tap Apply changes afterwards. Existing recording and layout choices are kept.</string>
     <string name="camera_sources_title">Camera sources</string>
     <string name="camera_sources_entry">Automatic detection or manual camera IDs; shared with the stream editor</string>
-    <string name="camera_sources_help">One mapping for preview, recording and camera windows. Automatic clears the manual choice: Surround uses the detected feed, then the model fallback. Other sources use model defaults or discovery. Manual choices work with Developer mode off. Exit and reopen after changing. Unassigned stops recording that source (both road sources for Front + Rear).</string>
+    <string name="camera_sources_help">One mapping for preview, recording and camera windows. Automatic clears the manual choice: Surround uses the detected feed, then the model fallback. Other sources use model defaults or discovery. Manual choices work with Developer mode off. Tap Apply changes afterwards. Unassigned stops recording that source (both road sources for Front + Rear).</string>
     <string name="camera_sources_reset">Reset all to automatic</string>
-    <string name="camera_sources_reset_note">Clear manual camera assignments, including old Developer overrides. Keep vehicle model, preview layout, recording switches and picture quality. Surround returns to the detected feed; additional cameras without an automatic default will need mapping before use. Exit and reopen afterwards.</string>
+    <string name="camera_sources_reset_note">Clear manual camera assignments, including old Developer overrides. Keep vehicle model, preview layout, recording switches and picture quality. Surround returns to the detected feed; additional cameras without an automatic default will need mapping before use. Tap Apply changes afterwards.</string>
     <string name="camera_source_not_found">No automatic source identified</string>
     <string name="camera_source_automatic">Automatic · %1$s</string>
     <string name="camera_source_manual">Manual · %1$s</string>
@@ -1299,12 +1299,12 @@
     <string name="home_layout_equal">Side by side</string>
     <string name="home_layout_stacked">Stacked</string>
     <string name="home_layout_help">Arranges separate source panes. Surround keeps its four-view grid; tap a view to enlarge it. Layout changes apply immediately.</string>
-    <string name="home_source_reopen">Changing sources requires Quit app → reopen. Quitting stops recording.</string>
+    <string name="home_source_reopen">Save your camera choices, then tap Apply changes above the preview or in Settings.</string>
     <string name="home_windows_help">Open a separate window over other apps. Its size and position stay independent of the main preview.</string>
     <string name="home_preview_single">Single source</string>
     <string name="home_preview_multiple">%1$d sources</string>
     <string name="home_layout_single">One source fills the preview. Source layout arranges separate sources, not the four views inside Surround.</string>
-    <string name="home_surround_unavailable">360° requires Surround in the applied preview. Choose a preset with Surround, then quit and reopen.</string>
+    <string name="home_surround_unavailable">360° requires Surround in the applied preview. Choose a preset with Surround, then tap Apply changes.</string>
     <string name="home_pending_selection">Preview: %1$s · pending</string>
     <string name="home_layout_selected">Selected</string>
     <string name="side_tab_behavior">Behavior</string>
@@ -1314,13 +1314,13 @@
     <string name="side_picture_help">About picture settings</string>
     <string name="side_settings_preview">Camera preview</string>
     <string name="side_settings_unchanged">Preview and playback only. Recorded files stay unchanged.</string>
-    <string name="side_settings_unavailable">Surround is not in the active preview. Select a preview that includes Surround, then quit and reopen.</string>
+    <string name="side_settings_unavailable">Surround is not in the active preview. Choose a preview with Surround, then tap Apply changes.</string>
     <string name="side_settings_paused">Preview paused for the factory camera or vehicle connection.</string>
     <string name="side_settings_show">Show preview</string>
     <string name="side_settings_close">Hide settings preview</string>
     <string name="side_settings_expand">Expand settings preview</string>
     <string name="side_settings_restore">Restore picture controls</string>
-    <string name="side_settings_gpu">Settings preview needs the raw surround feed. Disable GPU preview correction and reopen the app.</string>
+    <string name="side_settings_gpu">Settings preview needs the raw surround feed. Disable GPU preview correction, then tap Apply changes.</string>
     <string name="side_settings_images">Side images</string>
     <string name="side_settings_auto_fit">Auto-fit</string>
     <string name="side_settings_auto_fit_hint">Avoid black patches</string>

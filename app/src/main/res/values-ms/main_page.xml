@@ -2,7 +2,7 @@
 <resources>
     <string name="main_brand_name">Zeekr Companion</string>
     <string name="main_preview_selection">Pratonton: %1$s</string>
-    <string name="main_preview_choice_help">Hanya menukar susun atur pratonton tersimpan. Pilihan rakaman tidak berubah. Keluar dan buka semula untuk digunakan; keluar menghentikan rakaman.</string>
+    <string name="main_preview_choice_help">Hanya menukar susun atur pratonton tersimpan. Pilihan rakaman tidak berubah. Ketik Gunakan perubahan untuk menggunakan pilihan kamera tersimpan.</string>
     <string name="main_360_view">Paparan 360°</string>
     <string name="main_straighten_preview">Luruskan</string>
     <string name="main_windows">Tetingkap</string>
@@ -19,6 +19,6 @@
     <string name="main_window_action_close">Tutup · %1$s</string>
     <string name="main_window_action_off">Matikan · %1$s</string>
     <string name="home_recording_details">Butiran rakaman</string>
-    <string name="home_saved_preview">Pratonton tersimpan: %1$s. Keluar dan buka semula untuk guna; keluar menghentikan rakaman.</string>
+    <string name="home_saved_preview">Perubahan kamera belum digunakan · Pratonton tersimpan: %1$s</string>
     <string name="home_recording_details_idle">Tingkah laku skrin padam ditunjukkan semasa merakam.</string>
 </resources>

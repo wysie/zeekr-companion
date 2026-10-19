@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camera_apply_action">Gunakan perubahan</string>
+    <string name="camera_apply_retry">Cuba lagi</string>
+    <string name="camera_apply_title">Gunakan perubahan kamera?</string>
+    <string name="camera_apply_confirm">Simpan klip ini, mulakan semula kamera dan sambung rakaman? Paparan kamera akan berhenti seketika.</string>
+    <string name="camera_apply_working">Sedang menggunakan perubahan kamera…</string>
+    <string name="camera_apply_finishing">Menyimpan klip ini sebelum menggunakan perubahan kamera</string>
+    <string name="camera_apply_failed">Perubahan kamera gagal digunakan. Rakaman dihentikan. Cuba lagi apabila bersedia.</string>
+    <string name="camera_apply_probe">Hentikan eksport kamera sebelum menggunakan perubahan kamera.</string>
+</resources>

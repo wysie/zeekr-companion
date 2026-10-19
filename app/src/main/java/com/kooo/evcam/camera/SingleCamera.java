@@ -473,8 +473,12 @@ public class SingleCamera {
     }
 
 
+    private CameraSessionOptions sessionOptions;
+    public void setSessionOptions(CameraSessionOptions options) { if (options != null) sessionOptions = options; }
+
     public SingleCamera(Context context, String cameraId, TextureView textureView) {
         this.context = context;
+        this.sessionOptions = CameraSessionOptions.read(context);
         this.cameraId = cameraId;
         this.captureBeat = StallWatch.capture(cameraId);
         StallWatch.registerCamera(this);
@@ -2470,9 +2474,9 @@ public class SingleCamera {
             // 预览平时就是 new Surface(texture)；开发者选项开着时，环视这一路改写进 GPU 逐像素鱼眼校正的管线，
             // 由它再画到这个 TextureView 上（见 PreviewDewarp）
             created = out.kind == ChannelRules.Kind.PREVIEW
-                    ? com.kooo.evcam.zeekr.PreviewDewarp.surfaceFor(cameraId, declared.view, texture, buffer)
+                    ? com.kooo.evcam.zeekr.PreviewDewarp.surfaceFor(cameraId, declared.view, texture, buffer, sessionOptions)
                     : out.kind == ChannelRules.Kind.BIRD_EYE
-                            ? com.kooo.evcam.zeekr.PreviewDewarp.birdEyeSurfaceFor(context, texture, buffer)
+                            ? com.kooo.evcam.zeekr.PreviewDewarp.birdEyeSurfaceFor(context, texture, buffer, sessionOptions)
                             : new Surface(texture);
         } catch (RuntimeException e) {
             // 查过还活着、建的这一下画布被收走了：当它没有，调用方再看一眼消费者死没死
@@ -3058,7 +3062,7 @@ public class SingleCamera {
             AppLog.d(TAG, "Camera " + cameraId + " 拍照通道本次已被丢弃，不再重建");
             return;
         }
-        if (!new AppConfig(context).isPhotoViaJpegEnabled()) {
+        if (!sessionOptions.jpeg) {
             AppLog.d(TAG, "Camera " + cameraId + " 拍照仍走预览抓图（图片通道未开启）");
             return;
         }
@@ -3078,7 +3082,7 @@ public class SingleCamera {
         // 不读配置的话，配置编辑里那个「拍照分辨率」是个摆设。
         String role = com.kooo.evcam.profile.ProfileSizes.roleForCameraKey(cameraPosition);
         Size configured = role == null ? null
-                : com.kooo.evcam.profile.ProfileSizes.photo(context, role, previewSize);
+                : com.kooo.evcam.profile.ProfileSizes.photo(context, role, previewSize, sessionOptions.profile, cameraId);
         jpegSize = configured != null ? configured : largest;
         // maxImages 2：一张在读、一张在路上就够了，多了只是占内存
         jpegReader = ImageReader.newInstance(jpegSize.getWidth(), jpegSize.getHeight(),
