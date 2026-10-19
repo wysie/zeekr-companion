@@ -280,6 +280,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         restoreExpandedMain = savedInstanceState != null && savedInstanceState.getBoolean("main_preview_expanded", false);
+        restoreMainBirdEye = savedInstanceState != null && savedInstanceState.getBoolean("main_bird_eye", false);
         getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {
             @Override public void handleOnBackPressed() { handleBackNavigation(); }
         });
@@ -472,8 +473,10 @@ public class MainActivity extends AppCompatActivity {
         // 以前这两件事看车型：于是在配置编辑里往「极氪7X」那份配置加两路座舱之后，
         // 布局仍然是单路的（只有一个 TextureView），路数上限仍然是 1 ——
         // 加进去的相机既没有地方显示，也不会被拍照和录制算进去。
-        Profile profile = new ProfileStore(this).current();
-        com.kooo.evcam.profile.ProfileChannels channels = com.kooo.evcam.profile.ProfileChannels.of(profile, new AppConfig(this).getPreviewSourceMode());
+        com.kooo.evcam.camera.CameraManagerHolder holder = com.kooo.evcam.camera.CameraManagerHolder.getInstance();
+        appliedCameraRevision = holder.configurationRevision();
+        Profile profile = holder.appliedProfile(this);
+        com.kooo.evcam.profile.ProfileChannels channels = com.kooo.evcam.profile.ProfileChannels.of(profile, holder.appliedPreviewMode(this));
         previewChannels = channels;
         previewLayoutSlots = channels.layoutSlots();
         configuredCameraCount = Math.max(1, channels.count);
@@ -1585,7 +1588,20 @@ public class MainActivity extends AppCompatActivity {
      * （录像在等开录时每 2 秒要一次管线，碰上上一次列相机出错就重建；拍照碰上换了车型），它握着死的那一份，预览黑着、
      * 回调挂在死的那份上，直到离开再回来（审查 2026-10-11）。
      */
+    private boolean restoreMainBirdEye;
+    private void restoreApplied360View() {
+        if (restoreMainBirdEye && previewChannels.surround && compositeContainer != null && compositeContainer.showBirdEye()) {
+            restoreMainBirdEye = false;
+            updateCompositeLabels();
+        }
+    }
+    private int appliedCameraRevision;
     private final Runnable pipelineReplaced = () -> {
+        if (!isFinishing() && !isDestroyed() && appliedCameraRevision !=
+                com.kooo.evcam.camera.CameraManagerHolder.getInstance().configurationRevision()) {
+            recreate(); // Android restores the Settings category, detail back stack and view state.
+            return;
+        }
         if (!isInBackground && !isFinishing() && !isDestroyed()) {
             reattachPipelineIfReplaced("replaced");
         }
@@ -1619,6 +1635,7 @@ public class MainActivity extends AppCompatActivity {
             return;
         }
         showBuilt(built);
+        restoreApplied360View();
         // Show the selected roles, including unavailable ones; only selected textures count toward readiness.
         boolean surroundOn = previewChannels.surround;
         boolean cabinFrontOn = previewChannels.cabinFront;
@@ -2015,6 +2032,7 @@ public class MainActivity extends AppCompatActivity {
             // 只有看起来像合成流的尺寸才更新几何；HAL 有时会给一个压扁的小尺寸提示，
             // 那种尺寸会被容器忽略，已探测到的正确几何得以保留。
             compositeContainer.setSourceSize(previewSize);
+            restoreApplied360View();
             AppLog.d(TAG, "合成流预览尺寸: " + previewSize
                     + " -> " + compositeContainer.describePlan());
             updateCompositeInfoOverlay(compositeSummary(
@@ -2484,6 +2502,10 @@ public class MainActivity extends AppCompatActivity {
             String text;
             int length = Toast.LENGTH_LONG;
             switch (reason) {
+                case CONFIGURATION:
+                    text = getString(R.string.camera_apply_finishing);
+                    length = Toast.LENGTH_SHORT;
+                    break;
                 case USER:
                     text = getString(R.string.msg_recording_stopped);
                     length = Toast.LENGTH_SHORT;
@@ -2981,6 +3003,8 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onSaveInstanceState(Bundle state) {
         if (mainPageControls != null) state.putBoolean("main_preview_expanded", mainPageControls.isExpanded());
+        state.putBoolean("main_bird_eye", compositeContainer != null && compositeContainer.getDisplayMode()
+                == com.kooo.evcam.zeekr.FourLaneContainer.DisplayMode.BIRD_EYE);
         super.onSaveInstanceState(state);
     }
 

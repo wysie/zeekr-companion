@@ -1,7 +1,7 @@
 # GPU 360° renderer — unreleased, 2026-10-19
 
 The new backend is opt-in under **Settings → 360° camera → Picture → 360° rendering
-→ GPU (experimental)**. Quit and reopen after changing it. **CPU compatibility
+→ GPU (experimental)**. Tap Apply changes after changing it. **CPU compatibility
 remains the default**, retaining the installed camera route until the owner chooses
 the new backend. This is independent of the Developer GPU fisheye switches and is
 not in release 2.11.53-alpha.1.
@@ -65,7 +65,7 @@ producer surface is retained. CPU fallback waits for an identified raw output,
 so it cannot accidentally stitch an already projected picture.
 
 This cannot recover every EGL/driver/camera failure. If the underlying GL route
-itself stops delivering output, select CPU compatibility and reopen. An Android
+itself stops delivering output, select CPU compatibility and tap Apply changes. An Android
 GPU pipe that initialises does not prove the vehicle HAL accepts its input, which
 is why GPU routing is opt-in. Existing camera scheduler priorities and recovery
 remain in charge. Car startup, resource/thermal load, performance while recording,

@@ -24,30 +24,12 @@ import java.util.List;
 import java.util.function.Consumer;
 
 /**
- * 进程里那一份相机管线（{@link MultiCameraManager}）—— <b>只在这里建</b>（大纲 §2 阶段 6，channel-logic §五：
- * 相机管线属于应用，不属于主界面；主界面只是登记表里的一个需要方）。
- *
- * <h3>为什么只在这里</h3>
- *
- * <p>以前有两份按车型建映射的代码：主界面自己建一份（按配置分座舱、钉尺寸、画四宫格），后台（悬浮窗、录制服务）在这里建一份
- * （按车型字符串、不看配置），规则对不上；主界面销毁时还会把管线放掉，后视镜、录像跟着断。现在谁要管线都调
- * {@link #getOrInit}（主界面调 {@link #getForMainScreen}）：没有就在这里建，主界面拿到它只声明自己的画布、挂自己的回调
- * （{@link #whenBuilt}）。</p>
- *
- * <h3>什么时候放掉重建</h3>
- *
- * <ul>
- *   <li>退出（{@link #release}）；</li>
- *   <li>换了车型：谁来要都重建（切换车型只提示「重启应用后生效」，前台服务却让进程一直活着）；</li>
- *   <li>上一次列相机出错（这一份一路相机都没有）：谁来要都重建，但两次之间至少隔 {@link #FAILED_REBUILD_GAP_MS} ——
- *       录像在等开录时每 2 秒要一次管线，相机服务一直出错的话就成了每 2 秒放一份、建一份；</li>
- *   <li>配置里开的几路变了：只在主界面接上管线时（{@link #getForMainScreen}）重建 —— 主界面的布局照的就是此刻的配置，
- *       和以前「主界面看路数对不上就放掉重建」一样。后台的调用方（拍照、录像、后视镜）照用手里那一份：编辑配置的界面就长在
- *       主界面里，存一下不重建主界面，那时谁一要管线就重建的话，主界面握着放掉了的那一份，预览黑着、回调挂在死的那份上
- *       （审查 2026-10-11）。</li>
- * </ul>
- *
- * <p>放掉重建了就告诉挂着的监听者（{@link #addReplacedListener}，主线程）：主界面据此当场接上新的那一份。</p>
+ * The process-owned camera pipeline. UI and services reuse the applied snapshot.
+ * Saved configuration changes never replace a live pipeline implicitly: Apply first
+ * drains the recorder, waits for scheduler-confirmed native closure, then rebuilds.
+ * Failed camera enumeration retains the existing bounded retry policy and applied setup.
+ * Successful explicit Apply increments the UI revision so the Activity can recreate its
+ * source views while Android restores the Settings page and nested editor state.
  *
  * <h3>怎么建</h3>
  *
@@ -68,17 +50,25 @@ public class CameraManagerHolder {
     private static final String TAG = "CameraManagerHolder";
     private static CameraManagerHolder instance;
     private MultiCameraManager cameraManager;
-    /**
-     * 这一份是照什么建的（{@link Shape#key}）：车型，加上配置里开了哪几路。
-     *
-     * <p>切换车型只提示「重启应用后生效」，但前台服务会让进程一直活着，这一份连同它的摄像头映射也就跟着留下来了。
-     * 不记住的话，换了配置仍然会复用旧映射 —— 表现就是画面全黑。车型变了谁来要都放掉重建；开的几路变了，主界面接上时重建
-     * （见类说明）。</p>
-     */
+    /** Native session topology used for the current pipeline. */
     private String builtFor;
+    private Shape builtShape;
+    private volatile Shape displayShape;
+    private volatile boolean replacing, applyFailed;
+    private volatile int configurationRevision;
+    private int applyGeneration;
+
+    public synchronized int configurationRevision() { return configurationRevision; }
+    public synchronized Profile appliedProfile(Context context) {
+        Shape shown = displayShape != null ? displayShape : builtShape;
+        return shown == null ? new ProfileStore(context).current() : Profile.fromMap(shown.profile.toMap());
+    }
+    public synchronized String appliedPreviewMode(Context context) {
+        Shape shown = displayShape != null ? displayShape : builtShape;
+        return shown == null ? new AppConfig(context).getPreviewSourceMode() : shown.previewMode;
+    }
+
     private com.kooo.evcam.profile.RecordingSetup builtRecordingSetup;
-    /** 这一份是照哪个车型建的（{@link Shape#carModel}）：车型变了谁来要都重建。 */
-    private String builtCarModel;
     /** 这一份建好之后的样子（主线程上写）；null = 还在建。 */
     private Built built;
     /** 等这一份建好的（{@link #whenBuilt}，主线程）。 */
@@ -149,6 +139,8 @@ public class CameraManagerHolder {
      */
     private static final class Shape {
         final String carModel;
+        String previewMode;
+        boolean gpuPreview, gpu360, jpeg;
         final Profile profile;
         final boolean mapping009;
         final com.kooo.evcam.profile.ProfileChannels channels;
@@ -158,6 +150,7 @@ public class CameraManagerHolder {
         final java.util.Map<String, String> sources = new java.util.LinkedHashMap<>();
 
         private Shape(String carModel, Profile profile, boolean mapping009, String previewMode, boolean overlayNeedsSurround) {
+            this.previewMode = previewMode;
             this.mapping009 = mapping009;
             this.carModel = carModel;
             this.profile = profile;
@@ -171,6 +164,9 @@ public class CameraManagerHolder {
             AppConfig config = new AppConfig(app);
             Shape shape = new Shape(config.getCarModel(), new ProfileStore(app).current(), config.is009CameraMappingEnabled(), config.getPreviewSourceMode(),
                     config.isSidePopupEnabled() || config.isRearViewEnabled() || new com.kooo.evcam.zeekr.BirdEyeWindowConfig(app).popup());
+            shape.gpuPreview = config.isGpuFisheyePreview();
+            shape.gpu360 = config.isGpuBirdEye();
+            shape.jpeg = config.isPhotoViaJpegEnabled();
             for (String role : com.kooo.evcam.profile.RecordingSources.ALL_ROLES)
                 shape.sources.put(role, config.getSourceCameraId(role));
             return shape;
@@ -181,71 +177,58 @@ public class CameraManagerHolder {
         }
 
         String key() {
-            StringBuilder key = new StringBuilder(carModel + "/channels=" + channels.key() + "/mapping009=" + mapping009);
-            return key.append("/sources=").append(sources).toString();
+            return com.kooo.evcam.profile.CameraSetup.key(carModel, mapping009, profile, previewMode,
+                    channels.keys.contains("front"), sources, gpuPreview, gpu360, jpeg);
         }
     }
 
-    /**
-     * 进程里那一份管线；没有就建（大纲 §2 阶段 6：只在这里建）。后台的调用方都调它：录像协调器、后视镜、拍照（主界面的、
-     * 悬浮按钮的）。主界面接上管线调 {@link #getForMainScreen}。
-     *
-     * <p>对象当场交出去，各路相机要等相机线程上列完相机、探测完合成流才建出来（{@link MultiCameraManager#isBuilt}、
-     * {@link #whenBuilt}）。换了车型、或者上一次列相机出错（隔够 {@link #FAILED_REBUILD_GAP_MS}），放掉旧的、重建；
-     * 配置里开的几路变了不在这里重建（见类说明）。主线程调。</p>
-     */
+    /** Reuse the applied pipeline; create it initially or retry failed enumeration after backoff. Main thread. */
     public synchronized MultiCameraManager getOrInit(Context context) {
-        return obtain(context, false);
+        return obtain(context);
     }
 
-    /**
-     * 主界面接上管线（MainActivity.initCamera）：和 {@link #getOrInit} 一样，另外配置里开的几路和这一份对不上也放掉重建 ——
-     * 主界面的布局照的就是此刻的配置（以前主界面看路数对不上就放掉重建，这里照旧）。在录的话那一段到头，在新的一份上自动接回
-     * （RecordingCoordinator.setCameraManager）。主线程调。
-     */
+    /** UI callers use the same applied snapshot as recording, photos and overlays. */
     public synchronized MultiCameraManager getForMainScreen(Context context) {
-        return obtain(context, true);
+        return obtain(context);
     }
 
     /** Channel toggles are saved immediately but need a new main-screen layout/pipeline. */
     public synchronized boolean hasPendingChannelChange(Context context) {
-        return cameraManager != null && !cameraManager.isReleased()
-                && !Shape.of(context.getApplicationContext()).key().equals(builtFor);
+        return replacing || applyFailed || (cameraManager != null
+                && !Shape.of(context.getApplicationContext()).key().equals(builtFor));
     }
 
     /** Only actual recording-role/model/manual-mapping edits can block recording startup.
      * Pending preview/overlay choices still use the wider main-screen shape above. */
     public synchronized boolean hasPendingRecordingChange(Context context) {
-        return cameraManager != null && !cameraManager.isReleased() && builtRecordingSetup != null
-                && !Shape.of(context.getApplicationContext()).recordingSetup().equals(builtRecordingSetup);
+        return applyFailed || (cameraManager != null && !cameraManager.isReleased() && builtRecordingSetup != null
+                && !Shape.of(context.getApplicationContext()).recordingSetup().equals(builtRecordingSetup));
     }
 
     /** Read-only evidence separating a pending preview from a blocked recording configuration. */
     public synchronized String configurationSummary(Context context) {
         Shape requested = Shape.of(context.getApplicationContext());
         boolean active = cameraManager != null && !cameraManager.isReleased();
-        return "pipelineActive=" + active + ", mainPreviewPending=" + (active && !requested.key().equals(builtFor))
+        return "applying=" + replacing + ", applyFailed=" + applyFailed + ", pipelineActive=" + active + ", mainPreviewPending=" + (active && !requested.key().equals(builtFor))
                 + ", recordingPending=" + (active && builtRecordingSetup != null && !requested.recordingSetup().equals(builtRecordingSetup))
                 + "\n  built recording: " + builtRecordingSetup + "\n  requested recording: " + requested.recordingSetup()
                 + "\n  requested preview: " + new AppConfig(context).getPreviewSourceMode();
     }
 
-    private MultiCameraManager obtain(Context context, boolean forMainScreen) {
+    private MultiCameraManager obtain(Context context) {
         Context app = context.getApplicationContext();
-        Shape shape = Shape.of(app);
+        if ((replacing || applyFailed) && cameraManager != null) return cameraManager;
+        Shape shape = builtShape != null && cameraManager != null ? builtShape : Shape.of(app);
         if (cameraManager != null && !cameraManager.isReleased()) {
-            Rebuild why = rebuildReason(shape, forMainScreen);
+            Rebuild why = rebuildReason();
             if (why == Rebuild.NO) {
                 return cameraManager;
             }
             if (why == Rebuild.LISTING_FAILED && failedStreak > 1) {
                 AppLog.w(TAG, "管线：上一次列相机出错，放掉重建（连着第 " + failedStreak + " 次出错）");
             } else {
-                BlackBox.noteImportant("管线：" + (why == Rebuild.CAR_MODEL
-                        ? "车型变了（" + builtCarModel + " → " + shape.carModel + "），放掉旧的、重建"
-                        : why == Rebuild.LISTING_FAILED ? "上一次列相机出错，放掉重建（再出错的话，隔 "
-                        + FAILED_REBUILD_GAP_MS / 1000 + " 秒以上才再重建，不再逐次记）"
-                        : "主界面接上时配置里开的几路变了（" + builtFor + " → " + shape.key() + "），放掉旧的、重建"));
+                BlackBox.noteImportant("Camera enumeration failed; rebuilding the applied setup after "
+                        + FAILED_REBUILD_GAP_MS / 1000 + " seconds");
             }
             cameraManager.release();
             cameraManager = null;
@@ -253,42 +236,33 @@ public class CameraManagerHolder {
                 main.post(listener);
             }
         }
+        return create(app, shape);
+    }
+
+    private synchronized MultiCameraManager create(Context app, Shape shape) {
         MultiCameraManager manager = new MultiCameraManager(app);
+        manager.setSessionOptions(new CameraSessionOptions(shape.gpuPreview, shape.gpu360, shape.jpeg, shape.profile));
         manager.setMaxOpenCameras(shape.count);
-        // 录制模式建管线时定一次（录制模式归开发者选项，从下一次启动应用起生效）
+        // Recording remains MediaCodec; the saved experimental pipeline preference has no effect.
         manager.setCodecRecordingMode(new AppConfig(app).shouldUseCodecRecording());
         cameraManager = manager;
+        builtShape = shape;
         builtFor = shape.key();
         builtRecordingSetup = shape.recordingSetup();
-        builtCarModel = shape.carModel;
         built = null;
         AppLog.i(TAG, "建相机管线（" + builtFor + "，最多 " + shape.count + " 路）：相机列表、合成流探测在相机线程上做");
         setup.execute(() -> build(app, manager, shape));
         return manager;
     }
 
-    /** 手里这一份为什么要放掉重建（{@link #rebuildReason}；见类说明）。 */
-    private enum Rebuild {
-        /** 不用：照用手里这一份。 */
-        NO,
-        /** 换了车型（谁来要都重建）。 */
-        CAR_MODEL,
-        /** 上一次列相机出错，而且隔够了 {@link CameraManagerHolder#FAILED_REBUILD_GAP_MS}（谁来要都重建）。 */
-        LISTING_FAILED,
-        /** 配置里开的几路变了，主界面在接上管线（只在 {@link CameraManagerHolder#getForMainScreen} 里重建）。 */
-        LANES
-    }
+    private enum Rebuild { NO, LISTING_FAILED }
 
-    /** 手里这一份要不要放掉重建（见类说明）。还在建的那一份（built 为 null）只看车型、开的几路。 */
-    private Rebuild rebuildReason(Shape shape, boolean forMainScreen) {
-        if (!shape.carModel.equals(builtCarModel)) {
-            return Rebuild.CAR_MODEL;
-        }
+    private Rebuild rebuildReason() {
         if (built != null && built.failed) {
             return android.os.SystemClock.elapsedRealtime() - failedAtMs < FAILED_REBUILD_GAP_MS
                     ? Rebuild.NO : Rebuild.LISTING_FAILED;
         }
-        return forMainScreen && !shape.key().equals(builtFor) ? Rebuild.LANES : Rebuild.NO;
+        return Rebuild.NO; // Saved edits are applied only by the explicit action.
     }
 
     /**
@@ -348,13 +322,69 @@ public class CameraManagerHolder {
             cameraManager.release();
             cameraManager = null;
         }
+        applyGeneration++;
+        builtShape = displayShape = null;
+        replacing = applyFailed = false;
         builtFor = null;
         builtRecordingSetup = null;
-        builtCarModel = null;
         built = null;
         failedAtMs = 0;
         failedStreak = 0;
         waiters.clear();
+    }
+
+    /** Capture at the action, before draining the recorder. Later edits stay pending. */
+    public synchronized Runnable prepareSavedChanges(Context context, Consumer<Boolean> done) {
+        Context app = context.getApplicationContext();
+        Shape requested = Shape.of(app);
+        return () -> applySavedChanges(app, requested, done);
+    }
+
+    /** Main thread. Called only after the recorder has drained its current clip. */
+    private synchronized void applySavedChanges(Context context, Shape requested, Consumer<Boolean> done) {
+        if (replacing) { done.accept(false); return; }
+        Context app = context.getApplicationContext();
+        final int generation = ++applyGeneration;
+        replacing = true;
+        applyFailed = false;
+        MultiCameraManager previous = cameraManager;
+        if (previous != null) previous.release();
+        final Runnable[] closed = new Runnable[1];
+        final Runnable[] timeout = new Runnable[1];
+        timeout[0] = () -> {
+            if (!replacing || generation != applyGeneration) return;
+            ChannelScheduler.cancelClosedWaiter(closed[0]);
+            replacing = false;
+            applyFailed = true;
+            BlackBox.noteImportant("Camera Apply failed: native camera shutdown/setup timed out");
+            done.accept(false);
+        };
+        closed[0] = () -> {
+            if (!replacing || generation != applyGeneration) return;
+            // All old sessions have surrendered their surfaces before GL producers are removed.
+            setup.execute(() -> {
+                com.kooo.evcam.zeekr.PreviewDewarp.releaseAll();
+                main.post(() -> {
+                    if (!replacing || generation != applyGeneration) return;
+                    MultiCameraManager next = create(app, requested);
+                    whenBuilt(next, result -> {
+                        if (!replacing || generation != applyGeneration) return;
+                        main.removeCallbacks(timeout[0]);
+                        replacing = false;
+                        applyFailed = result.failed;
+                        if (!result.failed) {
+                            displayShape = requested;
+                            configurationRevision++;
+                            for (Runnable listener : replacedListeners) main.post(listener);
+                        }
+                        BlackBox.noteImportant("Camera Apply completed: success=" + !result.failed);
+                        done.accept(!result.failed);
+                    });
+                });
+            });
+        };
+        main.postDelayed(timeout[0], 60_000);
+        ChannelScheduler.whenClosedEverywhere(closed[0]);
     }
 
     // ================================================================= 建（相机线程）
@@ -488,6 +518,7 @@ public class CameraManagerHolder {
                 failedStreak = 0;
             }
             built = result;
+            if (!result.failed && !replacing && !applyFailed) displayShape = shape;
             for (java.util.Iterator<Waiter> it = waiters.iterator(); it.hasNext(); ) {
                 Waiter waiter = it.next();
                 if (waiter.manager == manager) {

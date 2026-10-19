@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="camera_apply_action">Apply changes</string>
+    <string name="camera_apply_retry">Retry</string>
+    <string name="camera_apply_title">Apply camera changes?</string>
+    <string name="camera_apply_confirm">Finish this clip, restart cameras and resume recording? The camera view will briefly pause.</string>
+    <string name="camera_apply_working">Applying camera changes…</string>
+    <string name="camera_apply_finishing">Saving this clip before applying camera changes</string>
+    <string name="camera_apply_failed">Camera changes could not be applied. Recording is stopped. Retry when ready.</string>
+    <string name="camera_apply_probe">Stop the camera export before applying camera changes.</string>
+</resources>

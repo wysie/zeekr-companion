@@ -61,7 +61,7 @@ import static androidx.test.espresso.Espresso.onView;import static androidx.test
    });
   }
  }
- @Test public void unappliedPreviewChoiceStaysVisibleUntilPipelineReopen() {
+ @Test public void unappliedPreviewChoiceStaysVisibleUntilExplicitApply() {
   try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
    final boolean[] built={false};long end=SystemClock.elapsedRealtime()+8000;
    do {scenario.onActivity(a->{com.kooo.evcam.camera.MultiCameraManager m=CameraManagerHolder.getInstance().getCameraManager();built[0]=m!=null&&m.isBuilt();});if(!built[0])SystemClock.sleep(50);}while(!built[0]&&SystemClock.elapsedRealtime()<end);
@@ -70,9 +70,12 @@ import static androidx.test.espresso.Espresso.onView;import static androidx.test
    final boolean[] pending={false};end=SystemClock.elapsedRealtime()+4000;
    do {scenario.onActivity(a->pending[0]=a.findViewById(R.id.settings_pending_changes).getVisibility()==View.VISIBLE);if(!pending[0])SystemClock.sleep(50);}while(!pending[0]&&SystemClock.elapsedRealtime()<end);
    assertTrue("Saved choice remains visible as unapplied",pending[0]);
-   scenario.recreate();scenario.onActivity(MainActivity::goToRecordingInterface);end=SystemClock.elapsedRealtime()+5000;
-   do {scenario.onActivity(a->pending[0]=CameraManagerHolder.getInstance().hasPendingChannelChange(a));if(pending[0])SystemClock.sleep(50);}while(pending[0]&&SystemClock.elapsedRealtime()<end);
-   assertFalse("New main-screen pipeline adopts the saved preview choice",pending[0]);
+   scenario.recreate();scenario.onActivity(MainActivity::goToRecordingInterface);
+   scenario.onActivity(a->{assertTrue("UI recreation keeps changes pending",CameraManagerHolder.getInstance().hasPendingChannelChange(a));
+    com.kooo.evcam.camera.CameraChanges.request(a);});
+   end=SystemClock.elapsedRealtime()+35000;
+   do {scenario.onActivity(a->pending[0]=com.kooo.evcam.camera.CameraChanges.busy()||CameraManagerHolder.getInstance().hasPendingChannelChange(a));if(pending[0])SystemClock.sleep(50);}while(pending[0]&&SystemClock.elapsedRealtime()<end);
+   assertFalse("Explicit Apply adopts the saved preview choice",pending[0]);
    assertFalse(com.kooo.evcam.recording.RecordingCoordinator.get(target).isRecordingOrResuming());
   }
  }

@@ -30,6 +30,7 @@ public final class MainPageControls implements DefaultLifecycleObserver {
     private final MaterialButton expand, compactRecord, preview;
     private MaterialButton mirror, birdEyeWindow;
     private final TextView compactStatus;
+    private final CameraChangesBanner cameraChanges;
     private String appliedPreviewMode;
     private final java.util.Set<String> appliedPreviewKeys;
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -42,9 +43,9 @@ public final class MainPageControls implements DefaultLifecycleObserver {
     public MainPageControls(MainActivity activity, Runnable toggleRecording, boolean expanded) {
         this.activity = activity;
         config = new AppConfig(activity);
-        appliedPreviewMode = config.getPreviewSourceMode();
+        appliedPreviewMode = CameraManagerHolder.getInstance().appliedPreviewMode(activity);
         appliedPreviewKeys = new java.util.LinkedHashSet<>(com.kooo.evcam.profile.ProfileChannels.of(
-                new com.kooo.evcam.profile.ProfileStore(activity).current(), appliedPreviewMode).previewKeys);
+                CameraManagerHolder.getInstance().appliedProfile(activity), appliedPreviewMode).previewKeys);
         dock = activity.findViewById(R.id.action_rail);
         header = activity.findViewById(R.id.main_header);
         expand = activity.findViewById(R.id.btn_preview_expand);
@@ -62,6 +63,8 @@ public final class MainPageControls implements DefaultLifecycleObserver {
                 activity.getString(R.string.home_recording_details), (view, args) -> { showRecordingDetails(); return true; });
         activity.findViewById(R.id.btn_main_gallery).setOnClickListener(v -> showGallery());
         activity.findViewById(R.id.btn_main_windows).setOnClickListener(v -> showWindows());
+        cameraChanges = new CameraChangesBanner(activity, activity.findViewById(R.id.main_camera_changes),
+                R.id.main_preview_pending, R.id.main_apply_cameras);
         setExpanded(expanded);
         activity.getLifecycle().addObserver(this);
     }
@@ -172,14 +175,10 @@ public final class MainPageControls implements DefaultLifecycleObserver {
         boolean sourcePending = !appliedPreviewKeys.equals(com.kooo.evcam.profile.ProfileChannels.of(
                 new com.kooo.evcam.profile.ProfileStore(activity).current(), selected).previewKeys);
         if (!sourcePending) appliedPreviewMode = selected;
-        boolean pending = sourcePending || CameraManagerHolder.getInstance().hasPendingChannelChange(activity);
         text(preview, activity.getString(R.string.main_preview_selection,
                 PreviewLayoutPicker.label(activity, appliedPreviewMode)));
-        TextView pendingNotice = activity.findViewById(R.id.main_preview_pending);
-        text(pendingNotice, sourcePending
-                ? activity.getString(R.string.home_saved_preview, PreviewLayoutPicker.label(activity, selected))
-                : activity.getString(R.string.ui_pending_camera_changes));
-        pendingNotice.setVisibility(pending ? View.VISIBLE : View.GONE);
+        cameraChanges.refresh(sourcePending ? activity.getString(R.string.home_saved_preview,
+                PreviewLayoutPicker.label(activity, selected)) : null);
         View surround = activity.findViewById(R.id.composite_wrapper);
         FourLaneContainer composite = activity.findViewById(R.id.composite_container);
         boolean hasSurround = surround != null && surround.getVisibility() != View.GONE;

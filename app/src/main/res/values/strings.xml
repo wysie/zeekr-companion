@@ -38,7 +38,7 @@
     <string name="set_profile_editor_title">录制来源与画质</string>
     <string name="set_profile_editor_summary">录制画质、各路摄像头参数和主界面画面布局</string>
     <string name="set_photo_jpeg_title">拍照使用 JPEG 输出</string>
-    <string name="set_photo_jpeg_summary">使用摄像头的 JPEG 输出，按最大尺寸拍照；关闭后从预览画面截取，分辨率与预览相同。重启应用后生效。</string>
+    <string name="set_photo_jpeg_summary">使用摄像头的 JPEG 输出，按最大尺寸拍照；关闭后从预览画面截取，分辨率与预览相同。相机更改请点击「应用更改」。</string>
     <string name="set_watermark_title">时间水印</string>
     <string name="set_watermark_on">在录像和照片上叠加日期和时间，预览画面中不显示</string>
     <string name="set_watermark_off">录像和照片不叠加日期和时间</string>
@@ -278,7 +278,7 @@
     <string name="opt_model_zeekr_multi">极氪（环视 + 前后座舱）</string>
 
     <!-- 设置界面里的提示与对话框 -->
-    <string name="msg_stream_changed">视频流配置已改为「%1$s」，重启应用后生效</string>
+    <string name="msg_stream_changed">视频流配置已改为「%1$s」，请点击「应用更改」</string>
     <string name="msg_relay_dev_only">需开启开发者选项（会先写入内置存储）</string>
     <string name="msg_dev_only">需开启开发者选项</string>
     <string name="dlg_internal_title">使用内置存储？</string>
@@ -349,8 +349,8 @@
     <string name="slot_cabin_rear">后座舱</string>
     <string name="action_save">保存</string>
     <string name="action_all_auto">全部自动</string>
-    <string name="msg_mapping_saved">已保存摄像头映射，重启应用后生效</string>
-    <string name="msg_mapping_cleared">已恢复自动分配，重启应用后生效</string>
+    <string name="msg_mapping_saved">已保存摄像头映射，请点击「应用更改」</string>
+    <string name="msg_mapping_cleared">已恢复自动分配，请点击「应用更改」</string>
     <string name="msg_language_hint">可随时在「设置 → 界面 → 语言」中更改</string>
 
     <!-- 首次启动引导 -->
@@ -591,7 +591,7 @@
     <string name="set_plate_hint">最多 10 位，仅限字母和数字</string>
     <string name="set_plate_empty">未填写</string>
     <string name="msg_plate_cleaned">已保存为 %1$s</string>
-    <string name="msg_restart_required">重启应用后生效</string>
+    <string name="msg_restart_required">相机更改已保存。请点击「应用更改」。</string>
 
     <!-- 主界面（统一骨架） -->
     <string name="main_title">Zeekr Companion</string>
@@ -681,7 +681,7 @@
     <string name="editor_fit_fit">适应 · 完整显示，空余处留白</string>
     <string name="editor_fit_fill">填充 · 填满格子，裁去超出部分</string>
     <string name="editor_quality_title">录制画质</string>
-    <string name="editor_quality_summary">统一设置各路的帧率和码率，单路可在下方单独调整</string>
+    <string name="editor_quality_summary">统一设置各路的帧率和码率，单路可在下方单独调整录制画质更改从下次录制起生效。</string>
     <string name="editor_quality_current">当前</string>
     <string name="editor_quality_gb_unit">GB / 小时</string>
     <string name="editor_quality_hours_unit">小时 · U 盘剩余空间</string>
@@ -692,7 +692,7 @@
     <string name="editor_quality_sharp">最清晰</string>
     <string name="editor_quality_sharp_note">不限帧率、高码率；细节保留最充分</string>
     <string name="editor_cameras_title">已开启 %1$d 路摄像头</string>
-    <string name="editor_cameras_summary">关闭的摄像头不录制、不占用空间；点击卡片可单独调整该路。开关改动重启应用后生效。</string>
+    <string name="editor_cameras_summary">关闭的摄像头不录制、不占用空间；点击卡片可单独调整该路。相机更改请点击「应用更改」。</string>
     <string name="editor_camera_tuned">自定义</string>
     <string name="editor_open_lanes">画面布局</string>
     <string name="editor_detail_title">%1$s · 参数</string>
@@ -886,7 +886,7 @@
     <string name="dev_raw_frame_title">拍照时另存原始整帧</string>
     <string name="dev_raw_frame_summary">将未切分、未重排、未加水印的原始画面与几何说明保存至 ZeekrCompanion/Photos/Raw，用于分析相机排布与镜头参数</string>
     <string name="dev_gpu_fisheye_preview_title">预览：GPU 逐像素鱼眼校正</string>
-    <string name="dev_gpu_fisheye_preview_summary">主界面环视预览改用 GPU 逐像素校正（画面经应用内 GL 渲染后显示），效果与照片回放一致，不再分块近似。仅切换算法，是否校正仍由「鱼眼校正」按钮控制。重启应用后生效。</string>
+    <string name="dev_gpu_fisheye_preview_summary">主界面环视预览改用 GPU 逐像素校正（画面经应用内 GL 渲染后显示），效果与照片回放一致，不再分块近似。仅切换算法，是否校正仍由「鱼眼校正」按钮控制。相机更改请点击「应用更改」。</string>
     <string name="dev_gpu_fisheye_video_title">录像回放：GPU 逐像素鱼眼校正</string>
     <string name="dev_gpu_fisheye_video_summary">录像回放中的环视画面改用 GPU 逐像素校正。仅切换算法，是否校正仍由「鱼眼校正」按钮控制。下次打开录像回放时生效。</string>
     <string name="dev_camera_suspects_title">记录可能占用摄像头的应用</string>
@@ -1049,7 +1049,7 @@
     <string name="bird_eye_waiting">等待实时相机画面</string>
     <string name="bird_eye_gpu_blocked">请关闭GPU鱼眼校正</string>
     <string name="bird_eye_watermark">实验性 360° · 尚未校准</string>
-    <string name="bird_eye_unavailable">360°需要可用的环视预览。如已启用GPU预览校正，请在开发者选项关闭并重启应用。</string>
+    <string name="bird_eye_unavailable">360° 需要活动的环视预览。如果 GPU 预览校正阻止显示，请关闭该选项并点击「应用更改」。</string>
     <string name="bird_eye_vehicle_required">需要已连接的车辆接口才能测试或校准 360°</string>
     <string name="bird_eye_factory_active">原厂相机已开启，360°暂停</string>
     <string name="bird_eye_invalid_calibration">相机映射无效，请重置校准</string>
@@ -1063,7 +1063,7 @@
     <string name="bird_eye_quality_full">完整 — 原生预览分辨率</string>
     <string name="bird_eye_quality_note">均衡模式在相同输出尺寸下保留更多摄像头细节。完整模式复制可用的实时画面（最高 800 万像素），最高每秒 5 帧。处理太慢时先降低帧率，再降低分辨率；低模式仍太慢则暂停。照片使用实际分辨率。提高分辨率不会修正校准。</string>
     <string name="bird_eye_quality_reduced">360° 处理太慢或内存不足，已降低分辨率。详细信息见诊断报告。</string>
-    <string name="msg_record_profile_restart">相机选择已更改。请退出并重新打开应用后再录像。</string>
+    <string name="msg_record_profile_restart">相机选择已更改。录制前请在预览上方或设置中点击「应用更改」。</string>
     <string name="dev_camera_display_title">相机与显示屏工具</string>
     <string name="dev_camera_display_summary">批量保存相机画面、显示编号测试卡；导出至 ZeekrCompanion/Developer</string>
     <string name="dev_camera_display_help">请先停止录像并关闭原厂相机。\n\n相机导出会检查公开 ID、物理相机或可用性回调报告的 ID，以及数字候选 0–15（最多 48 个候选、3 分钟）。对可访问的候选保存一张未校正画面、支持尺寸和失败记录。无效、不可用及无权限的 ID 会记录在报告中；不会绕过权限或读取原厂私有缓冲区。期间暂时释放本应用的常规画面。\n\n屏幕识别先显示主屏测试卡，再逐个测试公开副屏；请记录测试卡出现的位置或未看到。保存的 PNG 是生成的测试卡，不是截图。相机映射和 HUD 设置保持不变。\n\n文件保存在所选存储的 ZeekrCompanion/Developer。</string>
@@ -1104,7 +1104,7 @@
     <string name="set_hud_during_factory_title">原厂画面显示时保留 HUD 侧视（试验性）</string>
     <string name="set_hud_during_factory_summary">默认关闭。原厂 360°、相机弹窗或泊车辅助显示时，仅保留 HUD 侧视。倒车时仍关闭；主屏侧视仍让位。共用相机硬件可能中断画面，不会强制获取相机。</string>
     <string name="set_developer_mode_title">启用开发者模式</string>
-    <string name="set_developer_mode_summary">警告：试验性功能和排查工具可能影响相机、录制和存储。全新安装默认关闭；重启和更新后保留选择。关闭后隐藏开发者选项，其设置不再生效，已保存的值不会删除。部分更改需重启应用。</string>
+    <string name="set_developer_mode_summary">警告：试验性功能和排查工具可能影响相机、录制和存储。全新安装默认关闭；重启和更新后保留选择。关闭后隐藏开发者选项，其设置不再生效，已保存的值不会删除。相机更改请点击「应用更改」。</string>
     <string name="set_side_mirror_mode_title">超级后视镜开启时</string>
     <string name="set_side_mirror_mode_summary">选择在后视镜中显示侧视、同时显示两个窗口，或在独立侧视窗口显示时暂时隐藏后视镜。仅显示 HUD 画面时不隐藏。</string>
     <string name="set_side_mirror_replace">使用超级后视镜窗口</string>
@@ -1182,8 +1182,8 @@
     <string name="set_hud_side_contrast_night_title">HUD 夜间画面对比度</string>
     <string name="set_hud_side_contrast_night_summary">车辆报告夜间模式时使用独立对比度。100 保留原画面，较高数值可能隐藏暗部细节。</string>
     <string name="set_009_camera_mapping_title">009 相机映射（已核对导出）</string>
-    <string name="set_009_camera_mapping_summary">默认关闭。相机 3 为环视，2 为驾驶员相机；第二个附加槽位保持未映射，除非手动指定。车外道路相机 0/1 不是座舱相机。仅依据一台 009 导出；更改后退出并重新打开。</string>
-    <string name="msg_009_mapping_restart">请退出并重新打开应用以应用相机映射。</string>
+    <string name="set_009_camera_mapping_summary">默认关闭。相机 3 为环视，2 为驾驶员相机；第二个附加槽位保持未映射，除非手动指定。车外道路相机 0/1 不是座舱相机。仅依据一台 009 导出；更改后请点击「应用更改」。</string>
+    <string name="msg_009_mapping_restart">请点击「应用更改」以使用已保存的相机映射。</string>
     <string name="slot_driver_camera">驾驶员相机</string>
     <string name="slot_road_front">前方道路相机</string>
     <string name="slot_road_rear">后方道路相机</string>
@@ -1236,10 +1236,10 @@
     <string name="record_cabin_009_note">这台 009 已确认一条座舱画面，尚未识别到第二条座舱画面。</string>
     <string name="record_preview_layout">预览布局</string>
     <string name="record_preview_selected">选中的录制来源</string>
-    <string name="record_groups_help">可同时选择多个录制组。前方 + 后方使用独立道路相机，不是环视裁切。预览布局与录制独立；来源更改在重启应用后生效。</string>
+    <string name="record_groups_help">可同时选择多个录制组。前方 + 后方使用独立道路相机，不是环视裁切。预览布局与录制独立；来源更改在相机更改请点击「应用更改」。</string>
     <string name="vehicle_profile_title">车型</string>
     <string name="vehicle_profile_defaults_title">车型默认值与已确认画面</string>
-    <string name="vehicle_profile_summary">%1$s · 更改后请退出并重新打开</string>
+    <string name="vehicle_profile_summary">%1$s · 选择后请应用更改</string>
     <string name="vehicle_profile_unknown">自动 · 未识别，请选择车型。</string>
     <string name="vehicle_profile_defaults_009">009 车主导出：环视 = 相机 3，前方道路 = 0，后方道路 = 1，座舱 = 2。未确认第二路座舱。手动映射优先。HUD 独立匹配显示器并保留布局。360° 自动投影使用实验性 009 图像拟合，显式选择和手动调校优先；距离精度和同时录制仍需实车验证。</string>
     <string name="vehicle_profile_defaults_7x">上游 7X 证据：环视合成流及前、后座舱画面。自动发现相机，手动映射优先。独立前后道路画面尚未确认，需手动识别。HUD 保留独立的显示器匹配和布局。DIY 360° 使用手动投影，不应用 009 图像拟合。7X 拼接对齐仍需实车测试。</string>
@@ -1248,12 +1248,12 @@
     <string name="record_preview_current">预览布局：%1$s</string>
     <string name="record_preview_surround_roads">环视 + 前后道路</string>
     <string name="record_preview_cabin">驾驶员 / 前座舱</string>
-    <string name="record_preview_help">主屏幕预览独立于录制选择。独立道路画面需在「编辑视频流配置」中指定已识别的来源；7X 道路来源尚未确认。更改后请退出并重新打开。保留现有录制和布局选择。</string>
+    <string name="record_preview_help">主屏幕预览独立于录制选择。独立道路画面需在「编辑视频流配置」中指定已识别的来源；7X 道路来源尚未确认。更改后请点击「应用更改」。保留现有录制和布局选择。</string>
     <string name="camera_sources_title">相机来源</string>
     <string name="camera_sources_entry">自动识别或手动指定相机 ID；与视频流编辑共用</string>
-    <string name="camera_sources_help">预览、录制和相机窗口共用一份映射。「自动」清除手动选择：环视优先使用检测到的来源，再用车型回退值；其他来源使用车型默认值或自动分配。关闭开发者模式仍保留手动选择。更改后请退出并重新打开。「未分配」会停止录制该来源（前后道路为一组）。</string>
+    <string name="camera_sources_help">预览、录制和相机窗口共用一份映射。「自动」清除手动选择：环视优先使用检测到的来源，再用车型回退值；其他来源使用车型默认值或自动分配。关闭开发者模式仍保留手动选择。更改后请点击「应用更改」。「未分配」会停止录制该来源（前后道路为一组）。</string>
     <string name="camera_sources_reset">全部恢复自动</string>
-    <string name="camera_sources_reset_note">清除手动相机映射，包括旧开发者覆盖项。保留车型、预览布局、录制开关和画质。环视恢复检测到的来源；没有自动默认值的附加相机需要重新映射。之后请退出并重新打开。</string>
+    <string name="camera_sources_reset_note">清除手动相机映射，包括旧开发者覆盖项。保留车型、预览布局、录制开关和画质。环视恢复检测到的来源；没有自动默认值的附加相机需要重新映射。更改后请点击「应用更改」。</string>
     <string name="camera_source_not_found">未识别到自动来源</string>
     <string name="camera_source_automatic">自动 · %1$s</string>
     <string name="camera_source_manual">手动 · %1$s</string>
@@ -1283,12 +1283,12 @@
     <string name="home_layout_equal">左右并排</string>
     <string name="home_layout_stacked">上下排列</string>
     <string name="home_layout_help">调整独立来源面板。环视保留四画面网格；点击画面可放大。布局更改立即生效。</string>
-    <string name="home_source_reopen">更改来源后请退出并重新打开应用。退出会停止录制。</string>
+    <string name="home_source_reopen">保存相机选择后，请在预览上方或设置中点击「应用更改」。</string>
     <string name="home_windows_help">在其他应用上方打开独立窗口。窗口大小和位置独立于主预览。</string>
     <string name="home_preview_single">单一来源</string>
     <string name="home_preview_multiple">%1$d 个来源</string>
     <string name="home_layout_single">单个来源填满预览。来源布局只排列独立来源，不会重排环视内部的四个视图。</string>
-    <string name="home_surround_unavailable">360° 需要当前预览包含环视。请选择包含环视的预设，然后退出并重新打开。</string>
+    <string name="home_surround_unavailable">360° 需要当前预览包含环视。请选择包含环视的预设，然后点击「应用更改」。</string>
     <string name="home_pending_selection">预览：%1$s · 待应用</string>
     <string name="home_layout_selected">已选择</string>
     <string name="side_tab_behavior">行为</string>
@@ -1298,13 +1298,13 @@
     <string name="side_picture_help">画面设置说明</string>
     <string name="side_settings_preview">相机预览</string>
     <string name="side_settings_unchanged">仅影响预览和回放，不改变录制文件。</string>
-    <string name="side_settings_unavailable">当前预览不含环视。请选择包含环视的预览，然后退出并重新打开应用。</string>
+    <string name="side_settings_unavailable">当前预览未包含环视。请选择包含环视的预览，然后点击「应用更改」。</string>
     <string name="side_settings_paused">原厂相机正在使用或车辆未连接，预览已暂停。</string>
     <string name="side_settings_show">显示预览</string>
     <string name="side_settings_close">隐藏设置预览</string>
     <string name="side_settings_expand">放大设置预览</string>
     <string name="side_settings_restore">恢复画面控件</string>
-    <string name="side_settings_gpu">设置预览需要原始环视画面。请关闭 GPU 预览校正并重启应用。</string>
+    <string name="side_settings_gpu">设置预览需要原始环视画面。请关闭 GPU 预览校正，然后点击「应用更改」。</string>
     <string name="side_settings_images">侧面画面</string>
     <string name="side_settings_auto_fit">自动适配</string>
     <string name="side_settings_auto_fit_hint">避免黑色区域</string>

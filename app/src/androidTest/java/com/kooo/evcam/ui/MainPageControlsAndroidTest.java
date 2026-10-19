@@ -158,7 +158,16 @@ public class MainPageControlsAndroidTest {
             androidx.test.espresso.Espresso.pressBack();
             scenario.onActivity(a->{assertEquals(View.VISIBLE,a.findViewById(R.id.action_rail).getVisibility());assertEquals(View.GONE,a.findViewById(R.id.btn_preview_record).getVisibility());});
             config.setPreviewSourceMode("surround_roads"); scenario.recreate();
-            scenario.onActivity(a->{assertNotNull("Combined preview uses the multi-source layout",a.findViewById(R.id.cabin_column));
+            scenario.onActivity(a -> {
+                assertNull("UI recreation retains applied sources until Apply", a.findViewById(R.id.cabin_column));
+                com.kooo.evcam.camera.CameraChanges.request(a);
+            });
+            long appliedDeadline = SystemClock.elapsedRealtime() + 35000;
+            while ((com.kooo.evcam.camera.CameraChanges.busy() || CameraManagerHolder.getInstance().hasPendingChannelChange(target))
+                    && SystemClock.elapsedRealtime() < appliedDeadline) SystemClock.sleep(50);
+            assertFalse("Source Apply finished", com.kooo.evcam.camera.CameraChanges.busy());
+            assertFalse(CameraManagerHolder.getInstance().hasPendingChannelChange(target));
+            scenario.onActivity(a->{assertNotNull("Applied combined preview uses the multi-source layout",a.findViewById(R.id.cabin_column));
                 a.findViewById(R.id.btn_preview_expand).performClick(); assertTrue(a.findViewById(R.id.btn_preview_record).isShown());
                 a.findViewById(R.id.btn_preview_expand).performClick(); assertTrue(a.findViewById(R.id.btn_start_record).isShown());});
             assertEquals(50,config.getSidePopupYaw()); assertEquals(15,config.getSidePopupPitch());

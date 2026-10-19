@@ -2273,12 +2273,16 @@ public class MultiCameraManager {
         initCameras(ids, views);
     }
 
+    private CameraSessionOptions sessionOptions;
+    public void setSessionOptions(CameraSessionOptions options) { sessionOptions = options; }
+
     public void initCameras(Map<String, String> ids, Map<String, TextureView> views) {
         cameras.clear();
         Set<String> used = new HashSet<>();
         for (Map.Entry<String, String> entry : ids.entrySet()) {
             if (entry.getValue() == null || !used.add(entry.getValue())) continue;
             SingleCamera camera = new SingleCamera(context, entry.getValue(), views.get(entry.getKey()));
+            camera.setSessionOptions(sessionOptions);
             camera.setCameraPosition(entry.getKey()); cameras.put(entry.getKey(), camera);
         }
         initializedCameras = java.util.Collections.unmodifiableList(new ArrayList<>(cameras.values()));

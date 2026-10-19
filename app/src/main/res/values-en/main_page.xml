@@ -2,7 +2,7 @@
 <resources>
     <string name="main_brand_name">Zeekr Companion</string>
     <string name="main_preview_selection">Preview: %1$s</string>
-    <string name="main_preview_choice_help">This changes the saved preview layout only. Recording selections stay unchanged. Quit and reopen to apply; quitting stops recording.</string>
+    <string name="main_preview_choice_help">This changes the saved preview layout only. Recording selections stay unchanged. Tap Apply changes to use the saved camera choices.</string>
     <string name="main_360_view">360° view</string>
     <string name="main_straighten_preview">Straighten</string>
     <string name="main_windows">Windows</string>
@@ -19,6 +19,6 @@
     <string name="main_window_action_close">Close · %1$s</string>
     <string name="main_window_action_off">Turn off · %1$s</string>
     <string name="home_recording_details">Recording details</string>
-    <string name="home_saved_preview">Saved preview: %1$s. Quit and reopen to apply; quitting stops recording.</string>
+    <string name="home_saved_preview">Camera changes pending · Saved preview: %1$s</string>
     <string name="home_recording_details_idle">Screen-off behavior is shown while recording.</string>
 </resources>

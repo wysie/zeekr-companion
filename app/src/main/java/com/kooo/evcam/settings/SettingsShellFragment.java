@@ -99,15 +99,19 @@ public class SettingsShellFragment extends Fragment implements
         refreshTitle();
     }
 
+    private com.kooo.evcam.ui.CameraChangesBanner cameraChanges;
     private final android.os.Handler pendingUi = new android.os.Handler(android.os.Looper.getMainLooper());
     private final Runnable pendingRefresh = new Runnable() { public void run() {
         View view=getView();if(view==null||getContext()==null)return;
-        View banner=view.findViewById(R.id.settings_pending_changes);
-        boolean pending=com.kooo.evcam.camera.CameraManagerHolder.getInstance().hasPendingChannelChange(requireContext());
-        banner.setVisibility(pending?View.VISIBLE:View.GONE);pendingUi.postDelayed(this,1000);
+        if (cameraChanges == null && getActivity() instanceof com.kooo.evcam.MainActivity)
+            cameraChanges = new com.kooo.evcam.ui.CameraChangesBanner((com.kooo.evcam.MainActivity) requireActivity(),
+                    view.findViewById(R.id.settings_camera_changes), R.id.settings_pending_changes, R.id.settings_apply_cameras);
+        if (cameraChanges != null) cameraChanges.refresh(null);
+        pendingUi.postDelayed(this,500);
     }};
     @Override public void onStart(){super.onStart();pendingUi.post(pendingRefresh);}
     @Override public void onStop(){pendingUi.removeCallbacks(pendingRefresh);super.onStop();}
+    @Override public void onDestroyView(){cameraChanges=null;super.onDestroyView();}
 
     @Override
     public void onSaveInstanceState(@NonNull Bundle outState) {

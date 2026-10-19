@@ -86,17 +86,29 @@ refinements ship in alpha 53.
 **Front + Rear** and **Surround + roads**, then **Other sources** for Follow recording,
 one road source or cabin. These use the same saved source choice as Settings;
 preview changes never edit recording groups, source mappings or quality. Cancel,
-Back and outside dismissal do not save. The fixed panel heading explains the reopen
-requirement before Save; quitting stops recording. A persistent notice marks source changes
-that need **Quit app → reopen**. The selector names the currently applied preview;
-the notice names the saved next choice. Choosing an equivalent source set does not
-create a preview restart requirement.
-Pending preview-only changes do not block manual or automatic recording with the
-current recording sources. Changes to enabled recording sources, their manual
-camera assignments or the vehicle mapping still require reopening before a new
-recording starts. Diagnostics report preview-pending and recording-pending states
-separately. This recording-start correction ships in alpha 53; see the
-[investigation and verification](docs/recording-preview-isolation.md).
+Back and outside dismissal do not save. A slim **Camera changes pending · Apply changes**
+banner appears above the main preview and beneath the Settings title. The selector
+continues to name the applied preview; the banner names the saved next choice.
+Equivalent source sets and source arrangements update without a pipeline rebuild.
+
+**Apply changes** rebuilds cameras inside the running app. During recording, confirm
+“Finish this clip, restart cameras and resume recording?” The current clip is saved,
+the scheduler closes the old cameras, and the pipeline and preview views are rebuilt.
+Android restores the open Settings category/editor. Recording resumes only for an
+existing recording/request, keeping its manual/automatic origin; Stop during Apply
+cancels that resume. Idle Apply stays idle. Factory priority still governs camera
+availability. Failed cleanup/setup leaves a **Retry** action and recording stopped;
+it does not claim that an unavailable vehicle feed is working.
+
+Apply covers vehicle/camera mappings, recording groups, preview source sets, native
+preview/JPEG sizes, JPEG output enablement, GPU preview correction and the GPU 360°
+backend. Saved changes made during Apply remain pending for the next Apply. Theme
+changes and UI recreation keep using the applied source set. Encoding FPS, bitrate,
+codec and recording size apply to the next recording; visual geometry, theme and
+arrangement controls keep their existing live behavior. Pending preview-only edits
+do not block recording with the current recording sources. Structural recording
+edits must be applied before starting with the new selection. Diagnostics distinguish
+these states. See [Apply verification and limits](docs/apply-camera-changes.md).
 All existing source choices are preserved on upgrade. **Source layout** arranges
 separate source panes. With just Surround (or another single source), the panel
 explains this and hides inactive arrangement choices; it does not rearrange the
@@ -111,9 +123,9 @@ Picture · Window · HUD** tabs; changing tabs never resets settings. Picture ha
 Left/Right live settings preview with Expand/Restore and Hide/Show controls.
 It reads the existing main surround texture at up to five samples per second,
 without opening a camera or adding an output; configured popup/HUD frame rates are unchanged.
-Choose a main preview that contains Surround and reopen if needed. The preview
+Choose a main preview that contains Surround and tap Apply changes if needed. The preview
 pauses for factory camera use, screen-off, lost vehicle connection or stale frames;
-the experimental GPU preview path needs to be disabled/reopened to expose raw
+the experimental GPU preview path needs to be disabled and applied to expose raw
 surround pixels for tuning. Native camera surfaces stay attached behind opaque
 settings; hidden main fisheye/360° rendering is paused. Tuning is available with the
 automatic popup off and applies on slider release; recordings remain unchanged.
@@ -168,7 +180,7 @@ release numbers remain independent of upstream.
 
 ## Additions in this fork
 
-- **GPU 360° renderer (unreleased):** Settings → 360° camera → Picture → **360° rendering → GPU (experimental)** enables direct camera-texture projection in the main view and popup. Quit and reopen after changing it. **CPU compatibility remains the upgrade/default choice** until the GPU route is checked on the car. It reuses the selected Manual/009 geometry, source assignments, resolution and vehicle illustration; no extra camera output is added. GPU rendering follows incoming frames with a 30 fps ceiling rather than the CPU quality caps, and samples the available camera buffer directly. Stitcher setup/draw failures retain raw output for CPU fallback when that route remains usable. A broken GL route may require selecting CPU and reopening. Factory takeover, screen-off and stale-frame covers remain. Stitched photos copy the GPU picture only when explicitly requested; recordings remain unchanged. This is separate from the Developer GPU straightening toggles, with no measured 009/7X smoothness or power claim yet. See [implementation and validation](docs/gpu-360-renderer.md).
+- **GPU 360° renderer (unreleased):** Settings → 360° camera → Picture → **360° rendering → GPU (experimental)** enables direct camera-texture projection in the main view and popup. Tap Apply changes after changing it. **CPU compatibility remains the upgrade/default choice** until the GPU route is checked on the car. It reuses the selected Manual/009 geometry, source assignments, resolution and vehicle illustration; no extra camera output is added. GPU rendering follows incoming frames with a 30 fps ceiling rather than the CPU quality caps, and samples the available camera buffer directly. Stitcher setup/draw failures retain raw output for CPU fallback when that route remains usable. A broken GL route may require selecting CPU and applying the change. Factory takeover, screen-off and stale-frame covers remain. Stitched photos copy the GPU picture only when explicitly requested; recordings remain unchanged. This is separate from the Developer GPU straightening toggles, with no measured 009/7X smoothness or power claim yet. See [implementation and validation](docs/gpu-360-renderer.md).
 
 - **360° rendering efficiency:** pack the projection lookup into fewer arrays, skip redundant blending away from seams and use exact packed bilinear sampling. Resolution, calibration, quality caps and recording are unchanged. The complete output matches the previous renderer in synthetic Android tests; the measured compute saving is about 19% at Balanced on an ARM64 emulator, with 20% less lookup-array storage. This is not an on-car frame-rate measurement: TextureView copying still runs on the UI thread. Diagnostics now separate worker queue, publishing and total processing time. See [evidence and remaining bottlenecks](docs/360-render-performance-2026-10-19.md).
 
@@ -197,15 +209,15 @@ release numbers remain independent of upstream.
 
 - **Fresh-install permission handling:** startup requests camera/storage access used by the app and no longer blocks on the undeclared, unused microphone permission. The Developer permissions page omits that unavailable permission.
 
-- **Developer mode:** Settings → System → Enable developer mode exposes the Developer options category immediately, with an inline warning and no password or hidden About-page gesture. It is off on new installs; existing enabled state survives updates and restarts. The selected settings category also stays highlighted after screen recreation. Turning it off hides the category, disables developer-gated settings and stops signal scanning while retaining saved values. Some pipeline changes still require an app restart.
+- **Developer mode:** Settings → System → Enable developer mode exposes the Developer options category immediately, with an inline warning and no password or hidden About-page gesture. It is off on new installs; existing enabled state survives updates and restarts. The selected settings category also stays highlighted after screen recreation. Turning it off hides the category, disables developer-gated settings and stops signal scanning while retaining saved values. Camera pipeline changes use the shared Apply changes action.
 - **Camera and display research tools:** Settings → Developer → Camera and display tools provides an on-demand batch snapshot of every available Camera2 ID, plus a guided numbered test for public presentation displays. Confirm a large main-screen card first, then test one secondary display at a time for up to 30 seconds and record where it appeared or that it was not seen. Images, generated display cards and JSON reports go under **ZeekrCompanion/Developer**. Both require a connected vehicle interface with recording stopped and factory camera closed; neither checks gear or speed. The scan temporarily closes this app’s normal feeds and retains exclusive ownership until native closure is confirmed; saved camera/HUD settings stay unchanged. These tools cannot screenshot factory displays or expose private factory video buffers. See [instructions and limits](docs/developer-camera-display-tools.md).
 
-- **Independent camera selection:** Surround, Front cabin and Rear cabin are opened according to their individual profile switches, including cabin-only profiles. Exit and reopen after changing recording switches or active camera mappings; recording shows an explicit restart message while the saved recording configuration differs from the live pipeline. A pending preview-only change does not block recording.
+- **Independent camera selection:** Surround, Front cabin and Rear cabin are opened according to their individual profile switches, including cabin-only profiles. Tap Apply changes after changing recording switches or active camera mappings; starting a new recording with a changed source selection asks you to apply it first. A pending preview-only change does not block recording.
 
 - **One app folder:** new recordings, photos and exported diagnostics go under **ZeekrCompanion/Videos**, **Photos**, **Logs** and on-demand **Developer** exports on selected storage. Playback, protection, storage accounting and cleanup also support older `ZeekrShortcutApp` and EVCam folders without moving existing files. Equal filenames and lock lists remain separate; archives preserve each original relative path. This folder-name change ships in alpha 53. See [storage layout](docs/app-storage-folders.md).
 
 - **Recording and transfer integrity:** verified USB/archive copies preserve both files on collisions; relay buffers use private files instead of disposable Android cache. Failed protection-list replacement keeps the old list; developer repair first retains a verified original backup. See the [whole-project review](docs/project-safety-review.md) for fixes and remaining limits.
-- **Functional vehicle model selection:** Settings → System → Vehicle model replaces the cosmetic Interface name selector and separate 009 mapping switch. Auto accepts explicit, unambiguous Android model names; unknown devices use generic discovery and show a manual-selection prompt. The supplied 009 reports Pixel 3a, so select 009 manually. An existing enabled 009 mapping migrates to 009; the old cosmetic name alone never changes camera sources. Model defaults also drive builtin labels and Auto vehicle artwork. Saved manual camera mappings, recording choices, side-picture adjustments and custom profile names are kept; exit and reopen after changing. HUD still matches the actual display independently and retains its separate layout. The 009 image-fit calibration stays opt-in and is suspended without deletion on a selected/detected 7X; shared Manual 360 geometry is estimated, not a verified 7X calibration.
+- **Functional vehicle model selection:** Settings → System → Vehicle model replaces the cosmetic Interface name selector and separate 009 mapping switch. Auto accepts explicit, unambiguous Android model names; unknown devices use generic discovery and show a manual-selection prompt. The supplied 009 reports Pixel 3a, so select 009 manually. An existing enabled 009 mapping migrates to 009; the old cosmetic name alone never changes camera sources. Model defaults also drive builtin labels and Auto vehicle artwork. Saved manual camera mappings, recording choices, side-picture adjustments and custom profile names are kept; tap Apply changes after changing. HUD still matches the actual display independently and retains its separate layout. The 009 image-fit calibration stays opt-in and is suspended without deletion on a selected/detected 7X; shared Manual 360 geometry is estimated, not a verified 7X calibration.
 - **Rapid theme changes:** foreground recording and relay services retain the shared live camera pipeline even when a newly recreated main screen has not acquired its own camera reference yet. Camera ownership still belongs to the current upstream scheduler.
 - **Camera freshness guards:** Main surround/cabin previews, Super mirror, side popup and HUD cover stalled pictures after 500 ms without advancing texture timestamps, checked at 100 ms intervals. Reopened textures require new frame progression; missing geometry stays covered. The separate side popup stays transparent and touch-through during ordinary startup, appearing as soon as geometry and advancing frames are available. If startup exceeds 750 ms (checked every 100 ms), it shows the waiting message and close control; once shown, a stalled feed remains covered rather than disappearing. This does not add a fixed opening delay or change HUD/Super mirror presentation. These software guards still need on-car timing checks. See the [camera safety review](docs/camera-safety-review.md).
 - **360° camera section and popup:** Settings → 360° camera gathers display mode, quality, calibration, calibration/quality reset and independent popup layout controls. A single **Show 360° popup** switch replaces separate Open/Close actions; it tracks the current popup session, including X or service shutdown, without saving an automatic-start preference. Temporary suspension for factory/screen takeover keeps the session enabled. Closing it leaves the preferred display mode, layout and calibration intact. The main **360° view** action controls the main preview; **Windows → 360° window** opens a service-owned overlay that stays visible after minimising the app. Drag, pinch, expand/restore or close with X; size and position are saved independently. Expansion now uses the current overlay area and visible system-bar insets, with a small 8dp margin, instead of app resource height; it refits when that area changes without losing expanded mode or overwriting saved normal placement. This addresses the extra-bottom-space code path reported over Android Auto; the exact 009 projection-app behavior still needs a vehicle check. See [bounds correction](docs/diy-360-view.md#expanded-bounds-correction-2026-10-18-unreleased). Opening is manual, with no boot/indicator trigger. It shares the surround hardware stream through an additional low-priority surface; hardware limits/configuration failures close the 360 popup before other optional camera views, without withdrawing mirror/recording declarations. Factory views/reverse, screen-off and developer probes suspend the popup and release its camera claim. No P-only restriction is added. While the popup is open, the main Take photo action exports the fresh stitched popup. Actual simultaneous-output support and recording continuity need vehicle checks.

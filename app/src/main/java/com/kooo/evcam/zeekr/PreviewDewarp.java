@@ -28,7 +28,7 @@ import java.lang.ref.WeakReference;
  * <p>校正本身开不开、用什么投影，跟着屏幕上那个鱼眼开关和设置走（和分格近似同一套）；
  * 这里只决定「用哪种算法」。管线接上之后，{@link FourLaneContainer} 就不再分格。</p>
  *
- * <p>开发者选项改了要重启应用才生效：已经建好的相机会话不会换 Surface。</p>
+ * <p>GPU 路由改动需点击「应用更改」：先关闭旧相机会话，再更换 Surface。</p>
  */
 public final class PreviewDewarp {
 
@@ -58,7 +58,11 @@ public final class PreviewDewarp {
     }
     /** Same optional route for the existing lowest-priority popup output; no extra camera output. */
     public static Surface birdEyeSurfaceFor(Context context, SurfaceTexture texture, Size buffer) {
-        if (!new AppConfig(context).isGpuBirdEye() || buffer == null) return new Surface(texture);
+        return birdEyeSurfaceFor(context, texture, buffer, com.kooo.evcam.camera.CameraSessionOptions.read(context));
+    }
+    public static Surface birdEyeSurfaceFor(Context context, SurfaceTexture texture, Size buffer,
+                                            com.kooo.evcam.camera.CameraSessionOptions options) {
+        if (!options.gpu360 || buffer == null) return new Surface(texture);
         synchronized (LOCK) {
             FisheyeGlPipe existing = rawPipeFor(texture);
             if (existing != null && existing.isAlive()) {
@@ -94,7 +98,12 @@ public final class PreviewDewarp {
      */
     public static Surface surfaceFor(String cameraId, TextureView view, SurfaceTexture texture,
                                      Size bufferSize) {
-        Surface routed = routed(cameraId, view, texture, bufferSize);
+        return surfaceFor(cameraId, view, texture, bufferSize,
+                com.kooo.evcam.camera.CameraSessionOptions.read(view.getContext()));
+    }
+    public static Surface surfaceFor(String cameraId, TextureView view, SurfaceTexture texture, Size bufferSize,
+                                     com.kooo.evcam.camera.CameraSessionOptions options) {
+        Surface routed = routed(cameraId, view, texture, bufferSize, options);
         return routed != null ? routed : new Surface(texture);
     }
 
@@ -113,14 +122,14 @@ public final class PreviewDewarp {
     }
 
     private static Surface routed(String cameraId, TextureView view, SurfaceTexture texture,
-                                  Size bufferSize) {
+                                  Size bufferSize, com.kooo.evcam.camera.CameraSessionOptions options) {
         if (view == null || texture == null || cameraId == null
                 || !cameraId.equals(StreamLayoutTable.compositeCameraId())) {
             return null;
         }
         Context context = view.getContext().getApplicationContext();
         AppConfig appConfig = new AppConfig(context);
-        if (!appConfig.isGpuFisheyePreview() && !appConfig.isGpuBirdEye()) {
+        if (!options.gpuPreview && !options.gpu360) {
             return null;
         }
         if (bufferSize == null) {
@@ -169,7 +178,7 @@ public final class PreviewDewarp {
             register(started);
             pipeView = new WeakReference<>(view);
             config = appConfig;
-            fisheyeRoute = appConfig.isGpuFisheyePreview();
+            fisheyeRoute = options.gpuPreview;
             push();
             if (listener == null) {
                 listener = appConfig.onFisheyeChanged(PreviewDewarp::push);
@@ -204,6 +213,19 @@ public final class PreviewDewarp {
         }
         current.setCorrection(fisheyeRoute && appConfig.isFisheyeCorrection(), appConfig.getFisheyeFov(),
                 appConfig.getFisheyeProjection());
+    }
+
+    /** Only after camera shutdown: an EGL producer must never be disconnected while in a live session. */
+    public static void releaseAll() {
+        synchronized (LOCK) {
+            for (WeakReference<FisheyeGlPipe> reference : RAW_PIPES) {
+                FisheyeGlPipe value = reference.get();
+                if (value != null) value.release();
+            }
+            RAW_PIPES.clear();
+            releaseLocked();
+            pipeView = new WeakReference<>(null);
+        }
     }
 
     private static void releaseLocked() {

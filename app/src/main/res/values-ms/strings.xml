@@ -27,7 +27,7 @@
     <string name="set_profile_editor_title">Sumber rakaman &amp; kualiti</string>
     <string name="set_profile_editor_summary">Kualiti rakaman, tetapan setiap kamera dan susun atur skrin utama</string>
     <string name="set_photo_jpeg_title">Gunakan output JPEG untuk foto</string>
-    <string name="set_photo_jpeg_summary">Mengambil foto daripada output JPEG kamera pada saiz terbesar. Jika dimatikan, foto diambil daripada pratonton pada resolusi pratonton. Berkuat kuasa selepas apl dimulakan semula.</string>
+    <string name="set_photo_jpeg_summary">Mengambil foto daripada output JPEG kamera pada saiz terbesar. Jika dimatikan, foto diambil daripada pratonton pada resolusi pratonton. Ketik Gunakan perubahan selepas menukar tetapan kamera.</string>
     <string name="set_watermark_title">Tera masa</string>
     <string name="set_watermark_on">Menambah tarikh dan masa pada video dan foto; tidak dipaparkan dalam pratonton</string>
     <string name="set_watermark_off">Tiada tarikh dan masa pada video atau foto</string>
@@ -263,7 +263,7 @@
     <string name="opt_model_zeekr_multi">Zeekr (sekeliling + kabin depan dan belakang)</string>
 
     <!-- Gesaan dan dialog tetapan -->
-    <string name="msg_stream_changed">Profil strim ditetapkan kepada “%1$s”. Berkuat kuasa selepas apl dimulakan semula.</string>
+    <string name="msg_stream_changed">Profil strim ditetapkan kepada “%1$s”. Ketik Gunakan perubahan selepas menukar tetapan kamera.</string>
     <string name="msg_relay_dev_only">Memerlukan pilihan pembangun (menulis ke storan dalaman dahulu)</string>
     <string name="msg_dev_only">Memerlukan pilihan pembangun</string>
     <string name="dlg_internal_title">Guna storan dalaman?</string>
@@ -333,8 +333,8 @@
     <string name="slot_cabin_rear">Kabin belakang</string>
     <string name="action_save">Simpan</string>
     <string name="action_all_auto">Semua automatik</string>
-    <string name="msg_mapping_saved">Pemetaan kamera disimpan. Berkuat kuasa selepas apl dimulakan semula.</string>
-    <string name="msg_mapping_cleared">Penetapan automatik dipulihkan. Berkuat kuasa selepas apl dimulakan semula.</string>
+    <string name="msg_mapping_saved">Pemetaan kamera disimpan. Ketik Gunakan perubahan selepas menukar tetapan kamera.</string>
+    <string name="msg_mapping_cleared">Penetapan automatik dipulihkan. Ketik Gunakan perubahan selepas menukar tetapan kamera.</string>
     <string name="msg_language_hint">Anda boleh menukarnya kemudian di Tetapan → Antara muka → Bahasa</string>
 
     <!-- Antara muka utama -->
@@ -585,7 +585,7 @@
     <string name="set_plate_hint">Sehingga 10 huruf atau angka</string>
     <string name="set_plate_empty">Belum ditetapkan</string>
     <string name="msg_plate_cleaned">Disimpan sebagai %1$s</string>
-    <string name="msg_restart_required">Berkuat kuasa selepas apl dimulakan semula</string>
+    <string name="msg_restart_required">Perubahan kamera disimpan. Ketik Gunakan perubahan.</string>
 
     <!-- Skrin utama (rangka kongsi) -->
     <string name="main_title">Zeekr Companion</string>
@@ -676,7 +676,7 @@
     <string name="editor_fit_fit">Muat · gambar penuh, dengan ruang kosong</string>
     <string name="editor_fit_fill">Penuh · memenuhi sel, lebihan dipangkas</string>
     <string name="editor_quality_title">Kualiti rakaman</string>
-    <string name="editor_quality_summary">Kadar bingkai dan kadar bit untuk semua kamera. Laraskan satu kamera di bawah.</string>
+    <string name="editor_quality_summary">Kadar bingkai dan kadar bit untuk semua kamera. Laraskan satu kamera di bawah. Perubahan kualiti rakaman digunakan pada rakaman seterusnya.</string>
     <string name="editor_quality_current">semasa</string>
     <string name="editor_quality_gb_unit">GB / jam</string>
     <string name="editor_quality_hours_unit">jam lagi pada pemacu USB</string>
@@ -687,7 +687,7 @@
     <string name="editor_quality_sharp">Paling tajam</string>
     <string name="editor_quality_sharp_note">Tiada had kadar bingkai, kadar bit tinggi; paling terperinci</string>
     <string name="editor_cameras_title">Kamera dihidupkan: %1$d</string>
-    <string name="editor_cameras_summary">Kamera yang dimatikan tidak dirakam dan tidak menggunakan ruang; ketik kad untuk melaraskan kamera itu. Perubahan suis berkuat kuasa selepas apl dimulakan semula.</string>
+    <string name="editor_cameras_summary">Kamera yang dimatikan tidak dirakam dan tidak menggunakan ruang; ketik kad untuk melaraskan kamera itu. Ketik Gunakan perubahan selepas menukar tetapan kamera.</string>
     <string name="editor_camera_tuned">tersuai</string>
     <string name="editor_open_lanes">Susun atur</string>
     <string name="editor_detail_title">%1$s · tetapan</string>
@@ -879,7 +879,7 @@
     <string name="dev_raw_frame_title">Simpan juga bingkai asal</string>
     <string name="dev_raw_frame_summary">Menyimpan bingkai asal dan nota geometri ke ZeekrCompanion/Photos/Raw untuk analisis susunan kamera dan parameter kanta</string>
     <string name="dev_gpu_fisheye_preview_title">Pratonton: pembetulan mata ikan per piksel dengan GPU</string>
-    <string name="dev_gpu_fisheye_preview_summary">Membetulkan pratonton langsung sekeliling piksel demi piksel dengan GPU, melalui GL apl, selurus main semula foto dan bukan secara tampalan. Ini memilih kaedah sahaja; butang Luruskan masih menghidupkan dan mematikan pembetulan. Berkuat kuasa selepas apl dimulakan semula.</string>
+    <string name="dev_gpu_fisheye_preview_summary">Membetulkan pratonton langsung sekeliling piksel demi piksel dengan GPU, melalui GL apl, selurus main semula foto dan bukan secara tampalan. Ini memilih kaedah sahaja; butang Luruskan masih menghidupkan dan mematikan pembetulan. Ketik Gunakan perubahan selepas menukar tetapan kamera.</string>
     <string name="dev_gpu_fisheye_video_title">Main semula video: pembetulan mata ikan per piksel dengan GPU</string>
     <string name="dev_gpu_fisheye_video_summary">Paparan sekeliling dalam main semula video dibetulkan piksel demi piksel dengan GPU. Ini memilih kaedah sahaja; butang Luruskan masih menghidupkan dan mematikan pembetulan. Berkuat kuasa apabila main semula video dibuka lagi.</string>
     <string name="dev_camera_suspects_title">Rekod apl yang mungkin menggunakan kamera</string>
@@ -1042,7 +1042,7 @@
     <string name="bird_eye_waiting">Menunggu kamera langsung</string>
     <string name="bird_eye_gpu_blocked">Matikan pelurusan GPU</string>
     <string name="bird_eye_watermark">360° eksperimen · belum ditentukur</string>
-    <string name="bird_eye_unavailable">360° memerlukan pratonton keliling aktif. Jika pelurusan GPU aktif, matikannya dalam Pilihan pembangun dan mulakan semula aplikasi.</string>
+    <string name="bird_eye_unavailable">360° memerlukan pratonton Sekeliling aktif. Jika pembetulan pratonton GPU menghalangnya, matikan pilihan itu dan ketik Gunakan perubahan.</string>
     <string name="bird_eye_vehicle_required">Sambungkan antara muka kenderaan untuk menguji atau menentukur 360°</string>
     <string name="bird_eye_factory_active">Kamera kilang aktif — 360° dijeda</string>
     <string name="bird_eye_invalid_calibration">Pemetaan kamera tidak sah — tetapkan semula</string>
@@ -1056,7 +1056,7 @@
     <string name="bird_eye_quality_full">Penuh — resolusi pratonton asal</string>
     <string name="bird_eye_quality_note">Seimbang mengekalkan lebih banyak butiran kamera pada saiz output yang sama. Penuh menyalin bingkai langsung yang tersedia (hingga 8 MP), sehingga 5 fps. Pemprosesan perlahan mengurangkan kadar bingkai dahulu, kemudian resolusi; Rendah berhenti jika masih terlalu perlahan. Foto menggunakan resolusi aktif. Resolusi tidak membetulkan penentukuran.</string>
     <string name="bird_eye_quality_reduced">Resolusi 360° diturunkan kerana pemprosesan perlahan atau memori terhad. Butiran terdapat dalam Diagnostics.</string>
-    <string name="msg_record_profile_restart">Pilihan kamera berubah. Keluar dan buka semula aplikasi untuk menggunakannya sebelum merakam.</string>
+    <string name="msg_record_profile_restart">Pilihan kamera berubah. Ketik Gunakan perubahan di atas pratonton atau dalam Tetapan sebelum merakam.</string>
     <string name="dev_camera_display_title">Alat kamera dan paparan</string>
     <string name="dev_camera_display_summary">Petikan kamera dan ujian paparan bernombor; eksport ke ZeekrCompanion/Developer</string>
     <string name="dev_camera_display_help">Hentikan rakaman dan tutup kamera kilang dahulu.\n\nEksport menyemak ID diiklankan, ID fizikal/ketersediaan yang dilaporkan dan calon angka 0–15 (maksimum 48 calon, 3 minit). Satu imej asal bagi setiap calon yang boleh diakses, saiz dan kegagalan disimpan. ID tidak sah, tidak tersedia atau ditolak kebenaran dicatat; tiada kebenaran atau penimbal kilang dipintas. Suapan biasa aplikasi dilepaskan sementara.\n\nPengenalpastian paparan bermula dengan kad skrin utama, kemudian paparan sekunder awam satu demi satu. Catat lokasi kad atau jika tidak kelihatan. PNG ialah kad dijana, bukan tangkapan skrin. Pemetaan kamera dan tetapan HUD tidak berubah.\n\nFail: ZeekrCompanion/Developer pada storan dipilih.</string>
@@ -1097,7 +1097,7 @@
     <string name="set_hud_during_factory_title">Kekalkan kamera sisi HUD semasa paparan kilang (eksperimen)</string>
     <string name="set_hud_during_factory_summary">Mati secara lalai. Mengekalkan kamera sisi HUD sahaja semasa 360° kilang, tetingkap kamera atau bantuan parkir. Undur masih menyembunyikannya; paparan skrin tetap mengalah. Perkakasan kamera bersama boleh mengganggu suapan. Tidak memaksa akses kamera.</string>
     <string name="set_developer_mode_title">Dayakan mod pembangun</string>
-    <string name="set_developer_mode_summary">Amaran: ciri eksperimen dan alat penyelesaian masalah boleh menjejaskan kamera, rakaman dan storan. Mati pada pemasangan baharu; pilihan dikekalkan selepas mula semula dan kemas kini. Mematikannya menyembunyikan pilihan pembangun dan menyahaktifkan tetapannya tanpa memadam nilai tersimpan. Sesetengah perubahan memerlukan aplikasi dimulakan semula.</string>
+    <string name="set_developer_mode_summary">Amaran: ciri eksperimen dan alat penyelesaian masalah boleh menjejaskan kamera, rakaman dan storan. Mati pada pemasangan baharu; pilihan dikekalkan selepas mula semula dan kemas kini. Mematikannya menyembunyikan pilihan pembangun dan menyahaktifkan tetapannya tanpa memadam nilai tersimpan. Perubahan kamera menggunakan tindakan Gunakan perubahan.</string>
     <string name="set_side_mirror_mode_title">Apabila Cermin super aktif</string>
     <string name="set_side_mirror_mode_summary">Guna tetingkap cermin, papar kedua-dua tetingkap, atau sembunyikan cermin semasa pop timbul sisi kelihatan. Gambar HUD sahaja tidak menyembunyikannya.</string>
     <string name="set_side_mirror_replace">Guna tetingkap Cermin super</string>
@@ -1175,8 +1175,8 @@
     <string name="set_hud_side_contrast_night_title">Kontras gambar HUD pada waktu malam</string>
     <string name="set_hud_side_contrast_night_summary">Menggunakan kontras berasingan apabila kereta melaporkan mod malam. 100 mengekalkan gambar asal; nilai lebih tinggi boleh menyembunyikan butiran gelap.</string>
     <string name="set_009_camera_mapping_title">Pemetaan kamera 009 (eksport disahkan)</string>
-    <string name="set_009_camera_mapping_summary">Mati secara lalai. Kamera 3 ialah Sekeliling dan 2 ialah Kamera pemandu. Slot tambahan kedua tidak dipetakan kecuali ditetapkan secara manual; kamera jalan 0/1 bukan kamera kabin. Berdasarkan satu eksport 009; keluar dan buka semula selepas menukar.</string>
-    <string name="msg_009_mapping_restart">Keluar dan buka semula aplikasi untuk menggunakan pemetaan kamera.</string>
+    <string name="set_009_camera_mapping_summary">Mati secara lalai. Kamera 3 ialah Sekeliling dan 2 ialah Kamera pemandu. Slot tambahan kedua tidak dipetakan kecuali ditetapkan secara manual; kamera jalan 0/1 bukan kamera kabin. Berdasarkan satu eksport 009; ketik Gunakan perubahan selepas menukar.</string>
+    <string name="msg_009_mapping_restart">Ketik Gunakan perubahan untuk menggunakan pemetaan kamera tersimpan.</string>
     <string name="slot_driver_camera">Kamera pemandu</string>
     <string name="slot_road_front">Kamera jalan hadapan</string>
     <string name="slot_road_rear">Kamera jalan belakang</string>
@@ -1232,7 +1232,7 @@
     <string name="record_groups_help">Pilih beberapa kumpulan rakaman. Hadapan + Belakang menggunakan kamera jalan berasingan, bukan potongan sekeliling. Susun atur pratonton bebas daripada rakaman. Mulakan semula aplikasi selepas menukar sumber.</string>
     <string name="vehicle_profile_title">Model kenderaan</string>
     <string name="vehicle_profile_defaults_title">Lalai model dan suapan disahkan</string>
-    <string name="vehicle_profile_summary">%1$s · Keluar dan buka semula selepas menukar</string>
+    <string name="vehicle_profile_summary">%1$s · Gunakan perubahan selepas memilih</string>
     <string name="vehicle_profile_unknown">Auto · Tidak dikenal pasti. Pilih model.</string>
     <string name="vehicle_profile_defaults_009">Eksport pemilik 009: Surround = kamera 3, Jalan hadapan = 0, Jalan belakang = 1, Kabin = 2. Suapan kabin kedua belum disahkan. Pemetaan manual mengatasi nilai lalai ini. HUD menggunakan padanan paparan dan susun atur tersendiri. Unjuran 360° Automatik menggunakan padanan 009 eksperimen; pilihan jelas dan larasan manual diutamakan. Ketepatan jarak dan rakaman serentak masih memerlukan ujian kenderaan.</string>
     <string name="vehicle_profile_defaults_7x">Bukti 7X huluan: komposit sekeliling serta kabin hadapan dan belakang. Sumber ditemui secara automatik; pemetaan manual diutamakan. Suapan jalan hadapan/belakang berasingan belum disahkan dan perlu dikenal pasti secara manual. HUD mengekalkan padanan dan susun atur tersendiri. DIY 360° menggunakan unjuran Manual, tanpa padanan imej 009. Penjajaran 7X masih perlu diuji pada kereta.</string>
@@ -1241,12 +1241,12 @@
     <string name="record_preview_current">Susun atur pratonton: %1$s</string>
     <string name="record_preview_surround_roads">Sekeliling + Hadapan + Belakang</string>
     <string name="record_preview_cabin">Pemandu / kabin hadapan</string>
-    <string name="record_preview_help">Kamera skrin utama dipilih berasingan daripada rakaman. Suapan jalan memerlukan sumber dikenal pasti dalam Sunting profil strim; suapan jalan 7X belum disahkan. Keluar dan buka semula selepas menukar. Pilihan rakaman dan susun atur sedia ada dikekalkan.</string>
+    <string name="record_preview_help">Kamera skrin utama dipilih berasingan daripada rakaman. Suapan jalan memerlukan sumber dikenal pasti dalam Sunting profil strim; suapan jalan 7X belum disahkan. Ketik Gunakan perubahan selepas menukar. Pilihan rakaman dan susun atur sedia ada dikekalkan.</string>
     <string name="camera_sources_title">Sumber kamera</string>
     <string name="camera_sources_entry">Pengesanan automatik atau ID kamera manual; dikongsi dengan penyunting strim</string>
-    <string name="camera_sources_help">Satu pemetaan untuk pratonton, rakaman dan tetingkap kamera. Automatik memadam pilihan manual: Sekeliling menggunakan suapan dikesan, kemudian lalai model. Sumber lain menggunakan lalai model atau penemuan. Pilihan manual kekal apabila mod pembangun dimatikan. Keluar dan buka semula selepas menukar. Tidak dipetakan menghentikan rakaman sumber itu (kedua-dua sumber jalan untuk Hadapan + Belakang).</string>
+    <string name="camera_sources_help">Satu pemetaan untuk pratonton, rakaman dan tetingkap kamera. Automatik memadam pilihan manual: Sekeliling menggunakan suapan dikesan, kemudian lalai model. Sumber lain menggunakan lalai model atau penemuan. Pilihan manual kekal apabila mod pembangun dimatikan. Ketik Gunakan perubahan selepas menukar. Tidak dipetakan menghentikan rakaman sumber itu (kedua-dua sumber jalan untuk Hadapan + Belakang).</string>
     <string name="camera_sources_reset">Tetapkan semua kepada automatik</string>
-    <string name="camera_sources_reset_note">Padam pemetaan kamera manual termasuk pilihan Pembangun lama. Kekalkan model, susun atur pratonton, suis rakaman dan kualiti. Sekeliling kembali kepada suapan dikesan; kamera tambahan tanpa lalai automatik perlu dipetakan sebelum digunakan. Keluar dan buka semula selepas itu.</string>
+    <string name="camera_sources_reset_note">Padam pemetaan kamera manual termasuk pilihan Pembangun lama. Kekalkan model, susun atur pratonton, suis rakaman dan kualiti. Sekeliling kembali kepada suapan dikesan; kamera tambahan tanpa lalai automatik perlu dipetakan sebelum digunakan. Ketik Gunakan perubahan selepas menukar.</string>
     <string name="camera_source_not_found">Tiada sumber automatik dikenal pasti</string>
     <string name="camera_source_automatic">Automatik · %1$s</string>
     <string name="camera_source_manual">Manual · %1$s</string>
@@ -1276,12 +1276,12 @@
     <string name="home_layout_equal">Bersebelahan</string>
     <string name="home_layout_stacked">Bertingkat</string>
     <string name="home_layout_help">Menyusun panel sumber berasingan. Sekeliling kekal dalam grid empat paparan; ketik untuk membesarkan. Susun atur berubah serta-merta.</string>
-    <string name="home_source_reopen">Perubahan sumber memerlukan Keluar aplikasi → buka semula. Keluar menghentikan rakaman.</string>
+    <string name="home_source_reopen">Simpan pilihan kamera, kemudian ketik Gunakan perubahan di atas pratonton atau dalam Tetapan.</string>
     <string name="home_windows_help">Buka tetingkap di atas aplikasi lain. Saiz dan kedudukannya berasingan daripada pratonton utama.</string>
     <string name="home_preview_single">Satu sumber</string>
     <string name="home_preview_multiple">%1$d sumber</string>
     <string name="home_layout_single">Satu sumber memenuhi pratonton. Susun atur mengatur sumber berasingan, bukan empat pandangan Surround.</string>
-    <string name="home_surround_unavailable">360° memerlukan Sekeliling dalam pratonton yang digunakan. Pilih pratetap dengan Sekeliling, kemudian keluar dan buka semula.</string>
+    <string name="home_surround_unavailable">360° memerlukan Sekeliling dalam pratonton aktif. Pilih pratetap dengan Sekeliling, kemudian ketik Gunakan perubahan.</string>
     <string name="home_pending_selection">Pratonton: %1$s · belum digunakan</string>
     <string name="home_layout_selected">Dipilih</string>
     <string name="side_tab_behavior">Tingkah laku</string>
@@ -1291,13 +1291,13 @@
     <string name="side_picture_help">Perihal tetapan gambar</string>
     <string name="side_settings_preview">Pratonton kamera</string>
     <string name="side_settings_unchanged">Pratonton dan main balik sahaja. Fail rakaman tidak berubah.</string>
-    <string name="side_settings_unavailable">Surround tiada dalam pratonton aktif. Pilih pratonton yang merangkumi Surround, kemudian keluar dan buka semula.</string>
+    <string name="side_settings_unavailable">Sekeliling tiada dalam pratonton aktif. Pilih pratonton dengan Sekeliling, kemudian ketik Gunakan perubahan.</string>
     <string name="side_settings_paused">Pratonton dijeda untuk kamera kilang atau sambungan kenderaan.</string>
     <string name="side_settings_show">Tunjukkan pratonton</string>
     <string name="side_settings_close">Sembunyikan pratonton tetapan</string>
     <string name="side_settings_expand">Besarkan pratonton tetapan</string>
     <string name="side_settings_restore">Pulihkan kawalan gambar</string>
-    <string name="side_settings_gpu">Pratonton tetapan memerlukan suapan Surround asal. Matikan pembetulan pratonton GPU dan buka semula aplikasi.</string>
+    <string name="side_settings_gpu">Pratonton tetapan memerlukan suapan Sekeliling asal. Matikan pembetulan pratonton GPU, kemudian ketik Gunakan perubahan.</string>
     <string name="side_settings_images">Gambar sisi</string>
     <string name="side_settings_auto_fit">Auto muat</string>
     <string name="side_settings_auto_fit_hint">Elakkan kawasan hitam</string>

@@ -52,11 +52,11 @@ public final class ProfileSizes {
      * 1280×5140，每格 1280×1285）。不拆的那一路画面就是整幅，预览多大录多大最省，
      * auto 仍然跟随预览。</p>
      */
-    private static Size autoSize(Context context, String role, Size previewSize) {
+    private static Size autoSize(Context context, String role, Size previewSize, String appliedCameraId) {
         if (!CameraProfile.ROLE_COMPOSITE.equals(role)) {
             return null;   // 交回给调用方：跟随预览
         }
-        int[] best = declaredMax(context, role);
+        int[] best = appliedCameraId == null ? declaredMax(context, role) : declaredMax(context, role, appliedCameraId);
         return best == null ? null : new Size(best[0], best[1]);
     }
 
@@ -64,12 +64,19 @@ public final class ProfileSizes {
         StreamSpec from(CameraProfile camera);
     }
 
+    public static Size photo(Context context, String role, Size previewSize, Profile applied, String appliedCameraId) {
+        return forStream(context, role, spec -> spec.photo, previewSize, applied, appliedCameraId);
+    }
+
     private static Size forStream(Context context, String role, Pick pick, Size previewSize) {
+        return forStream(context, role, pick, previewSize, null, null);
+    }
+    private static Size forStream(Context context, String role, Pick pick, Size previewSize, Profile applied, String appliedCameraId) {
         if (context == null || role == null) {
             return null;
         }
         try {
-            CameraProfile camera = new ProfileStore(context).current().camera(role);
+            CameraProfile camera = (applied == null ? new ProfileStore(context).current() : applied).camera(role);
             if (camera == null) {
                 return null;
             }
@@ -78,11 +85,11 @@ public final class ProfileSizes {
                 return null;
             }
             if (StreamSpec.RESOLUTION_AUTO.equals(spec.resolution)) {
-                return autoSize(context, role, previewSize);
+                return autoSize(context, role, previewSize, appliedCameraId);
             }
             int[] probed = previewSize == null
                     ? null : new int[]{previewSize.getWidth(), previewSize.getHeight()};
-            int[] max = declaredMax(context, role);
+            int[] max = appliedCameraId == null ? declaredMax(context, role) : declaredMax(context, role, appliedCameraId);
             ProfileResolution.Size size =
                     ProfileResolution.resolve(spec.resolution, probed, max);
             return size.specified() ? new Size(size.width, size.height) : null;
@@ -112,7 +119,9 @@ public final class ProfileSizes {
      * 按像素总数挑没有问题。</p>
      */
     public static int[] declaredMax(Context context, String role) {
-        String cameraId = cameraIdFor(context, role);
+        return declaredMax(context, role, cameraIdFor(context, role));
+    }
+    private static int[] declaredMax(Context context, String role, String cameraId) {
         if (cameraId == null) {
             return null;
         }

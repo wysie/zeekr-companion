@@ -20,6 +20,7 @@ outgoing PRs; neither index substitutes for the other.
 | `feature/companion-storage-folder` | New ZeekrCompanion public folders with read/lock/cleanup/sharing/archive compatibility for ZeekrShortcutApp and EVCam; unchanged Android identity |
 | `fix/recording-preview-isolation` | Separate recording compatibility from pending preview/overlay choices, retain recording-source/mapping restart checks and export distinct configuration evidence |
 | `feature/factory-style-settings` | Owner-approved factory-style settings/main toolbar, blind-camera tabs and read-only shared-texture Picture preview |
+| `feature/apply-camera-changes` | Shared pending/Apply UI, staged camera topology, recorder finalization and in-app camera rebuild with retained Settings state |
 | `main` | Combined installable fork: completed features, fork version numbers, update source and build configuration |
 | `feature/companion-icon` | Approved v3 linked-companions adaptive, themed and notification icons; compatible package/signing identity |
 | `feature/companion-branding` | Zeekr Companion display name, About attribution and compatible APK/release naming; logo selection remains separate |

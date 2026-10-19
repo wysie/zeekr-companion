@@ -18,6 +18,18 @@
    <TextView android:id="@+id/tv_composite_info" android:layout_width="wrap_content" android:layout_height="wrap_content" android:textAppearance="@style/TextAppearance.Cam.Micro" android:textColor="@color/text_secondary" />
   </LinearLayout>
  </LinearLayout>
- <TextView android:id="@+id/main_preview_pending" android:layout_width="match_parent" android:layout_height="wrap_content" android:padding="8dp" android:text="@string/ui_pending_camera_changes" android:textAppearance="@style/TextAppearance.Cam.Micro" android:textColor="@color/text_secondary" android:accessibilityLiveRegion="polite" android:visibility="gone" />
+ <LinearLayout android:id="@+id/main_camera_changes" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:orientation="horizontal" android:gravity="center_vertical" android:paddingStart="12dp" android:paddingEnd="8dp"
+        android:background="@color/sunken" android:visibility="gone">
+        <TextView android:id="@+id/main_preview_pending" android:layout_width="0dp" android:layout_weight="1" android:layout_height="wrap_content"
+            android:paddingTop="8dp" android:paddingBottom="8dp" android:paddingStart="0dp" android:paddingEnd="12dp"
+            android:text="@string/ui_pending_camera_changes" android:textAppearance="@style/TextAppearance.Cam.Caption"
+            android:textColor="@color/text_primary" android:accessibilityLiveRegion="polite" />
+        <com.google.android.material.button.MaterialButton android:id="@+id/main_apply_cameras"
+            style="@style/Widget.MaterialComponents.Button.TextButton" android:layout_width="wrap_content"
+            android:layout_height="wrap_content" android:minHeight="48dp" android:minWidth="48dp"
+            android:textAppearance="@style/TextAppearance.Cam.Caption" android:textAllCaps="false"
+            android:text="@string/camera_apply_action" android:textColor="@color/energy_text" />
+    </LinearLayout>
  <com.kooo.evcam.ui.VehicleStatusPanel android:id="@+id/vehicle_status_panel" android:layout_width="160dp" android:layout_height="64dp" android:layout_gravity="end" android:visibility="gone" />
 </LinearLayout>
