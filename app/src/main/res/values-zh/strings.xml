@@ -7,7 +7,7 @@
     <string name="bird_eye_car_green">绿色</string>
     <string name="bird_eye_car_white">白色</string>
     <string name="bird_eye_car_black">黑色</string>
-    <string name="bird_eye_car_colour_note">仅改变主界面、悬浮窗和 360 照片中的图示，不会改变相机或标定。自动模式仅使用已知车型，无法识别时显示轮廓。7X 尚未实车验证；请使用手动投影，009 图像拟合仅适用于 009。</string>
+    <string name="bird_eye_car_colour_note">仅改变主界面、悬浮窗和 360° 照片中的图示，不会改变相机或标定。自动模式仅使用已知车型，无法识别时显示轮廓。7X 尚未实车验证；请使用手动投影，009 图像拟合仅适用于 009。</string>
     <string name="bird_eye_car_model">车辆图示</string>
     <string name="bird_eye_car_auto">自动（未知车型使用轮廓）</string>
     <string name="bird_eye_car_outline">通用轮廓</string>
