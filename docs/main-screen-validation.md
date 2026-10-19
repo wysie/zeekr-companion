@@ -141,3 +141,13 @@ All 11 distinct main-page checks passed across focused runs, including the final
 day/night capture check. Debug/release/instrumentation builds, 1,494 JVM tests
 and lint (zero errors) pass;
 no downloadable APK containing this follow-up has been published.
+
+
+## Factory-style UI follow-up, 2026-10-19
+
+See [factory-style UI validation](factory-style-ui.md). Shared settings typography,
+compact equal-width utilities and driver-side anchoring are verified alongside
+preserved source/profile choices. A dedicated repeated-driver-side regression
+covers native text layout after returning from settings. The native retained-source
+Picture preview and its guards still need on-car performance validation. This
+follow-up is newer than the alpha 52 downloadable release.

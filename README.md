@@ -61,7 +61,7 @@ Straighten uses orange text plus a checkmark when enabled; long-press explains t
 it affects preview/playback and leaves recorded files unchanged. These toolbar
 refinements ship in alpha 52. Dock actions keep
 normal-size wrapped labels; the saved driver-side preference puts recording on
-that side. The next toolbar refinement keeps recording to its action and clip detail,
+that side. The current toolbar refinement groups four equal compact utility actions, leaves flexible space before the driver-side recording control, and keeps recording to its action and clip detail,
 with a thin separator from the utility actions. Long-press recording opens **Recording
 details**, including live screen-off behavior. Settings and Minimise stay in the
 header. Long-press Minimise still quits.
@@ -80,6 +80,24 @@ separate source panes. With just Surround (or another single source), the panel
 explains this and hides inactive arrangement choices; it does not rearrange the
 four views inside Surround. The saved arrangement is retained for multi-source use.
 These further clarity/toolbar changes are newer than alpha 52.
+
+Settings now use the owner-approved factory-inspired styling: regular-weight labels,
+flat near-white/dark rows, small corners, neutral sidebar selection and orange outlines
+for selected segments. All sidebar entries, including About and Quit, share one
+16sp style and respect system text scaling. **Blind spot camera** has **Behavior ·
+Picture · Window · HUD** tabs; changing tabs never resets settings. Picture has a
+Left/Right live settings preview with Expand/Restore and Hide/Show controls.
+It reads the existing main surround texture at up to five samples per second,
+without opening a camera or adding an output; configured popup/HUD frame rates are unchanged.
+Choose a main preview that contains Surround and reopen if needed. The preview
+pauses for factory camera use, screen-off, lost vehicle connection or stale frames;
+the experimental GPU preview path needs to be disabled/reopened to expose raw
+surround pixels for tuning. Native camera surfaces stay attached behind opaque
+settings; hidden main fisheye/360° rendering is paused. Tuning is available with the
+automatic popup off and applies on slider release; recordings remain unchanged.
+Long explanations remain under **About picture/behavior settings**. See
+[factory-style UI behavior and validation](docs/factory-style-ui.md).
+
 
 **Interface → Driver side** keeps recording nearest the selected Left or Right side,
 retaining the saved preference. Larger system text is respected above the existing
@@ -145,11 +163,11 @@ release numbers remain independent of upstream.
 - **Window teardown and recording:** side popup, HUD and 360 popup textures are handed to the camera scheduler when their views disappear, then released after the capture session removes them. This addresses the abandoned-output path correlated with two-second gaps in the supplied recordings; on-car continuity still needs verification.
 
 - **Scan restart preservation:** restarting the app keeps the current signal scan and its original deadline/line budget, including quick restarts. Turning the scanner off and starting a new session begins a new file. Based on Ferix’s restart fix, using explicit session identity instead of elapsed-time inference.
-- **HUD night contrast:** Blind spot camera → HUD picture has a separate night contrast slider, switched by the car’s day/night signal. Defaults to neutral 100%; it does not change display routing. The owner has now confirmed live side-camera video on their 009 HUD; layout refinement still needs a car check.
+- **HUD night contrast:** Blind spot camera → HUD has a separate night contrast slider, switched by the car’s day/night signal. Defaults to neutral 100%; it does not change display routing. The owner has now confirmed live side-camera video on their 009 HUD; layout refinement still needs a car check.
 
 - **Explicit USB-to-internal fallback:** Developer mode alone no longer permits fallback. Settings → Developer options → Recording internals → Allow internal storage fallback is off by default, including upgrades. A requested recording waits for usable USB; the main button shows Waiting for USB / Tap to cancel. With fallback explicitly enabled, recording starts give USB 10 seconds first. Mid-recording internal failover also requires this opt-in. Direct Internal storage selection and Relay write remain separate choices.
 
-- **Grouped settings:** retain the familiar main categories, with Blind spot camera → Image & framing / Popup window / HUD picture, and Recording & photos → Stamps & driving information. Screen-off recording now lives under Recording & photos. HUD and Developer tools have task-based headings; saved feature values and defaults are retained. See [settings map](docs/settings-menu.md).
+- **Grouped settings:** retain the familiar main categories, with Blind spot camera → Behavior / Picture / Window / HUD tabs, and Recording & photos → Stamps & driving information. Screen-off recording now lives under Recording & photos. HUD and Developer tools have task-based headings; saved feature values and defaults are retained. See [settings map](docs/settings-menu.md).
 
 - **Settings layout fixes:** camera cards reserve space for their switches; long names/custom badges wrap instead of hiding controls. Camera/quality cards stack in narrower panes, option buttons wrap at equal heights, and Diagnostics actions can grow with text. The main action column scrolls when too short to fit. Changing settings categories clears stale nested titles/Back history. See [native layout review](docs/settings-layout-review.md).
 
@@ -189,10 +207,10 @@ release numbers remain independent of upstream.
 - **Optional side-camera mirroring:** flip the image in the popup or Super mirror replacement; off by default, with recordings unchanged.
 - **App theme choice:** Settings → Interface → Theme offers Follow system (default), Light and Dark. Confirm with OK; Cancel keeps the current choice. The choice persists and applies to app screens and camera-popup controls without changing menu font sizes, camera pixels, recordings or the vehicle’s system theme. The HUD retains its separate brightness/contrast and dark-backed badges. The sidebar uses the same 18sp labels in both themes and keeps system font scaling; the earlier About/Quit recycled-font fix is also in the unreleased changes.
 - **Consistent Super mirror controls:** normal Super mirror now has the same themed top-corner Close and Expand/Restore buttons as the blind-side popup. Close turns Super mirror off through its existing enable switch; reopen it from Settings, the menu or an assigned floating-button action. Expand is temporary, preserves the current aspect ratio and restores the previous position/size without saving the larger geometry. Restore before dragging, pinching or switching cameras with gestures. A side-camera replacement ends any normal-mirror expansion and returns to the saved normal geometry when dismissed; its Close still dismisses only that side-view activation. Docked mirrors keep their existing pull-out tab, with corner buttons hidden. Camera labels move to the bottom to leave the controls clear; recording and HUD settings are unchanged.
-- **Optional side-camera auto-fit:** Blind spot camera → Image and framing → Auto-fit to avoid black patches defaults on. With Straighten picture enabled, on narrows the actual view near the source edge; off preserves the requested width/aim/rotation and draws missing coverage black, clipped to the selected camera lane. Shared by the popup and Super mirror replacement; the HUD can follow or customize it. Window geometry remains independent. Straighten off keeps its existing crop-to-fill rotation. Recordings and DIY 360 are unchanged. See [behaviour and validation](docs/side-view-auto-fit.md).
+- **Optional side-camera auto-fit:** Blind spot camera → Picture → Auto-fit to avoid black patches defaults on. With Straighten picture enabled, on narrows the actual view near the source edge; off preserves the requested width/aim/rotation and draws missing coverage black, clipped to the selected camera lane. Shared by the popup and Super mirror replacement; the HUD can follow or customize it. Window geometry remains independent. Straighten off keeps its existing crop-to-fill rotation. Recordings and DIY 360 are unchanged. See [behaviour and validation](docs/side-view-auto-fit.md).
 - **HUD side camera:** adapted from Ferix PR #14; choose Screen, HUD or both. HUD picture can follow popup tuning or keep custom view width, aim, rotation, mirroring, labels, Straighten and Auto-fit; size, aspect ratio, position and tone always stay independent. The owner has confirmed live video on their 009 windscreen HUD. Its public, powered-on display 3 at 1280×640 is now recognised automatically; the extra 009 enable switch is removed. The 009 starts with a smaller fixed-right picture and independent saved geometry. The panel fits the measured Presentation area rather than assuming physical display pixels equal drawable space. Factory graphics remain on their own layer and can appear over the camera. This confirms the owner’s head unit, not every 009 firmware. See [009 HUD evidence and controls](docs/009-hud-live-video.md).
-- **HUD alongside factory views:** Settings → Blind spot camera → HUD picture → Keep HUD side camera during factory views is experimental and off by default. Enabling it allows only the HUD side camera during factory 360/camera popups/parking assist; reverse still hides it, and the screen popup/Super mirror side replacement still yield. It changes display eligibility, never forces camera ownership; factory camera use or hardware contention can still interrupt the feed. Reset blind spot settings turns it off again.
-- **HUD picture and window controls:** Settings → Blind spot camera → HUD picture adds HUD contrast (100–300%), brightness at night (20–100%), edge fading (0–40%), optional positioning by indicator side. Defaults preserve the existing picture (100% contrast/night brightness, 0% fading), fixed position and ordinary Presentation window; enable each treatment explicitly. The former experimental “above factory HUD information” layer is removed, following Ferix’s unsuccessful 7X test. HUD uses the ordinary Presentation window; old overlay preferences are ignored. Factory graphics may cover the picture. The owner has now confirmed live camera video on display 3; the smaller 009 fixed-right layout is described above. These controls do not identify the physical HUD or force camera access; factory-view coexistence has its own off-by-default switch described above. Known 009 display matching is automatic; independent mirroring and screen/recording defaults are retained.
+- **HUD alongside factory views:** Settings → Blind spot camera → HUD → Keep HUD side camera during factory views is experimental and off by default. Enabling it allows only the HUD side camera during factory 360/camera popups/parking assist; reverse still hides it, and the screen popup/Super mirror side replacement still yield. It changes display eligibility, never forces camera ownership; factory camera use or hardware contention can still interrupt the feed. Reset blind spot settings turns it off again.
+- **HUD picture and window controls:** Settings → Blind spot camera → HUD adds HUD contrast (100–300%), brightness at night (20–100%), edge fading (0–40%), optional positioning by indicator side. Defaults preserve the existing picture (100% contrast/night brightness, 0% fading), fixed position and ordinary Presentation window; enable each treatment explicitly. The former experimental “above factory HUD information” layer is removed, following Ferix’s unsuccessful 7X test. HUD uses the ordinary Presentation window; old overlay preferences are ignored. Factory graphics may cover the picture. The owner has now confirmed live camera video on display 3; the smaller 009 fixed-right layout is described above. These controls do not identify the physical HUD or force camera access; factory-view coexistence has its own off-by-default switch described above. Known 009 display matching is automatic; independent mirroring and screen/recording defaults are retained.
 - **Optional camera labels:** identify the displayed camera in Super mirror and
   the side window. Super mirror also has a defaults reset.
 
@@ -333,7 +351,7 @@ free an output slot. Both windows share the existing surround camera stream; the
 window has its own output and does not replace the mirror output. Reverse, factory 360, factory
 side view and park assist take precedence.
 
-Under **Image & framing**, **Mirror side-camera image** flips left and right in both the separate popup and Super mirror replacement. It is off by default; labels, arrows and controls remain readable and recordings are unchanged. Reset side-camera settings restores mirroring to off.
+Under **Picture**, **Mirror side-camera image** flips left and right in both the separate popup and Super mirror replacement. It is off by default; labels, arrows and controls remain readable and recordings are unchanged. Reset side-camera settings restores mirroring to off.
 
 With **Straighten picture** on, per-side rotation is fitted together with the final
 window shape, avoiding the extra enlargement previously applied after rotation.

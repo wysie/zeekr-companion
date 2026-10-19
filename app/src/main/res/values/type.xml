@@ -71,4 +71,15 @@
         <item name="android:textSize">@dimen/text_display</item>
     </style>
 
+    <style name="TextAppearance.Cam.SettingsLabel" parent="TextAppearance.Cam.Caption">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    <style name="TextAppearance.Cam.SettingsTitle" parent="TextAppearance.Cam.Row">
+        <item name="android:fontFamily">sans-serif</item>
+        <item name="android:letterSpacing">0</item>
+    </style>
+    <style name="TextAppearance.Cam.SettingsBody" parent="TextAppearance.Cam.Body"><item name="android:fontFamily">sans-serif</item><item name="android:letterSpacing">0</item></style>
+    <style name="TextAppearance.Cam.SettingsCaption" parent="TextAppearance.Cam.Caption"><item name="android:fontFamily">sans-serif</item><item name="android:letterSpacing">0</item></style>
+    <style name="TextAppearance.Cam.SettingsMicro" parent="TextAppearance.Cam.Micro"><item name="android:fontFamily">sans-serif</item><item name="android:letterSpacing">0</item></style>
 </resources>

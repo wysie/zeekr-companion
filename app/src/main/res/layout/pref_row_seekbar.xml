@@ -18,15 +18,31 @@
     android:paddingEnd="20dp"
     android:paddingBottom="8dp">
 
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical" android:orientation="horizontal">
     <TextView
         android:id="@android:id/title"
-        android:layout_width="wrap_content"
+        android:layout_width="0dp"
+        android:layout_weight="1"
         android:layout_height="wrap_content"
         android:ellipsize="end"
         android:labelFor="@+id/seekbar"
         android:maxLines="2"
         android:textColor="@color/pref_title"
-        android:textAppearance="@style/TextAppearance.Cam.Body" />
+        android:textAppearance="@style/TextAppearance.Cam.SettingsBody" />
+
+        <TextView
+            android:id="@+id/seekbar_value"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:ellipsize="marquee"
+            android:fontFeatureSettings="tnum"
+            android:gravity="end"
+            android:minWidth="48dp"
+            android:paddingStart="8dp"
+            android:singleLine="true"
+            android:textColor="@color/text_primary"
+            android:textAppearance="@style/TextAppearance.Cam.SettingsCaption" />
+    </LinearLayout>
 
     <TextView
         android:id="@android:id/summary"
@@ -35,7 +51,7 @@
         android:layout_marginTop="3dp"
         android:maxLines="4"
         android:textColor="@color/pref_summary"
-        android:textAppearance="@style/TextAppearance.Cam.Micro" />
+        android:textAppearance="@style/TextAppearance.Cam.SettingsMicro" />
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -54,18 +70,6 @@
             android:paddingTop="15dp"
             android:paddingBottom="15dp" />
 
-        <TextView
-            android:id="@+id/seekbar_value"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:ellipsize="marquee"
-            android:fontFeatureSettings="tnum"
-            android:gravity="end"
-            android:minWidth="48dp"
-            android:paddingStart="8dp"
-            android:singleLine="true"
-            android:textColor="@color/pref_summary"
-            android:textAppearance="@style/TextAppearance.Cam.Caption" />
     </LinearLayout>
 
     <LinearLayout

@@ -58,7 +58,7 @@ public class SegmentedPreference extends Preference implements PreferenceRows.Ow
         if (bar == null) return;
         String[] labels = new String[entries.length];
         for (int i = 0; i < entries.length; i++) labels[i] = entries[i].toString();
-        bar.setLabelTextAppearance(R.style.TextAppearance_Cam_Caption);
+        bar.setLabelTextAppearance(R.style.TextAppearance_Cam_SettingsCaption);
         bar.setEnabled(isEnabled());
         bar.bind(labels, values, value, this::pick);
     }

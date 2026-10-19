@@ -8,10 +8,9 @@ implemented settings described below.
 The native two-pane sidebar remains: Recording & photos, Storage, Super mirror,
 Blind spot camera, 360° camera, Floating button, Interface, System, Developer
 options (when enabled), and Updates. About & credits remains a direct destination.
-Headings group rows without another tap. Only the four named child pages below
-add navigation depth; their native Back button returns to their parent.
+Blind spot camera uses peer Behavior, Picture, Window and HUD tabs without adding Back history. Recording stamps and other nested editors retain native Back navigation. Headings group rows without another tap.
 
-All sidebar entries, including About & credits and Quit app, bind the same Body
+All sidebar entries, including About & credits and Quit app, bind the same regular 16sp sidebar
 font size with autosizing disabled. Long labels wrap to two lines, and row height
 grows for larger system fonts. Rebinding a recycled row restores its size; About
 and Quit are direct actions, not smaller secondary labels.
@@ -19,7 +18,7 @@ and Quit are direct actions, not smaller secondary labels.
 Interface → **Theme** offers Follow system (default), Light and Dark. Choose an
 option and confirm with OK; Cancel retains the current choice. It applies to this
 app, persists across restarts and may recreate its Activity to load the palette.
-The settings sidebar uses the same 18sp Body style in both themes; there are no
+The settings sidebar uses the same regular 16sp style in both themes; there are no
 night-specific font sizes. MainActivity retains its existing 1.2× font scale,
 now through an Activity-local configuration established before AppCompat/view
 inflation, instead of mutating an already-used resources configuration during
@@ -61,7 +60,7 @@ does not establish the exact cause of the owner's older-build screenshot.
 | Recording & photos | Cameras: stream profile, profile editor with independent recording groups; shared Camera sources and Automatic reset; Preview layout with saved selection and separate help; model defaults live under System. Automatic recording: launch, driver arrival, driver departure. Screen off: keep recording. Photos: JPEG output. **Stamps & driving information →** app stamp, plate switch/text, timestamp, specifications, information bar and signal-selection shortcut. |
 | Storage | Destination, USB power guidance, relay write; video/photo limits and usage; protected footage, flash-to-pass/hard-braking triggers and protected usage. |
 | Super mirror | Enable and guide; camera selection and button/gesture controls; correction, field of view and shared camera labels; window width/height; reset. |
-| Blind spot camera | Enable; Screen/HUD/Both and mirror relationship; minimum screen-opening speed and factory priority; prewarming and close delay; **Image & framing →**, **Popup window →**, **HUD picture →**; reset. |
+| Blind spot camera | Enable; Screen/HUD/Both and mirror relationship; minimum screen-opening speed and factory priority; prewarming and close delay; **Behavior / Picture / Window / HUD tabs**; reset. |
 | 360° camera | Experimental explanation; main-button destination; Show 360° popup; quality; Automatic / Manual / 009 image-fit projection; popup size/layout reset; calibration dialog and calibration/quality reset. Automatic follows the model unless an explicit choice or legacy manual tuning is preserved. |
 | Floating button | Enable; tap/double-tap/hold actions (including Do nothing); size, opacity and timer appearance; lock position; reset. Double tap starts off; assigning it briefly delays single taps. |
 | Interface | Language; Theme (Follow system / Light / Dark); action side, recording statistics, reduced motion, vehicle panel; in-app picture adjustments, main preview/photo/video correction method and field of view. |
@@ -69,24 +68,36 @@ does not establish the exact cause of the owner's older-build screenshot.
 | Developer options | Recording internals: allow internal storage fallback (off by default), pipeline, H.264, wake lock and duration. Image/rendering: preview/playback GPU methods. Camera research: mapping, camera/display tools and batch exports, raw frames, USB drive logging with live status, signal scanner, camera-app logging, permissions. Maintenance: repair recordings, archive. |
 | Updates | Check for updates, include beta releases. |
 
-## Blind spot child pages
+## Blind spot tabs
 
-- **Image & framing:** straighten, view width, aim back/up and high-angle crop note,
+- **Behavior:** enable, output, Super mirror relationship, minimum speed, prewarming, close delay and scoped reset. Optional technical explanation is under About behavior settings.
+- **Picture:** straighten, view width, aim back/up and high-angle crop note,
   separate left/right rotation, centre-screen mirroring, shared camera labels.
-- **Popup window:** aspect ratio (Square 1:1, Portrait 3:4, Landscape 4:3, Wide 16:9, Extra wide 2.2:1), height/position and drag/pinch/expand/close guidance. Square remains the default; resizing and expand/restore retain the chosen shape.
-- **HUD picture:** Follow popup picture settings; Custom HUD picture (visible when
+- **Window:** aspect ratio (Square 1:1, Portrait 3:4, Landscape 4:3, Wide 16:9, Extra wide 2.2:1), height/position and drag/pinch/expand/close guidance. Square remains the default; resizing and expand/restore retain the chosen shape.
+- **HUD:** Follow popup picture settings; Custom HUD picture (visible when
   following is off: Straighten, Auto-fit, view width, aim, rotations, mirror, label);
   Picture (contrast, night brightness, opacity, edge fade);
   Placement (height, shape, horizontal/vertical position, follow indicator side);
   Advanced experimental routing (factory-view coexistence).
 
-Timing/prewarming remain on the parent because their effects are not limited to
+Timing/prewarming remain on Behavior because their effects are not limited to
 popup geometry. HUD picture follows popup tuning by default unless an explicitly
 saved legacy HUD mirror preference needs preserving. Turning following off seeds
 the current popup picture on first use; later switches restore previous custom
 values. HUD layout and tone stay independent in both modes. The camera-label rows
-in Super mirror and Image & framing read and write the same AppConfig setting;
+in Super mirror and Picture read and write the same AppConfig setting;
 custom HUD labels have their own preference.
+
+Picture includes a Left/Right preview from the existing native main Surround texture.
+It adds no camera output. Sampling is bounded to five times/second and 2048 pixels
+along the source strip. Configured popup/HUD frame rates are unchanged. Wide details use a
+44:56 controls/preview split; below 760dp they stack. Expand hides the controls;
+Hide/Show affects only this settings preview. It follows the saved popup shape,
+angles, mirroring, labels and Auto-fit. Values are saved on release, without a
+Save-all step. Factory activity, reverse, screen-off, missing connection, raw
+source unavailability and stale frames cover the image. GPU preview correction
+requires disabling/reopening for this raw sampler. See [implementation and
+validation](factory-style-ui.md); on-car performance is not established by UI tests.
 
 ## Window controls and reset scopes
 

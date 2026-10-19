@@ -1,0 +1,11 @@
+<resources>
+    <item name="side_settings_tabs" type="id" />
+    <item name="side_settings_body" type="id" />
+    <item name="side_settings_preferences" type="id" />
+    <item name="side_settings_preview" type="id" />
+    <item name="side_preview_left_right" type="id" />
+    <item name="side_preview_expand" type="id" />
+    <item name="side_preview_close" type="id" />
+    <item name="side_preview_picture" type="id" />
+    <item name="side_preview_status" type="id" />
+</resources>

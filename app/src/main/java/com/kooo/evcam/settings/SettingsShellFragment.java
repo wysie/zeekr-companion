@@ -142,7 +142,7 @@ public class SettingsShellFragment extends Fragment implements
             manager.popBackStackImmediate(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
         boolean down = order < 0 || order >= currentOrder;
-        currentSection = screenKey;
+        currentSection = SideCameraSettingsPane.handles(screenKey) ? "screen_blind_spot_camera" : screenKey;
         if (order >= 0) {
             currentOrder = order;
         }
@@ -162,7 +162,7 @@ public class SettingsShellFragment extends Fragment implements
         // 左栏跟着把选中块挪过去（第一次进来时它还没建好，建的时候会来问 currentSection）
         Fragment headers = getChildFragmentManager().findFragmentById(R.id.settings_headers);
         if (headers instanceof SettingsHeadersFragment) {
-            ((SettingsHeadersFragment) headers).markSelected(screenKey);
+            ((SettingsHeadersFragment) headers).markSelected(currentSection);
         }
         openDetail();
         refreshTitle();

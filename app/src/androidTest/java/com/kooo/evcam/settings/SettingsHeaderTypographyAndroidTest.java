@@ -57,7 +57,7 @@ public class SettingsHeaderTypographyAndroidTest {
                             !label.startsWith("About") && !label.startsWith("Quit"), 0);
                     row.setTitle(label); row.setSelectedRow(label.startsWith("Floating")); row.onBindViewHolder(holder);
                     measure(view, c, 240);
-                    assertEquals(label, c.getResources().getDimension(R.dimen.text_body), title.getTextSize(), .1f);
+                    assertEquals(label, c.getResources().getDimension(R.dimen.text_caption), title.getTextSize(), .1f);
                     assertEquals(TextViewCompat.AUTO_SIZE_TEXT_TYPE_NONE, TextViewCompat.getAutoSizeTextType(title));
                     assertTrue(label, title.getLineCount() <= 2);
                     assertEquals(label, title.length(), title.getLayout().getLineEnd(title.getLineCount() - 1));
@@ -78,7 +78,7 @@ public class SettingsHeaderTypographyAndroidTest {
             View view = list.getChildAt(i); int position = list.getChildAdapterPosition(view);
             if (position == RecyclerView.NO_POSITION) continue;
             TextView title = view.findViewById(android.R.id.title);
-            assertEquals(adapter.getItem(position).getKey(), view.getResources().getDimension(R.dimen.text_body),
+            assertEquals(adapter.getItem(position).getKey(), view.getResources().getDimension(R.dimen.text_caption),
                     title.getTextSize(), .1f);
         }
     }

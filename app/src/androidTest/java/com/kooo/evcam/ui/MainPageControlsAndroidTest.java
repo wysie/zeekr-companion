@@ -181,6 +181,32 @@ public class MainPageControlsAndroidTest {
             assertEquals(50,config.getSidePopupYaw());assertFalse(com.kooo.evcam.recording.RecordingCoordinator.get(target).isRecordingOrResuming());
         }
     }
+    @Test public void compactDockKeepsEqualReadableUtilitiesAcrossDriverSideChanges() {
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+            int[] ids = {R.id.btn_take_photo, R.id.btn_main_gallery, R.id.btn_main_windows, R.id.btn_fisheye};
+            for (String side : new String[]{"right", "left", "right"}) {
+                scenario.onActivity(a -> {
+                    for (int id : ids) a.findViewById(id).setVisibility(View.VISIBLE);
+                    MainPageControls.applyDriverSide(a, side);
+                });
+                InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+                scenario.onActivity(a -> {
+                    int width = a.findViewById(ids[0]).getWidth(); assertTrue(width > 0);
+                    View recording = a.findViewById(R.id.btn_start_record);
+                    for (int id : ids) {
+                        TextView action = a.findViewById(id);
+                        assertEquals(width, action.getWidth());
+                        int last = action.getLayout().getLineCount() - 1;
+                        assertEquals(action.getText().length(), action.getLayout().getLineEnd(last));
+                        assertEquals(0, action.getLayout().getEllipsisCount(last));
+                        assertTrue(action.getHeight() >= 48 * a.getResources().getDisplayMetrics().density);
+                        assertTrue("Driver-side recording anchor", "left".equals(side)
+                                ? recording.getLeft() < action.getLeft() : recording.getLeft() > action.getLeft());
+                    }
+                });
+            }
+        }
+    }
     @Test public void explicit360ActionsIgnoreLegacyShortcutDestinationAndTrackWindowClosure() {
         new BirdEyeWindowConfig(target).setPopup(true);
         try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {

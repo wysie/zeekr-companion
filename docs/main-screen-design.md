@@ -37,7 +37,18 @@ Single-source selection explains that arrangement applies to separate sources,
 hides inactive layout tiles and retains the saved multi-source arrangement.
 
 The same photo showed screen-off prose crowding the recording control. Keep the
-flat toolbar, equal utility widths and native feedback; give recording a 1.45 weight
+flat toolbar, equal utility widths and native feedback; give recording a wider share of the original toolbar
 and one neutral separator, with its action and clip detail visible. Long-press
 opens Recording details using the existing live ScreenOffHintView; no recording
 policy is changed. This refinement is newer than alpha 52.
+
+## Factory-style implementation (2026-10-19)
+
+The owner approved the factory-style main/Picture concepts after providing 009 menu
+photos. Keep camera-first structure and identity. Replace stretched utilities with
+four compact equal-width inline actions and flexible space before recording on
+the selected driver side. The recording ring is 42dp/3dp stroke with the existing
+circle/stop-square behavior; its separator and long-press details remain. Native
+controls retain at least 48dp targets; the dock minimum is 72dp. Translated labels
+can wrap/scroll rather than shrink. Header buttons use small 5dp corners and
+regular type. See `factory-style-ui.md` for settings/preview behavior and evidence.
