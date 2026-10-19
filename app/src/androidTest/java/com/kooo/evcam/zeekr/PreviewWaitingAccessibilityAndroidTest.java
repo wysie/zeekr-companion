@@ -4,6 +4,35 @@ import androidx.test.core.app.ActivityScenario;import androidx.test.ext.junit.ru
 import com.kooo.evcam.ui.CameraStatusActivity;import com.kooo.evcam.R;
 import org.junit.Test;import org.junit.runner.RunWith;import static org.junit.Assert.*;import static org.junit.Assume.assumeTrue;
 @RunWith(AndroidJUnit4.class) public class PreviewWaitingAccessibilityAndroidTest {
+ @Test public void waitingMessagesKeepBothEdgesVisibleInNarrowAndWidePanes() {
+  assumeTrue(Build.PRODUCT.contains("sdk")||Build.HARDWARE.contains("ranchu"));
+  try(ActivityScenario<CameraStatusActivity> scenario=ActivityScenario.launch(CameraStatusActivity.class)) {
+   scenario.onActivity(a->{
+    for(float scale:new float[]{1f,1.3f}) for(int width:new int[]{320,640,900}) {
+     android.content.res.Configuration configuration=new android.content.res.Configuration(a.getResources().getConfiguration());configuration.fontScale=scale;
+     View owner=new View(a.createConfigurationContext(configuration));owner.layout(0,0,width,900);
+     PreviewFrameGuard guard=new PreviewFrameGuard(owner);
+     try {
+      java.lang.reflect.Field since=PreviewFrameGuard.class.getDeclaredField("waitingSince");since.setAccessible(true);since.setLong(guard,SystemClock.elapsedRealtime()-11000);
+     } catch(ReflectiveOperationException e){throw new AssertionError(e);}
+     Bitmap image=Bitmap.createBitmap(width,900,Bitmap.Config.ARGB_8888);
+     try {
+      guard.cover(new Canvas(image),true);
+      int left=width,right=-1,pixels=0;
+      for(int y=0;y<image.getHeight();y++) for(int x=0;x<width;x++) {
+       int color=image.getPixel(x,y);
+       if(Color.red(color)>100&&Color.green(color)>100&&Color.blue(color)>100){left=Math.min(left,x);right=Math.max(right,x);pixels++;}
+      }
+      assertTrue("Real glyphs were rendered",pixels>100);
+      assertTrue("Beginning of the message stays inside its pane at "+scale+" / "+width,left>=12);
+      assertTrue("End of the message stays inside its pane",right<width-12);
+      assertTrue("Message is visually centred instead of shifted left",Math.abs((left+right)/2f-width/2f)<16);
+      assertTrue(owner.getContentDescription().toString().contains(a.getString(R.string.camera_waiting_status_link)));
+     } finally {image.recycle();}
+    }
+   });
+  }
+ }
  @Test public void staleCoverExposesStateAndProlongedWaitWhileFreshPreviewRemainsIndependent() {
   assumeTrue(Build.PRODUCT.contains("sdk")||Build.HARDWARE.contains("ranchu"));
   try(ActivityScenario<CameraStatusActivity> scenario=ActivityScenario.launch(CameraStatusActivity.class)) {

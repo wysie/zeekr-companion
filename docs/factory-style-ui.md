@@ -63,7 +63,42 @@ explicitly unavailable for this raw sampler to avoid double correction. Select a
 main preview containing Surround and quit/reopen if that source is not attached;
 turn experimental GPU preview correction off and reopen when applicable.
 
-## Validation
+## Density and navigation follow-up
+
+After comparing native captures with the same factory photos, the owner approved
+a denser refinement. MainActivity no longer forces at least 1.2× font scaling;
+Main and its hosted settings inherit the system size, including enlarged text.
+Base sidebar/row/explanation type remains 16/18/14sp with identical metrics across
+themes. Content rows change from 72dp to 64dp minimum height and vertical padding
+from 14dp to 10dp; slider hit regions and 48dp action targets are retained. Header
+and footer minimums are 56dp and 40dp with content-driven height. Secondary main
+brand and technical metadata use the existing Caption/Micro roles.
+
+Gallery opens directly on Videos; Photos is a peer tab. The explicit photo and
+record controls and expanded-preview Restore are retained. No gallery preference
+or camera/source configuration is migrated. Camera-state text now uses a left
+Paint origin with centred StaticLayout lines: the former double centring shifted
+the already-centred glyphs left and cut off the beginning of the message.
+
+This follows the factory's density and hierarchy; the photographed font family,
+exact OEM dimensions and physical fit are not established from oblique photos.
+
+Follow-up validation: debug/release/instrumentation builds, all 1,502 JVM tests
+and lint pass. Native runs pass 7/7 at system text 1.0 and 11/11 at 1.3 (11
+distinct methods). Coverage includes direct Gallery → Photos → Back with retained
+pipeline/manual-stop state, unchanged system font scale in the actual Activity,
+same Picture textures/holders across settings, long values/translations, equal
+toolbar widths and recycled About/Quit typography. Rendered-pixel checks cover
+320/640/900px camera panes at both text scales and retain live/stale accessibility.
+
+Paired actual captures are local-only under
+`artifacts/factory-density-20261019/{normal,large}/`. The bounded independent UI
+review passed: no further material changes requested. Native pixel inspection
+also confirmed white waiting glyphs in the actual dark PNG despite a discrepancy
+in the image viewer; no speculative Force Dark or renderer changes were made.
+Emulator captures do not establish on-car physical readability or camera quality.
+
+## Initial validation
 
 Validation completed on API 32 ARM64, 2560×1600 at density 320 and 1.3× system
 font scale. Debug/release APKs and instrumentation compile; 1,494 JVM tests pass;

@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Follow the system text size without forced enlargement, tighten settings rows and reduce secondary header/footer emphasis in both themes.
+- Open Gallery directly on Videos, with Photos available in the same gallery.
+- Keep camera waiting messages centred and fully visible within their preview panes.
+
 - Save new recordings, photos, logs and developer exports under ZeekrCompanion, retaining playback, protection, cleanup, sharing and archives for older folders.
 
 - Keep pending preview-only changes from blocking manual and automatic recording; retain restart checks for recording-source and active camera-mapping changes.

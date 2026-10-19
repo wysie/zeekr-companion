@@ -67,6 +67,16 @@ with a thin separator from the utility actions. Long-press recording opens **Rec
 details**, including live screen-off behavior. Settings and Minimise stay in the
 header. Long-press Minimise still quits.
 
+**Gallery** now opens the Videos tab directly; switch to Photos in the same
+gallery. There is no intermediate media chooser. Take photo and Start/Stop
+recording remain direct actions. In expanded preview, Restore brings this toolbar
+back. Main and hosted settings now use the system text size without the previous
+forced 1.2× minimum; larger accessibility text still scales normally. Settings use
+64dp minimum rows with 10dp vertical padding, retaining 16sp sidebar labels and
+growing rows for long text. Smaller secondary header/footer text leaves more room
+for cameras and settings. Waiting messages wrap and centre within each camera
+pane without cutting off their beginning. These refinements are newer than alpha 52.
+
 **Preview** opens a staged side panel: quick presets for **Surround · four views**,
 **Front + Rear** and **Surround + roads**, then **Other sources** for Follow recording,
 one road source or cabin. These use the same saved source choice as Settings;

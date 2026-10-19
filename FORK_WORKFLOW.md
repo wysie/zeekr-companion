@@ -11,6 +11,7 @@ outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
 | --- | --- |
+| `fix/factory-menu-density` | System-sized typography, denser settings with preserved touch targets, direct Gallery access and correctly centred preview-state text |
 | `feature/companion-storage-folder` | New ZeekrCompanion public folders with read/lock/cleanup/sharing/archive compatibility for ZeekrShortcutApp and EVCam; unchanged Android identity |
 | `fix/recording-preview-isolation` | Separate recording compatibility from pending preview/overlay choices, retain recording-source/mapping restart checks and export distinct configuration evidence |
 | `feature/factory-style-settings` | Owner-approved factory-style settings/main toolbar, blind-camera tabs and read-only shared-texture Picture preview |

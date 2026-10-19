@@ -38,7 +38,9 @@ final class PreviewFrameGuard {
         this.owner = owner;
         waiting = owner.getContext().getString(R.string.side_view_waiting_live);
         text.setColor(Color.WHITE);
-        text.setTextAlign(Paint.Align.CENTER);
+        // StaticLayout centres each line. Paint must retain a left origin or it
+        // shifts the already-centred glyphs left and clips their beginning.
+        text.setTextAlign(Paint.Align.LEFT);
         text.setTextSize(16 * owner.getResources().getDisplayMetrics().scaledDensity);
     }
     void attach() { attached = true; reset(); owner.removeCallbacks(tick); owner.post(tick); }

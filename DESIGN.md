@@ -317,7 +317,7 @@ The finish record is in `docs/main-screen-validation.md`. The parent verificatio
 
 Main Straighten uses a short label and native long-press tooltip; it shares preview/playback correction and never changes recorded files. Preview keeps the source/reopen warning in the fixed heading, with detailed layout/recording guidance in scrollable content. Windows buttons name their next action and retain live Open/Closed/Paused status. Driver side uses spatial Left/Right options and preserves the existing saved value/default. Playback Home explicitly returns to the camera stage; Back keeps ordinary gallery navigation. Empty video playback keeps navigation/Refresh available and disables media-dependent controls.
 
-Segmented settings use an orange outline with `energy_text` on the neutral track and expose checked radio semantics. The light orange text is #B83E15 for sufficient contrast on tinted surfaces; dark text remains #F58A5E. Main preserves larger system font scale above its existing 1.2 minimum without mutating application resources. Gallery tiles group date/time/duration, lock and selection announcements. Native XML/Java remains authoritative; browser detector does not apply.
+Segmented settings use an orange outline with `energy_text` on the neutral track and expose checked radio semantics. The light orange text is #B83E15 for sufficient contrast on tinted surfaces; dark text remains #F58A5E. Main and hosted settings follow the system font scale without forcing a minimum or mutating application resources. Gallery opens directly on Videos with a Photos tab; tiles group date/time/duration, lock and selection announcements. Native XML/Java remains authoritative; browser detector does not apply.
 
 ## Factory-style settings surface
 
@@ -326,8 +326,15 @@ visual authority for this refinement. Settings rows use `settings_row`
 (#FAFAFB light / #222326 dark), 5dp corners and regular sans-serif with zero added
 letter spacing. Sidebar labels use the same 16sp Caption-derived variant for all
 categories/actions; dense explanations use 14sp, rows 18sp and the page title
-21sp. The existing font scale minimum/system growth is preserved. Do not introduce
+21sp. System font scaling is preserved without a forced 1.2× minimum. Do not introduce
 per-theme font sizes or autoshrink. The navigation column is 240dp.
+
+Settings rows have a 64dp minimum and 10dp vertical content padding; long content
+still grows. Keep 48dp interactive hit areas and the existing slider hit region.
+The settings header has a 56dp minimum and its metadata footer a 40dp minimum,
+both with content-driven height. Secondary main header/metadata use Caption/Micro
+roles; retain the recording control's primary emphasis. Waiting text uses
+StaticLayout centring with a left-origin Paint, so centring is applied once.
 
 Blind spot settings use native scrolling tabs: Behavior, Picture, Window and HUD;
 selected tabs keep dark/light foreground text and a thin orange underline. The
