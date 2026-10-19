@@ -146,3 +146,48 @@ No incoming upstream/Ferix runtime change was imported by this outgoing batch.
 USB signal logging remains a separate prospective contribution requiring scanner
 prerequisites and Ferix attribution. DIY 360 fitting, 009 HUD routing and unconfirmed
 blind-spot warning decoding are excluded.
+
+## Additional opportunities reviewed — 2026-10-19
+
+Compared fork main `40d85c74` with freshly fetched dts88 main
+`020e2b0bd8899ac6ed6fa774c217b76779783342`. Upstream has merged README-only
+PRs #55/#56 since the second batch, recommending CAMCORDER and updating the name
+of this project to Zeekr Companion. All 22 PRs #28–#38 and #44–#54 remain open
+according to GitHub. This pass changes no published PR head or runtime code.
+
+Four additional scopes can be extracted directly from current upstream main:
+
+| Candidate | Evidence and upstream gap | Contribution boundary |
+| --- | --- | --- |
+| Respect automatic-recording opt-in across waits and recovery | Fork `f78bf8ad`; upstream retains a boolean recording intent without its originating setting and lacks the fork's settings-recheck path | Port the Record on launch/manual request-origin distinction, cancellation of pending automatic starts after opt-out and persistence/recovery tests. Preserve manual recovery and upstream defaults; do not introduce the fork's driver-arrival feature as an unstated prerequisite. |
+| Read-only Camera status | Fork `d1865008`; upstream exposes recorder summaries but lacks the source-status page | Add planned/writing counts and per-source producer/recovery evidence with Diagnostics access. Adapt the existing upstream screen/settings rather than importing our camera-first home. Preview-cover enhancements can follow #36 separately. No new camera opens or retry-policy changes. |
+| Accessible segmented settings choices | Fork `ba7f0349`; upstream's SegmentedBar exposes activated styling without checked radio semantics | Add checkable/checked RadioButton accessibility state and matching native tests. Validate selected-state contrast; any outline/tint adaptation should be scoped, without the full factory-style redesign. |
+| Scoped confirmation for layout resets | Fork `db79d7b2`; upstream mirror/floating resets execute immediately (profile reset already confirms) | Confirm the exact affected settings; Cancel must make no changes. Cover Super mirror and floating button only where upstream has them. Do not require our HUD/360 settings, menu rearrangement or branding. |
+
+These are candidate scopes, not validated upstream ports or new submissions.
+They can build independently of each other after adaptation; shared files may
+still cause merge conflicts. Fork tests do not prove that an unbuilt port passes.
+
+Follow-ups should stay with existing review scopes:
+
+- **#36, stalled-preview covers:** add wrapping, bounded waiting/accessibility
+  feedback and narrow-pane pixel coverage when porting the richer cover. The
+  published head uses centred single-line drawText, not our later StaticLayout;
+  it does not contain the same double-centering defect. Keep a left-origin Paint
+  if introducing centred StaticLayout, rather than claiming an existing duplicate bug.
+- **#29, responsive settings:** long title/value readability and larger-text
+  regressions fit this existing layout scope; avoid a duplicate clipping PR.
+- **#45, menu typography:** preserve its resource-isolation/recycled-row fix.
+  Removing forced 1.2× sizing or adopting denser factory-style defaults is a
+  maintainer design decision, not an automatic amendment to that bug fix.
+
+Do not offer the recent fork recording/preview refusal as an upstream bug fix:
+upstream and published #54 lack our broad pending-channel start gate. A recording-
+specific compatibility check would need to be justified/tested in the preview
+port's own lifecycle, rather than cherry-picked unchanged from `585e0c36`.
+
+Companion branding/storage rename, the new home-screen Gallery shortcut and DIY
+360 optimization are fork-specific. Current upstream has separate Videos/Photos
+actions and no equivalent DIY 360 renderer, so these are not independent drop-in
+fixes. Signal scanning/USB drive logging remains the larger attributed follow-up
+already noted above; HUD mapping and warning decoding still require vehicle evidence.

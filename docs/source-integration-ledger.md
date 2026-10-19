@@ -32,15 +32,16 @@ implemented behavior.
 
 ## Reviewed source snapshot
 
-Last checked **2026-10-18**. The source heads were unchanged from the previous
-review. These are reviewed boundaries, not a statement of full feature parity.
+Last checked **2026-10-19** for dts88; Ferix was not refreshed in this outgoing
+opportunity review and retains its 2026-10-18 boundary. These are reviewed
+boundaries, not a statement of full feature parity.
 
 | Repository | Reviewed main head | Relationship to this fork |
 | --- | --- | --- |
-| [dts88/zeekr-shortcut-car](https://github.com/dts88/zeekr-shortcut-car) | [0697bc76](https://github.com/dts88/zeekr-shortcut-car/commit/0697bc76b6f1c57a2e66f7b79112dca19050c477), 2.13.1-alpha | Full upstream ancestry through `76138b8d`, plus selective PR #41 adaptations below. `upstream-main` currently points to `0f145f7a`; it is a source mirror, not the combined fork's integration boundary. |
+| [dts88/zeekr-shortcut-car](https://github.com/dts88/zeekr-shortcut-car) | [020e2b0b](https://github.com/dts88/zeekr-shortcut-car/commit/020e2b0bd8899ac6ed6fa774c217b76779783342), README follow-ups after 2.13.1-alpha | Reviewed `0697bc76..020e2b0b`: only README/Chinese README changes, merged PRs #55/#56. No import: external project recommendations and naming do not require a runtime port. Full upstream ancestry through `76138b8d`, plus selective PR #41 adaptations below. `upstream-main` remains at `0f145f7a`; fetching `upstream/main` is not an app integration. |
 | [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER) | [3f9c7e40](https://github.com/FerixzTanz/CAMCORDER/commit/3f9c7e4033627aad53cd3f614c5643de7ac78040), following 2.14.1 | `ferix-main` matches this head. Selected features are ported below; the complete CAMCORDER tree is not merged. |
 
-Current release evidence: [v2.11.46-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.46-alpha.1)
+Previously verified inclusion evidence: [v2.11.46-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.46-alpha.1)
 at [588d334b](https://github.com/wysie/zeekr-shortcut-car/commit/588d334be95e59659329ee7de5cede20e11ddd22).
 All local integration commits linked below are included by that tag. Deferred,
 skipped and retired source behavior must not be described as active merely
@@ -114,6 +115,7 @@ remains. See [009 test notes](009-test-notes.md).
 
 | Review date | Source boundaries | Outcome |
 | --- | --- | --- |
+| 2026-10-19, outgoing opportunity review | dts88 `020e2b0bd8899ac6ed6fa774c217b76779783342`; fork `40d85c74`; Ferix not refreshed | Reviewed README-only PRs #55/#56 since `0697bc76`; no source import. GitHub reports all 22 batch PRs #28–#38 and #44–#54 still open. Recorded four additional scopes and existing-PR follow-ups in the outgoing index. The recording/preview refusal fixed in our fork is absent from upstream and the published #54 head, so it is not submitted as a demonstrated upstream bug. No existing PR head changed, PR created, tracker fast-forwarded, runtime changed or release published. Candidate ports have not been built against upstream. |
 | 2026-10-18 | dts88 `0697bc76`; Ferix `3f9c7e40` | No new main heads since the preceding review. Backfilled this ledger; PR #41 remains partial/adapted, #43 and #25 remain outside the fork, #39 is an unimported cosmetic candidate. No runtime import or new APK in this documentation change. |
 | 2026-10-18, outgoing contribution review | dts88 `0697bc76b6f1c57a2e66f7b79112dca19050c477`; Ferix `3f9c7e4033627aad53cd3f614c5643de7ac78040` | GitHub main heads remain unchanged. Compared post-batch fork work through `3992cedc` with current upstream and PR status: #28–#38 are still open. Recorded eight scoped candidates and larger/deferred work in the outgoing index. Upstream's fixed popup and exclusion of alpha updates are deliberate policies, requiring discussion before those feature PRs. No source import, tracker movement, outgoing PR creation, runtime change or APK. Existing release-48 tests do not validate unbuilt upstream ports. |
 | 2026-10-18, exterior camera contribution follow-up | dts88 `0697bc76b6f1c57a2e66f7b79112dca19050c477`, including merged PR #25 | Compared CameraProfile, CameraSlots, the stream editor and composite locator with fork recording/mapping/preview work. Promoted dedicated exterior recording and independent previews into three outgoing scopes: source/mapping foundation, recording groups, and preview selector. The latter two depend on the foundation; upstream's enabled-profile work is retained. No incoming change, new outgoing PR, port build or release. 009 camera IDs and observed concurrency do not establish 7X defaults or every quality combination. |
