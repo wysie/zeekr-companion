@@ -23,3 +23,6 @@ design-canvas/
 
 # 本地跑过 tools/ 里的脚本留下的
 __pycache__/
+
+# Native UI review captures are local evidence, not shipping assets.
+.impeccable/review/

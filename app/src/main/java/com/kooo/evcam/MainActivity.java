@@ -632,6 +632,7 @@ public class MainActivity extends AppCompatActivity {
         }
         installExtraSourcePanes();
         // 主界面重建：上一个界面留下的预览画布接回来（大纲 §7.6），要在画布挂上窗口、系统自己建画布之前
+        applyMainPreviewArrangement();
         reattachKeptCanvases();
     }
 
@@ -1431,35 +1432,19 @@ public class MainActivity extends AppCompatActivity {
                 .commit();
     }
 
-    /**
-     * 动作栏放到设置里选的那一侧（左舵 / 右舵）。
-     *
-     * <p>只挪这一列：从行里摘下来插到另一头，外边距跟着对调。预览画面不动，
-     * 它的 Surface 也就不会被销毁重建。自定义车型的布局没有这一列，直接跳过。</p>
-     */
+    /** Keep recording nearest the selected driver side by ordering dock actions only. */
     private void applyActionRailSide() {
-        View rail = findViewById(R.id.action_rail);
-        if (rail == null || !(rail.getParent() instanceof android.widget.LinearLayout)
-                || !(rail.getLayoutParams() instanceof android.widget.LinearLayout.LayoutParams)) {
-            return;
+        // Keep the driver-side preference: reorder only dock actions, never camera views.
+        com.kooo.evcam.ui.MainPageControls.applyDriverSide(this, appConfig.getActionRailSide());
+    }
+
+    /** Reflow source panes in place: no surface removal, camera reopen or profile edit. */
+    public void applyMainPreviewArrangement() {
+        if (expandedPreview != null) {
+            expandAnimator.finishNow();
+            finishCollapse(false);
         }
-        android.widget.LinearLayout row = (android.widget.LinearLayout) rail.getParent();
-        boolean left = "left".equals(appConfig.getActionRailSide());
-        int target = left ? 0 : row.getChildCount() - 1;
-        if (row.indexOfChild(rail) != target) {
-            if (row.isLaidOut() && com.kooo.evcam.ui.MotionPolicy.decorative(this)) {
-                android.transition.TransitionManager.beginDelayedTransition(row,
-                        new android.transition.ChangeBounds().setDuration(250));
-            }
-            row.removeView(rail);
-            row.addView(rail, left ? 0 : row.getChildCount());
-        }
-        android.widget.LinearLayout.LayoutParams params =
-                (android.widget.LinearLayout.LayoutParams) rail.getLayoutParams();
-        int gutter = getResources().getDimensionPixelSize(R.dimen.gutter);
-        params.setMarginStart(left ? 0 : gutter);
-        params.setMarginEnd(left ? gutter : 0);
-        rail.setLayoutParams(params);
+        com.kooo.evcam.ui.MainPreviewArrangement.apply(this, appConfig.getMainPreviewArrangement());
     }
 
     /**
@@ -1620,7 +1605,9 @@ public class MainActivity extends AppCompatActivity {
         showCabinPanes(cabinFrontOn, cabinRearOn);
         showPane(R.id.composite_wrapper, surroundOn);
         showPane(R.id.cabin_column, cabinFrontOn || cabinRearOn || !extraSourceViews.isEmpty());
-        showPane(R.id.btn_bird_eye, surroundOn);
+        findViewById(R.id.btn_bird_eye).setEnabled(surroundOn);
+        applyMainPreviewArrangement();
+        if (mainPageControls != null) mainPageControls.refresh();
         declareSourcePreviews(pipeline);
         // 各路的画面尺寸可能在挂上回调之前就算出来了（不开设备先算的、上一个界面时开过的）：补一次
         pipeline.firePreviewSizeCallbacks();
@@ -3502,6 +3489,7 @@ public class MainActivity extends AppCompatActivity {
 
     /** 单画面模式下只留一个角标，四宫格模式下四个都显示。 */
     private void updateCompositeLabels() {
+        if (mainPageControls != null) mainPageControls.refresh();
         if (compositeContainer == null) {
             return;
         }

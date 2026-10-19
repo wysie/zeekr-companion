@@ -9,6 +9,9 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Give the main camera stage the full width, move Preview/360° to the header and group recording, capture, media and window actions in a bottom dock.
+- Add staged preview presets and independent source-pane layouts while preserving recording choices and camera surfaces.
+
 - Reduce 360° CPU rendering work and lookup memory while preserving output pixels and quality; add queue, publish and total-processing timings to Diagnostics.
 
 - Use 360° consistently in main-page actions, settings and camera messages across languages.

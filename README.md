@@ -50,26 +50,46 @@ For in-app delivery, select **Updates → Update channel → Alpha**; Beta and S
 channels deliberately exclude this release. It retains the application ID and
 signing certificate for an in-place update. New behavior still needs on-car testing.
 
-The main-page title pairs a small linked-companions logo with **Zeekr Companion**;
-the mark follows the light/dark theme and the text wraps for larger fonts.
-The main page keeps the recording control and Camera status
-at the top of the control panel, with Settings/Minimise pinned at the bottom.
-Recording and Camera status are separate actions with an 8dp gap and matching
-card corners, including while recording; Camera status retains its live-source tint.
-Paired main-page actions use equal-width columns with matching heights and gaps.
-Long labels wrap at their normal font size. Secondary actions scroll only when needed. **Preview** opens the same selector as
-Settings: saved preview choices do not change recording groups or quality, and a
-persistent notice explains when reopening is required. **360° view** changes the
-main picture; **Windows → 360° window** controls the separate manual session.
-The former 360 shortcut-destination selector is replaced by these explicit actions;
-its stored value is retained. Super mirror uses its existing persistent enable
-preference. Window controls distinguish Open, Closed and Paused without inventing
-camera availability. **Expand preview** hides only the panel, retains the existing
-camera views, and keeps recording/status controls visible; tap Restore or Back to
-return. It retains left/right panel placement and session expansion on recreation.
-The main footer keeps storage/fallback and camera problems; detailed recording
-specifications remain in Camera status and the Settings footer. No camera source,
-resolution, framing or recording setting is reset by this layout change.
+The main screen gives the camera stage the full available width, with a small
+Companion logo/name, **Preview** selector and direct **360° view** action above it.
+Camera status, elapsed recording statistics (when enabled) and storage information
+sit outside the camera picture. The bottom dock holds recording, Take photo,
+Gallery, Windows and contextual **Straighten preview** actions. Dock actions keep
+normal-size wrapped labels; the saved driver-side preference puts recording on
+that side. Settings and Minimise stay in the header. Long-press Minimise still quits.
+
+**Preview** opens a staged side panel: quick presets for **Surround · four views**,
+**Front + Rear** and **Surround + roads**, then **Other sources** for Follow recording,
+one road source or cabin. These use the same saved source choice as Settings;
+preview changes never edit recording groups, source mappings or quality. Cancel,
+Back and outside dismissal do not save. A persistent notice marks source changes
+that need **Quit app → reopen**; the selector shows the pending choice explicitly.
+All existing source choices are preserved on upgrade.
+
+The independent **Source layout** preference defaults to **Automatic** (the current
+large-surround-plus-smaller-sources arrangement). **Side by side** gives the surround
+and other-source groups equal width; **Stacked** puts those groups above/below one
+another and arranges the other sources alongside each other. With no surround,
+Side by side places the road/cabin panes horizontally and Stacked places them
+vertically; Automatic retains their original vertical arrangement. These are source-pane layouts;
+Surround keeps its existing four-view grid and saved per-lane framing. With one
+source there is nothing to split. Layout changes apply on Save without removing
+camera views, changing sources or restarting recording. Tapping a view still enlarges
+it temporarily.
+
+**Gallery** offers Videos and Photos. **Windows** shows independent Super mirror and
+360° window controls with Open/Closed/Paused state. **360° view** changes the main
+picture; the window action opens a separate manual session. **Straighten preview**
+is shown for the applied surround preview outside 360° mode; it does not straighten
+the recording. Expand preview hides header/dock while retaining camera views and
+accessible recording/status/restore controls. Back restores the controls. Expanded
+state and source layout survive Activity recreation; camera source, resolution,
+framing and recording settings are not reset by the redesign.
+
+This main-screen redesign is on main after the release linked above; it is not yet
+included in a downloadable release. UI verification uses a native Android emulator;
+real 009/7X feed presentation and factory-app coexistence still need on-car testing.
+See the [main-screen verification notes](docs/main-screen-validation.md) for coverage and limits.
 
 The combined fork includes upstream main through **76138b8d**, including the merged
 [camera-label PR #17](https://github.com/dts88/zeekr-shortcut-car/pull/17), label wording/master-switch refinements and the 2.11.7-beta metadata. The camera framework includes cabin

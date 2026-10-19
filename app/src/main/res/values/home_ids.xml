@@ -1,0 +1,8 @@
+<resources>
+    <!-- IDs retained for shared Activity navigation and the Windows sheet. -->
+    <item name="btn_video_playback" type="id" />
+    <item name="btn_photo_playback" type="id" />
+    <item name="btn_main_mirror" type="id" />
+    <item name="btn_main_360_window" type="id" />
+    <item name="main_actions_scroll" type="id" />
+</resources>

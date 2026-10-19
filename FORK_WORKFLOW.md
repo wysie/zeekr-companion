@@ -14,6 +14,7 @@ outgoing PRs; neither index substitutes for the other.
 | `main` | Combined installable fork: completed features, fork version numbers, update source and build configuration |
 | `feature/companion-icon` | Approved v3 linked-companions adaptive, themed and notification icons; compatible package/signing identity |
 | `feature/companion-branding` | Zeekr Companion display name, About attribution and compatible APK/release naming; logo selection remains separate |
+| `feature/companion-camera-home` | Approved camera-first home screen, staged preview presets, in-place source-pane layouts and retained recording/surface behavior |
 | `feature/main-page-controls` | Compact main page, shared preview selector, explicit popup controls and expanded preview with retained camera views and accessible recording controls |
 | `fix/camera-status-and-recovery` | Read-only recorder/producer status, persistent live/planned counts and truthful accessible waiting states; no retry-policy changes |
 | `fix/settings-semantics-and-setup` | Scoped confirmed resets, canonical setup order, live actions and persistent pending-source notice |
