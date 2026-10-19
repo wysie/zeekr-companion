@@ -70,6 +70,7 @@ public class AppConfig {
     private static final String KEY_RAW_FRAME_DUMP = "raw_frame_dump";            // 拍照时另存原始整帧（工程模式）
     private static final String KEY_SIGNAL_SCAN = "signal_scan";                  // 信号普查：挂全部功能号记变化（开发者选项）
     private static final String KEY_SIGNAL_SCAN_SINCE = "signal_scan_since";      // 这一次普查从什么时候开始（墙钟毫秒）
+    private static final String KEY_GPU_BIRD_EYE = "gpu_bird_eye";
     private static final String KEY_GPU_FISHEYE_PREVIEW = "gpu_fisheye_preview";  // 预览鱼眼校正走 GPU 逐像素（开发者选项）
     private static final String KEY_USB_INTERNAL_FALLBACK = "usb_internal_fallback";
     private static final String KEY_GPU_FISHEYE_VIDEO = "gpu_fisheye_video";      // 视频回看鱼眼校正走 GPU 逐像素（开发者选项）
@@ -1039,6 +1040,10 @@ public class AppConfig {
     public void setUsbInternalFallbackEnabled(boolean enabled) {
         prefs.edit().putBoolean(KEY_USB_INTERNAL_FALLBACK, enabled).apply();
     }
+
+    /** 360 rendering backend, independent of the Developer fisheye switches. Reopen to reroute surfaces. */
+    public boolean isGpuBirdEye() { return readBoolean(KEY_GPU_BIRD_EYE, false); }
+    public void setGpuBirdEye(boolean on) { prefs.edit().putBoolean(KEY_GPU_BIRD_EYE, on).apply(); }
 
     public void setGpuFisheyePreview(boolean on) {
         prefs.edit().putBoolean(KEY_GPU_FISHEYE_PREVIEW, on).apply();

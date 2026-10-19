@@ -219,6 +219,17 @@ public final class BirdEyeProjection {
                 output[i] = 0xff000000 | r << 16 | g << 8 | blue;
             }
         }
+
+        /** Upload once per calibration/size, never once per camera frame. */
+        BirdEyeGpuMap gpuMap(CompositeStreamGeometry.Plan plan) {
+            BirdEyeGpuMap result = new BirdEyeGpuMap(width, height, sourceWidth, sourceHeight, plan);
+            for (int i = 0; i < first.length; i++) {
+                long a = first[i], b = second[i];
+                result.put(i, a < 0 ? -1 : (int) (a >>> 24), (int) (a >>> 8) & 65535,
+                        b < 0 ? -1 : (int) (b >>> 16), (int) b & 65535, (int) a & 255);
+            }
+            return result;
+        }
     }
 
     /** Bilinear pixel-centre sampling. Zero fractions never read an unused neighbour. */

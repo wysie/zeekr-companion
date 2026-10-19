@@ -57,3 +57,8 @@ processing and presentation-gap measurements. Check source loss/factory takeover
 as well as ordinary live motion. A GPU path that avoids repeated CPU readback is
 still the next architectural step if copy/upload dominates; this patch is a
 pixel-preserving CPU improvement, not a claim that the owner-reported lag is solved.
+
+The subsequent opt-in [GPU 360 renderer](gpu-360-renderer.md) is now implemented
+and Android-tested, with CPU compatibility still the default. It is unreleased
+and has no measured 009 frame-rate result; this report describes the earlier CPU
+optimization only.

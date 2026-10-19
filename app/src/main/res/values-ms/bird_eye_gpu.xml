@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="bird_eye_renderer">Rendering 360°</string>
+    <string name="bird_eye_renderer_gpu">GPU (percubaan)</string>
+    <string name="bird_eye_renderer_cpu">Keserasian CPU</string>
+    <string name="bird_eye_renderer_note">GPU memproses bingkai kamera secara langsung, dengan sandaran CPU jika persediaan gagal. Keluar dan buka semula aplikasi selepas menukar.</string>
+</resources>

@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Add an opt-in direct-texture GPU 360° renderer for main and popup views, preserving calibration, vehicle artwork, photos and recording behavior, with CPU compatibility and stitcher-failure fallback.
+
 ## [2.11.53-alpha.1] - 2026-10-19
 
 - Keep pending preview-only choices from blocking manual and automatic recording, with separate preview/recording status in Diagnostics.

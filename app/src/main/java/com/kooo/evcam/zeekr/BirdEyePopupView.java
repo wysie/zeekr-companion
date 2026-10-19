@@ -204,7 +204,7 @@ final class BirdEyePopupView extends ViewGroup {
     }
     @Override protected void dispatchDraw(Canvas canvas) {
         drawChild(canvas, texture, getDrawingTime()); // Always drain the producer, including underneath a cover.
-        preview.draw(canvas, getWidth(), getHeight());
+        preview.draw(canvas, getWidth(), getHeight(), () -> drawChild(canvas, texture, getDrawingTime()));
         drawChild(canvas, controls, getDrawingTime());
     }
     @Override protected void onConfigurationChanged(android.content.res.Configuration c) {

@@ -308,7 +308,8 @@ public class FourLaneContainer extends ViewGroup implements LivePreview {
     }
 
     public boolean showBirdEye() {
-        if (plan == null || !plan.isComposite() || PreviewDewarp.isActive(textureView)) return false;
+        if (plan == null || !plan.isComposite() || (PreviewDewarp.isActive(textureView)
+                && !new AppConfig(getContext()).isGpuBirdEye())) return false;
         stopGrow();
         displayMode = DisplayMode.BIRD_EYE;
         if (!presentationObscured) birdEye.start(textureView, plan);
@@ -635,8 +636,12 @@ public class FourLaneContainer extends ViewGroup implements LivePreview {
             return;
         }
         drawPreview(canvas);
-        if (displayMode != DisplayMode.BIRD_EYE)
-            frameGuard.cover(canvas, plan == null && displayMode != DisplayMode.RAW);
+        if (displayMode != DisplayMode.BIRD_EYE) {
+            FisheyeGlPipe pipe = PreviewDewarp.rawPipeFor(textureView);
+            if (pipe != null && textureView.getSurfaceTexture() != null
+                    && pipe.needsRawFrame(textureView.getSurfaceTexture().getTimestamp())) canvas.drawColor(android.graphics.Color.BLACK);
+            else frameGuard.cover(canvas, plan == null && displayMode != DisplayMode.RAW);
+        }
     }
 
     private void drawPreview(Canvas canvas) {
@@ -646,7 +651,7 @@ public class FourLaneContainer extends ViewGroup implements LivePreview {
             // Keep the ordinary TextureView draw/update path alive underneath the opaque
             // result. Camera production, preview freshness callbacks and recording stay native.
             if (textureView != null) drawChild(canvas, textureView, getDrawingTime());
-            birdEye.draw(canvas, getWidth(), getHeight());
+            birdEye.draw(canvas, getWidth(), getHeight(), () -> drawChild(canvas, textureView, getDrawingTime()));
             return;
         }
         if (textureView == null || current == null || !current.isComposite()

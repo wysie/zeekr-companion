@@ -82,9 +82,11 @@ resolution choice retries it. Initial lookup construction is timed separately.
 The first slow native copy cannot be interrupted; these are measured guards,
 not proof that the first copy cannot stall. Higher modes still require car tests.
 
-An active, recognized surround stream is required. GPU preview straightening
-must be disabled in Developer options, followed by an app restart if it was
-enabled: a pre-corrected frame is not the input lens model. The regular Canvas
+An active, recognized surround stream is required. For **CPU compatibility**,
+GPU preview straightening must be disabled in Developer options, followed by an
+app restart if it was enabled: a pre-corrected frame is not the input lens model.
+The optional unreleased GPU 360 backend below uses the raw input and can coexist
+with GPU preview straightening. The regular Canvas
 straightening toggle may remain enabled; it does not modify the source snapshot.
 The factory camera still owns priority; when it takes the camera, this view
 cannot obtain new frames and displays **Waiting for live cameras**.
@@ -310,6 +312,21 @@ main/popup shortcut-destination setting is no longer exposed because the actions
 are explicit; its stored value and window geometry are retained. This does not
 change projection, calibration, capture resolution, factory yielding or recording.
 The window still requires the mapped Surround source to be available.
+
+## GPU renderer (unreleased, 2026-10-19)
+
+A separate **360° rendering → GPU (experimental)** choice is now implemented for
+main and popup, with CPU compatibility retained by default. Quit and reopen to
+change the camera preview route. GPU mode uses the raw camera texture and the
+same projection lookup; it does not snapshot/upload a bitmap each live frame.
+It can coexist with the Developer GPU preview-straightening setting: while 360
+owns the preview, it uses the original camera texture, then restores the prior
+four-view correction on exit. The earlier GPU-blocking instruction above applies
+to the CPU backend trying to read a corrected preview.
+
+See [GPU pipeline, fallback, validation and limits](gpu-360-renderer.md). Alpha 53
+does not contain this new path. Car frame rate, hardware support, thermal load and
+recording continuity remain to be checked.
 
 ## CPU rendering efficiency (2026-10-19)
 
