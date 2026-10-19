@@ -65,3 +65,33 @@ checks pass (2 tests), including both main layouts, English/Malay/Chinese, 900/1
 widths, font scale 1.3 and both themes. Captures cover neutral and selected toolbar
 states under `.impeccable/review/flat-toolbar/`. No camera/recording settings change.
 This visual refinement is on main after alpha 51 and is not part of that APK.
+
+## Astra/native polish (2026-10-19, after alpha 51)
+
+Read-only Astra design review plus an isolated native accessibility audit retained
+this composition and produced the bounded fixes in
+[the review record](ui-ux-review-2026-10-19.md). The short Straighten label now has
+native long-press help. Preview keeps the restart/recording-stop warning fixed,
+uses a 600dp font-aware width and stacks choices when constrained. No named layout
+choice or English word splits in the final day/night 1.3-scale captures.
+
+Verification: 1,494 JVM tests pass; debug, instrumentation and release builds pass;
+lint reports zero errors (267 warnings remain). The initial 18-test native batch
+passed 16: two failures exposed insufficient Preview space and a mismatched
+ActivityScenario launcher-intent fixture. Both were corrected and focused Home /
+day-night confirmation passed; the final width/word-wrap capture check also passed.
+Five additional native gallery/playback/segment checks passed. Existing header
+recycle/scroll, local font-resource, staging, texture identity, layout, reset and
+translation checks passed in the review batch.
+
+Final local captures: `.impeccable/review/astra-20261019/final/`. Main/Preview/Windows
+and About/Quit typography cover both themes; actual empty playback and Interface
+are dark-theme captures. The paired playback filename does not prove a separate
+light render. Floating-button overlay in playback captures is a separate enabled
+window, not part of the new empty state. Native UI source and emulator evidence do
+not establish vehicle camera, HUD, 360° speed or full TalkBack behavior. Constrained
+vertical reflow and more extreme text scales still need device confirmation.
+
+Final reviewer verdict: Astra approved the refreshed native main, Preview, Windows,
+Interface, header typography and empty-playback captures/source, with all six design
+findings resolved and no further material UI change requested in the reviewed scope.

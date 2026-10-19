@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!--
-  分段开关里的一段。选中的那一段是实心能量色，其余透明 ——
+  分段开关里的一段。选中的那一段使用能量淡底和高对比文字，其余透明 ——
   选中状态用 activated，不用 selected：selected 在列表里另有含义（整行被选）。
 -->
 <selector xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:state_activated="true">
         <shape android:shape="rectangle">
-            <solid android:color="@color/energy" />
+            <solid android:color="@color/energy_quiet" />
             <corners android:radius="9dp" />
         </shape>
     </item>

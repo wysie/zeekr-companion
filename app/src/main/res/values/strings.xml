@@ -609,8 +609,8 @@
     <string name="cd_menu">菜单</string>
     <string name="cd_minimize">隐藏到后台</string>
     <string name="nav_exit">退出应用</string>
-    <string name="set_rail_side_title">操作按钮位置</string>
-    <string name="set_rail_side_summary">建议选择驾驶座一侧</string>
+    <string name="set_rail_side_title">驾驶员位置</string>
+    <string name="set_rail_side_summary">将录制按钮放在靠近驾驶员的一侧</string>
     <string name="opt_rail_right">右侧</string>
     <string name="opt_rail_left">左侧</string>
 
@@ -1285,7 +1285,7 @@
     <string name="home_layout_equal">左右并排</string>
     <string name="home_layout_stacked">上下排列</string>
     <string name="home_layout_help">调整独立来源面板。环视保留四画面网格；点击画面可放大。布局更改立即生效。</string>
-    <string name="home_source_reopen">更改来源后请退出并重新打开应用。录制继续使用已保存的来源。</string>
+    <string name="home_source_reopen">更改来源后请退出并重新打开应用。退出会停止录制。</string>
     <string name="home_windows_help">在其他应用上方打开独立窗口。窗口大小和位置独立于主预览。</string>
     <string name="home_preview_single">单一来源</string>
     <string name="home_preview_multiple">%1$d 个来源</string>

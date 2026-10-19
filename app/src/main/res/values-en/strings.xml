@@ -614,8 +614,8 @@
     <string name="cd_menu">Menu</string>
     <string name="cd_minimize">Hide to background</string>
     <string name="nav_exit">Quit app</string>
-    <string name="set_rail_side_title">Action button side</string>
-    <string name="set_rail_side_summary">Put them on the driver\'s side</string>
+    <string name="set_rail_side_title">Driver side</string>
+    <string name="set_rail_side_summary">Keeps recording closest to the driver</string>
     <string name="opt_rail_right">Right</string>
     <string name="opt_rail_left">Left</string>
 
@@ -1301,7 +1301,7 @@
     <string name="home_layout_equal">Side by side</string>
     <string name="home_layout_stacked">Stacked</string>
     <string name="home_layout_help">Arranges separate source panes. Surround keeps its four-view grid; tap a view to enlarge it. Layout changes apply immediately.</string>
-    <string name="home_source_reopen">Changing sources requires Quit app → reopen. Recording continues with its saved sources.</string>
+    <string name="home_source_reopen">Changing sources requires Quit app → reopen. Quitting stops recording.</string>
     <string name="home_windows_help">Open a separate window over other apps. Its size and position stay independent of the main preview.</string>
     <string name="home_preview_single">Single source</string>
     <string name="home_preview_multiple">%1$d sources</string>

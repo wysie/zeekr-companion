@@ -9,6 +9,11 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Shorten the main toolbar label to Straighten, with long-press help explaining that recorded files stay unchanged.
+- Clarify preview restart requirements, window actions and driver-side selection; use a recognisable Settings cog.
+- Return playback Home directly to cameras and show useful empty-library guidance with unavailable media controls disabled.
+- Respect larger system text, improve selected-option contrast and expose settings/gallery state to accessibility.
+
 - Flatten the main bottom dock into an icon-and-label toolbar, retaining touch targets, recording indicators and a clear Straighten selection state.
 
 ## [2.11.51-alpha.1] - 2026-10-19

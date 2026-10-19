@@ -300,7 +300,7 @@ public class PhotoPlaybackActivity extends AppCompatActivity {
         btnMenu.setOnClickListener(v -> openDrawerOnMain());
 
         // 返回主界面：独立 Activity，关掉自己就回去了
-        btnHome.setOnClickListener(v -> finish());
+        btnHome.setOnClickListener(v -> com.kooo.evcam.MainActivity.openCameras(this));
 
         // 刷新
         btnRefresh.setOnClickListener(v -> updatePhotoList());

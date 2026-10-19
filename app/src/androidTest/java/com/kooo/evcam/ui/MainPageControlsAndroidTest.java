@@ -77,6 +77,38 @@ public class MainPageControlsAndroidTest {
         try(java.io.FileOutputStream out=new java.io.FileOutputStream(new java.io.File(target.getExternalFilesDir(null),name+".png"))){assertTrue(image.compress(android.graphics.Bitmap.CompressFormat.PNG,100,out));}
         finally{image.recycle();}
     }
+    @Test public void playbackHomeReturnsToCamerasAndKeepsManualStop() throws Exception {
+        com.kooo.evcam.recording.RecordingIntent choice = com.kooo.evcam.recording.RecordingIntent.current();
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(new Intent(target, MainActivity.class))) {
+            choice.noteUserStopped();
+            for (Class<?> viewer : new Class<?>[]{com.kooo.evcam.playback.PhotoPlaybackActivity.class,
+                    com.kooo.evcam.zeekr.TimelinePlayerActivity.class}) {
+                scenario.onActivity(a -> {
+                    a.findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
+                    a.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,
+                            new com.kooo.evcam.settings.SettingsShellFragment()).commitNow();
+                    a.startActivity(new Intent(a, com.kooo.evcam.playback.GalleryActivity.class));
+                });
+                final android.app.Activity[] gallery = {null};
+                await(() -> { main(() -> {
+                    for (android.app.Activity a : androidx.test.runner.lifecycle.ActivityLifecycleMonitorRegistry.getInstance()
+                            .getActivitiesInStage(androidx.test.runner.lifecycle.Stage.RESUMED))
+                        if (a instanceof com.kooo.evcam.playback.GalleryActivity) gallery[0] = a;
+                }); return gallery[0] != null; });
+                main(() -> gallery[0].startActivity(new Intent(gallery[0], viewer)));
+                onView(withId(R.id.pb_home)).perform(click());
+                await(() -> gallery[0].isDestroyed());
+                onView(withId(R.id.btn_start_record)).check(androidx.test.espresso.assertion.ViewAssertions.matches(isDisplayed()));
+                scenario.onActivity(a -> {
+                    assertEquals(View.GONE, a.findViewById(R.id.fragment_container).getVisibility());
+                    assertTrue(a.findViewById(R.id.btn_start_record).isShown());
+                    assertTrue(choice.stoppedByUser());
+                    assertFalse(com.kooo.evcam.recording.RecordingCoordinator.get(a).isRecordingOrResuming());
+                });
+            }
+        } finally { choice.reset(); }
+    }
+
     @Test public void expandRestoreKeepsTexturesAndPipelineAndSurvivesRecreation() throws Exception {
         try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
             final android.view.TextureView[] texture={null}; final SurfaceTexture[] surface={null};

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gallery_item_locked">Locked</string>
+    <string name="gallery_item_not_selected">Not selected</string>
+    <string name="player_empty_recordings">No recordings found</string>
+    <string name="player_empty_recordings_help">Record a clip or connect the storage device containing your recordings.</string>
+</resources>

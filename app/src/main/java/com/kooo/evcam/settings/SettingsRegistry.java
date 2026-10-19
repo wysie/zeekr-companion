@@ -119,8 +119,8 @@ public final class SettingsRegistry {
      */
     public static final SettingSpec ACTION_RAIL_SIDE = SettingSpec.of(
             "action_rail_side", "操作按钮位置", "right",
-            entry("right", "右侧", R.string.opt_rail_right),
-            entry("left", "左侧", R.string.opt_rail_left));
+            entry("left", "左侧", R.string.opt_rail_left),
+            entry("right", "右侧", R.string.opt_rail_right));
 
     /** 全部枚举型设置项，启动自检会逐个走一遍。 */
     public static final List<SettingSpec> ALL = Collections.unmodifiableList(Arrays.asList(

@@ -54,10 +54,11 @@ The main screen gives the camera stage the full available width, with a small
 Companion logo/name, **Preview** selector and direct **360° view** action above it.
 Camera status, elapsed recording statistics (when enabled) and storage information
 sit outside the camera picture. The bottom dock is a flat toolbar with recording, Take photo,
-Gallery, Windows and contextual **Straighten preview** actions. A single divider
+Gallery, Windows and contextual **Straighten** actions. A single divider
 separates it from the picture; individual controls have transparent backgrounds
 and native press/focus feedback. Recording keeps its red indicator and progress;
-Straighten uses orange text plus a checkmark when enabled. This flat-toolbar refinement is
+Straighten uses orange text plus a checkmark when enabled; long-press explains that
+it affects preview/playback and leaves recorded files unchanged. This flat-toolbar refinement is
 newer than alpha 51 and is not yet in a downloadable release. Dock actions keep
 normal-size wrapped labels; the saved driver-side preference puts recording on
 that side. Settings and Minimise stay in the header. Long-press Minimise still quits.
@@ -66,9 +67,20 @@ that side. Settings and Minimise stay in the header. Long-press Minimise still q
 **Front + Rear** and **Surround + roads**, then **Other sources** for Follow recording,
 one road source or cabin. These use the same saved source choice as Settings;
 preview changes never edit recording groups, source mappings or quality. Cancel,
-Back and outside dismissal do not save. A persistent notice marks source changes
+Back and outside dismissal do not save. The fixed panel heading explains the reopen
+requirement before Save; quitting stops recording. A persistent notice marks source changes
 that need **Quit app → reopen**; the selector shows the pending choice explicitly.
 All existing source choices are preserved on upgrade.
+
+**Interface → Driver side** keeps recording nearest the selected Left or Right side,
+retaining the saved preference. Larger system text is respected above the existing
+1.2× main-screen minimum; settings options expose their checked state and use
+higher-contrast selection colours. **Windows** names the next action (Open, Close,
+or Turn off) alongside its current state. Playback Home returns directly to live
+cameras, while Android Back returns to the gallery. An empty video library shows
+storage guidance and disables media-dependent actions; Refresh and navigation stay
+available. Gallery accessibility labels include video date/time, duration, lock and
+selection state. These refinements are newer than alpha 51 and need an on-car check.
 
 The independent **Source layout** preference defaults to **Automatic** (the current
 large-surround-plus-smaller-sources arrangement). **Side by side** gives the surround

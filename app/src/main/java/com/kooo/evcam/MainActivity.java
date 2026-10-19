@@ -54,6 +54,22 @@ public class MainActivity extends AppCompatActivity {
 
     /** 别的界面上的菜单键：回到这里，并且把抽屉拉开。 */
     public static final String EXTRA_OPEN_DRAWER = "open_drawer";
+    public static final String EXTRA_SHOW_CAMERAS = "show_cameras";
+
+    /** Return from playback without starting a new recording trip or discarding manual-stop intent. */
+    public static void openCameras(android.app.Activity from) {
+        from.startActivity(new Intent(from, MainActivity.class)
+                .addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_SINGLE_TOP)
+                .putExtra(EXTRA_SHOW_CAMERAS, true).putExtra("restored_by_app", true));
+        from.finish();
+    }
+
+    private void showCamerasIfAsked(Intent intent) {
+        if (intent != null && intent.getBooleanExtra(EXTRA_SHOW_CAMERAS, false)) {
+            intent.removeExtra(EXTRA_SHOW_CAMERAS);
+            goToRecordingInterface();
+        }
+    }
 
     /** 悬浮按钮在应用没运行时按了「拍照」：拉起来，等相机就绪再拍。 */
 
@@ -267,7 +283,7 @@ public class MainActivity extends AppCompatActivity {
         // leaves existing themed contexts and their text metrics inconsistent.
         android.content.res.Configuration local =
                 new android.content.res.Configuration(base.getResources().getConfiguration());
-        local.fontScale = 1.2f;
+        local.fontScale = Math.max(1.2f, local.fontScale);
         super.attachBaseContext(base.createConfigurationContext(local));
     }
 
@@ -378,6 +394,7 @@ public class MainActivity extends AppCompatActivity {
         // 管线被 Holder 放掉重建时当场接上新的那一份（见 pipelineReplaced），onDestroy 摘掉
         com.kooo.evcam.camera.CameraManagerHolder.getInstance().addReplacedListener(pipelineReplaced);
         initToggleRecordingReceiver();
+        showCamerasIfAsked(getIntent());
     }
 
     @Override
@@ -386,6 +403,7 @@ public class MainActivity extends AppCompatActivity {
         setIntent(intent);
         AppLog.d(TAG, "onNewIntent called");
         openDrawerIfAsked(intent);
+        showCamerasIfAsked(intent);
 
         // 还活着的主界面被静默拉到前面（Recovery：要接录像、而那时用不了相机）：接上之后照样退回后台（规格 1.6）
         if (intent.getBooleanExtra("auto_start_from_boot", false)) {

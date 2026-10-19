@@ -20,6 +20,21 @@ import static androidx.test.espresso.Espresso.onView;import static androidx.test
  private SettingsShellFragment install(MainActivity a,String section){a.findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);SettingsShellFragment shell=new SettingsShellFragment();
   a.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,shell).commitNow();shell.getChildFragmentManager().executePendingTransactions();shell.showSection(section);shell.getChildFragmentManager().executePendingTransactions();return shell;}
  private SettingsPreferenceFragment page(SettingsShellFragment shell){return(SettingsPreferenceFragment)shell.getChildFragmentManager().findFragmentById(R.id.settings_detail);}
+ @Test public void segmentedChoicesExposeCheckedStateAndKeepStoredDriverSide() {
+  try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
+   scenario.onActivity(a->{
+    config.setActionRailSide("right");
+    com.kooo.evcam.ui.SegmentedBar segments = new com.kooo.evcam.ui.SegmentedBar(a);
+    segments.bind(new String[]{"Left","Right"},new String[]{"left","right"},config.getActionRailSide(),config::setActionRailSide);
+    android.view.accessibility.AccessibilityNodeInfo left=segments.getChildAt(0).createAccessibilityNodeInfo();
+    android.view.accessibility.AccessibilityNodeInfo right=segments.getChildAt(1).createAccessibilityNodeInfo();
+    assertTrue(left.isCheckable());assertFalse(left.isChecked());assertTrue(right.isChecked());
+    assertEquals(android.widget.RadioButton.class.getName(),right.getClassName());
+    segments.getChildAt(0).performClick();assertEquals("left",config.getActionRailSide());
+    left.recycle();right.recycle();
+   });
+  }
+ }
  @Test public void scopedHudResetsKeepIndependentPicturePlacementAndTone(){
   int defaultLeft=config.getHudSideLeftPercent();config.setSidePopupYaw(67);config.setHudFollowingPopupPicture(false);config.setHudSideYaw(35);
   config.setHudSideLeftPercent(17);config.setHudSideShapePercent(190);config.setHudSideContrastPercent(122);config.resetHudPicture();

@@ -179,8 +179,11 @@ public final class MainPageControls implements DefaultLifecycleObserver {
     private void dismissPanel() { if (panel != null) { panel.dismiss(); panel = null; } }
     private void window(MaterialButton button, int label, int state, boolean enabled) {
         String title = activity.getString(label), description = activity.getString(state);
-        text(button, title + " · " + description);
-        button.setContentDescription(title + ": " + description);
+        int action = !enabled ? R.string.main_window_action_open
+                : state == R.string.main_window_paused ? R.string.main_window_action_off : R.string.main_window_action_close;
+        String actionLabel = activity.getString(action, title);
+        text(button, actionLabel + "\n" + description);
+        button.setContentDescription(actionLabel + ": " + description);
         androidx.core.view.ViewCompat.setStateDescription(button, description);
         tint(button, enabled);
     }

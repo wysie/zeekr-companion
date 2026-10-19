@@ -344,7 +344,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
         }
         View home = findViewById(R.id.pb_home);
         if (home != null) {
-            home.setOnClickListener(v -> finish());
+            home.setOnClickListener(v -> com.kooo.evcam.MainActivity.openCameras(this));
         }
         View refresh = findViewById(R.id.pb_refresh);
         if (refresh != null) {
@@ -483,9 +483,24 @@ public class TimelinePlayerActivity extends AppCompatActivity {
         });
     }
 
+    /** Availability only: storage scanning and decoding remain unchanged. */
+    private void setMediaControlsEnabled(boolean available) {
+        for (int id : new int[]{R.id.timeline_seek, R.id.timeline_play_pause,
+                R.id.timeline_prev_session, R.id.timeline_next_session, R.id.timeline_speed,
+                R.id.timeline_view_mode, R.id.timeline_save_clip, R.id.timeline_send, R.id.pb_multi_select, R.id.pb_fisheye}) {
+            View control = findViewById(id);
+            if (control != null) {
+                control.setEnabled(available);
+                control.setAlpha(available ? 1f : .38f);
+            }
+        }
+    }
+
     /** 扫描录像目录，按时间轴分组。可能有 I/O，放后台线程。 */
     private void loadTimelines() {
         infoText.setText(R.string.msg_scanning);
+        setMediaControlsEnabled(false);
+        findViewById(R.id.timeline_empty).setVisibility(View.GONE);
         if (listSummaryText != null) {
             listSummaryText.setText(R.string.msg_scanning_short);
         }
@@ -563,6 +578,8 @@ public class TimelinePlayerActivity extends AppCompatActivity {
                 sessionAdapter.setSessions(sessions, sessionBytes);
                 updateListSummary();
                 refreshLockViews();
+                setMediaControlsEnabled(!sessions.isEmpty());
+                findViewById(R.id.timeline_empty).setVisibility(sessions.isEmpty() ? View.VISIBLE : View.GONE);
                 if (sessions.isEmpty()) {
                     // 全删光了：画面区也清掉，别留着已经不存在的文件
                     for (Lane lane : lanes) {
@@ -574,9 +591,9 @@ public class TimelinePlayerActivity extends AppCompatActivity {
                     zoomedCell = PlaybackViewport.NO_CELL;
                     applyViewMode(0L);
                     positionText.setText("");
-                    infoText.setText(R.string.msg_no_surround_clips);
-                    Toast.makeText(this, R.string.msg_no_surround_clips_long,
-                            Toast.LENGTH_LONG).show();
+                    seekBar.setProgress(0);
+                    playPauseButton.setText(R.string.action_play);
+                    infoText.setText(R.string.player_empty_recordings);
                     return;
                 }
                 // 默认打开最近的一条；界面刚重建过就回到原来那一条
@@ -669,7 +686,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
             return;
         }
         if (sessions.isEmpty()) {
-            listSummaryText.setText(R.string.msg_no_clips);
+            listSummaryText.setText(R.string.player_empty_recordings);
             return;
         }
         long totalMs = 0L;

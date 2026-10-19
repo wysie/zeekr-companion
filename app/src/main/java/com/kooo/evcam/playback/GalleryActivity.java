@@ -117,6 +117,11 @@ public class GalleryActivity extends AppCompatActivity {
             @Override public File thumbnail(VideoScan.Item i) { return i.thumbnail; }
             @Override public boolean isVideo(VideoScan.Item i) { return true; }
             @Override public String caption(VideoScan.Item i) { return TimelineFormat.duration(i.session.totalDurationMs); }
+            @Override public String accessibleLabel(VideoScan.Item i) {
+                return android.text.format.DateFormat.getDateFormat(GalleryActivity.this).format(new java.util.Date(i.session.startEpochMs))
+                        + " " + android.text.format.DateFormat.getTimeFormat(GalleryActivity.this).format(new java.util.Date(i.session.startEpochMs))
+                        + ", " + caption(i);
+            }
             @Override public boolean locked(VideoScan.Item i) { return i.locked; }
         });
         videoAdapter.setOnTileClick(item -> {
