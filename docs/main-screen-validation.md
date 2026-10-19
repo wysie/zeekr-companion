@@ -110,3 +110,34 @@ SHA-256 `a40da80a59d170caa950cf15c18c454d47a39b26989d8b640ecd745ba71bf5dc`.
 The tag workflow builds the downloadable artifact independently and stages a
 draft for asset, checksum, metadata, signing and notes verification before alpha
 publication. Update delivery requires the Alpha channel; Beta/Stable exclude it.
+
+## Source-state and dock follow-up (after alpha 52)
+
+The owner’s car photo shows the combined applied preview with Front + Rear saved
+and pending. Source selection is staged; source arrangement only changes separate
+source panes, while Surround itself remains the four-view container. The selector
+now reports the applied source mode; the notice names the saved next choice.
+Equivalent preview-key sets update the label without an unnecessary preview reopen
+warning. A single source exposes explanatory copy instead of inactive arrangement
+tiles, preserving the saved arrangement. No pipeline or recording selection change
+is introduced.
+
+The toolbar keeps the recording action and clip detail, with a 1dp neutral
+separator following driver side and a 1.45 recording weight. Screen-off behavior
+moves into native long-press Recording details using the existing live hint view
+while recording; idle details say behavior is shown during recording. Tap remains
+record/stop. No type reduction or individual filled cards are introduced.
+
+Validation uses the existing main-page matrix in day/night, EN/MS/ZH and
+900/1280dp widths at 1.3 text scale, plus real staged selection, equivalent-source,
+long-press, retained SurfaceTexture/pipeline, expanded-view, mapping-preservation
+and playback Home checks. Behavioral checks and final captures were verified in
+separate runs. A separator initially used match-parent height inside a wrap-content
+control; the native matrix caught the lost preview height and it was corrected to
+48dp before completion. Local captures are ignored under
+`.impeccable/review/preview-dock-20261019/`; black camera stages remain expected on
+the emulator. This is UI evidence, not vehicle camera or recording validation.
+All 11 distinct main-page checks passed across focused runs, including the final
+day/night capture check. Debug/release/instrumentation builds, 1,494 JVM tests
+and lint (zero errors) pass;
+no downloadable APK containing this follow-up has been published.

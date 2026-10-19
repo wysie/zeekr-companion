@@ -30,7 +30,8 @@ public final class MainPageControls implements DefaultLifecycleObserver {
     private final MaterialButton expand, compactRecord, preview;
     private MaterialButton mirror, birdEyeWindow;
     private final TextView compactStatus;
-    private final String layoutAtCreation;
+    private String appliedPreviewMode;
+    private final java.util.Set<String> appliedPreviewKeys;
     private final Handler handler = new Handler(Looper.getMainLooper());
     private Dialog panel;
     private boolean expanded;
@@ -41,7 +42,9 @@ public final class MainPageControls implements DefaultLifecycleObserver {
     public MainPageControls(MainActivity activity, Runnable toggleRecording, boolean expanded) {
         this.activity = activity;
         config = new AppConfig(activity);
-        layoutAtCreation = config.getPreviewSourceMode();
+        appliedPreviewMode = config.getPreviewSourceMode();
+        appliedPreviewKeys = new java.util.LinkedHashSet<>(com.kooo.evcam.profile.ProfileChannels.of(
+                new com.kooo.evcam.profile.ProfileStore(activity).current(), appliedPreviewMode).previewKeys);
         dock = activity.findViewById(R.id.action_rail);
         header = activity.findViewById(R.id.main_header);
         expand = activity.findViewById(R.id.btn_preview_expand);
@@ -52,6 +55,11 @@ public final class MainPageControls implements DefaultLifecycleObserver {
         compactRecord.setOnClickListener(v -> toggleRecording.run());
         compactStatus.setOnClickListener(v -> activity.startActivity(new Intent(activity, CameraStatusActivity.class)));
         preview.setOnClickListener(v -> { dismissPanel(); panel = MainPreviewPanel.show(activity, this::refresh); });
+        View recording = activity.findViewById(R.id.btn_start_record);
+        recording.setOnLongClickListener(v -> { showRecordingDetails(); return true; });
+        androidx.core.view.ViewCompat.replaceAccessibilityAction(recording,
+                androidx.core.view.accessibility.AccessibilityNodeInfoCompat.AccessibilityActionCompat.ACTION_LONG_CLICK,
+                activity.getString(R.string.home_recording_details), (view, args) -> { showRecordingDetails(); return true; });
         activity.findViewById(R.id.btn_main_gallery).setOnClickListener(v -> showGallery());
         activity.findViewById(R.id.btn_main_windows).setOnClickListener(v -> showWindows());
         setExpanded(expanded);
@@ -64,6 +72,12 @@ public final class MainPageControls implements DefaultLifecycleObserver {
         int[] order = {R.id.btn_start_record, R.id.btn_take_photo, R.id.btn_main_gallery,
                 R.id.btn_main_windows, R.id.btn_fisheye};
         boolean left = "left".equals(side);
+        View divider = activity.findViewById(R.id.record_action_divider);
+        if (divider != null) {
+            android.widget.FrameLayout.LayoutParams line = (android.widget.FrameLayout.LayoutParams) divider.getLayoutParams();
+            line.gravity = (left ? android.view.Gravity.END : android.view.Gravity.START) | android.view.Gravity.CENTER_VERTICAL;
+            divider.setLayoutParams(line);
+        }
         for (int i = 0; i < order.length; i++) {
             View child = activity.findViewById(order[left ? i : order.length - 1 - i]);
             if (child == null) continue;
@@ -107,10 +121,17 @@ public final class MainPageControls implements DefaultLifecycleObserver {
         if (elapsed != null && elapsed.getVisibility() == View.VISIBLE && config.isRecordingStatsEnabled()) status += "\n" + elapsed.getText();
         text(compactStatus, status);
         String selected = config.getPreviewSourceMode();
-        boolean pending = !layoutAtCreation.equals(selected) || CameraManagerHolder.getInstance().hasPendingChannelChange(activity);
-        text(preview, activity.getString(!layoutAtCreation.equals(selected) ? R.string.home_pending_selection : R.string.main_preview_selection,
-                PreviewLayoutPicker.label(activity, selected)));
-        activity.findViewById(R.id.main_preview_pending).setVisibility(pending ? View.VISIBLE : View.GONE);
+        boolean sourcePending = !appliedPreviewKeys.equals(com.kooo.evcam.profile.ProfileChannels.of(
+                new com.kooo.evcam.profile.ProfileStore(activity).current(), selected).previewKeys);
+        if (!sourcePending) appliedPreviewMode = selected;
+        boolean pending = sourcePending || CameraManagerHolder.getInstance().hasPendingChannelChange(activity);
+        text(preview, activity.getString(R.string.main_preview_selection,
+                PreviewLayoutPicker.label(activity, appliedPreviewMode)));
+        TextView pendingNotice = activity.findViewById(R.id.main_preview_pending);
+        text(pendingNotice, sourcePending
+                ? activity.getString(R.string.home_saved_preview, PreviewLayoutPicker.label(activity, selected))
+                : activity.getString(R.string.ui_pending_camera_changes));
+        pendingNotice.setVisibility(pending ? View.VISIBLE : View.GONE);
         View surround = activity.findViewById(R.id.composite_wrapper);
         FourLaneContainer composite = activity.findViewById(R.id.composite_container);
         boolean hasSurround = surround != null && surround.getVisibility() != View.GONE;
@@ -128,6 +149,33 @@ public final class MainPageControls implements DefaultLifecycleObserver {
                 BirdEyePopupService.isWindowVisible() ? R.string.main_window_open
                 : BirdEyePopupService.isRunning() ? R.string.main_window_paused : R.string.main_window_closed,
                 BirdEyePopupService.isRunning());
+    }
+
+    private void showRecordingDetails() {
+        dismissPanel();
+        LinearLayout content = new LinearLayout(activity);
+        content.setOrientation(LinearLayout.VERTICAL);
+        int pad = Math.round(16 * activity.getResources().getDisplayMetrics().density);
+        content.setPadding(pad, 0, pad, pad);
+        TextView detail = new TextView(activity);
+        detail.setText(((TextView) activity.findViewById(R.id.record_title)).getText() + "\n"
+                + ((TextView) activity.findViewById(R.id.record_detail)).getText());
+        detail.setTextAppearance(R.style.TextAppearance_Cam_Body);
+        detail.setTextColor(ContextCompat.getColor(activity, R.color.text_primary));
+        content.addView(detail);
+        TextView screenOff;
+        if (RecordingCoordinator.get(activity).isRecordingOrResuming()) screenOff = new ScreenOffHintView(activity);
+        else {
+            screenOff = new TextView(activity);
+            screenOff.setText(R.string.home_recording_details_idle);
+        }
+        screenOff.setTextAppearance(R.style.TextAppearance_Cam_Body);
+        screenOff.setTextColor(ContextCompat.getColor(activity, R.color.text_secondary));
+        screenOff.setPadding(0, pad, 0, 0);
+        content.addView(screenOff);
+        panel = CamDialogs.show(new MaterialAlertDialogBuilder(activity, R.style.Theme_Cam_MaterialAlertDialog)
+                .setTitle(R.string.home_recording_details).setView(content)
+                .setNegativeButton(R.string.action_close, null));
     }
 
     private void showGallery() {

@@ -1282,7 +1282,7 @@
     <string name="home_windows_help">Buka tetingkap di atas aplikasi lain. Saiz dan kedudukannya berasingan daripada pratonton utama.</string>
     <string name="home_preview_single">Satu sumber</string>
     <string name="home_preview_multiple">%1$d sumber</string>
-    <string name="home_layout_single">Dengan satu sumber, susun atur berkuat kuasa selepas sumber lain ditambah.</string>
+    <string name="home_layout_single">Satu sumber memenuhi pratonton. Susun atur mengatur sumber berasingan, bukan empat pandangan Surround.</string>
     <string name="home_surround_unavailable">360° memerlukan Sekeliling dalam pratonton yang digunakan. Pilih pratetap dengan Sekeliling, kemudian keluar dan buka semula.</string>
     <string name="home_pending_selection">Pratonton: %1$s · belum digunakan</string>
     <string name="home_layout_selected">Dipilih</string>

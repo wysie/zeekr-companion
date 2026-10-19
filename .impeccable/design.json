@@ -442,6 +442,11 @@
         "name": "Action and state clarity",
         "body": "Name the next window action as well as current state; preview restart guidance remains visible before Save. Playback Home returns to cameras, while Back follows the gallery stack.",
         "section": "components"
+      },
+      {
+        "name": "Applied preview and compact recording",
+        "body": "The selector names applied preview sources; the reopen notice names the saved next choice. Hide inactive arrangement tiles for one source. Keep recording action and clip detail in the toolbar, with live screen-off behavior in long-press Recording details.",
+        "section": "components"
       }
     ],
     "dos": [
