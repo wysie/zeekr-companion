@@ -17,6 +17,7 @@ import android.util.Size;
 import android.view.ContextThemeWrapper;
 import android.view.Surface;
 import android.view.TextureView;
+import android.view.View;
 import android.view.WindowManager;
 
 import androidx.test.ext.junit.runners.AndroidJUnit4;
@@ -199,6 +200,55 @@ public class SidePopupStartupAndroidTest {
             main(view::detach);
             config.setSidePopupStraighten(oldStraighten);
             StreamLayoutTable.setCompositeCameraId(oldComposite);
+        }
+    }
+
+    private View control(View view, String label) {
+        if (label.contentEquals(view.getContentDescription() == null ? "" : view.getContentDescription())) return view;
+        if (view instanceof android.view.ViewGroup) for (int i = 0; i < ((android.view.ViewGroup) view).getChildCount(); i++) {
+            View found = control(((android.view.ViewGroup) view).getChildAt(i), label);
+            if (found != null) return found;
+        }
+        return null;
+    }
+
+    @Test public void ultraWidePopupExpandsToPortraitHalfAndRestoresWithoutReplacingItsTexture() throws Exception {
+        try (Fixture f = new Fixture()) {
+            String oldAspect = f.config.getSidePopupAspect();
+            try {
+                f.config.setSidePopupAspect("11:5");
+                main(() -> { f.view.applyConfig(); f.view.show(LaneCycle.LEFT); });
+                for (int i = 0; i < 8; i++) { f.frame(Color.GREEN); SystemClock.sleep(30); }
+                SideViewExpansion.Geometry[] normal = {null};
+                SurfaceTexture texture = f.texture.get();
+                main(() -> {
+                    WindowManager.LayoutParams params = (WindowManager.LayoutParams) f.view.getLayoutParams();
+                    assertEquals(2.2, params.width / (double) params.height, .01);
+                    normal[0] = new SideViewExpansion.Geometry(params.x, params.y, params.width, params.height);
+                    control(f.view, f.view.getContext().getString(R.string.side_control_expand)).performClick();
+                });
+                InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+                main(() -> {
+                    WindowManager.LayoutParams params = (WindowManager.LayoutParams) f.view.getLayoutParams();
+                    Size area = OverlayAvailableSize.read(f.view, (WindowManager) f.view.getContext().getSystemService(Context.WINDOW_SERVICE));
+                    int margin = f.view.getResources().getDimensionPixelSize(R.dimen.side_control_margin);
+                    assertEquals((area.getWidth() - 2 * margin) / 2, params.width);
+                    assertEquals(area.getHeight() - 2 * margin, params.height);
+                    assertTrue(params.height > params.width);
+                    assertEquals(params.width, f.view.getWidth()); assertEquals(params.height, f.view.getHeight());
+                    assertSame(texture, f.view.getTextureView().getSurfaceTexture());
+                    assertEquals("11:5", f.config.getSidePopupAspect());
+                    control(f.view, f.view.getContext().getString(R.string.side_control_restore)).performClick();
+                });
+                InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+                main(() -> {
+                    WindowManager.LayoutParams params = (WindowManager.LayoutParams) f.view.getLayoutParams();
+                    assertEquals(normal[0].x, params.x); assertEquals(normal[0].y, params.y);
+                    assertEquals(normal[0].width, params.width); assertEquals(normal[0].height, params.height);
+                    assertSame(texture, f.view.getTextureView().getSurfaceTexture());
+                    assertEquals("11:5", f.config.getSidePopupAspect());
+                });
+            } finally { f.config.setSidePopupAspect(oldAspect); }
         }
     }
 

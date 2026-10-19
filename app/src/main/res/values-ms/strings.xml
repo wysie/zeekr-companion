@@ -1122,7 +1122,7 @@
     <string name="menu_image_framing_summary">Pembetulan, arah pandangan, putaran, pencerminan skrin dan label bersama</string>
     <string name="menu_popup_window">Tetingkap timbul</string>
     <string name="menu_popup_window_summary">Saiz, kedudukan dan gerak isyarat tetingkap</string>
-    <string name="menu_popup_gestures">Seret untuk alih, cubit untuk ubah saiz, atau guna kawalan penjuru untuk besar/pulih. Nisbah aspek dikekalkan. X menutup paparan bagi isyarat semasa; batalkan dan beri isyarat semula untuk buka. Cermin super dan HUD mengekalkan bentuk dan kedudukan sendiri.</string>
+    <string name="menu_popup_gestures">Seret untuk alih; cubit untuk ubah saiz sambil mengekalkan nisbah aspek. Besarkan mengisi panel potret separuh skrin buat sementara; Pulihkan mengembalikan bentuk dan kedudukan asal. Ini juga terpakai pada paparan sisi dalam Cermin super. X menutup paparan bagi isyarat semasa; batalkan dan beri isyarat semula untuk buka. Susun atur HUD kekal berasingan.</string>
     <string name="menu_placement">Kedudukan</string>
     <string name="menu_advanced_experimental">Lanjutan · percubaan</string>
     <string name="menu_output">Output</string>

@@ -94,6 +94,8 @@ public class RearViewMirrorView extends ViewGroup {
     private final CameraLabel cameraLabel;
     private final SideViewControls sideControls;
     private final SideViewExpansion windowExpansion = new SideViewExpansion();
+    private Size expandedSideViewport;
+    private final Runnable refitSideExpansion = this::refitExpandedSide;
 
     private WindowManager.LayoutParams params;
     private boolean hiddenForSidePopup;
@@ -444,14 +446,27 @@ public class RearViewMirrorView extends ViewGroup {
         }
         cancelGlide();
         cancelTapFlash();
-        SideViewExpansion.Geometry next = windowExpansion.toggle(
-                new SideViewExpansion.Geometry(params.x, params.y, params.width, params.height),
-                screenWidth(), screenHeight(),
-                getResources().getDimensionPixelSize(R.dimen.side_control_margin));
+        SideViewExpansion.Geometry current = new SideViewExpansion.Geometry(params.x, params.y, params.width, params.height);
+        int margin = getResources().getDimensionPixelSize(R.dimen.side_control_margin);
+        SideViewExpansion.Geometry next;
+        if (sideView.active()) {
+            expandedSideViewport = OverlayAvailableSize.read(this, windowManager);
+            next = windowExpansion.toggleHalfScreen(current, expandedSideViewport.getWidth(), expandedSideViewport.getHeight(), margin);
+        } else next = windowExpansion.toggle(current, screenWidth(), screenHeight(), margin);
         applySideGeometry(next);
         refreshWindowControls();
         applyLayout();
         invalidate();
+    }
+
+    private void refitExpandedSide() {
+        if (!attached || params == null || !sideView.active() || !windowExpansion.expanded()) return;
+        Size next = OverlayAvailableSize.read(this, windowManager);
+        if (next.equals(expandedSideViewport)) return;
+        expandedSideViewport = next;
+        applySideGeometry(windowExpansion.refit(next.getWidth(), next.getHeight(),
+                getResources().getDimensionPixelSize(R.dimen.side_control_margin)));
+        applyLayout(); invalidate();
     }
 
     private void restoreWindowExpanded() {
@@ -662,7 +677,18 @@ public class RearViewMirrorView extends ViewGroup {
 
     @Override protected void onConfigurationChanged(android.content.res.Configuration configuration) {
         super.onConfigurationChanged(configuration);
+        post(refitSideExpansion);
         invalidate();
+    }
+
+    @Override public android.view.WindowInsets onApplyWindowInsets(android.view.WindowInsets insets) {
+        post(refitSideExpansion);
+        return super.onApplyWindowInsets(insets);
+    }
+
+    @Override protected void onDetachedFromWindow() {
+        removeCallbacks(refitSideExpansion);
+        super.onDetachedFromWindow();
     }
 
     @Override

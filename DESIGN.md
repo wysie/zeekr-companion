@@ -368,3 +368,14 @@ views, Front + Rear and Surround + Front + Rear. All four use full-width native
 radio rows with 56dp minimum touch targets, avoiding four cramped columns. Other
 sources retains the individual front/rear road and cabin choices. Saved values,
 staging, Cancel and Save behavior stay unchanged.
+
+### Blind-side expansion, 2026-10-20
+
+Expand uses a temporary tall half-screen panel, independently of the saved popup
+aspect ratio. Fill the usable overlay height with existing control margins; use
+half the available width, capped at the panel height on extremely wide displays.
+Anchor to the half nearest the normal window. Restore its exact original geometry;
+never save the expanded size or aspect. Apply this to the separate popup and a
+blind-side replacement in Super mirror. HUD, normal mirror and 360° expansion keep
+their own geometry policies. Native overlay bounds/insets drive expanded sizing
+and refits while system bars change.

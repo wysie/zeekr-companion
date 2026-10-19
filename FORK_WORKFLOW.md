@@ -11,6 +11,7 @@ outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
 | --- | --- |
+| `fix/blind-popup-half-screen-expand` | Temporary portrait half-screen blind popup/mirror replacement expansion, native overlay bounds and exact restore |
 | `fix/settings-preview-native-detail` | Native-detail settings readback with bounded reusable storage and actual TextureView/corrected fine-detail regression |
 | `fix/preview-selected-quick-preset` | First-class Selected recording sources quick preset, followed by the existing three in readable full-width radio rows |
 | `feature/gpu-360-renderer` | Opt-in direct camera-texture 360 projection using shared calibration lookups, raw-output fallback and native EGL/freshness/photo checks; CPU remains default pending car validation |

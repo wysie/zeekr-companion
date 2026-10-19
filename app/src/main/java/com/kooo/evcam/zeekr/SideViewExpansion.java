@@ -14,22 +14,39 @@ public final class SideViewExpansion {
     }
 
     private Geometry original;
+    private boolean halfScreen;
 
     public boolean expanded() {
         return original != null;
     }
 
     public Geometry toggle(Geometry current, int screenWidth, int screenHeight, int margin) {
+        return toggle(current, screenWidth, screenHeight, margin, false);
+    }
+
+    /** Blind-side expansion ignores the saved popup aspect; restore retains it exactly. */
+    public Geometry toggleHalfScreen(Geometry current, int screenWidth, int screenHeight, int margin) {
+        return toggle(current, screenWidth, screenHeight, margin, true);
+    }
+
+    private Geometry toggle(Geometry current, int screenWidth, int screenHeight, int margin, boolean halfScreen) {
         if (expanded()) {
             return restore();
         }
         original = current;
-        return fit(current, screenWidth, screenHeight, margin);
+        this.halfScreen = halfScreen;
+        return refit(screenWidth, screenHeight, margin);
     }
 
     /** Refit a temporary expansion after system bars/display bounds change; retain its restore point. */
     public Geometry refit(int screenWidth, int screenHeight, int margin) {
-        return original == null ? null : fit(original, screenWidth, screenHeight, margin);
+        if (original == null) return null;
+        if (!halfScreen) return fit(original, screenWidth, screenHeight, margin);
+        int height = Math.max(1, screenHeight - 2 * margin);
+        int width = Math.min(height, Math.max(1, (screenWidth - 2 * margin) / 2));
+        boolean right = original.x + original.width / 2d >= screenWidth / 2d;
+        return new Geometry(right ? Math.max(margin, screenWidth - margin - width) : margin,
+                margin, width, height);
     }
 
     private static Geometry fit(Geometry current, int screenWidth, int screenHeight, int margin) {
