@@ -51,6 +51,11 @@ public class SideViewHudPanel extends SideViewPopupView {
     /** 画面过的颜色矩阵；对比度 100 时 null（原样）。 */
     private Paint tonePaint;
     private boolean night;
+    private int uncroppedPictureWidth;
+    private int pictureOffsetX;
+
+    @Override protected int cameraPictureWidth() { return uncroppedPictureWidth > 0 ? uncroppedPictureWidth : getWidth(); }
+    @Override protected int cameraPictureOffsetX() { return pictureOffsetX; }
 
     public SideViewHudPanel(Context context, AppConfig appConfig, Display display) {
         super(context, appConfig, false); // Projected HUD keeps its dark-backed, light foreground badges.
@@ -275,10 +280,15 @@ public class SideViewHudPanel extends SideViewPopupView {
         display.getRealMetrics(metrics);
         int width = root != null && root.getWidth() > 0 ? root.getWidth() : metrics.widthPixels;
         int height = root != null && root.getHeight() > 0 ? root.getHeight() : metrics.heightPixels;
-        HudPanelPlacement.Rect rect = HudPanelPlacement.compute(width, height,
+        HudPanelPlacement.Rect full = HudPanelPlacement.compute(width, height,
                 appConfig.getHudSideSizePercent(), appConfig.getHudSideShapePercent(),
                 appConfig.getHudSideLeftPercent(), appConfig.getHudSideVerticalPercent(),
                 appConfig.isHudSideFollowSignal() && lane == LaneCycle.RIGHT);
+        HudPanelPlacement.Crop crop = HudPanelPlacement.cropInnerEdge(full, width, appConfig.getHudSideInnerCropPercent());
+        HudPanelPlacement.Rect rect = crop.bounds;
+        boolean pictureChanged = uncroppedPictureWidth != crop.pictureWidth || pictureOffsetX != crop.pictureOffsetX;
+        uncroppedPictureWidth = crop.pictureWidth;
+        pictureOffsetX = crop.pictureOffsetX;
         panelParams = new FrameLayout.LayoutParams(rect.width, rect.height, Gravity.TOP | Gravity.LEFT);
         panelParams.leftMargin = rect.left;
         panelParams.topMargin = rect.top;
@@ -286,9 +296,12 @@ public class SideViewHudPanel extends SideViewPopupView {
             FrameLayout.LayoutParams current = (FrameLayout.LayoutParams) getLayoutParams();
             if (current.width != rect.width || current.height != rect.height
                     || current.leftMargin != rect.left || current.topMargin != rect.top) setLayoutParams(panelParams);
+            else if (pictureChanged) requestLayout();
         }
         lastLayout = "viewport=" + width + "x" + height + " panel=" + rect.left + "," + rect.top
-                + " " + rect.width + "x" + rect.height + " layout=" + (appConfig.is009HudLayout() ? "009" : "standard");
+                + " " + rect.width + "x" + rect.height + " layout=" + (appConfig.is009HudLayout() ? "009" : "standard")
+                + " innerCrop=" + appConfig.getHudSideInnerCropPercent() + "% picture=" + uncroppedPictureWidth
+                + " offsetX=" + pictureOffsetX;
     }
 
     @Override

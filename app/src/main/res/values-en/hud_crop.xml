@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="set_hud_side_inner_crop_title">HUD inner-edge crop (%)</string>
+    <string name="set_hud_side_inner_crop_summary">Trim the edge nearest the HUD centre, keeping the outer edge and picture scale. 009 starts at 25%; other HUDs at 0%. Moving factory graphics may still overlap.</string>
+</resources>

@@ -1,8 +1,10 @@
 # 009 live HUD video and layout
 
-Latest owner feedback (2026-10-18): the HUD image is **still clipped and overlaps
-factory graphics**. No confirmed HUD tuning values or installed build were supplied
-with this report. The [new 009 popup reference](009-popup-reference.md) applies only
+Latest owner photos (received 2026-10-19, 376479/376478) show left/right square
+camera windows beside the parked factory gear/car graphics, with a dark inward
+notch on the right picture. The owner requests matching narrower windows to reduce
+overlap. The photos alone cannot distinguish dark source content, factory masking
+and app clipping; the installed build and physical safe bounds remain unconfirmed. The [new 009 popup reference](009-popup-reference.md) applies only
 to the centre-screen popup; it must not be presented as a HUD preset. Earlier
 software-bound checks below do not establish that physical clipping is resolved.
 
@@ -52,8 +54,32 @@ changes address clipping risks in the app; physical projector masking and the
 new right-hand picture still need a vehicle check. Corrected-camera ray fitting
 and the configured field of view remain in use.
 
+### Inner-edge crop
+
+**Blind spot camera → HUD → Position & size → HUD inner-edge crop** trims 0–60%
+of the original fitted width. The recognised 009 layout starts at 25%, including
+existing installations without an explicit crop preference. Generic/7X starts at
+0% and stores its choice separately. Existing size, shape and position values
+are retained; zero restores their full picture. Placement reset restores the
+current layout’s crop default, while picture reset leaves it alone.
+
+The actual panel position determines its inner edge, independently of camera
+direction. Left-side panels lose their right edge; right-side panels lose their
+left edge. Fixed-right placement therefore always trims the left edge. Mirrored
+indicator-side placements have equal visible widths and retain their outer edges.
+The original full-width camera is rendered at its existing scale and then clipped;
+there is no squeeze, extra zoom or change to saved aim. Arrows and labels are
+positioned in the narrower visible bounds, with no HUD arrow space reserved for
+the absent touch controls. Native texture consumers, camera sessions and recording
+are retained. The new rectangle applies immediately without restarting cameras.
+
+25% is an initial overlap-reduction value, not a measured projector calibration
+or a guarantee against all navigation/speed graphics. The owner still needs to
+verify the result in the car and can adjust crop/position/height independently.
+
 Diagnostics now report automatic selection, the active placement profile,
-measured viewport and panel rectangle. These allow a subsequent export to
+measured viewport, visible panel rectangle, crop percentage, full picture width
+and retained picture offset. These allow a subsequent export to
 distinguish app bounds from optical clipping on the actual windscreen.
 
 ## Factory graphics
@@ -70,6 +96,18 @@ Reverse, factory-view coexistence settings, output arbitration, stale-frame
 covers, cancellation and screen fallback retain their existing policies.
 
 ## Verification
+
+Inner-edge crop checks (2026-10-19): 1,505 JVM tests, debug lint and debug/release
+assembly pass, with the existing release signing certificate verified. Fifteen
+native Android checks pass on the disposable emulator. These cover actual
+Presentation bounds and full-width texture layout after cropping, independent
+009/generic persistence and both reset scopes, nested settings and recreation,
+and badge pixels within 48/120/240px windows. A native EGL pattern comparison
+checks both trimmed edges with raw and corrected/rotated/mirrored pictures: the
+remaining pixels retain their original scale and the same SurfaceTexture.
+Existing native-detail and corrected-coverage regressions also pass. These checks
+establish software clipping and retention, not physical factory-graphic clearance.
+
 
 Follow/custom picture checks pass on Android with real SharedPreferences,
 production popup/HUD renderers and nested settings navigation. They cover live

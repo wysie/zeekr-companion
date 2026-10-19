@@ -580,7 +580,7 @@ public class SideViewPopupView extends ViewGroup {
 
     @Override
     protected void onLayout(boolean changed, int l, int t, int r, int b) {
-        textureView.layout(0, 0, getWidth(), getHeight());
+        textureView.layout(0, 0, cameraPictureWidth(), getHeight());
         controls.layoutIn(getWidth());
     }
 
@@ -652,6 +652,11 @@ public class SideViewPopupView extends ViewGroup {
         Paint tone = pictureTone();
         float fade = HudEdgeFade.widthPx(edgeFadePercent(), width, height);
         if (tone != null || fade > 0f) canvas.saveLayer(0f, 0f, width, height, tone);
+        int picture = canvas.save();
+        canvas.clipRect(0, 0, width, height);
+        canvas.translate(-cameraPictureOffsetX(), 0);
+        int visibleWidth = width;
+        width = cameraPictureWidth();
         int rotation = readRotation(lane);
         int inner = SideViewRotation.begin(canvas, straighten ? 0 : rotation, width, height, readMirrored());
         if (straighten) {
@@ -685,6 +690,8 @@ public class SideViewPopupView extends ViewGroup {
             drawChild(canvas, textureView, getDrawingTime());
         }
         canvas.restoreToCount(inner);
+        canvas.restoreToCount(picture);
+        width = visibleWidth;
         if (fade > 0f) drawEdgeFade(canvas, width, height, fade);
         canvas.restoreToCount(save);
         if (!textureView.isAvailable() || !frameFreshness.fresh(android.os.SystemClock.uptimeMillis())) {
@@ -695,7 +702,7 @@ public class SideViewPopupView extends ViewGroup {
         if (readCameraLabel()) {
             cameraLabel.drawBottom(canvas, lane, width, height);
         }
-        sideArrow.draw(canvas, lane, indicatorDisplay, width, height);
+        sideArrow.draw(canvas, lane, indicatorDisplay, width, height, showControls());
         if (showControls()) drawChild(canvas, controls, getDrawingTime());
     }
 
@@ -721,4 +728,7 @@ public class SideViewPopupView extends ViewGroup {
     /** Optional HUD-only image treatment; labels and stale covers stay outside it. */
     protected Paint pictureTone() { return null; }
     protected int edgeFadePercent() { return 0; }
+    /** HUD may retain only one side of the full picture; badges use the visible view size. */
+    protected int cameraPictureWidth() { return getWidth(); }
+    protected int cameraPictureOffsetX() { return 0; }
 }

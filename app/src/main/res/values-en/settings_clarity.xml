@@ -10,7 +10,7 @@
     <string name="ui_hud_reset_picture">Reset HUD picture</string>
     <string name="ui_hud_reset_placement">Reset HUD position &amp; size</string>
     <string name="ui_hud_picture_reset_scope">Follow the screen picture and clear custom HUD framing, rotation, mirroring and labels. Keep HUD position, size, brightness and contrast.</string>
-    <string name="ui_hud_placement_reset_scope">Reset HUD position, size, aspect and indicator-side following for the current vehicle. Keep picture, brightness, contrast and output selection.</string>
+    <string name="ui_hud_placement_reset_scope">Reset HUD position, size, aspect, inner-edge crop and indicator-side following for the current vehicle. Keep picture, brightness, contrast and output selection.</string>
     <string name="ui_pending_camera_changes">Saved camera/preview choices — quit and reopen to apply. Quitting stops recording.</string>
     <string name="ui_start_logging">Start USB logging</string>
     <string name="ui_stop_logging">Stop USB logging</string>

@@ -49,6 +49,11 @@ public class SettingsHudPictureAndroidTest {
                     assertFalse(page.findPreference("group_hud_custom_picture").isVisible());
                     assertTrue(page.findPreference("group_hud_placement").isVisible());
                     assertTrue(page.findPreference("pref_hud_side_shape").isEnabled());
+                    SeekBarPreference crop=page.findPreference("pref_hud_side_inner_crop");
+                    assertTrue(crop.isEnabled()); assertFalse(crop.isPersistent());
+                    assertTrue(crop.callChangeListener(35)); crop.setValue(35);
+                    assertEquals(35,config.getHudSideInnerCropPercent());
+                    assertEquals(50,config.getSidePopupYaw());
                 });
                 capture("hud-follow");
                 scenario.onActivity(activity -> {
@@ -70,6 +75,7 @@ public class SettingsHudPictureAndroidTest {
                     assertEquals(60, config.getHudSideYaw());
                     page.findPreference("pref_hud_follow_popup_picture").performClick();
                     assertEquals(35, ((SeekBarPreference) page.findPreference("pref_hud_picture_yaw")).getValue());
+                    assertEquals(35, ((SeekBarPreference) page.findPreference("pref_hud_side_inner_crop")).getValue());
                     assertEquals(200, config.getHudSideShapePercent());
                 });
                 capture("hud-custom");

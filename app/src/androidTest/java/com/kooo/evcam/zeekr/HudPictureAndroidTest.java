@@ -149,4 +149,28 @@ public class HudPictureAndroidTest {
             assertEquals(popup.readMirrored(), hud.readMirrored());
         });
     }
+
+    @Test public void hudBadgesStayInsideEvenTheSmallestCroppedWindow() {
+        Context context=new ContextThemeWrapper(target,R.style.Theme_Cam);
+        for(int width:new int[]{48,120,240}) for(int lane:new int[]{LaneCycle.LEFT,LaneCycle.RIGHT}) {
+            int height=320,padding=16;
+            android.graphics.Bitmap image=android.graphics.Bitmap.createBitmap(width+padding*2,height+padding*2,
+                    android.graphics.Bitmap.Config.ARGB_8888);
+            try {
+                android.graphics.Canvas canvas=new android.graphics.Canvas(image);canvas.translate(padding,padding);
+                new SideTurnArrow(context,false).draw(canvas,lane,null,width,height,false);
+                new CameraLabel(context,false).drawBottom(canvas,lane,width,height);
+                int green=0,white=0;
+                for(int y=0;y<image.getHeight();y++) for(int x=0;x<image.getWidth();x++) {
+                    int color=image.getPixel(x,y);
+                    if(x<padding||x>=padding+width||y<padding||y>=padding+height)
+                        assertEquals("Badge must not be clipped at the window boundary",0,android.graphics.Color.alpha(color));
+                    if(android.graphics.Color.green(color)>android.graphics.Color.red(color)+40)green++;
+                    if(android.graphics.Color.red(color)>200&&android.graphics.Color.green(color)>200)white++;
+                }
+                assertTrue("HUD arrow must not reserve room for absent controls",green>10);
+                assertTrue("Direction label must remain visible",white>5);
+            } finally {image.recycle();}
+        }
+    }
 }

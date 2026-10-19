@@ -42,6 +42,7 @@ public class HudWindowAndroidTest {
         boolean oldFollow = config.isHudSideFollowSignal();
         int oldOpacity = config.getHudSideOpacityPercent(), oldNight = config.getHudSideNightPercent();
         int oldSize = config.getHudSideSizePercent(), oldShape = config.getHudSideShapePercent();
+        int oldCrop = config.getHudSideInnerCropPercent();
         int dayContrast = config.getHudSideContrastPercent(), nightContrast = config.getHudSideContrastNightPercent();
         AtomicReference<SideViewHudPanel> ref = new AtomicReference<>();
         ImageReader images = ImageReader.newInstance(1280, 640, PixelFormat.RGBA_8888, 3);
@@ -61,6 +62,7 @@ public class HudWindowAndroidTest {
             preferences.edit().putBoolean("hud_side_overlay", legacyOverlay).commit();
             config.setHudSideContrastPercent(160);config.setHudSideContrastNightPercent(100);
             config.setHudSideFollowSignal(true);
+            config.setHudSideInnerCropPercent(0);
             config.setHudSideOpacityPercent(80); config.setHudSideNightPercent(50);
             main(() -> {
                 SideViewHudPanel panel = new SideViewHudPanel(context, config, display.getDisplay());
@@ -103,6 +105,16 @@ public class HudWindowAndroidTest {
                 assertTrue("Whole camera panel must fit measured content",panel.getRight()<=640&&panel.getBottom()<=360);
                 assertEquals("Keep the requested wide shape",3f,panel.getWidth()/(float)panel.getHeight(),.02f);
                 assertTrue(SideViewHudPanel.lastState().contains("viewport=640x360"));
+                config.setHudSideInnerCropPercent(25); panel.applyConfig();
+            });
+            SystemClock.sleep(250);
+            main(() -> {
+                SideViewHudPanel panel=ref.get();
+                assertEquals(480,panel.getWidth()); assertEquals(213,panel.getHeight());
+                assertEquals(160,panel.getLeft()); assertEquals(640,panel.getRight());
+                assertEquals("Trim pixels, never squeeze the camera",640,panel.getTextureView().getWidth());
+                assertEquals(160,panel.cameraPictureOffsetX());
+                assertTrue(SideViewHudPanel.lastState().contains("innerCrop=25% picture=640 offsetX=160"));
                 assertEquals(0f, ((WindowManager.LayoutParams) ref.get().getRootView().getLayoutParams()).alpha, 0f);
                 ref.get().detach(); assertFalse(ref.get().isAttached());
             });
@@ -114,6 +126,7 @@ public class HudWindowAndroidTest {
             else preferences.edit().remove("hud_side_overlay").commit();
             config.setHudSideFollowSignal(oldFollow);
             config.setHudSideSizePercent(oldSize);config.setHudSideShapePercent(oldShape);
+            config.setHudSideInnerCropPercent(oldCrop);
             config.setHudSideOpacityPercent(oldOpacity); config.setHudSideNightPercent(oldNight);
         }
     }
@@ -125,10 +138,14 @@ public class HudWindowAndroidTest {
         java.util.Map<String,?> before=prefs.getAll();
         try {
             prefs.edit().remove("009_hud_side_size").remove("009_hud_side_shape").remove("009_hud_side_left")
-                    .remove("009_hud_side_vertical").remove("009_hud_side_follow").commit();
+                    .remove("009_hud_side_vertical").remove("009_hud_side_follow").remove("009_hud_side_inner_crop").commit();
             config.selectHudLayout(false);config.setHudSideLeftPercent(12);config.setHudSideSizePercent(80);
             config.setHudSideFollowSignal(true);
+            assertEquals(0,config.getHudSideInnerCropPercent()); config.setHudSideInnerCropPercent(10);
             config.selectHudLayout(true);
+            assertEquals(25,config.getHudSideInnerCropPercent());
+            config.setHudSideInnerCropPercent(35);
+            assertEquals(35,new AppConfig(target).getHudSideInnerCropPercent());
             assertEquals(94,config.getHudSideLeftPercent());assertEquals(50,config.getHudSideSizePercent());
             assertFalse(config.isHudSideFollowSignal());
             config.setHudSideFollowSignal(true);assertEquals(6,config.getHudSideLeftPercent());
@@ -136,10 +153,15 @@ public class HudWindowAndroidTest {
             config.setHudSideLeftPercent(88);config.setHudSideSizePercent(55);
             assertEquals(88,new AppConfig(target).getHudSideLeftPercent());
             config.selectHudLayout(false);
+            assertEquals(10,config.getHudSideInnerCropPercent());
             assertEquals(12,config.getHudSideLeftPercent());assertEquals(80,config.getHudSideSizePercent());
             assertTrue(config.isHudSideFollowSignal());
             config.selectHudLayout(true);assertEquals(88,config.getHudSideLeftPercent());
+            config.resetHudPicture(); assertEquals(35,config.getHudSideInnerCropPercent());
+            config.resetHudPlacement(); assertEquals(25,config.getHudSideInnerCropPercent());
+            config.setHudSideInnerCropPercent(60);
             config.resetSidePopupSettings();assertEquals(94,config.getHudSideLeftPercent());
+            assertEquals(25,config.getHudSideInnerCropPercent());
             assertEquals(50,config.getHudSideSizePercent());assertFalse(config.isHudSideFollowSignal());
             // The obsolete enable preference is irrelevant to matching and layout.
             prefs.edit().putBoolean("hud_zeekr_009",false).commit();

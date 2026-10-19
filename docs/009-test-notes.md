@@ -1,5 +1,14 @@
 # Owner feedback: Zeekr 009
 
+2026-10-19: owner photos 376479/376478 show left/right HUD camera windows beside
+the factory parked gear/car graphics. The owner requests equal narrower windows
+to avoid overlap. The [HUD inner-edge crop](009-hud-live-video.md#inner-edge-crop)
+now starts at 25% for the recognised 009 layout and is adjustable from 0–60%. It
+keeps the outer edge and original picture scale, with labels/arrows inside the
+visible bounds. The installed photo build and physical safe area are unconfirmed;
+this change still needs an in-car check, including moving navigation graphics.
+
+
 2026-10-18: the owner supplied a comparison showing a bottom gap beneath the
 expanded DIY 360 popup over Android Auto. The installed version was not supplied.
 The unreleased [popup bounds correction](diy-360-view.md#expanded-bounds-correction-2026-10-18-unreleased)

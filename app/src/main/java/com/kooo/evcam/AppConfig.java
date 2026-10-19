@@ -137,6 +137,7 @@ public class AppConfig {
     private static final String KEY_HUD_SIDE_SIZE = "hud_side_size";  // 高度，HUD 高度的百分比
     private static final String KEY_HUD_LAYOUT_009 = "hud_layout_009";
     private static final String KEY_HUD_SIDE_SHAPE = "hud_side_shape";  // 宽 ÷ 高 ×100
+    private static final String KEY_HUD_SIDE_INNER_CROP = "hud_side_inner_crop";
     private static final String KEY_HUD_SIDE_LEFT = "hud_side_left";  // 左右位置，0 贴左 100 贴右
     private static final String KEY_HUD_SIDE_VERTICAL = "hud_side_vertical";  // 上下位置，0 顶 100 底
     private static final String KEY_HUD_SIDE_OPACITY = "hud_side_opacity";  // 不透明度
@@ -162,6 +163,7 @@ public class AppConfig {
     public static final int HUD_SIDE_DEFAULT_SIZE_PERCENT = 74;
     public static final int HUD_SIDE_009_DEFAULT_SIZE_PERCENT = 50;
     public static final int HUD_SIDE_009_DEFAULT_LEFT_PERCENT = 94;
+    public static final int HUD_SIDE_009_DEFAULT_INNER_CROP_PERCENT = 25;
     public static final int HUD_SIDE_MIN_SHAPE_PERCENT = 100;
     public static final int HUD_SIDE_MAX_SHAPE_PERCENT = 300;
     public static final int HUD_SIDE_DEFAULT_SHAPE_PERCENT = 100;
@@ -1783,6 +1785,8 @@ public class AppConfig {
                 .remove("009_" + KEY_HUD_SIDE_SIZE).remove("009_" + KEY_HUD_SIDE_SHAPE)
                 .remove("009_" + KEY_HUD_SIDE_LEFT).remove("009_" + KEY_HUD_SIDE_VERTICAL)
                 .remove("009_" + KEY_HUD_SIDE_FOLLOW)
+                .remove("009_" + KEY_HUD_SIDE_INNER_CROP)
+                .remove(KEY_HUD_SIDE_INNER_CROP)
                 .remove(KEY_HUD_SIDE_SIZE)
                 .remove(KEY_HUD_SIDE_SHAPE)
                 .remove(KEY_HUD_SIDE_LEFT)
@@ -2038,6 +2042,18 @@ public class AppConfig {
                 Math.max(HUD_SIDE_MIN_SHAPE_PERCENT, Math.min(HUD_SIDE_MAX_SHAPE_PERCENT, percent))).apply();
     }
 
+    /** HUD-only clipping; does not change popup framing or the saved full-window shape. */
+    public int getHudSideInnerCropPercent() {
+        return Math.max(0, Math.min(com.kooo.evcam.zeekr.HudPanelPlacement.MAX_INNER_CROP_PERCENT,
+                prefs.getInt(hudLayoutKey(KEY_HUD_SIDE_INNER_CROP),
+                        is009HudLayout() ? HUD_SIDE_009_DEFAULT_INNER_CROP_PERCENT : 0)));
+    }
+
+    public void setHudSideInnerCropPercent(int percent) {
+        prefs.edit().putInt(hudLayoutKey(KEY_HUD_SIDE_INNER_CROP), Math.max(0,
+                Math.min(com.kooo.evcam.zeekr.HudPanelPlacement.MAX_INNER_CROP_PERCENT, percent))).apply();
+    }
+
     /** HUD 上画面的左右位置：剩余宽度里的百分比，0 贴左、100 贴右。 */
     public int getHudSideLeftPercent() {
         int v = prefs.getInt(hudLayoutKey(KEY_HUD_SIDE_LEFT), is009HudLayout()
@@ -2079,7 +2095,7 @@ public class AppConfig {
     /** Restore the current vehicle's placement/aspect; keep picture, tone and output choices. */
     public void resetHudPlacement() {
         SharedPreferences.Editor edit=prefs.edit();
-        for(String key:new String[]{KEY_HUD_SIDE_SIZE,KEY_HUD_SIDE_SHAPE,KEY_HUD_SIDE_LEFT,KEY_HUD_SIDE_VERTICAL,KEY_HUD_SIDE_FOLLOW})
+        for(String key:new String[]{KEY_HUD_SIDE_SIZE,KEY_HUD_SIDE_SHAPE,KEY_HUD_SIDE_LEFT,KEY_HUD_SIDE_VERTICAL,KEY_HUD_SIDE_FOLLOW,KEY_HUD_SIDE_INNER_CROP})
             edit.remove(hudLayoutKey(key));
         edit.apply();
     }

@@ -15,6 +15,7 @@ public final class HudPanelPlacement {
 
     /** 再小就看不清了（像素）。 */
     public static final int MIN_SIZE_PX = 48;
+    public static final int MAX_INNER_CROP_PERCENT = 60;
 
     private HudPanelPlacement() {
     }
@@ -62,5 +63,32 @@ public final class HudPanelPlacement {
 
     private static int clampPercent(int percent) {
         return Math.max(0, Math.min(100, percent));
+    }
+
+    /** Visible bounds and the retained part of the original, unscaled camera picture. */
+    public static final class Crop {
+        public final Rect bounds;
+        public final int pictureWidth;
+        public final int pictureOffsetX;
+
+        private Crop(Rect bounds, int pictureWidth, int pictureOffsetX) {
+            this.bounds = bounds;
+            this.pictureWidth = pictureWidth;
+            this.pictureOffsetX = pictureOffsetX;
+        }
+    }
+
+    /**
+     * Trim the edge nearest the HUD centre, preserving the outer edge and picture scale.
+     * Use the panel's actual position: a fixed-right panel must trim its left edge for
+     * BOTH cameras. Signal-side following naturally produces equal mirrored windows.
+     */
+    public static Crop cropInnerEdge(Rect panel, int hudWidth, int percent) {
+        int removed = Math.min(Math.max(0, panel.width - MIN_SIZE_PX),
+                Math.round(panel.width * Math.max(0, Math.min(MAX_INNER_CROP_PERCENT, percent)) / 100f));
+        boolean onRight = panel.left * 2 + panel.width >= hudWidth;
+        int offset = onRight ? removed : 0;
+        return new Crop(new Rect(panel.left + offset, panel.top, panel.width - removed, panel.height),
+                panel.width, offset);
     }
 }
