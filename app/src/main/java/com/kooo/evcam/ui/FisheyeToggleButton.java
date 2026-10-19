@@ -27,6 +27,7 @@ public class FisheyeToggleButton extends MaterialButton {
     private static final String TAG = "FisheyeToggle";
 
     private final AppConfig config;
+    private final boolean flatToolbarAppearance;
     /** 拿住它：SharedPreferences 只弱引用监听器。 */
     private SharedPreferences.OnSharedPreferenceChangeListener listener;
 
@@ -37,6 +38,9 @@ public class FisheyeToggleButton extends MaterialButton {
     public FisheyeToggleButton(Context context, AttributeSet attrs) {
         super(context, attrs);
         config = new AppConfig(context);
+        android.content.res.TypedArray appearance = context.obtainStyledAttributes(attrs, R.styleable.FisheyeToggleButton);
+        try { flatToolbarAppearance = appearance.getBoolean(R.styleable.FisheyeToggleButton_flatToolbarAppearance, false); }
+        finally { appearance.recycle(); }
         setOnClickListener(v -> {
             boolean on = !config.isFisheyeCorrection();
             config.setFisheyeCorrection(on);
@@ -60,10 +64,19 @@ public class FisheyeToggleButton extends MaterialButton {
 
     private void refresh() {
         boolean on = config.isFisheyeCorrection();
-        setBackgroundTintList(ColorStateList.valueOf(
-                ContextCompat.getColor(getContext(), on ? R.color.energy : R.color.sunken)));
-        setTextColor(ContextCompat.getColor(getContext(),
-                on ? R.color.on_energy : R.color.text_primary));
+        if (flatToolbarAppearance) {
+            // The main toolbar indicates selection with text/icon colour and a check, never a filled tile.
+            setBackgroundTintList(ColorStateList.valueOf(android.graphics.Color.TRANSPARENT));
+            int ink = ContextCompat.getColor(getContext(), on ? R.color.energy_text : R.color.text_primary);
+            setTextColor(ink);
+            setIconTint(ColorStateList.valueOf(ink));
+            setIconResource(on ? R.drawable.ic_check : R.drawable.ic_home_straighten);
+        } else {
+            setBackgroundTintList(ColorStateList.valueOf(
+                    ContextCompat.getColor(getContext(), on ? R.color.energy : R.color.sunken)));
+            setTextColor(ContextCompat.getColor(getContext(),
+                    on ? R.color.on_energy : R.color.text_primary));
+        }
         setSelected(on);
     }
 }

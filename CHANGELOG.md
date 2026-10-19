@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Flatten the main bottom dock into an icon-and-label toolbar, retaining touch targets, recording indicators and a clear Straighten selection state.
+
 ## [2.11.51-alpha.1] - 2026-10-19
 
 - Give cameras the full main-screen width, with the Companion logo, Preview selector and direct 360° action in the header.

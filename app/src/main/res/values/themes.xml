@@ -94,6 +94,12 @@
         <item name="android:paddingBottom">10dp</item>
     </style>
 
+    <!-- Main dock only: retain native hit areas and ripple, remove individual tile fills. -->
+    <style name="Widget.Cam.HomeToolbarAction" parent="Widget.Cam.HomeAction">
+        <item name="backgroundTint">@android:color/transparent</item>
+        <item name="strokeWidth">0dp</item>
+    </style>
+
     <!-- 只有图标：菜单、退出 -->
     <style name="Widget.Cam.IconButton" parent="Widget.Cam.RailTile">
         <item name="iconGravity">textStart</item>

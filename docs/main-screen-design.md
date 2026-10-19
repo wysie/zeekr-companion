@@ -18,3 +18,7 @@ FINISH: unreviewed and undocumented is unfinished; this build ends with the fini
 
 ## Behavior boundaries
 Quick source presets: Surround (four views), Front + Rear, Surround + roads. Other sources retain Follow recording, individual front/rear road and cabin choices. This is not a new arbitrary-camera mapping system. Source layout offers Automatic, Side by side and Stacked for distinct source panes; one source has nothing to split. Cancel/Back/outside leaves preferences unchanged. Save changes preview preferences only, with a reopen notice for source changes. Arrangement changes apply in place.
+
+## Bottom toolbar refinement
+
+Owner requested less button-like controls after alpha 51. Use a shared divider and transparent icon/label actions, preserving typography, hit areas and driver order. Recording retains its red dot/stop shape and progress without a filled card. Straighten uses orange text/icon plus a check when enabled. Header, dialogs, saved preferences and camera behavior remain unchanged.
