@@ -209,3 +209,17 @@ HUD/360 outputs; it does not import upstream's fixed popup placement, defaults,
 menu layout or a second side-camera service. dts88 retains credit for the scheduler
 and lifecycle work; FerixzTanz retains credit for the original side-camera feature
 and vehicle research, and wysie for the earlier framing/dismissal contributions.
+
+
+## Maintainer follow-ups to merged contributions — 2026-10-19
+
+Adapted cleanup by [dts88](https://github.com/dts88) from
+[PR #58](https://github.com/dts88/zeekr-shortcut-car/pull/58), source
+[`319fef9c`](https://github.com/dts88/zeekr-shortcut-car/commit/319fef9c5b64a77d5c5f90f2a00ee50358677b39),
+and [PR #59](https://github.com/dts88/zeekr-shortcut-car/pull/59), source
+[`ebe3e2c3`](https://github.com/dts88/zeekr-shortcut-car/commit/ebe3e2c398ce5b34ab2f6502a5ed9941e57792ac).
+These follow wysie’s microphone-permission and update-integrity contributions.
+The port removes dead microphone strings, adopts updater helper/comments/constants,
+clearer verification errors and the literal-null digest regression. Companion
+retains its release repository/channels and adds an Android JSON/download-boundary
+check. Covered by the repository’s GPL-3.0 license.
