@@ -75,6 +75,12 @@ requirement before Save; quitting stops recording. A persistent notice marks sou
 that need **Quit app → reopen**. The selector names the currently applied preview;
 the notice names the saved next choice. Choosing an equivalent source set does not
 create a preview restart requirement.
+Pending preview-only changes do not block manual or automatic recording with the
+current recording sources. Changes to enabled recording sources, their manual
+camera assignments or the vehicle mapping still require reopening before a new
+recording starts. Diagnostics report preview-pending and recording-pending states
+separately. This recording-start correction is newer than alpha 52; see the
+[investigation and verification](docs/recording-preview-isolation.md).
 All existing source choices are preserved on upgrade. **Source layout** arranges
 separate source panes. With just Surround (or another single source), the panel
 explains this and hides inactive arrangement choices; it does not rearrange the
@@ -176,7 +182,7 @@ release numbers remain independent of upstream.
 - **Developer mode:** Settings → System → Enable developer mode exposes the Developer options category immediately, with an inline warning and no password or hidden About-page gesture. It is off on new installs; existing enabled state survives updates and restarts. The selected settings category also stays highlighted after screen recreation. Turning it off hides the category, disables developer-gated settings and stops signal scanning while retaining saved values. Some pipeline changes still require an app restart.
 - **Camera and display research tools:** Settings → Developer → Camera and display tools provides an on-demand batch snapshot of every available Camera2 ID, plus a guided numbered test for public presentation displays. Confirm a large main-screen card first, then test one secondary display at a time for up to 30 seconds and record where it appeared or that it was not seen. Images, generated display cards and JSON reports go under **ZeekrShortcutApp/Developer**. Both require a connected vehicle interface with recording stopped and factory camera closed; neither checks gear or speed. The scan temporarily closes this app’s normal feeds and retains exclusive ownership until native closure is confirmed; saved camera/HUD settings stay unchanged. These tools cannot screenshot factory displays or expose private factory video buffers. See [instructions and limits](docs/developer-camera-display-tools.md).
 
-- **Independent camera selection:** Surround, Front cabin and Rear cabin are opened according to their individual profile switches, including cabin-only profiles. Exit and reopen after changing switches; recording shows an explicit restart message while saved channel choices differ from the live pipeline.
+- **Independent camera selection:** Surround, Front cabin and Rear cabin are opened according to their individual profile switches, including cabin-only profiles. Exit and reopen after changing recording switches or active camera mappings; recording shows an explicit restart message while the saved recording configuration differs from the live pipeline. A pending preview-only change does not block recording.
 
 - **One app folder:** new recordings, photos and exported diagnostics go under **ZeekrShortcutApp/Videos**, **Photos**, **Logs** and on-demand **Developer** exports on selected storage. Playback, protection, storage accounting and cleanup also support older EVCam folders without moving existing files. See [storage layout](docs/app-storage-folders.md).
 

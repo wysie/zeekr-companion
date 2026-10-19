@@ -9,6 +9,9 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Keep pending preview-only changes from blocking manual and automatic recording; retain restart checks for recording-source and active camera-mapping changes.
+- Report pending preview and recording configurations separately in Diagnostics.
+
 - Apply factory-inspired settings rows, regular labels, orange-underlined tabs and compact equal-width main toolbar actions.
 - Add Blind spot camera Behavior, Picture, Window and HUD tabs with preserved saved settings.
 - Add a Left/Right settings preview using the existing surround texture, with expand/hide controls and factory/stale-frame guards.

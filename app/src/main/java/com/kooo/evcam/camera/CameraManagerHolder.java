@@ -76,6 +76,7 @@ public class CameraManagerHolder {
      * （见类说明）。</p>
      */
     private String builtFor;
+    private com.kooo.evcam.profile.RecordingSetup builtRecordingSetup;
     /** 这一份是照哪个车型建的（{@link Shape#carModel}）：车型变了谁来要都重建。 */
     private String builtCarModel;
     /** 这一份建好之后的样子（主线程上写）；null = 还在建。 */
@@ -175,6 +176,10 @@ public class CameraManagerHolder {
             return shape;
         }
 
+        com.kooo.evcam.profile.RecordingSetup recordingSetup() {
+            return com.kooo.evcam.profile.RecordingSetup.of(carModel, mapping009, profile, sources);
+        }
+
         String key() {
             StringBuilder key = new StringBuilder(carModel + "/channels=" + channels.key() + "/mapping009=" + mapping009);
             return key.append("/sources=").append(sources).toString();
@@ -208,6 +213,23 @@ public class CameraManagerHolder {
                 && !Shape.of(context.getApplicationContext()).key().equals(builtFor);
     }
 
+    /** Only actual recording-role/model/manual-mapping edits can block recording startup.
+     * Pending preview/overlay choices still use the wider main-screen shape above. */
+    public synchronized boolean hasPendingRecordingChange(Context context) {
+        return cameraManager != null && !cameraManager.isReleased() && builtRecordingSetup != null
+                && !Shape.of(context.getApplicationContext()).recordingSetup().equals(builtRecordingSetup);
+    }
+
+    /** Read-only evidence separating a pending preview from a blocked recording configuration. */
+    public synchronized String configurationSummary(Context context) {
+        Shape requested = Shape.of(context.getApplicationContext());
+        boolean active = cameraManager != null && !cameraManager.isReleased();
+        return "pipelineActive=" + active + ", mainPreviewPending=" + (active && !requested.key().equals(builtFor))
+                + ", recordingPending=" + (active && builtRecordingSetup != null && !requested.recordingSetup().equals(builtRecordingSetup))
+                + "\n  built recording: " + builtRecordingSetup + "\n  requested recording: " + requested.recordingSetup()
+                + "\n  requested preview: " + new AppConfig(context).getPreviewSourceMode();
+    }
+
     private MultiCameraManager obtain(Context context, boolean forMainScreen) {
         Context app = context.getApplicationContext();
         Shape shape = Shape.of(app);
@@ -237,6 +259,7 @@ public class CameraManagerHolder {
         manager.setCodecRecordingMode(new AppConfig(app).shouldUseCodecRecording());
         cameraManager = manager;
         builtFor = shape.key();
+        builtRecordingSetup = shape.recordingSetup();
         builtCarModel = shape.carModel;
         built = null;
         AppLog.i(TAG, "建相机管线（" + builtFor + "，最多 " + shape.count + " 路）：相机列表、合成流探测在相机线程上做");
@@ -326,6 +349,7 @@ public class CameraManagerHolder {
             cameraManager = null;
         }
         builtFor = null;
+        builtRecordingSetup = null;
         builtCarModel = null;
         built = null;
         failedAtMs = 0;
