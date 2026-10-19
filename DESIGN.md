@@ -12,7 +12,7 @@ colors:
   light-text-secondary: "#5F6166"
   light-text-tertiary: "#9EA0A5"
   light-energy: "#F0622D"
-  light-energy-text: "#C9491A"
+  light-energy-text: "#B83E15"
   light-energy-quiet: "#FDEDE6"
   light-on-energy: "#FFFFFF"
   light-recording: "#E0393E"
@@ -252,9 +252,9 @@ This is an incumbent six-step native ramp, not an imposed geometric scale. Setti
 
 The current home has an 8dp outer inset, a header above the retained full-width camera stage, and a bottom action dock. The header contains the menu, a 32dp Companion mark and brand, Preview, direct 360° access, Settings and Minimise. Camera status, optional recording statistics and storage sit outside the picture. Utility icon buttons are 48dp square; header text actions have a 56dp minimum height. Control and source-pane gaps are 8dp.
 
-The dock is a horizontally scrollable native container. The recording hit area has weight 1.6; the visible secondary actions have equal weight 1 and 80dp minimum height. The dock is one shared toolbar with a 1dp top divider, transparent action backgrounds and native ripple/focus feedback. Saved driver side reverses their order so recording is nearest that side: recording, photo, gallery, windows, contextual Straighten preview from the chosen edge. Labels can wrap to four lines and controls can grow. Straighten preview only appears for the applied surround preview outside 360° mode.
+The dock is a horizontally scrollable native container. The recording hit area has weight 1.6; the visible secondary actions have equal weight 1 and 80dp minimum height. The dock is one shared toolbar with a 1dp top divider, transparent action backgrounds and native ripple/focus feedback. Saved driver side reverses their order so recording is nearest that side: recording, photo, gallery, windows, contextual Straighten from the chosen edge. Labels can wrap to four lines and controls can grow. Straighten only appears for the applied surround preview outside 360° mode.
 
-The Preview dialog is end-aligned and sized from current usable host bounds: at most 540dp wide, with 24dp removed from host width/height. Its source presets share a row, Other sources follows, then the three labeled layout choices. Content scrolls with a persistent scrollbar; Save/Cancel remain dialog actions. Its internal side padding is 16dp. This is native bounds logic, not a web breakpoint system.
+The Preview dialog is end-aligned and sized from current usable host bounds: 600dp wide at the verified 1.3 text scale, growing for larger text, capped to the host bounds minus 24dp. Its source presets share a row, Other sources follows, then the three labeled layout choices. Constrained hosts stack presets and layout choices vertically. Content scrolls with a persistent scrollbar; Save/Cancel remain dialog actions. Its internal side padding is 16dp. This is native bounds logic, not a web breakpoint system.
 
 With surround plus other sources, Automatic uses 22:14 source-group weights, Side by side uses equal widths, and Stacked uses equal heights with other sources alongside one another. Without surround, Side by side lays road/cabin panes horizontally; Automatic and Stacked lay them vertically. Single-source previews have no split. Surround retains its existing four-lane grid and saved framing. Reflow changes existing view bounds in place and preserves camera textures and pipeline identity.
 
@@ -309,3 +309,9 @@ The finish record is in `docs/main-screen-validation.md`. The parent verificatio
 - Don't change recording mapping, quality, source ownership or calibrated projection when arranging preview panes.
 - Don't rename the Android package, signing identity, storage folder or repository as a branding side effect.
 - Don't claim vehicle fit, startup, frame rate or factory-camera coexistence from emulator screenshots.
+
+### Native interaction polish (2026-10-19)
+
+Main Straighten uses a short label and native long-press tooltip; it shares preview/playback correction and never changes recorded files. Preview keeps the source/reopen warning in the fixed heading, with detailed layout/recording guidance in scrollable content. Windows buttons name their next action and retain live Open/Closed/Paused status. Driver side uses spatial Left/Right options and preserves the existing saved value/default. Playback Home explicitly returns to the camera stage; Back keeps ordinary gallery navigation. Empty video playback keeps navigation/Refresh available and disables media-dependent controls.
+
+Segmented settings use `energy_quiet` with `energy_text` and expose checked radio semantics. The light orange text is #B83E15 for sufficient contrast on tinted surfaces; dark text remains #F58A5E. Main preserves larger system font scale above its existing 1.2 minimum without mutating application resources. Gallery tiles group date/time/duration, lock and selection announcements. Native XML/Java remains authoritative; browser detector does not apply.

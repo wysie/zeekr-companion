@@ -92,19 +92,15 @@ public class MenuReviewAndroidTest {
                 detail.scrollToPreference("pref_hud_during_factory");
             });
             capture("menu-hud-advanced.png");
-            // Playback layout fixture with all eight actions visible, including the normally conditional Lock.
-            scenario.onActivity(activity -> {
-                activity.setContentView(R.layout.activity_timeline_player);
-                activity.findViewById(R.id.timeline_lock).setVisibility(View.VISIBLE);
-            });
-            capture("menu-playback.png");
-            if (confirmation) {
-                scenario.onActivity(activity -> activity.getDelegate().setLocalNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES));
-                scenario.onActivity(activity -> {
-                    activity.setContentView(R.layout.activity_timeline_player);
-                    activity.findViewById(R.id.timeline_lock).setVisibility(View.VISIBLE);
-                });
-                capture("menu-playback-dark.png");
+            // Real playback owns its content and lifecycle; never replace the live main layout.
+            try (ActivityScenario<com.kooo.evcam.zeekr.TimelinePlayerActivity> playback =
+                         ActivityScenario.launch(com.kooo.evcam.zeekr.TimelinePlayerActivity.class)) {
+                capture("menu-playback.png");
+                if (confirmation) {
+                    playback.onActivity(activity -> activity.getDelegate().setLocalNightMode(
+                            androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES));
+                    capture("menu-playback-dark.png");
+                }
             }
         } finally {
             DeveloperMode.setEnabled(target, developer);

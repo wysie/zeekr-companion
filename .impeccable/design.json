@@ -394,7 +394,7 @@
       "refersTo": "light-layout-choice-selected",
       "description": "Selected source-layout choice: 2dp energy stroke and native selected state description. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
       "html": "<button class=\"ds-light-layout-choice-selected\">Automatic</button>",
-      "css": ".ds-light-layout-choice-selected { background:#FDEDE6; color:#C9491A; font-family:Roboto,Arial,sans-serif; font-size:16px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:2px solid #F0622D; padding:10px 8px; min-height:48px; } .ds-light-layout-choice-selected:hover, .ds-light-layout-choice-selected:focus-visible, .ds-light-layout-choice-selected:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
+      "css": ".ds-light-layout-choice-selected { background:#FDEDE6; color:#B83E15; font-family:Roboto,Arial,sans-serif; font-size:16px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:2px solid #F0622D; padding:10px 8px; min-height:48px; } .ds-light-layout-choice-selected:hover, .ds-light-layout-choice-selected:focus-visible, .ds-light-layout-choice-selected:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
     },
     {
       "name": "Start recording \u00b7 native token swatch",
@@ -437,6 +437,11 @@
         "name": "Flat Controls",
         "body": "The bottom toolbar has transparent controls and native press/focus feedback; recording retains its red indicator and progress. Header and dialog actions keep tonal surfaces.",
         "section": "elevation"
+      },
+      {
+        "name": "Action and state clarity",
+        "body": "Name the next window action as well as current state; preview restart guidance remains visible before Save. Playback Home returns to cameras, while Back follows the gallery stack.",
+        "section": "components"
       }
     ],
     "dos": [

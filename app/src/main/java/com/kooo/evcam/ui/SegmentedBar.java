@@ -85,8 +85,18 @@ public class SegmentedBar extends LinearLayout {
         view.setTextAppearance(labelTextAppearance);
         view.setBackgroundResource(R.drawable.bg_segment);
         view.setActivated(active);
+        view.setSelected(active);
+        androidx.core.view.ViewCompat.setAccessibilityDelegate(view, new androidx.core.view.AccessibilityDelegateCompat() {
+            @Override public void onInitializeAccessibilityNodeInfo(android.view.View host,
+                    androidx.core.view.accessibility.AccessibilityNodeInfoCompat info) {
+                super.onInitializeAccessibilityNodeInfo(host, info);
+                info.setClassName(android.widget.RadioButton.class.getName());
+                info.setCheckable(true);
+                info.setChecked(host.isActivated());
+            }
+        });
         view.setTextColor(ContextCompat.getColor(getContext(),
-                active ? R.color.on_energy : R.color.text_primary));
+                active ? R.color.energy_text : R.color.text_primary));
         view.setOnClickListener(v -> {
             if (onPick != null) {
                 onPick.pick(value);

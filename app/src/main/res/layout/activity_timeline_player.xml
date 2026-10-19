@@ -303,6 +303,32 @@
                     </LinearLayout>
                 </LinearLayout>
 
+                <LinearLayout
+                    android:id="@+id/timeline_empty"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@color/preview_background"
+                    android:gravity="center"
+                    android:orientation="vertical"
+                    android:padding="32dp"
+                    android:visibility="gone">
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center"
+                        android:text="@string/player_empty_recordings"
+                        android:textAppearance="@style/TextAppearance.Cam.Row"
+                        android:textColor="@color/status_overlay_text" />
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:gravity="center"
+                        android:text="@string/player_empty_recordings_help"
+                        android:textAppearance="@style/TextAppearance.Cam.Body"
+                        android:textColor="@color/status_overlay_text" />
+                </LinearLayout>
+
                 <!--
                   这里不放 ⑤ 状态条：它写的是现在的设置和 U 盘余量，不是这段录像的，
                   压在录像上会被当成这段录像的参数（项目拥有者 2026-10-01 定）。

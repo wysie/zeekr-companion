@@ -603,8 +603,8 @@
     <string name="cd_menu">Menu</string>
     <string name="cd_minimize">Sembunyi ke latar belakang</string>
     <string name="nav_exit">Keluar apl</string>
-    <string name="set_rail_side_title">Sebelah butang tindakan</string>
-    <string name="set_rail_side_summary">Letak di sebelah pemandu</string>
+    <string name="set_rail_side_title">Sebelah pemandu</string>
+    <string name="set_rail_side_summary">Letakkan rakaman paling dekat dengan pemandu</string>
     <string name="opt_rail_right">Kanan</string>
     <string name="opt_rail_left">Kiri</string>
 
@@ -1278,7 +1278,7 @@
     <string name="home_layout_equal">Bersebelahan</string>
     <string name="home_layout_stacked">Bertingkat</string>
     <string name="home_layout_help">Menyusun panel sumber berasingan. Sekeliling kekal dalam grid empat paparan; ketik untuk membesarkan. Susun atur berubah serta-merta.</string>
-    <string name="home_source_reopen">Perubahan sumber memerlukan Keluar aplikasi → buka semula. Rakaman terus menggunakan sumber tersimpan.</string>
+    <string name="home_source_reopen">Perubahan sumber memerlukan Keluar aplikasi → buka semula. Keluar menghentikan rakaman.</string>
     <string name="home_windows_help">Buka tetingkap di atas aplikasi lain. Saiz dan kedudukannya berasingan daripada pratonton utama.</string>
     <string name="home_preview_single">Satu sumber</string>
     <string name="home_preview_multiple">%1$d sumber</string>

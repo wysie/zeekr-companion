@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="gallery_item_locked">Dikunci</string>
+    <string name="gallery_item_not_selected">Tidak dipilih</string>
+    <string name="player_empty_recordings">Tiada rakaman ditemui</string>
+    <string name="player_empty_recordings_help">Rakam klip atau sambungkan peranti storan yang mengandungi rakaman anda.</string>
+</resources>

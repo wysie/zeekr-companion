@@ -41,6 +41,9 @@ public class FisheyeToggleButton extends MaterialButton {
         android.content.res.TypedArray appearance = context.obtainStyledAttributes(attrs, R.styleable.FisheyeToggleButton);
         try { flatToolbarAppearance = appearance.getBoolean(R.styleable.FisheyeToggleButton_flatToolbarAppearance, false); }
         finally { appearance.recycle(); }
+        if (flatToolbarAppearance) {
+            androidx.appcompat.widget.TooltipCompat.setTooltipText(this, context.getString(R.string.main_straighten_help));
+        }
         setOnClickListener(v -> {
             boolean on = !config.isFisheyeCorrection();
             config.setFisheyeCorrection(on);

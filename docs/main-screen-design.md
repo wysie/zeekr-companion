@@ -22,3 +22,7 @@ Quick source presets: Surround (four views), Front + Rear, Surround + roads. Oth
 ## Bottom toolbar refinement
 
 Owner requested less button-like controls after alpha 51. Use a shared divider and transparent icon/label actions, preserving typography, hit areas and driver order. Recording retains its red dot/stop shape and progress without a filled card. Straighten uses orange text/icon plus a check when enabled. Header, dialogs, saved preferences and camera behavior remain unchanged.
+
+## Review refinement
+
+An independent Astra review and native accessibility audit retained the existing design. The next pass shortens Straighten with long-press help, places the reopen warning before source selection, makes Windows actions explicit, uses a cog for Settings and names Driver side accurately. Playback Home returns to cameras; empty playback gives storage guidance. Settings/gallery expose state to accessibility, selected segments use high-contrast tonal colours, and larger system text is respected. Camera pipelines and recording settings remain unchanged. See `ui-ux-review-2026-10-19.md` for evidence and limits.

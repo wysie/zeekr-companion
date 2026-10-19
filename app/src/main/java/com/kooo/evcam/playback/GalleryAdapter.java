@@ -39,6 +39,7 @@ public final class GalleryAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
         boolean isVideo(T item);
         /** 角上那行字：照片是时刻，录像是时长 */
         String caption(T item);
+        default String accessibleLabel(T item) { return caption(item); }
         /** 这一格有没有锁定的文件 */
         boolean locked(T item);
     }
@@ -187,6 +188,13 @@ public final class GalleryAdapter<T> extends RecyclerView.Adapter<RecyclerView.V
             h.image.setImageDrawable(null);
         }
         h.caption.setText(binder.caption(item));
+        String identity = binder.accessibleLabel(item);
+        if (binder.locked(item)) identity += ", " + h.itemView.getContext().getString(R.string.gallery_item_locked);
+        h.itemView.setContentDescription(identity);
+        androidx.core.view.ViewCompat.setScreenReaderFocusable(h.itemView, true);
+        h.itemView.setSelected(selecting && chosen.contains(item));
+        androidx.core.view.ViewCompat.setStateDescription(h.itemView, selecting
+                ? h.itemView.getContext().getString(chosen.contains(item) ? R.string.cd_selected : R.string.gallery_item_not_selected) : null);
         h.play.setVisibility(binder.isVideo(item) ? View.VISIBLE : View.GONE);
         h.lock.setVisibility(binder.locked(item) ? View.VISIBLE : View.GONE);
         h.check.setVisibility(selecting && chosen.contains(item) ? View.VISIBLE : View.GONE);

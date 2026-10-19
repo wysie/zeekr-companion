@@ -35,8 +35,8 @@ public class ActivityFontResourcesAndroidTest {
                 for (int i = 0; i < 2; i++) {
                     main.onActivity(activity -> {
                         Resources local = activity.getResources();
-                        assertEquals(1.2f, local.getConfiguration().fontScale, .001f);
-                        assertEquals(18 * local.getDisplayMetrics().density * 1.2f,
+                        assertEquals(Math.max(1.2f, originalScale), local.getConfiguration().fontScale, .001f);
+                        assertEquals(18 * local.getDisplayMetrics().density * Math.max(1.2f, originalScale),
                                 local.getDimension(R.dimen.text_body), .1f);
                         assertEquals("en", local.getConfiguration().getLocales().get(0).getLanguage());
                         assertEquals(originalScale, app.getConfiguration().fontScale, .001f);
