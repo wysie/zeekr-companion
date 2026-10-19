@@ -2,6 +2,7 @@ package com.kooo.evcam.zeekr;
 
 import android.graphics.SurfaceTexture;
 import android.opengl.EGL14;
+import android.opengl.EGLExt;
 import android.opengl.EGLConfig;
 import android.opengl.EGLContext;
 import android.opengl.EGLDisplay;
@@ -24,7 +25,10 @@ import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.TimeUnit;
 
 /**
- * 在 GPU 上逐像素做鱼眼校正的一段管线（开发者选项）。
+ * GPU camera/decoder texture pipe. Fisheye correction remains optional; an independent
+ * BirdEyeGlRequest can temporarily project the raw input as a DIY 360 view.
+ * Cancelling the request restores the previous fisheye/raw rendering without
+ * replacing the producer surface. Live 360 pixels never cross CPU memory.
  *
  * <pre>
  *   生产者（相机 / 解码器）──写入──&gt; 这里的 SurfaceTexture（GL 自建）
@@ -186,6 +190,29 @@ public final class FisheyeGlPipe {
     private FloatBuffer quad;
     private long frames;
     private long startedAtMs;
+    private volatile BirdEyeGlRequest birdEyeRequest;
+    private BirdEyeGlRenderer birdEyeRenderer;
+    private final CameraFrameFreshness sourceFreshness = new CameraFrameFreshness();
+    private final java.util.concurrent.atomic.AtomicLongArray rawOutputs = new java.util.concurrent.atomic.AtomicLongArray(8);
+    private int nextRawOutput;
+    private volatile boolean hasProjected;
+    private long lastBirdEyeAt;
+
+    int inputWidth() { return inputWidth; }
+    int inputHeight() { return inputHeight; }
+    boolean needsRawFrame(long timestamp) { return hasProjected && !rawOutputReady(timestamp); }
+    void clearBirdEye(BirdEyeGlRequest request) { if (birdEyeRequest == request) setBirdEye(null); }
+    boolean hasBirdEyeRequest() { return birdEyeRequest != null; }
+    boolean rawOutputReady(long timestamp) {
+        if (timestamp <= 0) return false;
+        for (int i = 0; i < rawOutputs.length(); i++) if (rawOutputs.get(i) == timestamp) return true;
+        return false;
+    }
+    void setBirdEye(BirdEyeGlRequest request) {
+        birdEyeRequest = request;
+        if (!released) handler.post(this::drawLatest);
+    }
+
 
     private FisheyeGlPipe(String name, SurfaceTexture output, int inputWidth, int inputHeight,
                           float[] lanes) {
@@ -433,6 +460,7 @@ public final class FisheyeGlPipe {
             // 不管画不画，这一帧都要取走 —— 不然生产者会被堵住
             input.updateTexImage();
             input.getTransformMatrix(texMatrix);
+            sourceFreshness.observe(input, input.getTimestamp(), SystemClock.elapsedRealtime());
         } catch (RuntimeException e) {
             AppLog.w(TAG, name + " 取帧失败: " + e);
             return;
@@ -455,30 +483,71 @@ public final class FisheyeGlPipe {
             AppLog.i(TAG, name + " 屏幕上那一块已经释放，只取帧不画");
             return;
         }
+        BirdEyeGlRequest request = birdEyeRequest;
+        if (birdEyeRenderer != null && (request != birdEyeRenderer.request || request.cancelled || request.failure != null)) {
+            birdEyeRenderer.release(); birdEyeRenderer = null;
+            output.setDefaultBufferSize(inputWidth, inputHeight);
+        }
+        if (request != null && !request.cancelled && request.failure == null && birdEyeRenderer == null && request.map != null) {
+            try {
+                birdEyeRenderer = new BirdEyeGlRenderer(request, request.map);
+                output.setDefaultBufferSize(birdEyeRenderer.width, birdEyeRenderer.height);
+            } catch (RuntimeException | OutOfMemoryError error) {
+                request.failure = error.toString();
+                AppLog.w(TAG, name + " 360 GPU failed; retaining raw output for CPU: " + error);
+            } finally { request.map = null; }
+        }
+        boolean bird = birdEyeRenderer != null && request == birdEyeRenderer.request
+                && !request.cancelled && request.failure == null;
+        long now = SystemClock.elapsedRealtime();
+        // Latest-frame rendering only; never queue a history of camera frames. 30 fps ceiling.
+        if (bird && now - lastBirdEyeAt < 33) return;
+        long began = now;
+        if (bird) output.setDefaultBufferSize(birdEyeRenderer.width, birdEyeRenderer.height);
         EGL14.eglQuerySurface(display, surface, EGL14.EGL_WIDTH, size, 0);
         EGL14.eglQuerySurface(display, surface, EGL14.EGL_HEIGHT, size, 1);
         GLES20.glViewport(0, 0, size[0], size[1]);
 
-        Correction c = correction;
-        GLES20.glUseProgram(program);
-        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
-        GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture);
-        GLES20.glUniformMatrix4fv(texMatrixHandle, 1, false, texMatrix, 0);
-        GLES20.glUniform4fv(lanesHandle, MAX_LANES, lanes, 0);
-        GLES20.glUniform1f(laneCountHandle, laneCount);
-        GLES20.glUniform1f(onHandle, c.on ? 1f : 0f);
-        GLES20.glUniform1f(projectionHandle, c.projection);
-        GLES20.glUniform1f(parameterHandle, c.parameter);
-        GLES20.glEnableVertexAttribArray(positionHandle);
-        GLES20.glVertexAttribPointer(positionHandle, 2, GLES20.GL_FLOAT, false, 0, quad);
-        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
-        GLES20.glDisableVertexAttribArray(positionHandle);
-
+        if (bird) {
+            try { birdEyeRenderer.draw(texture, texMatrix, quad); }
+            catch (RuntimeException | OutOfMemoryError error) {
+                request.failure = error.toString(); request.frame = null;
+                birdEyeRenderer.release(); birdEyeRenderer = null;
+                output.setDefaultBufferSize(inputWidth, inputHeight);
+                AppLog.w(TAG, name + " 360 GPU draw failed; falling back to CPU: " + error);
+                return;
+            }
+        } else {
+            Correction c = correction;
+            GLES20.glUseProgram(program);
+            GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES11Ext.GL_TEXTURE_EXTERNAL_OES, texture);
+            GLES20.glUniformMatrix4fv(texMatrixHandle, 1, false, texMatrix, 0);
+            GLES20.glUniform4fv(lanesHandle, MAX_LANES, lanes, 0);
+            GLES20.glUniform1f(laneCountHandle, laneCount);
+            GLES20.glUniform1f(onHandle, c.on && request == null ? 1f : 0f);
+            GLES20.glUniform1f(projectionHandle, c.projection);
+            GLES20.glUniform1f(parameterHandle, c.parameter);
+            GLES20.glEnableVertexAttribArray(positionHandle);
+            GLES20.glVertexAttribPointer(positionHandle, 2, GLES20.GL_FLOAT, false, 0, quad);
+            GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP, 0, 4);
+            GLES20.glDisableVertexAttribArray(positionHandle);
+        }
+        // Raw consumers must observe CAMERA progression, not settings-triggered redraws.
+        long marker = bird ? System.nanoTime() : input.getTimestamp();
+        if (!EGLExt.eglPresentationTimeANDROID(display, surface, marker)) {
+            if (request != null) request.failure = "GPU output timestamp unavailable";
+        }
         if (!EGL14.eglSwapBuffers(display, surface)) {
             outputBroken = true;
             AppLog.w(TAG, name + " 画不上屏幕了 0x" + Integer.toHexString(EGL14.eglGetError())
                     + "，之后只取帧不画");
-        }
+            if (request != null) request.failure = "Preview output unavailable";
+        } else if (bird) {
+            lastBirdEyeAt = now; hasProjected = true;
+            if (request == birdEyeRequest && !request.cancelled)
+                request.publish(new BirdEyeGlRequest.Frame(marker, sourceFreshness.changedAt(), SystemClock.elapsedRealtime() - began));
+        } else { rawOutputs.set(nextRawOutput++ & 7, marker); }
     }
 
     /** 屏幕上那一块释放了就收掉自己：没有人会再来要这条管线。 */
@@ -509,6 +578,8 @@ public final class FisheyeGlPipe {
                 input = null;
             }
             if (display != EGL14.EGL_NO_DISPLAY) {
+                if (birdEyeRenderer != null) { birdEyeRenderer.release(); birdEyeRenderer = null; }
+                if (birdEyeRequest != null) { birdEyeRequest.failure = "GPU pipeline released"; birdEyeRequest.frame = null; }
                 if (program != 0) {
                     GLES20.glDeleteProgram(program);
                     program = 0;
@@ -535,7 +606,7 @@ public final class FisheyeGlPipe {
         AppLog.i(TAG, name + " 已收掉，共画 " + frames + " 帧");
     }
 
-    private static int link(String vertexSource, String fragmentSource) {
+    static int link(String vertexSource, String fragmentSource) {
         int vertex = compile(GLES20.GL_VERTEX_SHADER, vertexSource);
         int fragment = compile(GLES20.GL_FRAGMENT_SHADER, fragmentSource);
         int program = GLES20.glCreateProgram();

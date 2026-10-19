@@ -2471,7 +2471,9 @@ public class SingleCamera {
             // 由它再画到这个 TextureView 上（见 PreviewDewarp）
             created = out.kind == ChannelRules.Kind.PREVIEW
                     ? com.kooo.evcam.zeekr.PreviewDewarp.surfaceFor(cameraId, declared.view, texture, buffer)
-                    : new Surface(texture);
+                    : out.kind == ChannelRules.Kind.BIRD_EYE
+                            ? com.kooo.evcam.zeekr.PreviewDewarp.birdEyeSurfaceFor(context, texture, buffer)
+                            : new Surface(texture);
         } catch (RuntimeException e) {
             // 查过还活着、建的这一下画布被收走了：当它没有，调用方再看一眼消费者死没死
             AppLog.w(TAG, "Camera " + cameraId + " could not make a surface for " + out + ": " + e);

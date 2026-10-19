@@ -441,6 +441,10 @@
                 android:key="pref_bird_car_colour_note"
                 android:summary="@string/bird_eye_car_colour_note"
                 android:selectable="false" />
+            <ListPreference android:key="pref_bird_renderer" android:title="@string/bird_eye_renderer"
+                app:useSimpleSummaryProvider="false" />
+            <Preference android:key="pref_bird_renderer_note" android:selectable="false"
+                android:summary="@string/bird_eye_renderer_note" />
             <ListPreference
                 android:key="pref_bird_quality"
                 android:title="@string/bird_eye_quality"

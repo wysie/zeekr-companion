@@ -14,7 +14,9 @@ import com.kooo.evcam.AppLog;
 import java.lang.ref.WeakReference;
 
 /**
- * 主界面环视预览的 GPU 逐像素鱼眼校正（开发者选项）：相机给预览的那个 Surface 从哪来。
+ * Optional main preview GPU routing: per-pixel fisheye correction and raw-texture DIY 360.
+ * The normal CPU compatibility route stays direct. DIY 360 owns only a temporary
+ * shader request; its source is never the already corrected/displayed picture.
  *
  * <p>平时相机直接写进屏幕上的 TextureView。开发者选项开着时，相机改写进一条
  * {@link FisheyeGlPipe}，由它逐像素校正后再画到那个 TextureView 上。
@@ -34,9 +36,50 @@ public final class PreviewDewarp {
 
     /** 只用来让「建管线」一次一个。读状态不拿它：主界面每画一帧都要问 {@link #isActive}。 */
     private static final Object LOCK = new Object();
+    // Drawing must never wait for the camera thread's bounded GL startup/teardown lock.
+    private static final java.util.concurrent.CopyOnWriteArrayList<WeakReference<FisheyeGlPipe>> RAW_PIPES
+            = new java.util.concurrent.CopyOnWriteArrayList<>();
+    static FisheyeGlPipe rawPipeFor(TextureView view) {
+        return view == null ? null : rawPipeFor(view.getSurfaceTexture());
+    }
+    private static FisheyeGlPipe rawPipeFor(SurfaceTexture texture) {
+        if (texture == null) return null;
+        for (WeakReference<FisheyeGlPipe> reference : RAW_PIPES) {
+            FisheyeGlPipe value = reference.get();
+            if (value != null && value.isAlive() && value.output() == texture) return value;
+        }
+        return null;
+    }
+    private static void register(FisheyeGlPipe value) {
+        RAW_PIPES.removeIf(reference -> {
+            FisheyeGlPipe previous = reference.get(); return previous == null || !previous.isAlive();
+        });
+        RAW_PIPES.add(new WeakReference<>(value));
+    }
+    /** Same optional route for the existing lowest-priority popup output; no extra camera output. */
+    public static Surface birdEyeSurfaceFor(Context context, SurfaceTexture texture, Size buffer) {
+        if (!new AppConfig(context).isGpuBirdEye() || buffer == null) return new Surface(texture);
+        synchronized (LOCK) {
+            FisheyeGlPipe existing = rawPipeFor(texture);
+            if (existing != null && existing.isAlive()) {
+                Surface input = existing.newInputSurface();
+                if (input != null) return input;
+            }
+            FisheyeGlPipe next = FisheyeGlPipe.start("360-popup", texture, buffer.getWidth(), buffer.getHeight(), null);
+            if (next != null) {
+                register(next);
+                Surface input = next.newInputSurface();
+                if (input != null) return input;
+                next.release();
+            }
+        }
+        return new Surface(texture);
+    }
+
     private static volatile FisheyeGlPipe pipe;
     private static volatile WeakReference<TextureView> pipeView = new WeakReference<>(null);
     private static volatile AppConfig config;
+    private static volatile boolean fisheyeRoute;
     /** 拿住它：SharedPreferences 只弱引用监听器。 */
     private static SharedPreferences.OnSharedPreferenceChangeListener listener;
 
@@ -64,7 +107,8 @@ public final class PreviewDewarp {
      */
     public static boolean isActive(TextureView view) {
         FisheyeGlPipe current = pipe;
-        return view != null && current != null && current.isAlive()
+        return view != null && current != null && current.isAlive() && config != null
+                && fisheyeRoute && !current.hasBirdEyeRequest()
                 && (pipeView.get() == view || current.output() == view.getSurfaceTexture());
     }
 
@@ -76,7 +120,7 @@ public final class PreviewDewarp {
         }
         Context context = view.getContext().getApplicationContext();
         AppConfig appConfig = new AppConfig(context);
-        if (!appConfig.isGpuFisheyePreview()) {
+        if (!appConfig.isGpuFisheyePreview() && !appConfig.isGpuBirdEye()) {
             return null;
         }
         if (bufferSize == null) {
@@ -122,8 +166,10 @@ public final class PreviewDewarp {
                 return null;
             }
             pipe = started;
+            register(started);
             pipeView = new WeakReference<>(view);
             config = appConfig;
+            fisheyeRoute = appConfig.isGpuFisheyePreview();
             push();
             if (listener == null) {
                 listener = appConfig.onFisheyeChanged(PreviewDewarp::push);
@@ -142,8 +188,8 @@ public final class PreviewDewarp {
                     redraw(gone);
                 });
             });
-            AppLog.i(TAG, "相机 " + cameraId + " 的预览改走 GPU 逐像素校正，" + plan.laneCount()
-                    + " 路，缓冲 " + bufferSize);
+            AppLog.i(TAG, "Camera " + cameraId + " GPU preview route: fisheye=" + appConfig.isGpuFisheyePreview()
+                    + " diy360=" + appConfig.isGpuBirdEye() + " lanes=" + plan.laneCount() + " buffer=" + bufferSize);
             redraw(view);
             return surface;
         }
@@ -156,7 +202,7 @@ public final class PreviewDewarp {
         if (current == null || appConfig == null) {
             return;
         }
-        current.setCorrection(appConfig.isFisheyeCorrection(), appConfig.getFisheyeFov(),
+        current.setCorrection(fisheyeRoute && appConfig.isFisheyeCorrection(), appConfig.getFisheyeFov(),
                 appConfig.getFisheyeProjection());
     }
 

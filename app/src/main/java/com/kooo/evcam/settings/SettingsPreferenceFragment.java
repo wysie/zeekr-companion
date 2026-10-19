@@ -1495,6 +1495,10 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                 SettingSpec.entry("green", "Green", R.string.bird_eye_car_green),
                 SettingSpec.entry("white", "White", R.string.bird_eye_car_white),
                 SettingSpec.entry("black", "Black", R.string.bird_eye_car_black)), appearance.colour(), appearance::setColour);
+        bindEnum("pref_bird_renderer", SettingSpec.of("bird_renderer", "360 rendering", "cpu",
+                SettingSpec.entry("gpu", "GPU (experimental)", R.string.bird_eye_renderer_gpu),
+                SettingSpec.entry("cpu", "CPU compatibility", R.string.bird_eye_renderer_cpu)),
+                appConfig.isGpuBirdEye() ? "gpu" : "cpu", value -> appConfig.setGpuBirdEye("gpu".equals(value)));
         bindEnum("pref_bird_quality", SettingSpec.of("bird_quality", "360 quality", "1",
                 SettingSpec.entry("0", "Low", R.string.bird_eye_quality_low),
                 SettingSpec.entry("1", "Balanced", R.string.bird_eye_quality_balanced),

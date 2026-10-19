@@ -36,6 +36,7 @@ final class BirdEyePreview {
     private String qualityReason = "none";
     private final View owner;
     private final BirdEyeConfig config;
+    private final AppConfig appConfig;
     private final BirdEyeAppearance appearance;
     private final BirdEyeVehicleOverlay vehicleOverlay = new BirdEyeVehicleOverlay();
     private final Handler main = new Handler(Looper.getMainLooper());
@@ -54,6 +55,76 @@ final class BirdEyePreview {
     private BirdEyeProjection.Map map;
     private BirdEyeProjection.Calibration calibration;
     private boolean running, busy;
+    private FisheyeGlPipe gpuPipe;
+    private BirdEyeGlRequest gpuRequest;
+    private String gpuFallback = "none";
+    private long lastGpuSeen;
+    private boolean gpuEnabled() { return appConfig.isGpuBirdEye(); }
+    private boolean gpuFresh() {
+        return gpuRequest != null && texture != null && texture.isAvailable() && texture.getSurfaceTexture() != null
+                && gpuRequest.fresh(texture.getSurfaceTexture().getTimestamp(), SystemClock.elapsedRealtime());
+    }
+    private void stopGpu() {
+        BirdEyeGlRequest old = gpuRequest;
+        if (old != null) { old.cancelled = true; old.map = null; old.frame = null; }
+        if (gpuPipe != null && old != null) gpuPipe.clearBirdEye(old);
+        gpuRequest = null; gpuPipe = null; gpuFallback = "none"; lastGpuSeen = 0;
+    }
+
+    /** Start a single worker lookup build, then let the GL input listener render current frames. */
+    private boolean renderGpu() {
+        if (!gpuEnabled()) {
+            if (gpuRequest != null) { stopGpu(); displayedAt = -1; freshness.reset(); }
+            return false;
+        }
+        FisheyeGlPipe current = PreviewDewarp.rawPipeFor(texture);
+        if (current == null) { gpuFallback = "raw GPU route unavailable; reopen after changing renderer"; return false; }
+        if (gpuPipe != null && gpuPipe != current) stopGpu();
+        if (gpuRequest != null) {
+            if (gpuRequest.failure != null) { gpuFallback = gpuRequest.failure; return false; }
+            long timestamp = texture.getSurfaceTexture().getTimestamp();
+            BirdEyeGlRequest.Frame frame = gpuRequest.acquired(timestamp);
+            if (frame != null && timestamp != lastGpuSeen) {
+                lastGpuSeen = timestamp; lastRenderMs = frame.renderMs;
+                long now = SystemClock.elapsedRealtime();
+                lastPresentationGapMs = lastPresentedAt < 0 ? -1 : now - lastPresentedAt;
+                lastPresentedAt = now;
+                noteState();
+            }
+            return true;
+        }
+        if (busy) return true;
+        gpuPipe = current;
+        BirdEyeGlRequest request = new BirdEyeGlRequest();
+        gpuRequest = request; current.setBirdEye(request); // Raw, uncorrected while preparing/falling back.
+        final int generation = revision;
+        final BirdEyeProjection.Calibration settings = calibration;
+        final CompositeStreamGeometry.Plan geometry = plan;
+        final BirdEyeQuality.Size target = size;
+        busy = true;
+        worker.execute(() -> {
+            BirdEyeGpuMap result = null;
+            String failure = null;
+            long began = SystemClock.elapsedRealtime();
+            try {
+                result = new BirdEyeProjection.Map(settings, geometry, current.inputWidth(), current.inputHeight(),
+                        target.outputWidth, target.outputHeight).gpuMap(geometry);
+            } catch (RuntimeException | OutOfMemoryError error) { failure = error.toString(); }
+            BirdEyeGpuMap ready = result;
+            String error = failure;
+            long lookupMs = SystemClock.elapsedRealtime() - began;
+            main.post(() -> {
+                busy = false;
+                if (!running || generation != revision || gpuRequest != request || request.cancelled) return;
+                lastLookupMs = lookupMs;
+                if (error != null) { request.failure = error; gpuFallback = error; }
+                else { request.map = ready; current.setBirdEye(request); }
+                noteState(); owner.invalidate(); scheduleTick();
+            });
+        });
+        return true;
+    }
+
     private int revision;
     private long displayedAt = -1, nextCaptureAt, lastReadbackMs;
     private long lastRenderMs, lastLookupMs, lastWorkerQueueMs, lastPublishMs, lastProcessingMs;
@@ -77,6 +148,7 @@ final class BirdEyePreview {
 
     BirdEyePreview(View owner) {
         this.owner = owner; config = new BirdEyeConfig(owner.getContext());
+        appConfig = new AppConfig(owner.getContext());
         appearance = new BirdEyeAppearance(owner.getContext());
     }
 
@@ -103,6 +175,7 @@ final class BirdEyePreview {
     }
     void invalidateCalibration() {
         resetQuality(false);
+        stopGpu();
         revision++; map = null; displayedAt = -1; loadCalibration();
         owner.invalidate();
         noteState();
@@ -178,9 +251,11 @@ final class BirdEyePreview {
         return BirdEyeSafetyPolicy.block(Telemetry.get().carLinkConnected(), readings.text(Signal.GEAR),
                 readings.bool(Signal.STOCK_360), readings.bool(Signal.STOCK_POPUP), readings.bool(Signal.PARK_ASSIST),
                 owner.isShown() && owner.getWindowVisibility() == View.VISIBLE && !ScreenState.dark(),
-                PreviewDewarp.isActive(texture), calibration != null, slow);
+                PreviewDewarp.isActive(texture) && !(gpuEnabled() && PreviewDewarp.rawPipeFor(texture) != null),
+                calibration != null, slow);
     }
     private void invalidatePicture() {
+        stopGpu();
         revision++; displayedAt = -1; displayedIdentity = null; freshness.reset();
         copiedIdentity = null; copiedTimestamp = 0;
         lastPresentedAt = -1; // Retain the last measured gap for Diagnostics after leaving preview.
@@ -210,7 +285,10 @@ final class BirdEyePreview {
                 + ", readbackMs=" + lastReadbackMs
                 + ", renderMs=" + lastRenderMs + ", lookupMs=" + lastLookupMs
                 + ", workerQueueMs=" + lastWorkerQueueMs + ", publishMs=" + lastPublishMs
-                + ", processingMs=" + lastProcessingMs + ", renderer=packed-bilinear-single-camera-fast-path"
+                + ", processingMs=" + lastProcessingMs
+                + ", renderer=" + (gpuRequest != null && gpuRequest.failure == null ? "gpu-texture-lookup" : "cpu-packed-bilinear")
+                + ", gpuRequested=" + gpuEnabled() + ", gpuFresh=" + gpuFresh() + ", gpuFallback=" + gpuFallback
+                + ", gpuInput=" + (gpuPipe == null ? "none" : gpuPipe.inputWidth() + "x" + gpuPipe.inputHeight())
                 + ", captureIntervalMs=" + performance.interval() + ", cadenceAdjustments=" + performance.adjustments() + ", presentationGapMs=" + lastPresentationGapMs
                 + ", qualityRequested=" + requestedQuality + ", qualityActive=" + activeQuality
                 + ", fallbacks=" + qualityFallbacks + ", qualityReason=" + qualityReason
@@ -227,7 +305,7 @@ final class BirdEyePreview {
             refreshSafety();
             if (lastBlock == BirdEyeSafetyPolicy.Block.NONE) {
                 if (texture == null || !texture.isAvailable() || texture.getSurfaceTexture() == null) invalidatePicture();
-                else if (!busy && SystemClock.elapsedRealtime() >= nextCaptureAt) capture();
+                else if (!renderGpu() && !busy && SystemClock.elapsedRealtime() >= nextCaptureAt) capture();
             }
             owner.invalidate();
             scheduleTick();
@@ -242,6 +320,8 @@ final class BirdEyePreview {
 
     private void capture() {
         try {
+            FisheyeGlPipe routed = PreviewDewarp.rawPipeFor(texture);
+            if (routed != null && routed.needsRawFrame(texture.getSurfaceTexture().getTimestamp())) return;
             final BirdEyeQuality.Size frameSize = size;
             long began = SystemClock.elapsedRealtime();
             nextCaptureAt = began + performance.interval();
@@ -350,7 +430,22 @@ final class BirdEyePreview {
     }
     /** UI-thread snapshot of a currently fresh, permitted preview; never an old hidden frame. */
     Bitmap photo() {
-        if (!running || runtimeBlock() != BirdEyeSafetyPolicy.Block.NONE || output == null
+        if (running && runtimeBlock() == BirdEyeSafetyPolicy.Block.NONE && gpuFresh()) {
+            long timestamp = texture.getSurfaceTexture().getTimestamp();
+            Bitmap snapshot;
+            try {
+                snapshot = Bitmap.createBitmap(size.outputWidth, size.outputHeight, Bitmap.Config.ARGB_8888);
+                snapshot.eraseColor(Color.TRANSPARENT);
+                if (texture.getBitmap(snapshot) == null || !gpuFresh()
+                        || texture.getSurfaceTexture().getTimestamp() != timestamp) return null;
+                // getBitmap can fail silently. A new transparent target cannot masquerade as a live opaque render.
+                if (Color.alpha(snapshot.getPixel(0, 0)) != 255
+                        || Color.alpha(snapshot.getPixel(snapshot.getWidth() - 1, snapshot.getHeight() - 1)) != 255) return null;
+            } catch (RuntimeException | OutOfMemoryError error) {
+                AppLog.w("BirdEyePreview", "GPU photo unavailable: " + error); return null;
+            }
+            output = snapshot; // Explicit photo only; live GPU frames never use getBitmap.
+        } else if (!running || runtimeBlock() != BirdEyeSafetyPolicy.Block.NONE || output == null
                 || texture == null || !texture.isAvailable()
                 || texture.getSurfaceTexture() != displayedIdentity
                 || !CameraFrameFreshness.freshAt(displayedAt, SystemClock.elapsedRealtime())) return null;
@@ -370,16 +465,23 @@ final class BirdEyePreview {
         canvas.drawText(label, size.outputWidth / 2f, size.outputHeight - 8 * exportScale, paint);
         return result;
     }
-    void draw(Canvas canvas, int width, int height) {
+    void draw(Canvas canvas, int width, int height) { draw(canvas, width, height, null); }
+    void draw(Canvas canvas, int width, int height, Runnable drawTexture) {
         canvas.drawColor(Color.BLACK);
         float scale = Math.min(width / (float) size.outputWidth, height / (float) size.outputHeight);
         float w = size.outputWidth * scale, h = size.outputHeight * scale;
         destination.set((width - w) / 2, (height - h) / 2, (width + w) / 2, (height + h) / 2);
         BirdEyeSafetyPolicy.Block block = runtimeBlock();
-        boolean fresh = block == BirdEyeSafetyPolicy.Block.NONE && texture != null && texture.isAvailable()
+        boolean gpu = block == BirdEyeSafetyPolicy.Block.NONE && gpuFresh();
+        boolean fresh = gpu || (block == BirdEyeSafetyPolicy.Block.NONE && texture != null && texture.isAvailable()
                 && texture.getSurfaceTexture() == displayedIdentity
-                && CameraFrameFreshness.freshAt(displayedAt, SystemClock.elapsedRealtime());
-        if (fresh && output != null) {
+                && CameraFrameFreshness.freshAt(displayedAt, SystemClock.elapsedRealtime()));
+        if (gpu && drawTexture != null) {
+            int save = canvas.save();
+            canvas.translate(destination.left, destination.top);
+            canvas.scale(destination.width() / width, destination.height() / height);
+            drawTexture.run(); canvas.restoreToCount(save);
+        } else if (fresh && output != null) {
             paint.setColor(Color.WHITE); paint.setStyle(Paint.Style.FILL);
             canvas.drawBitmap(output, null, destination, paint);
         }
