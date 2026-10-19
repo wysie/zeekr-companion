@@ -33,6 +33,10 @@ import com.kooo.evcam.telemetry.Telemetry;
  * holders, sessions, popup services or saved values are changed by opening/switching this view.
  * Five samples/second is for tuning; the actual popup keeps its existing native frame rate. */
 public final class SideSettingsPreview extends LinearLayout {
+    // Retain known 1280x5140 / 5120x1280 strips and 3840x2160 composites in full.
+    // One reused ARGB bitmap, bounded to 32 MiB for unexpectedly large HAL sizes.
+    private static final long MAX_SAMPLE_PIXELS = 8_388_608L;
+    private static final int MAX_SAMPLE_EDGE = 8192;
     private final MainActivity activity;
     private final AppConfig config;
     private final Picture picture;
@@ -161,15 +165,7 @@ public final class SideSettingsPreview extends LinearLayout {
             freshness.observe(identity, timestamp, now);
             if (!freshness.fresh(now)) { message.setText(R.string.side_view_waiting_live); message.setVisibility(VISIBLE); picture.invalidate(); return; }
             if (identity != copiedIdentity || timestamp != copiedTimestamp) {
-                // At most 512 px per lane and 2048 px along the strip; one reusable allocation.
-                float scale = Math.min(1f, 2048f / Math.max(size.getWidth(), size.getHeight()));
-                int width = Math.max(1, Math.round(size.getWidth() * scale));
-                int height = Math.max(1, Math.round(size.getHeight() * scale));
-                if (sample == null || sample.getWidth() != width || sample.getHeight() != height)
-                    sample = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
-                sample.eraseColor(Color.TRANSPARENT);
-                if (source.getBitmap(sample) == null || source.getSurfaceTexture() != identity
-                        || sample.getPixel(width / 2, height / 2) >>> 24 != 255) {
+                if (!copySource(source, identity, size.getWidth(), size.getHeight())) {
                     unavailable(R.string.side_view_waiting_live); return;
                 }
                 plan = CompositeStreamGeometry.analyse(camera.getCameraId(), size.getWidth(), size.getHeight());
@@ -179,6 +175,20 @@ public final class SideSettingsPreview extends LinearLayout {
         } catch (RuntimeException | OutOfMemoryError failure) {
             unavailable(R.string.side_view_waiting_live);
         }
+    }
+
+    /** Preserve detail before the lane is cropped/straightened; never resize the live texture. */
+    private boolean copySource(TextureView source, SurfaceTexture identity, int nativeWidth, int nativeHeight) {
+        double scale = Math.min(1d, Math.min(
+                (double) MAX_SAMPLE_EDGE / Math.max(nativeWidth, nativeHeight),
+                Math.sqrt(MAX_SAMPLE_PIXELS / ((double) nativeWidth * nativeHeight))));
+        int width = Math.max(1, (int) Math.floor(nativeWidth * scale));
+        int height = Math.max(1, (int) Math.floor(nativeHeight * scale));
+        if (sample == null || sample.getWidth() != width || sample.getHeight() != height)
+            sample = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+        sample.eraseColor(Color.TRANSPARENT);
+        return source.getBitmap(sample) != null && source.getSurfaceTexture() == identity
+                && sample.getPixel(width / 2, height / 2) >>> 24 == 255;
     }
 
     /** Fit the whole window shape, including its controls, instead of adding black side bars. */
