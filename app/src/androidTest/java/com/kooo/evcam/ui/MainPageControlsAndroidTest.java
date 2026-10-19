@@ -331,4 +331,25 @@ public class MainPageControlsAndroidTest {
             }
         }
     }
+
+    @Test public void galleryOpensDirectlyAndPhotosTabReturnsToTheSameCameraPipeline() {
+        com.kooo.evcam.recording.RecordingIntent intent = com.kooo.evcam.recording.RecordingIntent.current();
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+            intent.noteUserStopped();
+            final com.kooo.evcam.camera.MultiCameraManager[] pipeline = {null};
+            scenario.onActivity(a -> pipeline[0] = CameraManagerHolder.getInstance().getCameraManager());
+            onView(withId(R.id.btn_main_gallery)).perform(click());
+            onView(withId(R.id.tab_videos)).check(androidx.test.espresso.assertion.ViewAssertions.matches(isDisplayed()));
+            onView(withId(R.id.gallery_title)).check(androidx.test.espresso.assertion.ViewAssertions.matches(withText(R.string.nav_video_playback)));
+            onView(withId(R.id.tab_photos)).perform(click());
+            onView(withId(R.id.gallery_title)).check(androidx.test.espresso.assertion.ViewAssertions.matches(withText(R.string.nav_photo_playback)));
+            androidx.test.espresso.Espresso.pressBack();
+            scenario.onActivity(a -> {
+                assertSame(pipeline[0], CameraManagerHolder.getInstance().getCameraManager());
+                assertTrue(intent.stoppedByUser());
+                assertFalse(com.kooo.evcam.recording.RecordingCoordinator.get(a).isRecordingOrResuming());
+                assertEquals(target.getResources().getConfiguration().fontScale, a.getResources().getConfiguration().fontScale, .001f);
+            });
+        }
+    }
 }

@@ -277,17 +277,6 @@ public class MainActivity extends AppCompatActivity {
 
 
     @Override
-    protected void attachBaseContext(Context base) {
-        // Keep the existing main-screen enlargement local and establish it before
-        // AppCompat/inflation. Mutating an already-used Resources configuration
-        // leaves existing themed contexts and their text metrics inconsistent.
-        android.content.res.Configuration local =
-                new android.content.res.Configuration(base.getResources().getConfiguration());
-        local.fontScale = Math.max(1.2f, local.fontScale);
-        super.attachBaseContext(base.createConfigurationContext(local));
-    }
-
-    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         restoreExpandedMain = savedInstanceState != null && savedInstanceState.getBoolean("main_preview_expanded", false);

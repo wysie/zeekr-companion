@@ -4,7 +4,7 @@
 An Android camera and vehicle utility maintained by wysie, forked from dts88's Zeekr Shortcut, with credited Ferix CAMCORDER and EVCam work. The owner uses a Zeekr 009; 7X support requires vehicle validation where noted. It runs on the head unit alongside factory apps and Android Auto, in daylight and at night.
 
 ## Platform and stack
-Native Android Views, Java and Material components; Gradle/Android SDK. The application ID, signing identity and public ZeekrShortcutApp storage folder must remain compatible with existing installs. The GitHub repository has not been renamed.
+Native Android Views, Java and Material components; Gradle/Android SDK. Keep the application ID, signing identity and preferences compatible with existing installs. New public files use ZeekrCompanion; retain access to older ZeekrShortcutApp and EVCam folders. The GitHub repository has not been renamed.
 
 ## Main-screen task
 See live cameras, start or stop recording, take a photo, open media, select preview sources/layout, and control independent Super mirror/360° windows. Preview choices are separate from recording sources and quality. Camera mapping and calibrated 360° projection remain separate settings. Existing choices must survive the redesign.

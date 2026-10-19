@@ -211,12 +211,8 @@ public final class MainPageControls implements DefaultLifecycleObserver {
 
     private void showGallery() {
         dismissPanel();
-        panel = CamDialogs.show(new MaterialAlertDialogBuilder(activity, R.style.Theme_Cam_MaterialAlertDialog)
-                .setTitle(R.string.home_gallery)
-                .setItems(new String[]{activity.getString(R.string.nav_video_playback), activity.getString(R.string.nav_photo_playback)},
-                        (d, which) -> activity.startActivity(new Intent(activity, GalleryActivity.class)
-                                .putExtra(GalleryActivity.EXTRA_TAB, which == 0 ? "videos" : "photos")))
-                .setNegativeButton(R.string.action_cancel, null));
+        activity.startActivity(new Intent(activity, GalleryActivity.class)
+                .putExtra(GalleryActivity.EXTRA_TAB, GalleryActivity.TAB_VIDEOS));
     }
 
     private void showWindows() {
