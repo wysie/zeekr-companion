@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Adopt dts88’s microphone-resource cleanup and clearer updater verification errors from the merged contribution follow-ups.
+
 - Replace the download-like Minimise arrow with a standard minus icon; retain tap to hide and long-press to quit.
 
 - Make Camera status a compact text action, balance the main toolbar across visible actions and shorten preview waiting/error messages.

@@ -494,8 +494,13 @@ The updater requires agreement between the tag and GitHub’s pre-release flag: 
 Android-accepted updates with the same identity. It does not establish that an APK
 came from this maintainer. A private-key migration needs a separate installation/update
 plan; the existing identity is retained for compatibility. The updater now requires
-GitHub asset size and SHA-256 to match and uses HTTPS through redirects. Old assets
-without a digest are refused by the in-app downloader; manual alpha installs remain unchanged.
+GitHub asset size and SHA-256 to match and uses HTTPS through redirects. Missing
+or JSON-null digest metadata is refused before download; the verification error
+covers both size and checksum failures. Old assets without a digest are refused
+by the in-app downloader; manual alpha installs remain unchanged. Maintainer
+follow-ups from dts88 PRs #58/#59 remove unused microphone translations and tidy
+updater validation; [review and integration decisions](docs/upstream-contribution-followups-20261019.md)
+record what was adopted from our merged contributions.
 
 Download the `ZeekrCompanion-<version>.apk` asset from the release page and sideload it through App Lab.
 When the installer finishes, tap **Back** at the top left, not **Open**. Otherwise the head unit's

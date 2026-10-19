@@ -521,7 +521,7 @@
     <string name="upd_err_no_dir">无法创建下载目录</string>
     <string name="upd_err_over_limit">内容超出上限，已中止</string>
     <string name="upd_err_truncated">只收到 %1$d / %2$d 字节</string>
-    <string name="upd_err_integrity">安装文件的 SHA-256 缺失或不匹配，已中止</string>
+    <string name="upd_err_integrity">安装包校验未通过，已中止</string>
     <string name="upd_need_install_title">需要「安装未知应用」权限</string>
     <string name="upd_need_install_msg">需在系统设置中允许本应用「安装未知应用」，才能打开系统安装界面。\n\n授权后返回此处，再次点击「检查更新」。</string>
     <string name="upd_go_settings">打开设置</string>
@@ -864,8 +864,6 @@
     <string name="dev_perm_group_advanced">高级权限</string>
     <string name="dev_perm_camera">相机权限</string>
     <string name="dev_perm_camera_why">用于录制和拍照</string>
-    <string name="dev_perm_microphone">麦克风权限</string>
-    <string name="dev_perm_microphone_why">用于录制声音</string>
     <string name="dev_perm_storage">存储权限</string>
     <string name="dev_perm_storage_why">用于保存和读取录像与照片</string>
     <string name="dev_perm_notifications">通知权限</string>
