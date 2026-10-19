@@ -18,4 +18,7 @@
     <string name="main_window_action_open">Buka · %1$s</string>
     <string name="main_window_action_close">Tutup · %1$s</string>
     <string name="main_window_action_off">Matikan · %1$s</string>
+    <string name="home_recording_details">Butiran rakaman</string>
+    <string name="home_saved_preview">Pratonton tersimpan: %1$s. Keluar dan buka semula untuk guna; keluar menghentikan rakaman.</string>
+    <string name="home_recording_details_idle">Tingkah laku skrin padam ditunjukkan semasa merakam.</string>
 </resources>

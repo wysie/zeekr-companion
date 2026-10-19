@@ -45,6 +45,7 @@ public final class MainPreviewPanel {
         otherSources.setMinHeight(dp(activity, 56)); otherSources.setCornerRadius(dp(activity, 10));
         otherSources.setIconResource(R.drawable.ic_expand_more); otherSources.setIconGravity(MaterialButton.ICON_GRAVITY_END);
         content.addView(otherSources, new LinearLayout.LayoutParams(-1, -2));
+        final Runnable[] reflectAvailability = {() -> {}};
         Runnable reflectOther = () -> {
             boolean other = !values.containsValue(selected[0]);
             otherSources.setText(other ? PreviewLayoutPicker.label(activity, selected[0]) : activity.getString(R.string.home_other_sources));
@@ -52,6 +53,7 @@ public final class MainPreviewPanel {
             otherSources.setBackgroundTintList(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(activity, other ? R.color.energy_quiet : R.color.sunken)));
             otherSources.setTextColor(ContextCompat.getColor(activity, other ? R.color.energy_text : R.color.text_primary));
             otherSources.setIconTint(android.content.res.ColorStateList.valueOf(ContextCompat.getColor(activity, other ? R.color.energy_text : R.color.text_primary)));
+            reflectAvailability[0].run();
         };
         sources.setOnCheckedChangeListener((group, checked) -> {
             if (values.containsKey(checked)) { selected[0] = values.get(checked); reflectOther.run(); }
@@ -68,6 +70,7 @@ public final class MainPreviewPanel {
                     }).setNegativeButton(R.string.action_cancel, null));
         });
         section(content, R.string.home_arrangement);
+        TextView singleSourceHelp = paragraph(content, R.string.home_layout_single);
         LinearLayout layouts = new LinearLayout(activity); layouts.setOrientation(narrow ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL);
         layouts.setBaselineAligned(false);
         String[] arrangements = {"auto", "equal", "stacked"};
@@ -102,9 +105,17 @@ public final class MainPreviewPanel {
             tile.setOnClickListener(v -> { arrangement[0] = arrangements[index]; reflectLayout.run(); });
         }
         reflectLayout.run(); content.addView(layouts, new LinearLayout.LayoutParams(-1, -2));
+        reflectAvailability[0] = () -> {
+            boolean multiple = com.kooo.evcam.profile.ProfileChannels.of(
+                    new com.kooo.evcam.profile.ProfileStore(activity).current(), selected[0]).previewKeys.size() > 1;
+            singleSourceHelp.setVisibility(multiple ? View.GONE : View.VISIBLE);
+            layouts.setVisibility(multiple ? View.VISIBLE : View.GONE);
+            for (MaterialButton tile : tiles) tile.setEnabled(multiple);
+        };
+        reflectAvailability[0].run();
         paragraph(content, R.string.home_preview_help);
         paragraph(content, R.string.home_layout_help);
-        paragraph(content, R.string.home_layout_single);
+
         ScrollView scroll = new ScrollView(activity);
         scroll.setFillViewport(false);
         scroll.setVerticalScrollBarEnabled(true);

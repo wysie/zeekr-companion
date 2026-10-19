@@ -61,7 +61,10 @@ Straighten uses orange text plus a checkmark when enabled; long-press explains t
 it affects preview/playback and leaves recorded files unchanged. These toolbar
 refinements ship in alpha 52. Dock actions keep
 normal-size wrapped labels; the saved driver-side preference puts recording on
-that side. Settings and Minimise stay in the header. Long-press Minimise still quits.
+that side. The next toolbar refinement keeps recording to its action and clip detail,
+with a thin separator from the utility actions. Long-press recording opens **Recording
+details**, including live screen-off behavior. Settings and Minimise stay in the
+header. Long-press Minimise still quits.
 
 **Preview** opens a staged side panel: quick presets for **Surround · four views**,
 **Front + Rear** and **Surround + roads**, then **Other sources** for Follow recording,
@@ -69,8 +72,14 @@ one road source or cabin. These use the same saved source choice as Settings;
 preview changes never edit recording groups, source mappings or quality. Cancel,
 Back and outside dismissal do not save. The fixed panel heading explains the reopen
 requirement before Save; quitting stops recording. A persistent notice marks source changes
-that need **Quit app → reopen**; the selector shows the pending choice explicitly.
-All existing source choices are preserved on upgrade.
+that need **Quit app → reopen**. The selector names the currently applied preview;
+the notice names the saved next choice. Choosing an equivalent source set does not
+create a preview restart requirement.
+All existing source choices are preserved on upgrade. **Source layout** arranges
+separate source panes. With just Surround (or another single source), the panel
+explains this and hides inactive arrangement choices; it does not rearrange the
+four views inside Surround. The saved arrangement is retained for multi-source use.
+These further clarity/toolbar changes are newer than alpha 52.
 
 **Interface → Driver side** keeps recording nearest the selected Left or Right side,
 retaining the saved preference. Larger system text is respected above the existing

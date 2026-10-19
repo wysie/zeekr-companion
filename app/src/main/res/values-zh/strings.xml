@@ -27,7 +27,7 @@
     <string name="home_windows_help">在其他应用上方打开独立窗口。窗口大小和位置独立于主预览。</string>
     <string name="home_preview_single">单一来源</string>
     <string name="home_preview_multiple">%1$d 个来源</string>
-    <string name="home_layout_single">只有一个来源时，添加其他来源后才能看到布局变化。</string>
+    <string name="home_layout_single">单个来源填满预览。来源布局只排列独立来源，不会重排环视内部的四个视图。</string>
     <string name="home_surround_unavailable">360° 需要当前预览包含环视。请选择包含环视的预设，然后退出并重新打开。</string>
     <string name="home_pending_selection">预览：%1$s · 待应用</string>
     <string name="home_layout_selected">已选择</string>

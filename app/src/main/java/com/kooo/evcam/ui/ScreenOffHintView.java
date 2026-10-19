@@ -19,7 +19,7 @@ import com.kooo.evcam.telemetry.VehicleState;
 import java.util.Objects;
 
 /**
- * 录制键上的小字：现在熄屏的话，这段录像会怎样（「熄屏后继续录制环视 /
+ * 录制详情里的熄屏提示：现在熄屏的话，这段录像会怎样（「熄屏后继续录制环视 /
  * 熄屏暂停，亮屏后恢复 / 熄屏后停止录制」）。
  *
  * <p>说什么由 {@link ScreenOffPlan#of} 定 —— 就是录制协调器照的那张表、同样的输入，判熄屏那一刻和之后车机要睡那一刻，
@@ -28,7 +28,7 @@ import java.util.Objects;
  * 熄屏判断登记的核心一直在读），再加上熄屏那一刻安卓熄没熄屏 —— 车辆信号判着屏幕时是车辆先说黑、车机醒着；判不出屏幕时
  * （降级，{@link ScreenState#vehicleJudges}）熄屏就是车机下电，两下是同一下（审查 rev3 B1）。</p>
  *
- * <p>录制中、等待摄像头时显示（{@link RecordButtonUi} 管显隐）；看得见时听那几个开关和车辆信号（连接、读数变了，
+ * <p>录制详情打开时显示；看得见时听那几个开关和车辆信号（连接、读数变了，
  * {@link Telemetry#addListener}，只听不登记：不开浮点传感器和定位），看不见就不听。车辆信号每变一次都来（录像开着信息条时
  * 车速每 200 ms 一次），表只看哨兵模式、在开车（{@link ScreenOffPlan#driving}）和车辆信号判不判得出屏幕：这三样变了才重判。</p>
  */

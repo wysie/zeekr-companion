@@ -18,7 +18,7 @@ import java.util.Locale;
 
 /**
  * 录制键：左边一个会变形的点（圆 ⇄ 圆角方块）套一圈分段进度环，右边两行字；
- * 录制中、等待摄像头时多一行小字，说现在熄屏的话这段录像会怎样（{@link ScreenOffHintView}，这里只管显隐）。
+ * 熄屏行为由主界面的录制详情按需显示（{@link ScreenOffHintView}）。
  *
  * <h3>为什么不再是一整块红</h3>
  *
@@ -62,7 +62,6 @@ public final class RecordButtonUi {
     private final View dot;
     private final TextView title;
     private final TextView detail;
-    private final View hint;
     private final GradientDrawable dotShape;
     private final float density;
 
@@ -85,7 +84,6 @@ public final class RecordButtonUi {
         this.dot = root.findViewById(R.id.record_dot);
         this.title = root.findViewById(R.id.record_title);
         this.detail = root.findViewById(R.id.record_detail);
-        this.hint = root.findViewById(R.id.record_hint);
         if (dot != null) {
             dotShape = new GradientDrawable();
             dotShape.setColor(color(R.color.recording));
@@ -156,10 +154,6 @@ public final class RecordButtonUi {
 
     private void render(State next, boolean animate) {
         state = next;
-        if (hint != null) {
-            // 等待摄像头时录像也开着：熄屏的话这段录像会怎样，照常说
-            hint.setVisibility(next == State.RECORDING || next == State.WAITING ? View.VISIBLE : View.GONE);
-        }
         int description = next == State.IDLE ? R.string.record_start
                 : next == State.WAITING_STORAGE ? R.string.record_cancel_usb_wait
                 : next == State.UNAVAILABLE ? R.string.record_unavailable

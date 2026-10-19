@@ -109,6 +109,38 @@ public class MainPageControlsAndroidTest {
         } finally { choice.reset(); }
     }
 
+    @Test public void singleSurroundExplainsLayoutAndEquivalentChoiceDoesNotNeedReopen() throws Exception {
+        config.setMainPreviewArrangement("stacked");
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+            Map<String, ?> profile = target.getSharedPreferences("profiles", 0).getAll();
+            onView(withId(R.id.btn_preview_layout)).perform(click());
+            onView(withText(R.string.home_layout_single)).check(androidx.test.espresso.assertion.ViewAssertions.matches(isDisplayed()));
+            onView(withText(R.string.home_layout_stacked)).check(androidx.test.espresso.assertion.ViewAssertions.matches(org.hamcrest.Matchers.not(isDisplayed())));
+            onView(withText(R.string.home_surround_four)).perform(click());
+            capture("main-single-surround-panel");
+            onView(withText(R.string.home_preview_save)).perform(click());
+            assertEquals("surround", config.getPreviewSourceMode());
+            assertEquals("stacked", config.getMainPreviewArrangement());
+            assertEquals(profile, target.getSharedPreferences("profiles", 0).getAll());
+            scenario.onActivity(a -> {
+                assertEquals(View.GONE, a.findViewById(R.id.main_preview_pending).getVisibility());
+                assertTrue(((TextView)a.findViewById(R.id.btn_preview_layout)).getText().toString().contains(a.getString(R.string.record_group_surround)));
+            });
+        }
+    }
+
+    @Test public void recordingDetailsAreSeparateAndKeepTheRecordAction() throws Exception {
+        try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+            assertFalse(com.kooo.evcam.recording.RecordingCoordinator.get(target).isRecordingOrResuming());
+            onView(withId(R.id.btn_start_record)).perform(androidx.test.espresso.action.ViewActions.longClick());
+            onView(withText(R.string.home_recording_details)).check(androidx.test.espresso.assertion.ViewAssertions.matches(isDisplayed()));
+            assertFalse(com.kooo.evcam.recording.RecordingCoordinator.get(target).isRecordingOrResuming());
+            capture("main-recording-details");
+            onView(withText(R.string.action_close)).perform(click());
+            onView(withId(R.id.btn_start_record)).check(androidx.test.espresso.assertion.ViewAssertions.matches(isDisplayed()));
+        }
+    }
+
     @Test public void expandRestoreKeepsTexturesAndPipelineAndSurvivesRecreation() throws Exception {
         try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
             final android.view.TextureView[] texture={null}; final SurfaceTexture[] surface={null};
@@ -132,7 +164,7 @@ public class MainPageControlsAndroidTest {
             assertEquals(50,config.getSidePopupYaw()); assertEquals(15,config.getSidePopupPitch());
         }
     }
-    @Test public void mainPreviewPickerKeepsRecordingTuningAndShowsUnappliedChoice() {
+    @Test public void mainPreviewPickerKeepsRecordingTuningAndShowsUnappliedChoice() throws Exception {
         try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
             Map<String,?> profile=target.getSharedPreferences("profiles",0).getAll();
             onView(withId(R.id.btn_preview_layout)).perform(click());
@@ -142,7 +174,10 @@ public class MainPageControlsAndroidTest {
             onView(withText(R.string.record_group_roads)).perform(androidx.test.espresso.action.ViewActions.scrollTo(),click());
             onView(withText(R.string.home_preview_save)).perform(click());
             assertEquals("roads",config.getPreviewSourceMode());assertEquals(profile,target.getSharedPreferences("profiles",0).getAll());
-            scenario.onActivity(a->{assertEquals(View.VISIBLE,a.findViewById(R.id.main_preview_pending).getVisibility());assertTrue(((TextView)a.findViewById(R.id.btn_preview_layout)).getText().toString().contains(a.getString(R.string.record_group_roads)));});
+            capture("main-preview-pending");
+            scenario.onActivity(a->{assertEquals(View.VISIBLE,a.findViewById(R.id.main_preview_pending).getVisibility());assertTrue(((TextView)a.findViewById(R.id.main_preview_pending)).getText().toString().contains(a.getString(R.string.record_group_roads)));
+                assertTrue(((TextView)a.findViewById(R.id.btn_preview_layout)).getText().toString().contains(
+                        com.kooo.evcam.settings.PreviewLayoutPicker.label(a, "selected")));});
             assertEquals(50,config.getSidePopupYaw());assertFalse(com.kooo.evcam.recording.RecordingCoordinator.get(target).isRecordingOrResuming());
         }
     }
@@ -250,6 +285,7 @@ public class MainPageControlsAndroidTest {
         }
     }
     @Test public void captureLightAndDarkMainPage() throws Exception {
+        config.setPreviewSourceMode("surround_roads");
         for(int mode:new int[]{AppCompatDelegate.MODE_NIGHT_NO,AppCompatDelegate.MODE_NIGHT_YES}) {
             main(()->AppCompatDelegate.setDefaultNightMode(mode));
             try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {

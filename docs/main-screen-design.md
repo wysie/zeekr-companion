@@ -26,3 +26,18 @@ Owner requested less button-like controls after alpha 51. Use a shared divider a
 ## Review refinement
 
 An independent Astra review and native accessibility audit retained the existing design. The next pass shortens Straighten with long-press help, places the reopen warning before source selection, makes Windows actions explicit, uses a cog for Settings and names Driver side accurately. Playback Home returns to cameras; empty playback gives storage guidance. Settings/gallery expose state to accessibility, selected segments use high-contrast tonal colours, and larger system text is respected. Camera pipelines and recording settings remain unchanged. See `ui-ux-review-2026-10-19.md` for evidence and limits.
+
+## Applied preview and recording detail refinement
+
+The owner’s alpha 52 car photo showed a saved Front + Rear choice labelled pending
+while the applied combined preview remained on screen. Keep source switching staged,
+but name the applied mode in the selector and the saved next mode in its notice.
+Compare preview keys so equivalent choices do not fabricate a reopen requirement.
+Single-source selection explains that arrangement applies to separate sources,
+hides inactive layout tiles and retains the saved multi-source arrangement.
+
+The same photo showed screen-off prose crowding the recording control. Keep the
+flat toolbar, equal utility widths and native feedback; give recording a 1.45 weight
+and one neutral separator, with its action and clip detail visible. Long-press
+opens Recording details using the existing live ScreenOffHintView; no recording
+policy is changed. This refinement is newer than alpha 52.

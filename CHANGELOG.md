@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Show the applied preview in the selector and the saved next choice in the reopen notice; avoid pending previews for equivalent source sets.
+- Explain single-source layout behavior and hide inactive source arrangement choices while retaining the saved layout.
+- Keep the recording toolbar control to action/clip detail, separate it from utility actions and move live screen-off behavior into long-press Recording details.
+
 ## [2.11.52-alpha.1] - 2026-10-19
 
 - Shorten the main toolbar label to Straighten, with long-press help explaining that recorded files stay unchanged.

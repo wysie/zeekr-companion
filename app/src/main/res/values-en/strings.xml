@@ -1305,7 +1305,7 @@
     <string name="home_windows_help">Open a separate window over other apps. Its size and position stay independent of the main preview.</string>
     <string name="home_preview_single">Single source</string>
     <string name="home_preview_multiple">%1$d sources</string>
-    <string name="home_layout_single">With one source, layout choices take effect when you add another source.</string>
+    <string name="home_layout_single">One source fills the preview. Source layout arranges separate sources, not the four views inside Surround.</string>
     <string name="home_surround_unavailable">360° requires Surround in the applied preview. Choose a preset with Surround, then quit and reopen.</string>
     <string name="home_pending_selection">Preview: %1$s · pending</string>
     <string name="home_layout_selected">Selected</string>
