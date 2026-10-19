@@ -65,7 +65,8 @@ refinements ship in alpha 52. Dock actions keep
 normal-size wrapped labels; the saved driver-side preference puts recording on
 that side. The current toolbar refinement gives the visible utility actions equal widths across the remaining space beside the driver-side recording control, with consistent 8dp gaps and a thin separator. Hiding Straighten redistributes that space; narrower hosts retain readable labels and horizontal scrolling. Recording stays focused on its action and clip detail. Long-press recording opens **Recording
 details**, including live screen-off behavior. Settings and Minimise stay in the
-header. Long-press Minimise still quits.
+header. Minimise uses a standard horizontal minus icon: tap hides the app to the
+background; long-press quits. Quit app also remains in the menu.
 
 **Gallery** now opens the Videos tab directly; switch to Photos in the same
 gallery. There is no intermediate media chooser. Take photo and Start/Stop
