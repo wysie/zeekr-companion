@@ -1,0 +1,8 @@
+Synthetic renderer only; no camera, readback or UI upload.
+device=sdk_gphone64_arm64 hardware=ranchu sdk=32
+manual quality=0 source=256x1028 output=320x480 legacyMedianMs=1.265917 optimizedMedianMs=1.048542
+manual quality=1 source=768x3084 output=640x960 legacyMedianMs=5.32125 optimizedMedianMs=4.328625
+manual quality=2 source=1280x5140 output=960x1440 legacyMedianMs=12.309583 optimizedMedianMs=10.026833
+009-fit quality=0 source=256x1028 output=320x480 legacyMedianMs=1.30375 optimizedMedianMs=1.063375
+009-fit quality=1 source=768x3084 output=640x960 legacyMedianMs=5.200542 optimizedMedianMs=4.225583
+009-fit quality=2 source=1280x5140 output=960x1440 legacyMedianMs=12.144209 optimizedMedianMs=9.757542

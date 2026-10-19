@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Reduce 360° CPU rendering work and lookup memory while preserving output pixels and quality; add queue, publish and total-processing timings to Diagnostics.
+
 - Use 360° consistently in main-page actions, settings and camera messages across languages.
 
 - Show the Companion logo beside the main-page title, with contrasting light/dark colours.
