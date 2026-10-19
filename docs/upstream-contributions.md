@@ -3,6 +3,13 @@
 This index tracks outgoing PRs. Incoming source reviews, imports, adaptations and
 exclusions are tracked in the [source integration ledger](source-integration-ledger.md).
 
+Latest status review (2026-10-19, upstream `151040e4`): **#17, #28 and #38 are
+merged**; #28/#38 were accepted through maintainer follow-up PRs #58/#59. #19
+remains closed in favour of adapted #41/#43. Twenty batch PRs remain open.
+[Maintainer differences, adopted follow-ups and verification](upstream-contribution-followups-20261019.md)
+are recorded separately. Historical open-status statements below describe their
+original review times. Existing published PR heads remain unchanged.
+
 Submitted on 2026-10-16 against dts88 main at `0f145f7a` (2.12.0-alpha).
 
 Each branch starts directly from that upstream commit and builds independently.
