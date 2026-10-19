@@ -13,7 +13,6 @@ final class PreviewFrameGuard {
     private final View owner;
     private final CameraFrameFreshness frames = new CameraFrameFreshness();
     private final Paint text = new Paint(Paint.ANTI_ALIAS_FLAG);
-    private final String waiting;
     private boolean attached;
     private String sourceKey, announcement;
     private long waitingSince;
@@ -36,7 +35,6 @@ final class PreviewFrameGuard {
     };
     PreviewFrameGuard(View owner) {
         this.owner = owner;
-        waiting = owner.getContext().getString(R.string.side_view_waiting_live);
         text.setColor(Color.WHITE);
         // StaticLayout centres each line. Paint must retain a left origin or it
         // shifts the already-centred glyphs left and clips their beginning.
@@ -60,13 +58,13 @@ final class PreviewFrameGuard {
         if(waitingSince==0)waitingSince=now;
         com.kooo.evcam.camera.CameraUiState state=sourceState();
         boolean prolonged=now-waitingSince>=10000;
-        int resource=state==com.kooo.evcam.camera.CameraUiState.STREAMING ? R.string.camera_preview_waiting
-          : (state==com.kooo.evcam.camera.CameraUiState.STARTING||state==com.kooo.evcam.camera.CameraUiState.WAITING)
-             ? (prolonged?R.string.camera_state_waiting:R.string.camera_state_starting):state.text;
+        int resource=(state==com.kooo.evcam.camera.CameraUiState.STARTING||state==com.kooo.evcam.camera.CameraUiState.WAITING)
+             ? (prolonged?R.string.camera_preview_camera_waiting:R.string.camera_preview_starting):state.previewText;
         String semantic=owner.getContext().getString(resource);
         if(prolonged)semantic+="\n"+owner.getContext().getString(R.string.camera_waiting_status_link);
         announce(semantic);
-        String shown=semantic+(prolonged?"\n"+owner.getContext().getString(R.string.camera_waiting_elapsed,(now-waitingSince)/1000):"");
+        String shown=owner.getContext().getString(resource)+(prolonged?"\n"+owner.getContext().getString(
+                R.string.camera_preview_wait_details,(now-waitingSince)/1000):"");
         canvas.drawColor(Color.BLACK);
         int width=Math.max(1,owner.getWidth()-24);
         if(messageLayout==null||!shown.equals(messageText)||messageWidth!=width){

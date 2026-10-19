@@ -78,33 +78,33 @@ public final class MainPageControls implements DefaultLifecycleObserver {
             line.gravity = (left ? android.view.Gravity.END : android.view.Gravity.START) | android.view.Gravity.CENTER_VERTICAL;
             divider.setLayoutParams(line);
         }
-        View space = activity.findViewById(R.id.main_dock_space);
-        actions.removeView(space);
         for (int i = 0; i < order.length; i++) {
             View child = activity.findViewById(order[left ? i : order.length - 1 - i]);
             if (child == null) continue;
             actions.removeView(child); actions.addView(child);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) child.getLayoutParams();
-            params.setMarginStart(i == 0 ? 0 : Math.round(8 * activity.getResources().getDisplayMetrics().density));
+            params.setMarginStart(0);
             child.setLayoutParams(params);
         }
-        // Space separates recording from the tightly grouped utilities, on either driver side.
-        actions.addView(space, left ? 1 : actions.getChildCount() - 1);
         actions.post(() -> sizeToolbar(activity, actions));
+        View viewport = activity.findViewById(R.id.action_rail);
         View.OnLayoutChangeListener previous = (View.OnLayoutChangeListener) actions.getTag(R.id.main_dock_actions);
-        if (previous != null) actions.removeOnLayoutChangeListener(previous);
+        if (previous != null) viewport.removeOnLayoutChangeListener(previous);
         View.OnLayoutChangeListener sizing = (v, l, t, r, b, ol, ot, or, ob) -> {
             if (r - l != or - ol) sizeToolbar(activity, actions);
         };
         actions.setTag(R.id.main_dock_actions, sizing);
-        actions.addOnLayoutChangeListener(sizing);
+        viewport.addOnLayoutChangeListener(sizing);
     }
 
     private static void sizeToolbar(Activity activity, LinearLayout actions) {
         int width = 0;
+        int visible = 0;
         int[] utilities = {R.id.btn_take_photo, R.id.btn_main_gallery, R.id.btn_main_windows, R.id.btn_fisheye};
         for (int id : utilities) {
             TextView action = activity.findViewById(id);
+            if (action.getVisibility() == View.GONE) continue;
+            visible++;
             // Do not manually remeasure an attached control: that can leave its text layout
             // at the natural width after returning from settings without a new layout pass.
             int natural = (int) Math.ceil(android.text.Layout.getDesiredWidth(action.getText(), action.getPaint()))
@@ -113,10 +113,27 @@ public final class MainPageControls implements DefaultLifecycleObserver {
         }
         float density = activity.getResources().getDisplayMetrics().density;
         width = Math.max(Math.round(120 * density), Math.min(Math.round(208 * density), width));
+        int gap = Math.round(8 * density);
+        View viewport = activity.findViewById(R.id.action_rail);
+        View recording = activity.findViewById(R.id.btn_start_record);
+        int available = viewport.getWidth() - viewport.getPaddingLeft() - viewport.getPaddingRight()
+                - actions.getPaddingLeft() - actions.getPaddingRight();
+        // Equal visible actions fill the toolbar. Narrow hosts keep readable natural
+        // widths and native scrolling instead of squashing labels or the record control.
+        if (visible > 0) width = Math.max(width,
+                (available - recording.getLayoutParams().width - visible * gap) / visible);
         for (int id : utilities) {
             View action = activity.findViewById(id);
             LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) action.getLayoutParams();
             if (params.width != width) { params.width = width; action.setLayoutParams(params); }
+        }
+        boolean first = true;
+        for (int i = 0; i < actions.getChildCount(); i++) {
+            View child = actions.getChildAt(i);
+            int margin = first || child.getVisibility() == View.GONE ? 0 : gap;
+            LinearLayout.LayoutParams params = (LinearLayout.LayoutParams) child.getLayoutParams();
+            if (params.getMarginStart() != margin) { params.setMarginStart(margin); child.setLayoutParams(params); }
+            if (child.getVisibility() != View.GONE) first = false;
         }
     }
 
@@ -170,7 +187,13 @@ public final class MainPageControls implements DefaultLifecycleObserver {
         main360.setEnabled(hasSurround);
         main360.setContentDescription(activity.getString(hasSurround ? R.string.bird_eye_button_description : R.string.home_surround_unavailable));
         boolean in360 = composite != null && composite.getDisplayMode() == FourLaneContainer.DisplayMode.BIRD_EYE;
-        activity.findViewById(R.id.btn_fisheye).setVisibility(hasSurround && !in360 ? View.VISIBLE : View.GONE);
+        View straighten = activity.findViewById(R.id.btn_fisheye);
+        int straightenVisibility = hasSurround && !in360 ? View.VISIBLE : View.GONE;
+        if (straighten.getVisibility() != straightenVisibility) {
+            straighten.setVisibility(straightenVisibility);
+            LinearLayout actions = activity.findViewById(R.id.main_dock_actions);
+            actions.post(() -> sizeToolbar(activity, actions));
+        }
         if (mirror != null) {
             boolean enabled = config.isRearViewEnabled();
             window(mirror, R.string.main_mirror_window, RearViewMirrorService.isWindowVisible() ? R.string.main_window_open

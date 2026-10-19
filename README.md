@@ -54,7 +54,8 @@ signing certificate for an in-place update. New behavior still needs on-car test
 The main screen gives the camera stage the full available width, with a small
 Companion logo/name, **Preview** selector and direct **360° view** action above it.
 Camera status, elapsed recording statistics (when enabled) and storage information
-sit outside the camera picture. The bottom dock is a flat toolbar with recording, Take photo,
+sit outside the camera picture. Camera status is a compact text action with a
+48dp touch target and native feedback; live recording counts remain visible. The bottom dock is a flat toolbar with recording, Take photo,
 Gallery, Windows and contextual **Straighten** actions. A single divider
 separates it from the picture; individual controls have transparent backgrounds
 and native press/focus feedback. Recording keeps its red indicator and progress;
@@ -62,8 +63,7 @@ Straighten uses orange text plus a checkmark when enabled; long-press explains t
 it affects preview/playback and leaves recorded files unchanged. These toolbar
 refinements ship in alpha 52. Dock actions keep
 normal-size wrapped labels; the saved driver-side preference puts recording on
-that side. The current toolbar refinement groups four equal compact utility actions, leaves flexible space before the driver-side recording control, and keeps recording to its action and clip detail,
-with a thin separator from the utility actions. Long-press recording opens **Recording
+that side. The current toolbar refinement gives the visible utility actions equal widths across the remaining space beside the driver-side recording control, with consistent 8dp gaps and a thin separator. Hiding Straighten redistributes that space; narrower hosts retain readable labels and horizontal scrolling. Recording stays focused on its action and clip detail. Long-press recording opens **Recording
 details**, including live screen-off behavior. Settings and Minimise stay in the
 header. Long-press Minimise still quits.
 
@@ -75,7 +75,11 @@ forced 1.2× minimum; larger accessibility text still scales normally. Settings 
 64dp minimum rows with 10dp vertical padding, retaining 16sp sidebar labels and
 growing rows for long text. Smaller secondary header/footer text leaves more room
 for cameras and settings. Waiting messages wrap and centre within each camera
-pane without cutting off their beginning. These refinements are newer than alpha 52.
+pane without cutting off their beginning. Preview states now use brief labels such
+as Camera busy or Waiting for preview, with elapsed time and a Camera status hint
+after a longer wait. Full troubleshooting explanations remain in Camera status;
+preview waiting still does not establish whether recording is working. These
+refinements are newer than alpha 52.
 
 **Preview** opens a staged side panel: quick presets for **Surround · four views**,
 **Front + Rear** and **Surround + roads**, then **Other sources** for Follow recording,

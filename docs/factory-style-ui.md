@@ -8,8 +8,8 @@ imported in this change.
 
 ## Main and shared settings
 
-- Four equal compact inline toolbar utilities, flexible space and a driver-side
-  recording control. Recording retains click-to-start/stop, progress, native
+- Equal inline toolbar utilities fill the space beside a driver-side
+  recording control, with consistent gaps and no flexible spacer. Recording retains click-to-start/stop, progress, native
   accessibility and live long-press details. Narrow widths can scroll.
 - Regular native settings type; all sidebar entries including About/Quit use the
   same 16sp label, no autoshrink, with system scaling and wrapping. A 240dp sidebar
@@ -126,3 +126,35 @@ is staged. Verdict: native UI ready for vehicle testing.
 An emulator establishes UI, geometry/state and ownership behavior, not vehicle
 camera quality, smoothness, HUD fitting or firmware compatibility. The 009/7X
 live settings sampler and retained-camera behavior still need an on-car check.
+
+
+## Main status and toolbar follow-up
+
+The owner approved removing the remaining oversized Camera status treatment,
+unbalanced toolbar gap and long technical preview messages. The status action
+now wraps its label instead of filling half the header, with a transparent native
+ripple and the same 48dp touch target, live counts and troubleshooting destination.
+
+The flexible spacer is removed. Visible utility actions fill the remaining width
+equally beside the driver-side recording control, with 8dp gaps. Visibility changes
+refill the row, including when Straighten is unavailable. Readable natural widths
+and horizontal scrolling remain for narrow hosts and enlarged/translated labels.
+Preview error/wait states use concise labels and, after ten seconds, one supporting
+line with elapsed time and a Camera status hint. Full diagnostic explanations are
+retained in Camera status; announcements exclude per-second elapsed updates.
+
+This is presentation only: recording requests, camera sessions, source/profile
+choices, HUD placement, factory priority and freshness checks retain their rules.
+
+Validation for this follow-up: all 1,505 JVM tests, debug lint and debug/release
+assembly pass. Native checks pass 11/11 at normal system text and 5/5 at 1.3×
+(11 distinct methods). They cover equal utility widths and fixed gaps on both
+driver sides, full toolbar width with Straighten hidden, compact status navigation
+with the same camera manager, recording details, Gallery/Photos/Back, expanded
+preview recreation, translated layouts and drawn/accessible waiting messages.
+Actual light/dark captures at both text sizes were reviewed together under ignored
+`artifacts/main-polish-20261019/{normal,large}/`. The white-on-black glyph display
+discrepancy noted above can still affect the image viewer at normal text size;
+production paint colour and native pixel assertions remain unchanged/passing.
+The release certificate is unchanged. These checks establish UI layout/navigation,
+not vehicle-camera quality or physical HUD clearance.

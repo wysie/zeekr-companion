@@ -253,9 +253,9 @@ This is an incumbent six-step native ramp, not an imposed geometric scale. Setti
 
 ## Layout
 
-The current home has an 8dp outer inset, a header above the retained full-width camera stage, and a bottom action dock. The header contains the menu, a 32dp Companion mark and brand, Preview, direct 360° access, Settings and Minimise. Camera status, optional recording statistics and storage sit outside the picture. Utility icon buttons are 48dp square; header text actions have a 56dp minimum height. Control and source-pane gaps are 8dp.
+The current home has an 8dp outer inset, a header above the retained full-width camera stage, and a bottom action dock. The header contains the menu, a 32dp Companion mark and brand, Preview, direct 360° access, Settings and Minimise. Camera status, optional recording statistics and storage sit outside the picture. Utility icon buttons are 48dp square; header text actions have a 48dp minimum height. Control and source-pane gaps are 8dp.
 
-The dock is a horizontally scrollable native container. The recording hit area has weight 1.45; the visible secondary actions have equal weight 1 and 80dp minimum height. The dock is one shared toolbar with a 1dp top divider, transparent action backgrounds and native ripple/focus feedback. Saved driver side reverses their order so recording is nearest that side: recording, photo, gallery, windows, contextual Straighten from the chosen edge. Labels can wrap to four lines and controls can grow. Straighten only appears for the applied surround preview outside 360° mode.
+The dock is a horizontally scrollable native container with a 272dp recording control and 72dp minimum action height. Visible utility actions share equal widths, filling the remaining viewport beside recording with consistent 8dp gaps. Their readable natural width is bounded to 120–208dp before expansion; narrower viewports scroll instead of shrinking labels. Hidden Straighten consumes no slot or gap, and the remaining utilities refill the space. The dock has one shared top divider, transparent backgrounds and native ripple/focus feedback. Saved driver side reverses the order so recording is nearest that side. Labels wrap and controls grow; Straighten only appears for the applied surround preview outside 360° mode.
 
 The Preview dialog is end-aligned and sized from current usable host bounds: 600dp wide at the verified 1.3 text scale, growing for larger text, capped to the host bounds minus 24dp. Its source presets share a row, Other sources follows, then the three labeled layout choices. Constrained hosts stack presets and layout choices vertically. Content scrolls with a persistent scrollbar; Save/Cancel remain dialog actions. Its internal side padding is 16dp. This is native bounds logic, not a web breakpoint system.
 
@@ -281,7 +281,7 @@ The default control/card radius is 10dp. Factory-style settings rows, sidebar se
 
 ### Recording control and camera status
 
-The wider recording control is a clickable/focusable transparent FrameLayout with native foreground ripple, a 48dp progress indicator with 4dp track, a 26dp drawn record indicator, bold Body title and Caption detail. Screen-off behavior lives in the native long-press Recording details dialog and updates while open. Timing uses tabular figures. Runtime recording state owns title, detail, indicator and progress; it does not fill the toolbar hit area. A 1dp neutral separator sits between recording and the utilities and follows driver side. The main Straighten button opts into flat appearance via an XML attribute; playback Straighten controls keep their existing appearance. The status action uses `sunken` at rest and `recording_quiet` when activated, primary Caption text, 8dp padding, 48dp minimum height and a native ripple. Pending source changes use a separate polite live-region notice.
+The wider recording control is a clickable/focusable transparent FrameLayout with native foreground ripple, a 42dp progress indicator with 3dp track, a 26dp drawn record indicator, regular Body title and Caption detail. Screen-off behavior lives in the native long-press Recording details dialog and updates while open. Timing uses tabular figures. Runtime recording state owns title, detail, indicator and progress; it does not fill the toolbar hit area. A 1dp neutral separator sits between recording and the utilities and follows driver side. The main Straighten button opts into flat appearance via an XML attribute; playback Straighten controls keep their existing appearance. The status action wraps its label up to 320dp, with a transparent background, secondary Caption text at rest, recording text colour for live counts, 8dp padding, a 48dp minimum touch height and native ripple. Pending source changes use a separate polite live-region notice.
 
 ### Preview selection panel
 
@@ -343,3 +343,8 @@ and native Expand/Hide controls. At less than 760dp detail width, controls and
 preview stack. Preserve real content, tuning, priority, source and freshness states.
 No generated concept camera imagery ships. Missing vehicle output is a truthful
 paused/unavailable state. See `docs/factory-style-ui.md` for functional boundaries.
+
+
+### Concise preview states, 2026-10-19
+
+The camera stage uses a short, distinct label for starting, waiting, busy, reconnecting, unavailable, paused, inactive and unassigned states. A longer wait adds one supporting line with elapsed seconds and a Camera status hint. Accessibility announces state/hint changes rather than every elapsed second. Camera status retains the full scheduler/mapping explanation and read-only diagnostics route. Preview and recording authority stay independent.

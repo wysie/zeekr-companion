@@ -28,6 +28,8 @@ import org.junit.Test;import org.junit.runner.RunWith;import static org.junit.As
       assertTrue("End of the message stays inside its pane",right<width-12);
       assertTrue("Message is visually centred instead of shifted left",Math.abs((left+right)/2f-width/2f)<16);
       assertTrue(owner.getContentDescription().toString().contains(a.getString(R.string.camera_waiting_status_link)));
+      assertFalse("Elapsed seconds must not trigger repeated accessibility announcements",
+              owner.getContentDescription().toString().contains(a.getString(R.string.camera_preview_wait_details,11)));
      } finally {image.recycle();}
     }
    });

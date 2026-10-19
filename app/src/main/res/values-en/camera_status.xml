@@ -15,12 +15,21 @@
     <string name="camera_state_not_active">Source absent from the running pipeline; check mapping and reopen to apply changes</string>
     <string name="camera_state_unassigned">Unassigned</string>
     <string name="camera_preview_live">Live preview</string>
-    <string name="camera_preview_waiting">Camera frames available; waiting for preview</string>
+    <string name="camera_preview_waiting">Waiting for preview</string>
     <string name="camera_waiting_elapsed">Waiting %1$d s</string>
-    <string name="camera_waiting_status_link">Use Camera status for details and diagnostics</string>
+    <string name="camera_waiting_status_link">See Camera status for details</string>
     <string name="camera_saved_assignment">Saved assignment: %1$s</string>
     <string name="camera_saved_quality">Saved quality: %1$s · %2$s fps · %3$s bitrate</string>
     <string name="camera_source_recording">Recording now</string>
     <string name="camera_source_pending">Selected for this recording; not writing now</string>
     <string name="camera_source_not_recording">Not part of the current recording</string>
+    <string name="camera_preview_starting">Starting camera…</string>
+    <string name="camera_preview_camera_waiting">Waiting for camera</string>
+    <string name="camera_preview_busy">Camera busy</string>
+    <string name="camera_preview_reconnecting">Reconnecting camera…</string>
+    <string name="camera_preview_unavailable">Camera unavailable</string>
+    <string name="camera_preview_paused">Camera paused</string>
+    <string name="camera_preview_inactive">Camera not active</string>
+    <string name="camera_preview_unassigned">No camera assigned</string>
+    <string name="camera_preview_wait_details">Waiting %1$d s · See Camera status</string>
 </resources>
