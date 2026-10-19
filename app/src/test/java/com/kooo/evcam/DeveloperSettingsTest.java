@@ -55,8 +55,6 @@ public class DeveloperSettingsTest {
         ROWS.put("pref_drive_logging", NONE);
         ROWS.put("pref_drive_logging_status", NONE);
         ROWS.put("pref_signal_scan", Arrays.asList("signal_scan"));
-        ROWS.put("pref_gpu_fisheye_preview", Arrays.asList("gpu_fisheye_preview"));
-        ROWS.put("pref_gpu_fisheye_video", Arrays.asList("gpu_fisheye_video"));
         ROWS.put("pref_camera_holder_suspects", Arrays.asList("camera_holder_suspects"));
         ROWS.put("pref_repair_mp4", NONE);
         ROWS.put("pref_archive", NONE);

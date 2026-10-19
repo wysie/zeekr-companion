@@ -1187,6 +1187,9 @@ public final class DiagnosticsCollector {
             sb.append("  ").append(item).append('\n');
         }
         AppConfig recordingConfig = new AppConfig(context);
+        sb.append("GPU processing: ").append(recordingConfig.getGpuRenderingMode());
+        for(String feature:GpuRendering.FEATURES)sb.append(" ").append(feature).append("=").append(recordingConfig.isGpuFeatureEnabled(feature));
+        sb.append('\n');
         sb.append("  Driver recording start=").append(recordingConfig.isDriveAutoStart())
                 .append("; stop=").append(recordingConfig.isDriveAutoStop()).append('\n');
         sb.append("  Recording intent: ").append(com.kooo.evcam.recording.RecordingIntent.current().describe()).append('\n');

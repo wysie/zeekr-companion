@@ -441,10 +441,8 @@
                 android:key="pref_bird_car_colour_note"
                 android:summary="@string/bird_eye_car_colour_note"
                 android:selectable="false" />
-            <ListPreference android:key="pref_bird_renderer" android:title="@string/bird_eye_renderer"
-                app:useSimpleSummaryProvider="false" />
-            <Preference android:key="pref_bird_renderer_note" android:selectable="false"
-                android:summary="@string/bird_eye_renderer_note" />
+            <Preference android:key="pref_bird_renderer" android:title="@string/gpu_processing_title"
+                android:summary="@string/gpu_processing_location" />
             <ListPreference
                 android:key="pref_bird_quality"
                 android:title="@string/bird_eye_quality"
@@ -615,6 +613,16 @@
             android:defaultValue="true"
             android:title="@string/set_auto_start_title"
             android:summary="@string/set_auto_start_summary" />
+        <PreferenceScreen android:key="sub_gpu_processing" android:title="@string/gpu_processing_title" android:summary="@string/gpu_processing_summary">
+            <ListPreference android:key="pref_gpu_mode" android:title="@string/gpu_processing_mode" app:useSimpleSummaryProvider="false" />
+            <Preference android:key="pref_gpu_help" android:selectable="false" android:summary="@string/gpu_processing_help" />
+            <SwitchPreferenceCompat android:key="pref_gpu_preview" android:title="@string/gpu_processing_preview" />
+            <SwitchPreferenceCompat android:key="pref_gpu_360" android:title="@string/gpu_processing_360" />
+            <SwitchPreferenceCompat android:key="pref_gpu_side" android:title="@string/gpu_processing_side" android:summary="@string/gpu_processing_side_summary" />
+            <SwitchPreferenceCompat android:key="pref_gpu_mirror" android:title="@string/gpu_processing_mirror" />
+            <SwitchPreferenceCompat android:key="pref_gpu_playback" android:title="@string/gpu_processing_playback" />
+            <Preference android:key="pref_gpu_details" android:title="@string/gpu_processing_details_title" />
+        </PreferenceScreen>
         <PreferenceScreen android:key="sub_troubleshooting" android:title="@string/ui_troubleshooting" android:summary="@string/ui_troubleshooting_summary">
         <Preference android:key="pref_camera_status" android:title="@string/camera_status_title" android:summary="@string/camera_status_summary" />
         <Preference
@@ -667,19 +675,6 @@
                 android:key="pref_screen_off_wake_hours"
                 android:dependency="pref_screen_off_recording"
                 android:title="@string/set_screen_off_wake_title" />
-        </PreferenceCategory>
-        <PreferenceCategory
-            android:key="group_dev_rendering"
-            android:title="@string/menu_image_rendering">
-
-<SwitchPreferenceCompat
-                android:key="pref_gpu_fisheye_preview"
-                android:title="@string/dev_gpu_fisheye_preview_title"
-                android:summary="@string/dev_gpu_fisheye_preview_summary" />
-            <SwitchPreferenceCompat
-                android:key="pref_gpu_fisheye_video"
-                android:title="@string/dev_gpu_fisheye_video_title"
-                android:summary="@string/dev_gpu_fisheye_video_summary" />
         </PreferenceCategory>
         <PreferenceCategory
             android:key="group_dev_research"

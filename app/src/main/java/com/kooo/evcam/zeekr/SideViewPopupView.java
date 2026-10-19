@@ -63,6 +63,7 @@ public class SideViewPopupView extends ViewGroup {
     private final CameraLabel cameraLabel;
     private final SideViewControls controls;
     private final SideViewExpansion expansion = new SideViewExpansion();
+    private final SideGpuOutput gpuPicture = new SideGpuOutput(false);
     private Size expandedViewport;
     private final Runnable refitExpansion = this::refitExpanded;
     private final Matrix drawMatrix = new Matrix();
@@ -177,6 +178,8 @@ public class SideViewPopupView extends ViewGroup {
         post(refitExpansion);
         return super.onApplyWindowInsets(insets);
     }
+
+    public String gpuState() { return gpuPicture.state(); }
 
     public AutoFitTextureView getTextureView() {
         return textureView;
@@ -451,6 +454,7 @@ public class SideViewPopupView extends ViewGroup {
     }
 
     private boolean hasLivePicture() {
+        if (gpuPicture.requested()) return gpuPicture.fresh(textureView);
         return hasGeometry() && textureView.isAvailable()
                 && frameFreshness.fresh(android.os.SystemClock.uptimeMillis());
     }
@@ -635,6 +639,7 @@ public class SideViewPopupView extends ViewGroup {
     }
 
     @Override protected void onDetachedFromWindow() {
+        gpuPicture.release();
         abortFade();
         removeCallbacks(refitExpansion);
         freshnessHandler.removeCallbacks(freshnessTick);
@@ -677,8 +682,15 @@ public class SideViewPopupView extends ViewGroup {
         int visibleWidth = width;
         width = cameraPictureWidth();
         int rotation = readRotation(lane);
-        int inner = SideViewRotation.begin(canvas, straighten ? 0 : rotation, width, height, readMirrored());
-        if (straighten) {
+        if(straighten)framing.configure(viewFov,yaw,pitch,lane,(float)width/height,rotation,readAutoFit());
+        boolean gpu = gpuPicture.prepare(textureView, PreviewDewarp.rawPipeFor(textureView),
+                SideGpuPicture.side(plan,lane,width,height,straighten,viewFov,yaw,pitch,rotation,readMirrored(),framing),
+                width,height,appConfig.isGpuSide());
+        int inner = gpu ? canvas.save() : SideViewRotation.begin(canvas, straighten ? 0 : rotation, width, height, readMirrored());
+        if(gpu) {
+            drawTextureOnce(canvas);
+            if(!gpuPicture.fresh(textureView))canvas.drawColor(android.graphics.Color.BLACK);
+        } else if (straighten) {
             boolean autoFit = readAutoFit();
             framing.configure(viewFov, yaw, pitch, lane, (float) width / height, rotation,
                     autoFit);
@@ -713,7 +725,7 @@ public class SideViewPopupView extends ViewGroup {
         width = visibleWidth;
         if (fade > 0f) drawEdgeFade(canvas, width, height, fade);
         canvas.restoreToCount(save);
-        if (!textureView.isAvailable() || !frameFreshness.fresh(android.os.SystemClock.uptimeMillis())) {
+        if (!textureView.isAvailable() || (gpu ? !gpuPicture.fresh(textureView) : !frameFreshness.fresh(android.os.SystemClock.uptimeMillis()))) {
             drawStaleCover(canvas, width, height);
             if (showControls()) drawChild(canvas, controls, getDrawingTime());
             return;

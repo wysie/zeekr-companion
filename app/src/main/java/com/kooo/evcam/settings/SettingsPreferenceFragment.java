@@ -119,6 +119,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         bindFloating();
         bindInterface();
         bindSystem();
+        bindGpuRendering();
         // 开发者选项分区：没开时不接线。左栏已经把整块拿掉了；万一是直接跳进来的，点了也不起作用 ——
         // 里面的设置这时本来就按没存过算（AppConfig.DEVELOPER_KEYS）
         if (boundUnlocked) {
@@ -1495,10 +1496,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                 SettingSpec.entry("green", "Green", R.string.bird_eye_car_green),
                 SettingSpec.entry("white", "White", R.string.bird_eye_car_white),
                 SettingSpec.entry("black", "Black", R.string.bird_eye_car_black)), appearance.colour(), appearance::setColour);
-        bindEnum("pref_bird_renderer", SettingSpec.of("bird_renderer", "360 rendering", "cpu",
-                SettingSpec.entry("gpu", "GPU (experimental)", R.string.bird_eye_renderer_gpu),
-                SettingSpec.entry("cpu", "CPU compatibility", R.string.bird_eye_renderer_cpu)),
-                appConfig.isGpuBirdEye() ? "gpu" : "cpu", value -> appConfig.setGpuBirdEye("gpu".equals(value)));
+        onClick("pref_bird_renderer", pref -> openFragment(forSection("sub_gpu_processing"), R.string.gpu_processing_title));
         bindEnum("pref_bird_quality", SettingSpec.of("bird_quality", "360 quality", "1",
                 SettingSpec.entry("0", "Low", R.string.bird_eye_quality_low),
                 SettingSpec.entry("1", "Balanced", R.string.bird_eye_quality_balanced),
@@ -1583,6 +1581,30 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
      * 系统：诊断信息、系统信息、开机自启动（含保活）、熄屏持续录制。
      * 开发者的「熄屏录制（阻止休眠）」不在这里，在开发者选项分区（{@link #bindAdvanced}）。
      */
+    private void bindGpuRendering() {
+        if(findPreference("pref_gpu_mode")==null)return;
+        onClick("pref_gpu_details",pref->com.kooo.evcam.ui.CamDialogs.show(new MaterialAlertDialogBuilder(requireContext(),R.style.Theme_Cam_MaterialAlertDialog)
+                .setTitle(R.string.gpu_processing_details_title).setMessage(R.string.gpu_processing_details).setPositiveButton(R.string.action_ok,null)));
+        bindEnum("pref_gpu_mode",SettingSpec.of("gpu_rendering_mode","GPU rendering","off",
+                SettingSpec.entry("off","Off",R.string.gpu_processing_off),
+                SettingSpec.entry("all","All",R.string.gpu_processing_all),
+                SettingSpec.entry("custom","Custom",R.string.gpu_processing_custom)),appConfig.getGpuRenderingMode(),mode->{
+                    appConfig.setGpuRenderingMode(mode);refreshGpuControls();
+                });
+        for(String feature:com.kooo.evcam.zeekr.GpuRendering.FEATURES)
+            bindSwitch(com.kooo.evcam.zeekr.GpuRendering.preference(feature),appConfig.isGpuFeatureEnabled(feature),enabled->{
+                appConfig.setGpuFeature(feature,enabled);refreshGpuControls();
+            });
+        refreshGpuControls();
+    }
+    private void refreshGpuControls() {
+        boolean custom="custom".equals(appConfig.getGpuRenderingMode());
+        for(String feature:com.kooo.evcam.zeekr.GpuRendering.FEATURES){
+            SwitchPreferenceCompat pref=findPreference(com.kooo.evcam.zeekr.GpuRendering.preference(feature));
+            if(pref!=null){pref.setEnabled(custom);pref.setChecked(appConfig.isGpuFeatureEnabled(feature));}
+        }
+    }
+
     private void bindSystem() {
         bindEnum("pref_vehicle_profile", SettingsRegistry.VEHICLE_PROFILE, appConfig.getVehicleProfileMode(),
                 value -> {
@@ -1712,12 +1734,6 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             appConfig.setSignalScanEnabled(on);
             com.kooo.evcam.telemetry.SignalScanControl.apply(requireContext().getApplicationContext());
         });
-
-        // 鱼眼校正换成 GPU 逐像素算。只换算法，开不开还是看屏幕上那个鱼眼按钮
-        bindSwitch("pref_gpu_fisheye_preview", appConfig.isGpuFisheyePreview(),
-                appConfig::setGpuFisheyePreview);
-        bindSwitch("pref_gpu_fisheye_video", appConfig.isGpuFisheyeVideo(),
-                appConfig::setGpuFisheyeVideo);
 
         // 别的程序占用 / 放开相机时记嫌疑应用；要使用情况访问，在权限设置里授予
         bindSwitch("pref_camera_holder_suspects", appConfig.isCameraHolderSuspectsEnabled(),

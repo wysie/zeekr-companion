@@ -56,6 +56,12 @@ public class SidePopupStartupAndroidTest {
         long lastTimestamp;
         int frames;
         Surface producer;
+        boolean gpuRoute;
+        java.util.Map<String,?> gpuBefore;
+        void enableGpu(){
+            gpuBefore=InstrumentationRegistry.getInstrumentation().getTargetContext().getSharedPreferences("app_config",0).getAll();
+            config.setGpuRenderingMode("custom");config.setGpuFeature("side",true);gpuRoute=true;
+        }
         EGLDisplay eglDisplay;
         EGLContext eglContext;
         EGLSurface eglSurface;
@@ -96,7 +102,7 @@ public class SidePopupStartupAndroidTest {
                     }
                     @Override public void onSurfaceTextureSizeChanged(SurfaceTexture st, int w, int h) {
                         // Match the production service's restoreBufferSize on resize.
-                        st.setDefaultBufferSize(sourceWidth, sourceHeight);
+                        if(!PreviewDewarp.ownsOutput(st))st.setDefaultBufferSize(sourceWidth, sourceHeight);
                     }
                     @Override public boolean onSurfaceTextureDestroyed(SurfaceTexture st) { return true; }
                     @Override public void onSurfaceTextureUpdated(SurfaceTexture st) {
@@ -129,7 +135,7 @@ public class SidePopupStartupAndroidTest {
             // Canvas-posted emulator buffers have timestamp 0. Use EGL presentation
             // timestamps to exercise the same progression check as a camera producer.
             if (producer == null) {
-                producer = new Surface(texture.get());
+                producer = gpuRoute ? PreviewDewarp.optionalViewSurfaceFor(view.getContext(),texture.get(),new Size(sourceWidth,sourceHeight),true) : new Surface(texture.get());
                 eglDisplay = EGL14.eglGetDisplay(EGL14.EGL_DEFAULT_DISPLAY);
                 assertTrue(EGL14.eglInitialize(eglDisplay, new int[2], 0, new int[2], 0));
                 EGLConfig[] configs = new EGLConfig[1];
@@ -197,9 +203,35 @@ public class SidePopupStartupAndroidTest {
                 EGL14.eglReleaseThread();
                 producer.release();
             }
+            FisheyeGlPipe pipe=PreviewDewarp.rawPipeFor(view.getTextureView());if(pipe!=null)pipe.release();
             main(view::detach);
             config.setSidePopupStraighten(oldStraighten);
+            if(gpuBefore!=null){
+                android.content.SharedPreferences.Editor edit=InstrumentationRegistry.getInstrumentation().getTargetContext().getSharedPreferences("app_config",0).edit().clear();
+                for(java.util.Map.Entry<String,?> e:gpuBefore.entrySet()){
+                    Object v=e.getValue();String k=e.getKey();if(v instanceof Boolean)edit.putBoolean(k,(Boolean)v);
+                    else if(v instanceof String)edit.putString(k,(String)v);else if(v instanceof Integer)edit.putInt(k,(Integer)v);
+                    else if(v instanceof Long)edit.putLong(k,(Long)v);else if(v instanceof Float)edit.putFloat(k,(Float)v);
+                    else if(v instanceof java.util.Set)edit.putStringSet(k,new java.util.HashSet<>((java.util.Set<String>)v));
+                }edit.commit();
+            }
             StreamLayoutTable.setCompositeCameraId(oldComposite);
+        }
+    }
+
+    @Test public void actualSideWindowUsesGpuAndReturnsToCompatibilityWithoutReplacingItsInput() throws Exception {
+        try(Fixture f=new Fixture()){
+            f.enableGpu();f.config.setSidePopupStraighten(true);
+            main(()->{f.view.applyConfig();f.view.show(LaneCycle.LEFT);});
+            for(int i=0;i<10;i++){f.frame(Color.BLUE);SystemClock.sleep(40);}
+            assertEquals("GPU",f.view.gpuState());assertTrue(f.view.isShowing());assertEquals(1f,((WindowManager.LayoutParams)f.view.getLayoutParams()).alpha,0f);
+            Surface input=f.producer;
+            main(()->control(f.view,f.view.getContext().getString(R.string.side_control_expand)).performClick());
+            for(int i=0;i<8;i++){f.frame(Color.BLUE);SystemClock.sleep(40);}
+            assertEquals("GPU",f.view.gpuState());assertSame(input,f.producer);assertTrue(input.isValid());
+            f.config.setGpuRenderingMode("off");
+            for(int i=0;i<8;i++){f.frame(Color.BLUE);SystemClock.sleep(40);}
+            assertEquals("compatibility",f.view.gpuState());assertSame(input,f.producer);assertTrue(input.isValid());
         }
     }
 

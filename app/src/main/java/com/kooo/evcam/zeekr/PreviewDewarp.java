@@ -56,6 +56,20 @@ public final class PreviewDewarp {
         });
         RAW_PIPES.add(new WeakReference<>(value));
     }
+
+    /** Existing mirror/side output only. Off leaves its original direct surface untouched. */
+    public static Surface optionalViewSurfaceFor(Context context, SurfaceTexture output, Size buffer, boolean enabled) {
+        if(!enabled || buffer==null)return new Surface(output);
+        synchronized(LOCK) {
+            FisheyeGlPipe existing=rawPipeFor(output);
+            if(existing!=null){Surface surface=existing.newInputSurface();if(surface!=null)return surface;}
+            FisheyeGlPipe next=FisheyeGlPipe.start("optional-camera",output,buffer.getWidth(),buffer.getHeight(),null);
+            if(next!=null){register(next);Surface surface=next.newInputSurface();if(surface!=null)return surface;next.release();}
+        }
+        return new Surface(output);
+    }
+    /** Projected GL outputs have window-sized buffers; their input retains the native camera size. */
+    public static boolean ownsOutput(SurfaceTexture output) { return rawPipeFor(output)!=null; }
     /** Same optional route for the existing lowest-priority popup output; no extra camera output. */
     public static Surface birdEyeSurfaceFor(Context context, SurfaceTexture texture, Size buffer) {
         return birdEyeSurfaceFor(context, texture, buffer, com.kooo.evcam.camera.CameraSessionOptions.read(context));
@@ -129,7 +143,7 @@ public final class PreviewDewarp {
         }
         Context context = view.getContext().getApplicationContext();
         AppConfig appConfig = new AppConfig(context);
-        if (!options.gpuPreview && !options.gpu360) {
+        if (!options.gpuPreview && !options.gpu360 && !options.gpuSide) {
             return null;
         }
         if (bufferSize == null) {

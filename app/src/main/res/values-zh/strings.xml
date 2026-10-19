@@ -43,7 +43,7 @@
     <string name="side_settings_close">隐藏设置预览</string>
     <string name="side_settings_expand">放大设置预览</string>
     <string name="side_settings_restore">恢复画面控件</string>
-    <string name="side_settings_gpu">设置预览需要原始环视画面。请关闭 GPU 预览校正，然后点击「应用更改」。</string>
+    <string name="side_settings_gpu">设置预览需要原始环视像素。请在系统 → GPU 图像处理中启用盲区侧视相机，或在自定义中关闭环视预览校正，然后点应用更改。</string>
     <string name="side_settings_images">侧面画面</string>
     <string name="side_settings_auto_fit">自动适配</string>
     <string name="side_settings_auto_fit_hint">避免黑色区域</string>

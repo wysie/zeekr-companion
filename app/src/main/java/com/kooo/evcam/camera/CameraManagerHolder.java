@@ -140,7 +140,7 @@ public class CameraManagerHolder {
     private static final class Shape {
         final String carModel;
         String previewMode;
-        boolean gpuPreview, gpu360, jpeg;
+        boolean gpuPreview, gpu360, gpuSide, gpuMirror, jpeg;
         final Profile profile;
         final boolean mapping009;
         final com.kooo.evcam.profile.ProfileChannels channels;
@@ -166,6 +166,7 @@ public class CameraManagerHolder {
                     config.isSidePopupEnabled() || config.isRearViewEnabled() || new com.kooo.evcam.zeekr.BirdEyeWindowConfig(app).popup());
             shape.gpuPreview = config.isGpuFisheyePreview();
             shape.gpu360 = config.isGpuBirdEye();
+            shape.gpuSide = config.isGpuSide(); shape.gpuMirror = config.isGpuMirror();
             shape.jpeg = config.isPhotoViaJpegEnabled();
             for (String role : com.kooo.evcam.profile.RecordingSources.ALL_ROLES)
                 shape.sources.put(role, config.getSourceCameraId(role));
@@ -178,7 +179,7 @@ public class CameraManagerHolder {
 
         String key() {
             return com.kooo.evcam.profile.CameraSetup.key(carModel, mapping009, profile, previewMode,
-                    channels.keys.contains("front"), sources, gpuPreview, gpu360, jpeg);
+                    channels.keys.contains("front"), sources, gpuPreview, gpu360, jpeg) + "|sideGpu=" + gpuSide + "|mirrorGpu=" + gpuMirror;
         }
     }
 
@@ -241,7 +242,7 @@ public class CameraManagerHolder {
 
     private synchronized MultiCameraManager create(Context app, Shape shape) {
         MultiCameraManager manager = new MultiCameraManager(app);
-        manager.setSessionOptions(new CameraSessionOptions(shape.gpuPreview, shape.gpu360, shape.jpeg, shape.profile));
+        manager.setSessionOptions(new CameraSessionOptions(shape.gpuPreview, shape.gpu360, shape.gpuSide, shape.gpuMirror, shape.jpeg, shape.profile));
         manager.setMaxOpenCameras(shape.count);
         // Recording remains MediaCodec; the saved experimental pipeline preference has no effect.
         manager.setCodecRecordingMode(new AppConfig(app).shouldUseCodecRecording());

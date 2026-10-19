@@ -2477,6 +2477,9 @@ public class SingleCamera {
                     ? com.kooo.evcam.zeekr.PreviewDewarp.surfaceFor(cameraId, declared.view, texture, buffer, sessionOptions)
                     : out.kind == ChannelRules.Kind.BIRD_EYE
                             ? com.kooo.evcam.zeekr.PreviewDewarp.birdEyeSurfaceFor(context, texture, buffer, sessionOptions)
+                            : out.kind == ChannelRules.Kind.MIRROR || out.kind == ChannelRules.Kind.SIDE_POPUP || out.kind == ChannelRules.Kind.SIDE_HUD
+                            ? com.kooo.evcam.zeekr.PreviewDewarp.optionalViewSurfaceFor(context, texture, buffer,
+                                    out.kind == ChannelRules.Kind.MIRROR ? sessionOptions.gpuMirror || sessionOptions.gpuSide : sessionOptions.gpuSide)
                             : new Surface(texture);
         } catch (RuntimeException e) {
             // 查过还活着、建的这一下画布被收走了：当它没有，调用方再看一眼消费者死没死
