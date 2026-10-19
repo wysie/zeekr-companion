@@ -193,3 +193,13 @@ an owner check. Both native tests, all 1,514 JVM tests, lint (zero errors), and
 debug/release builds pass. The scoped UI detector reports no findings. Evidence:
 `/tmp/companion-drawer-native-final.log` and
 `/tmp/companion-drawer-validation-final.log`.
+
+### Preview quick-preset order
+
+Selected recording sources now leads the four full-width quick-preset radio rows;
+the remaining order is Surround · four views, Front + Rear, Surround + Front + Rear.
+Other sources retains the individual road and cabin choices. Debug/test builds and
+lint pass, as does the existing native preview Cancel/Save and recording-preference
+preservation test. A native tablet screenshot and hierarchy confirm the order and
+initial selected state. Evidence: `/tmp/companion-preview-preset-build.log`,
+`/tmp/companion-preview-preset-native.log`, `/tmp/companion-preview-presets.png`.

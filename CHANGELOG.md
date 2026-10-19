@@ -9,6 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Put Selected recording sources first in the preview quick presets, followed by the existing three presets.
 - Match the navigation drawer to the neutral Settings styling and add a live 360° window switch beneath Super mirror.
 
 ## [2.11.54-alpha.1] - 2026-10-20

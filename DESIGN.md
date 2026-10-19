@@ -360,3 +360,11 @@ source layouts include `layout_navigation_drawer.xml`. Rows remain at least 52dp
 wrap to two lines and scroll for larger system fonts. The three window/control rows
 share native switches and the existing feature authorities. 360° window is a manual
 service session, rather than a persisted boot toggle or the main preview's 360° mode.
+
+### Preview quick presets, 2026-10-20
+
+Selected recording sources is the first quick preset, followed by Surround · four
+views, Front + Rear and Surround + Front + Rear. All four use full-width native
+radio rows with 56dp minimum touch targets, avoiding four cramped columns. Other
+sources retains the individual front/rear road and cabin choices. Saved values,
+staging, Cancel and Save behavior stay unchanged.
