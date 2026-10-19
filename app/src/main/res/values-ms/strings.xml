@@ -879,7 +879,7 @@
     <string name="dev_perm_not_granted">Tidak dibenarkan · %1$s</string>
     <string name="dev_perm_settings_unavailable">Unit kepala ini tidak dapat membuka halaman tetapan sistem itu</string>
     <string name="dev_raw_frame_title">Simpan juga bingkai asal</string>
-    <string name="dev_raw_frame_summary">Menyimpan bingkai asal dan nota geometri ke ZeekrShortcutApp/Photos/Raw untuk analisis susunan kamera dan parameter kanta</string>
+    <string name="dev_raw_frame_summary">Menyimpan bingkai asal dan nota geometri ke ZeekrCompanion/Photos/Raw untuk analisis susunan kamera dan parameter kanta</string>
     <string name="dev_gpu_fisheye_preview_title">Pratonton: pembetulan mata ikan per piksel dengan GPU</string>
     <string name="dev_gpu_fisheye_preview_summary">Membetulkan pratonton langsung sekeliling piksel demi piksel dengan GPU, melalui GL apl, selurus main semula foto dan bukan secara tampalan. Ini memilih kaedah sahaja; butang Luruskan masih menghidupkan dan mematikan pembetulan. Berkuat kuasa selepas apl dimulakan semula.</string>
     <string name="dev_gpu_fisheye_video_title">Main semula video: pembetulan mata ikan per piksel dengan GPU</string>
@@ -975,12 +975,12 @@
     <string name="set_footage_lock_brake_summary" formatted="false">Semasa merakam, brek mengejut (termasuk brek kecemasan automatik kereta) mengunci klip yang meliputi 10 saat sebelum hingga 10 saat selepas. Kuncian automatik menggunakan paling banyak 10% ruang rakaman; yang paling lama dilepaskan dahulu.</string>
     <string name="msg_brake_locked">Brek mengejut: klip yang meliputi 10 saat sebelum dan selepas telah dikunci</string>
     <string name="action_save_clip">Simpan klip</string>
-    <string name="clip_share_note_range">Julat yang anda pilih (%1$s), disimpan ke ZeekrShortcutApp/Videos/Clips. Pembersihan automatik tidak memadamnya.</string>
+    <string name="clip_share_note_range">Julat yang anda pilih (%1$s), disimpan ke ZeekrCompanion/Videos/Clips. Pembersihan automatik tidak memadamnya.</string>
     <string name="msg_clip_saved">Klip disimpan: %1$s</string>
     <string name="clip_cancel_range">Batal julat</string>
     <string name="msg_clip_failed">Klip tidak dapat disimpan</string>
     <string name="msg_clip_saving_range">Menyimpan julat (%1$s)…</string>
-    <string name="clip_share_note">Kira-kira 30 saat sekitar detik ini, disimpan ke ZeekrShortcutApp/Videos/Clips. Pembersihan automatik tidak memadamnya.</string>
+    <string name="clip_share_note">Kira-kira 30 saat sekitar detik ini, disimpan ke ZeekrCompanion/Videos/Clips. Pembersihan automatik tidak memadamnya.</string>
     <string name="clip_save_around">15 saat sebelum dan selepas</string>
     <string name="msg_deleting">Memadam…</string>
     <string name="clip_start_marked">Mula ditetapkan pada %1$s. Pergi ke penghujung, kemudian ketik \"Simpan hingga sini\" (maksimum 10 minit)</string>
@@ -1051,7 +1051,7 @@
     <string name="bird_eye_slow">360° dijeda: pemprosesan terlalu perlahan atau memori terhad</string>
     <string name="side_view_waiting_live">Menunggu kamera langsung</string>
     <string name="dev_repair_backup_note">Fail asal yang disahkan disimpan dalam repair-originals di folder video. Fail ini tidak dipadam secara automatik; pembaikan tidak bermula tanpa ruang untuk sandaran.</string>
-    <string name="bird_eye_photo_saved">Pratonton 360° dan penentukuran disimpan ke ZeekrShortcutApp/Photos/360</string>
+    <string name="bird_eye_photo_saved">Pratonton 360° dan penentukuran disimpan ke ZeekrCompanion/Photos/360</string>
     <string name="bird_eye_quality">Resolusi 360°</string>
     <string name="bird_eye_quality_low">Rendah — paling pantas</string>
     <string name="bird_eye_quality_balanced">Seimbang — lalai</string>
@@ -1060,8 +1060,8 @@
     <string name="bird_eye_quality_reduced">Resolusi 360° diturunkan kerana pemprosesan perlahan atau memori terhad. Butiran terdapat dalam Diagnostics.</string>
     <string name="msg_record_profile_restart">Pilihan kamera berubah. Keluar dan buka semula aplikasi untuk menggunakannya sebelum merakam.</string>
     <string name="dev_camera_display_title">Alat kamera dan paparan</string>
-    <string name="dev_camera_display_summary">Petikan kamera dan ujian paparan bernombor; eksport ke ZeekrShortcutApp/Developer</string>
-    <string name="dev_camera_display_help">Hentikan rakaman dan tutup kamera kilang dahulu.\n\nEksport menyemak ID diiklankan, ID fizikal/ketersediaan yang dilaporkan dan calon angka 0–15 (maksimum 48 calon, 3 minit). Satu imej asal bagi setiap calon yang boleh diakses, saiz dan kegagalan disimpan. ID tidak sah, tidak tersedia atau ditolak kebenaran dicatat; tiada kebenaran atau penimbal kilang dipintas. Suapan biasa aplikasi dilepaskan sementara.\n\nPengenalpastian paparan bermula dengan kad skrin utama, kemudian paparan sekunder awam satu demi satu. Catat lokasi kad atau jika tidak kelihatan. PNG ialah kad dijana, bukan tangkapan skrin. Pemetaan kamera dan tetapan HUD tidak berubah.\n\nFail: ZeekrShortcutApp/Developer pada storan dipilih.</string>
+    <string name="dev_camera_display_summary">Petikan kamera dan ujian paparan bernombor; eksport ke ZeekrCompanion/Developer</string>
+    <string name="dev_camera_display_help">Hentikan rakaman dan tutup kamera kilang dahulu.\n\nEksport menyemak ID diiklankan, ID fizikal/ketersediaan yang dilaporkan dan calon angka 0–15 (maksimum 48 calon, 3 minit). Satu imej asal bagi setiap calon yang boleh diakses, saiz dan kegagalan disimpan. ID tidak sah, tidak tersedia atau ditolak kebenaran dicatat; tiada kebenaran atau penimbal kilang dipintas. Suapan biasa aplikasi dilepaskan sementara.\n\nPengenalpastian paparan bermula dengan kad skrin utama, kemudian paparan sekunder awam satu demi satu. Catat lokasi kad atau jika tidak kelihatan. PNG ialah kad dijana, bukan tangkapan skrin. Pemetaan kamera dan tetapan HUD tidak berubah.\n\nFail: ZeekrCompanion/Developer pada storan dipilih.</string>
     <string name="dev_camera_export">Eksport semua suapan kamera</string>
     <string name="dev_display_identify">Kenal pasti paparan dan eksport kad</string>
     <string name="dev_probe_stop">Henti</string>
@@ -1208,7 +1208,7 @@
     <string name="bird_eye_car_auto">Auto (rangka jika tidak diketahui)</string>
     <string name="bird_eye_car_outline">Rangka umum</string>
     <string name="drive_log_title">Log perjalanan ke USB</string>
-    <string name="drive_log_summary">Hidupkan sebelum perjalanan, kemudian matikan dan tunggu status Disimpan sebelum mencabut USB. Menyimpan isyarat kenderaan mentah, log aplikasi/kitar hayat dan Diagnostik mula/akhir ke ZeekrShortcutApp/Logs/Drive_…. USB sahaja; tiada video atau tangkapan skrin. Berhenti selepas 8 jam, 256 MiB, ruang rendah atau kegagalan USB. Tidak bermula semasa but. Hanya isyarat yang didedahkan oleh kereta boleh direkod.</string>
+    <string name="drive_log_summary">Hidupkan sebelum perjalanan, kemudian matikan dan tunggu status Disimpan sebelum mencabut USB. Menyimpan isyarat kenderaan mentah, log aplikasi/kitar hayat dan Diagnostik mula/akhir ke ZeekrCompanion/Logs/Drive_…. USB sahaja; tiada video atau tangkapan skrin. Berhenti selepas 8 jam, 256 MiB, ruang rendah atau kegagalan USB. Tidak bermula semasa but. Hanya isyarat yang didedahkan oleh kereta boleh direkod.</string>
     <string name="drive_log_status_title">Status log perjalanan</string>
     <string name="drive_log_idle">Dimatikan — tiada sesi dimulakan</string>
     <string name="drive_log_starting">Memeriksa USB…</string>

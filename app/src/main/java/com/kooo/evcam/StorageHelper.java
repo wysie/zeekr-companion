@@ -78,7 +78,7 @@ public class StorageHelper {
         return listSdCardRootsFromMounts();
     }
 
-    /** 某个盘上录像该放的目录：root/ZeekrShortcutApp/Videos，和 {@link #getVideoDir} 选好盘之后的规则一样。 */
+    /** 某个盘上录像该放的目录：root/ZeekrCompanion/Videos，和 {@link #getVideoDir} 选好盘之后的规则一样。 */
     public static File videoDirOn(File root) {
         return StorageLayout.directory(root, StorageLayout.Kind.VIDEO);
     }
@@ -147,7 +147,7 @@ public class StorageHelper {
                 // 尝试创建应用目录
                 boolean created = dcimDir.mkdirs();
                 if (!created) {
-                    AppLog.w(TAG, "无法在U盘上创建 ZeekrShortcutApp 目录");
+                    AppLog.w(TAG, "无法在U盘上创建 ZeekrCompanion 目录");
                 }
             }
             result = dcimDir.exists() && dcimDir.canWrite();
@@ -436,7 +436,7 @@ public class StorageHelper {
      */
     private static File footageRoot(Context context, boolean useExternalSd) {
         if (useExternalSd) {
-            // U盘的公共目录（U盘/ZeekrShortcutApp/Videos 或 U盘/ZeekrShortcutApp/Photos）
+            // U盘的公共目录（U盘/ZeekrCompanion/Videos 或 U盘/ZeekrCompanion/Photos）
             File sdCardRoot = getExternalSdCardRoot(context);
             if (sdCardRoot != null && hasExternalSdCard(context)) {
                 return sdCardRoot;

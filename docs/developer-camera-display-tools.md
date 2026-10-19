@@ -46,7 +46,7 @@ Cancellation and failure retain the partial JSON report when storage is writable
 Files are in a unique timestamped directory:
 
 ```text
-ZeekrShortcutApp/Developer/CameraScan_<timestamp>_<id>/
+ZeekrCompanion/Developer/CameraScan_<timestamp>_<id>/
   report.json
   camera_0_<camera-id>.jpg
   camera_1_<camera-id>.jpg
@@ -83,7 +83,7 @@ prove the marker appeared on the windscreen. No model inference, permanent HUD
 selection or vehicle control setting is changed.
 
 ```text
-ZeekrShortcutApp/Developer/DisplayTest_<timestamp>_<id>/
+ZeekrCompanion/Developer/DisplayTest_<timestamp>_<id>/
   report.json
   display_0_test_card.png
   display_2_test_card.png
