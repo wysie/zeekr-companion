@@ -113,8 +113,14 @@ components:
     typography: "{typography.body}"
     rounded: "{rounded.control}"
     padding: "10dp 8dp"
+  light-home-toolbar:
+    backgroundColor: "transparent"
+    textColor: "{colors.light-text-primary}"
+    typography: "{typography.body}"
+    rounded: "{rounded.control}"
+    padding: "10dp 8dp"
   light-record-card-idle:
-    backgroundColor: "{colors.light-sunken}"
+    backgroundColor: "transparent"
     textColor: "{colors.light-text-primary}"
     rounded: "{rounded.control}"
     padding: "12dp 16dp 12dp 12dp"
@@ -146,8 +152,14 @@ components:
     typography: "{typography.body}"
     rounded: "{rounded.control}"
     padding: "10dp 8dp"
+  dark-home-toolbar:
+    backgroundColor: "transparent"
+    textColor: "{colors.dark-text-primary}"
+    typography: "{typography.body}"
+    rounded: "{rounded.control}"
+    padding: "10dp 8dp"
   dark-record-card-idle:
-    backgroundColor: "{colors.dark-sunken}"
+    backgroundColor: "transparent"
     textColor: "{colors.dark-text-primary}"
     rounded: "{rounded.control}"
     padding: "12dp 16dp 12dp 12dp"
@@ -240,7 +252,7 @@ This is an incumbent six-step native ramp, not an imposed geometric scale. Setti
 
 The current home has an 8dp outer inset, a header above the retained full-width camera stage, and a bottom action dock. The header contains the menu, a 32dp Companion mark and brand, Preview, direct 360° access, Settings and Minimise. Camera status, optional recording statistics and storage sit outside the picture. Utility icon buttons are 48dp square; header text actions have a 56dp minimum height. Control and source-pane gaps are 8dp.
 
-The dock is a horizontally scrollable native container. The recording card has weight 1.6; the visible secondary actions have equal weight 1 and 80dp minimum height. They are not all equal-width cards. Saved driver side reverses their order so recording is nearest that side: recording, photo, gallery, windows, contextual Straighten preview from the chosen edge. Labels can wrap to four lines and controls can grow. Straighten preview only appears for the applied surround preview outside 360° mode.
+The dock is a horizontally scrollable native container. The recording hit area has weight 1.6; the visible secondary actions have equal weight 1 and 80dp minimum height. The dock is one shared toolbar with a 1dp top divider, transparent action backgrounds and native ripple/focus feedback. Saved driver side reverses their order so recording is nearest that side: recording, photo, gallery, windows, contextual Straighten preview from the chosen edge. Labels can wrap to four lines and controls can grow. Straighten preview only appears for the applied surround preview outside 360° mode.
 
 The Preview dialog is end-aligned and sized from current usable host bounds: at most 540dp wide, with 24dp removed from host width/height. Its source presets share a row, Other sources follows, then the three labeled layout choices. Content scrolls with a persistent scrollbar; Save/Cancel remain dialog actions. Its internal side padding is 16dp. This is native bounds logic, not a web breakpoint system.
 
@@ -250,9 +262,9 @@ Expanded preview hides header and dock while retaining camera status, recording/
 
 ## Elevation & Depth
 
-Home controls use tonal separation and zero explicit elevation. The theme disables elevation color overlays, including dialog surface tinting, to retain neutral surfaces. Native Material dialogs retain their platform-provided window and modal treatment; no CSS shadow or fabricated elevation ramp is prescribed.
+Header controls use tonal separation and zero explicit elevation. The bottom toolbar uses spacing and a shared divider, rather than individual filled tiles. The theme disables elevation color overlays, including dialog surface tinting, to retain neutral surfaces. Native Material dialogs retain their platform-provided window and modal treatment; no CSS shadow or fabricated elevation ramp is prescribed.
 
-**The Flat Controls Rule.** Home action controls and the recording card remain flat at rest; tonal contrast provides separation.
+**The Flat Controls Rule.** Keep the bottom toolbar transparent at rest, with native press/focus feedback. Recording uses its red indicator and progress; Straighten uses orange text/icon and a checkmark when selected. Header and dialog actions retain their tonal surfaces.
 
 ## Shapes
 
@@ -262,11 +274,11 @@ The shared control/card radius is 10dp. Small gallery thumbnails also have an ex
 
 ### Native action buttons
 
-`Widget.Cam.HomeAction` extends the existing Material tonal button family: `card` fill, primary text/icon tint, Body text, 26dp inline icon, 8dp icon gap, 10dp corners, 10dp vertical and 8dp horizontal padding, and native theme ripple. Header actions, dock actions and icon utilities retain their different observed sizes. Preserve native click, focus, selected, disabled and accessibility behavior; do not substitute browser hover conventions.
+`Widget.Cam.HomeAction` extends the existing Material tonal button family: `card` fill, primary text/icon tint, Body text, 26dp inline icon, 8dp icon gap, 10dp corners, 10dp vertical and 8dp horizontal padding, and native theme ripple. Header actions and icon utilities retain their different observed sizes. The dock uses `Widget.Cam.HomeToolbarAction`: the same type, spacing and hit areas, with transparent fill and no stroke. Preserve native click, focus, selected, disabled and accessibility behavior; do not substitute browser hover conventions.
 
-### Recording card and camera status
+### Recording control and camera status
 
-The wider recording card is a clickable/focusable flat MaterialCardView using `sunken`, a 48dp progress indicator with 4dp track, a 26dp drawn record indicator, bold Body title and Caption detail. Its secondary hint uses Micro. Timing uses tabular figures. Runtime recording state owns title, detail, progress and active colors. The status action uses `sunken` at rest and `recording_quiet` when activated, primary Caption text, 8dp padding, 48dp minimum height and a native ripple. Pending source changes use a separate polite live-region notice.
+The wider recording control is a clickable/focusable transparent FrameLayout with native foreground ripple, a 48dp progress indicator with 4dp track, a 26dp drawn record indicator, bold Body title and Caption detail. Its secondary hint uses Micro. Timing uses tabular figures. Runtime recording state owns title, detail, indicator and progress; it does not fill the toolbar hit area. The main Straighten button opts into flat appearance via an XML attribute; playback Straighten controls keep their existing appearance. The status action uses `sunken` at rest and `recording_quiet` when activated, primary Caption text, 8dp padding, 48dp minimum height and a native ripple. Pending source changes use a separate polite live-region notice.
 
 ### Preview selection panel
 

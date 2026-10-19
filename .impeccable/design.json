@@ -1,6 +1,6 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-19T01:52:03.857829+00:00",
+  "generatedAt": "2026-10-19",
   "title": "Design System: Zeekr Companion",
   "extensions": {
     "colorMeta": {
@@ -373,15 +373,15 @@
   },
   "components": [
     {
-      "name": "Take photo · native token swatch",
+      "name": "Take photo \u00b7 native token swatch",
       "kind": "button",
-      "refersTo": "light-home-action",
-      "description": "Material home action: card fill, inline native icon in app, Body text; 80dp dock minimum. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
-      "html": "<button class=\"ds-light-home-action\">Take photo</button>",
-      "css": ".ds-light-home-action { background:#E6E6E8; color:#2A2B2E; font-family:Roboto,Arial,sans-serif; font-size:18px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:0; padding:10px 8px; min-height:48px; } .ds-light-home-action:hover, .ds-light-home-action:focus-visible, .ds-light-home-action:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
+      "refersTo": "light-home-toolbar",
+      "description": "Main toolbar action: transparent fill, inline native icon in app, Body text; 80dp dock minimum. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
+      "html": "<button class=\"ds-light-home-toolbar\">Take photo</button>",
+      "css": ".ds-light-home-toolbar { background:transparent; color:#2A2B2E; font-family:Roboto,Arial,sans-serif; font-size:18px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:0; padding:10px 8px; min-height:48px; } .ds-light-home-toolbar:hover, .ds-light-home-toolbar:focus-visible, .ds-light-home-toolbar:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
     },
     {
-      "name": "Side by side · native token swatch",
+      "name": "Side by side \u00b7 native token swatch",
       "kind": "button",
       "refersTo": "light-layout-choice",
       "description": "Unselected source-layout choice: 1dp line stroke; native app includes a 36dp vector icon. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
@@ -389,7 +389,7 @@
       "css": ".ds-light-layout-choice { background:#E6E6E8; color:#2A2B2E; font-family:Roboto,Arial,sans-serif; font-size:16px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:1px solid #DDDDE0; padding:10px 8px; min-height:48px; } .ds-light-layout-choice:hover, .ds-light-layout-choice:focus-visible, .ds-light-layout-choice:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
     },
     {
-      "name": "Automatic · native token swatch",
+      "name": "Automatic \u00b7 native token swatch",
       "kind": "button",
       "refersTo": "light-layout-choice-selected",
       "description": "Selected source-layout choice: 2dp energy stroke and native selected state description. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
@@ -397,15 +397,15 @@
       "css": ".ds-light-layout-choice-selected { background:#FDEDE6; color:#C9491A; font-family:Roboto,Arial,sans-serif; font-size:16px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:2px solid #F0622D; padding:10px 8px; min-height:48px; } .ds-light-layout-choice-selected:hover, .ds-light-layout-choice-selected:focus-visible, .ds-light-layout-choice-selected:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
     },
     {
-      "name": "Start recording · native token swatch",
+      "name": "Start recording \u00b7 native token swatch",
       "kind": "card",
       "refersTo": "light-record-card-idle",
-      "description": "Idle recording-card surface only; app includes progress ring, indicator and dynamic detail. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
+      "description": "Transparent recording hit area only; app includes progress ring, indicator and dynamic detail. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
       "html": "<button class=\"ds-light-record-card-idle\">Start recording</button>",
-      "css": ".ds-light-record-card-idle { background:#E6E6E8; color:#2A2B2E; font-family:Roboto,Arial,sans-serif; font-size:18px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:0; padding:10px 8px; min-height:48px; } .ds-light-record-card-idle:hover, .ds-light-record-card-idle:focus-visible, .ds-light-record-card-idle:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
+      "css": ".ds-light-record-card-idle { background:transparent; color:#2A2B2E; font-family:Roboto,Arial,sans-serif; font-size:18px; font-weight:500; letter-spacing:0.03em; border-radius:10px; border:0; padding:10px 8px; min-height:48px; } .ds-light-record-card-idle:hover, .ds-light-record-card-idle:focus-visible, .ds-light-record-card-idle:active { background-image:linear-gradient(#2A2B2E1F,#2A2B2E1F); }"
     },
     {
-      "name": "Camera status · native token swatch",
+      "name": "Camera status \u00b7 native token swatch",
       "kind": "custom",
       "refersTo": "light-camera-status",
       "description": "Status action at rest; activated app state uses recording_quiet. Documentation-only literal light-theme swatch; 1dp/sp = 1px, browser font fallback and static ripple overlay are not native fidelity claims. Native XML/Java owns dimensions, icons, interaction and accessibility.",
@@ -435,7 +435,7 @@
       },
       {
         "name": "Flat Controls",
-        "body": "Home action controls and the recording card remain flat at rest; tonal contrast provides separation.",
+        "body": "The bottom toolbar has transparent controls and native press/focus feedback; recording retains its red indicator and progress. Header and dialog actions keep tonal surfaces.",
         "section": "elevation"
       }
     ],

@@ -222,6 +222,11 @@ public class MainPageControlsAndroidTest {
             main(()->AppCompatDelegate.setDefaultNightMode(mode));
             try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
                 capture(mode==AppCompatDelegate.MODE_NIGHT_NO?"main-light":"main-dark");
+                if ("true".equals(InstrumentationRegistry.getArguments().getString("captureToolbar"))) {
+                    scenario.onActivity(a -> config.setFisheyeCorrection(true));
+                    capture(mode==AppCompatDelegate.MODE_NIGHT_NO?"main-light-straighten":"main-dark-straighten");
+                    continue;
+                }
                 onView(withId(R.id.btn_preview_layout)).perform(click());
                 for(int label:new int[]{R.string.home_layout_auto,R.string.home_layout_equal,R.string.home_layout_stacked})
                     onView(withText(label)).check(androidx.test.espresso.assertion.ViewAssertions.matches(isCompletelyDisplayed()));

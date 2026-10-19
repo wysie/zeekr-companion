@@ -51,3 +51,17 @@ reported findings resolved and returned **SHIP** for that correction pass. This
 is a scoped UI review, not certification of the whole app or either vehicle.
 Included in **v2.11.51-alpha.1**; the separate release preparation increments the
 Android version to 2.11.51-alpha.1 / 334 and retains the existing package/signing identity.
+
+## Flat toolbar refinement (after alpha 51)
+
+The bottom dock now uses transparent icon/label actions and one shared divider.
+Recording retains its existing state controller and red indicator/progress in a
+transparent native hit area; press/focus feedback remains native. The main
+Straighten widget opts into transparent styling and orange/checkmark selection;
+playback widgets retain their previous appearance.
+
+Debug/instrumentation builds and lint pass. Reused native sizing and screenshot
+checks pass (2 tests), including both main layouts, English/Malay/Chinese, 900/1280dp
+widths, font scale 1.3 and both themes. Captures cover neutral and selected toolbar
+states under `.impeccable/review/flat-toolbar/`. No camera/recording settings change.
+This visual refinement is on main after alpha 51 and is not part of that APK.

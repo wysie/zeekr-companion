@@ -53,8 +53,12 @@ signing certificate for an in-place update. New behavior still needs on-car test
 The main screen gives the camera stage the full available width, with a small
 Companion logo/name, **Preview** selector and direct **360° view** action above it.
 Camera status, elapsed recording statistics (when enabled) and storage information
-sit outside the camera picture. The bottom dock holds recording, Take photo,
-Gallery, Windows and contextual **Straighten preview** actions. Dock actions keep
+sit outside the camera picture. The bottom dock is a flat toolbar with recording, Take photo,
+Gallery, Windows and contextual **Straighten preview** actions. A single divider
+separates it from the picture; individual controls have transparent backgrounds
+and native press/focus feedback. Recording keeps its red indicator and progress;
+Straighten uses orange text plus a checkmark when enabled. This flat-toolbar refinement is
+newer than alpha 51 and is not yet in a downloadable release. Dock actions keep
 normal-size wrapped labels; the saved driver-side preference puts recording on
 that side. Settings and Minimise stay in the header. Long-press Minimise still quits.
 
