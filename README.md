@@ -426,8 +426,15 @@ Popup window → Aspect ratio (width:height)**, choose Square (1:1, default), Po
 (3:4), Landscape (4:3), Wide (16:9) or Extra wide (2.2:1). This setting applies only
 to the separate popup. Left and right cameras share one saved position and shape.
 Drag to place it and pinch to resize; position, height and aspect ratio are saved.
-Resizing and expand/restore retain the chosen ratio, and the window scales down
-proportionally if needed to fit the screen. Existing square sizes remain unchanged.
+Pinch resizing retains the chosen ratio, and the normal window scales down
+proportionally if needed to fit the screen. **Expand** temporarily fills the usable
+screen height and half its width, on the side nearest the original window; on very
+wide displays its width is capped at its height. It uses native overlay bounds and
+system-bar insets, independently of the saved aspect ratio. **Restore** returns to
+the exact original shape, size and position. The same expansion applies to a
+blind-side replacement in Super mirror; normal Super mirror and 360° window expansion
+retain their existing aspect ratios. Expanded bounds follow system-bar/display
+changes without saving the larger geometry. Existing square sizes remain unchanged.
 Corrected framing uses the actual window ratio rather than stretching the camera
 pixels; changing shape can change the visible coverage. High aim angles can still
 force a narrower view. Super mirror and HUD keep their own shapes and positions. If the head unit rejects the additional output,

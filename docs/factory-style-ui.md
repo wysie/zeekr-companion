@@ -218,3 +218,21 @@ lint pass, as does the existing native preview Cancel/Save and recording-prefere
 preservation test. A native tablet screenshot and hierarchy confirm the order and
 initial selected state. Evidence: `/tmp/companion-preview-preset-build.log`,
 `/tmp/companion-preview-preset-native.log`, `/tmp/companion-preview-presets.png`.
+
+### Blind-side half-screen expansion
+
+Separate blind-side popups and the blind-side replacement in Super mirror now use
+a temporary tall half-screen expansion, ignoring the normal saved aspect ratio.
+The panel uses native overlay bounds minus system bars/cutouts, fills the usable
+height with control margins, and anchors to the half nearest the normal window.
+Extremely wide displays cap panel width at its height. Insets/configuration changes
+refit the expansion while retaining its restore point. Restore returns the exact
+normal size/shape/position; no expanded aspect or size is saved. The camera picture
+reframes for the new window shape. Camera output ownership, HUD geometry, normal
+Super mirror and 360° aspect-preserving expansion are unchanged.
+
+Validation: all 1,516 JVM tests, debug/test builds and lint (zero errors) pass.
+Four native emulator tests cover ultra-wide popup expansion/restore with retained
+SurfaceTexture, mirror replacement cleanup, unchanged normal mirror expansion,
+and 360° inset refitting. Physical fit/framing still needs a vehicle check. Logs:
+`/tmp/companion-half-screen-build.log`, `/tmp/companion-half-screen-native.log`.

@@ -1129,7 +1129,7 @@
     <string name="menu_image_framing_summary">校正、取景方向、旋转、主屏镜像与共用角标</string>
     <string name="menu_popup_window">弹出窗口</string>
     <string name="menu_popup_window_summary">大小、位置与窗口手势</string>
-    <string name="menu_popup_gestures">拖动可移动，双指缩放可改变大小，角落按钮可放大或还原，并保留所选宽高比。X 仅关闭本次打灯画面；取消后再次打灯会重新显示。超级后视镜与 HUD 保留各自的窗口形状与位置。</string>
+    <string name="menu_popup_gestures">拖动可移动，双指缩放时保留所选宽高比。放大时临时显示为半屏竖向面板；还原后恢复原来的形状与位置。超级后视镜中的侧视画面也采用此方式。X 仅关闭本次打灯画面；取消后再次打灯会重新显示。HUD 布局保持独立。</string>
     <string name="menu_placement">位置</string>
     <string name="menu_advanced_experimental">高级 · 试验性</string>
     <string name="menu_output">显示输出</string>

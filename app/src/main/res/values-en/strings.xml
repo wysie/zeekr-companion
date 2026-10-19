@@ -1145,7 +1145,7 @@
     <string name="menu_image_framing_summary">Correction, viewing direction, rotation, screen mirroring and shared labels</string>
     <string name="menu_popup_window">Popup window</string>
     <string name="menu_popup_window_summary">Size, position and window gestures</string>
-    <string name="menu_popup_gestures">Drag to move, pinch to resize, or use the corner control to expand/restore. The selected aspect ratio is kept. X dismisses this signal activation; cancel and signal again to reopen. Super mirror and HUD keep their own window shapes and positions.</string>
+    <string name="menu_popup_gestures">Drag to move; pinch to resize while keeping the selected aspect ratio. Expand temporarily fills a portrait half-screen panel; Restore returns to the original shape and position. The same applies to a blind-side view in Super mirror. X dismisses this signal activation; cancel and signal again to reopen. HUD layout stays independent.</string>
     <string name="menu_placement">Placement</string>
     <string name="menu_advanced_experimental">Advanced · experimental</string>
     <string name="menu_output">Output</string>

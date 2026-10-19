@@ -63,6 +63,8 @@ public class SideViewPopupView extends ViewGroup {
     private final CameraLabel cameraLabel;
     private final SideViewControls controls;
     private final SideViewExpansion expansion = new SideViewExpansion();
+    private Size expandedViewport;
+    private final Runnable refitExpansion = this::refitExpanded;
     private final Matrix drawMatrix = new Matrix();
     private final CameraFrameFreshness frameFreshness = new CameraFrameFreshness();
     private final SidePopupStartup startup = new SidePopupStartup();
@@ -167,7 +169,13 @@ public class SideViewPopupView extends ViewGroup {
 
     @Override protected void onConfigurationChanged(android.content.res.Configuration configuration) {
         super.onConfigurationChanged(configuration);
+        post(refitExpansion);
         invalidate(); // Repaint Canvas badges even when the current frame is unchanged.
+    }
+
+    @Override public android.view.WindowInsets onApplyWindowInsets(android.view.WindowInsets insets) {
+        post(refitExpansion);
+        return super.onApplyWindowInsets(insets);
     }
 
     public AutoFitTextureView getTextureView() {
@@ -550,15 +558,25 @@ public class SideViewPopupView extends ViewGroup {
         if (!expansion.expanded()) {
             savePosition();
         }
-        SideViewExpansion.Geometry next = expansion.toggle(
+        expandedViewport = OverlayAvailableSize.read(this, windowManager);
+        SideViewExpansion.Geometry next = expansion.toggleHalfScreen(
                 new SideViewExpansion.Geometry(params.x, params.y, params.width, params.height),
-                getResources().getDisplayMetrics().widthPixels,
-                getResources().getDisplayMetrics().heightPixels,
+                expandedViewport.getWidth(), expandedViewport.getHeight(),
                 getResources().getDimensionPixelSize(com.kooo.evcam.R.dimen.side_control_margin));
         applyGeometry(next);
         controls.setExpanded(expansion.expanded());
         update();
         invalidate();
+    }
+
+    private void refitExpanded() {
+        if (!attached || params == null || !expansion.expanded()) return;
+        Size next = OverlayAvailableSize.read(this, windowManager);
+        if (next.equals(expandedViewport)) return;
+        expandedViewport = next;
+        applyGeometry(expansion.refit(next.getWidth(), next.getHeight(),
+                getResources().getDimensionPixelSize(R.dimen.side_control_margin)));
+        update(); invalidate();
     }
 
     private void restoreExpanded() {
@@ -618,6 +636,7 @@ public class SideViewPopupView extends ViewGroup {
 
     @Override protected void onDetachedFromWindow() {
         abortFade();
+        removeCallbacks(refitExpansion);
         freshnessHandler.removeCallbacks(freshnessTick);
         clearFrames();
         super.onDetachedFromWindow();

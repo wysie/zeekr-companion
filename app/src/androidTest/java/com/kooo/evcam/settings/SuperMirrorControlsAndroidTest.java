@@ -159,6 +159,7 @@ public class SuperMirrorControlsAndroidTest {
         }); settled();
         main(() -> tap(R.string.side_control_expand)); settled();
         main(() -> {
+            assertTrue("Blind-side replacement expands vertically", geometry().height > geometry().width);
             window.clearSideView();
             assertEquals(720, geometry().width); assertEquals(360, geometry().height);
             assertNotNull(control(window, R.string.mirror_control_close));

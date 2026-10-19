@@ -4,6 +4,34 @@ import org.junit.Test;
 import static org.junit.Assert.*;
 
 public class SideViewExpansionTest {
+    @Test public void blindSideExpansionIgnoresSavedAspectAndUsesNearestHalf() {
+        for (int[] size : new int[][]{{400, 400}, {600, 450}, {880, 400}, {300, 400}}) {
+            for (boolean right : new boolean[]{false, true}) {
+                SideViewExpansion expansion = new SideViewExpansion();
+                SideViewExpansion.Geometry normal = new SideViewExpansion.Geometry(right ? 1500 : 10, 200, size[0], size[1]);
+                SideViewExpansion.Geometry large = expansion.toggleHalfScreen(normal, 2560, 1500, 16);
+                assertEquals(1264, large.width); assertEquals(1468, large.height);
+                assertTrue(large.height > large.width);
+                assertEquals(right ? 1280 : 16, large.x); assertEquals(16, large.y);
+                assertSame(normal, expansion.toggleHalfScreen(large, 2560, 1500, 16));
+                assertFalse(expansion.expanded());
+            }
+        }
+    }
+
+    @Test public void halfScreenExpansionRefitsInsetsAndRestoresItsOriginalUltraWideGeometry() {
+        SideViewExpansion expansion = new SideViewExpansion();
+        SideViewExpansion.Geometry normal = new SideViewExpansion.Geometry(1500, 300, 880, 400);
+        expansion.toggleHalfScreen(normal, 2560, 1400, 16);
+        SideViewExpansion.Geometry fullscreen = expansion.refit(2560, 1600, 16);
+        assertEquals(1264, fullscreen.width); assertEquals(1568, fullscreen.height);
+        assertEquals(1280, fullscreen.x); assertEquals(16, fullscreen.y);
+        assertTrue(expansion.expanded()); assertSame(normal, expansion.restore());
+        // A later normal mirror/360 expansion still retains its aspect ratio.
+        SideViewExpansion.Geometry normalExpansion = expansion.toggle(normal, 2560, 1600, 16);
+        assertEquals(2.2, normalExpansion.width / (double) normalExpansion.height, .01);
+    }
+
     @Test public void immersiveBoundsGrowAndShrinkExpansionWithoutChangingRestorePoint() {
         SideViewExpansion expansion = new SideViewExpansion();
         SideViewExpansion.Geometry normal = new SideViewExpansion.Geometry(1200, 150, 600, 900);
