@@ -11,6 +11,7 @@ outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
 | --- | --- |
+| `fix/preview-selected-quick-preset` | First-class Selected recording sources quick preset, followed by the existing three in readable full-width radio rows |
 | `feature/gpu-360-renderer` | Opt-in direct camera-texture 360 projection using shared calibration lookups, raw-output fallback and native EGL/freshness/photo checks; CPU remains default pending car validation |
 | `integration/upstream-contribution-followups` | Reviewed merged/adapted wysie PRs through upstream 151040e4; selected microphone/updater cleanup and Android null-digest regression, with existing PR heads preserved |
 | `fix/minimise-icon` | Standard minus glyph for the background action, preserving tap-to-hide and long-press Quit app |

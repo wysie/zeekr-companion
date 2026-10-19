@@ -82,9 +82,10 @@ after a longer wait. Full troubleshooting explanations remain in Camera status;
 preview waiting still does not establish whether recording is working. These
 refinements ship in alpha 53.
 
-**Preview** opens a staged side panel: quick presets for **Surround · four views**,
-**Front + Rear** and **Surround + roads**, then **Other sources** for Follow recording,
-one road source or cabin. These use the same saved source choice as Settings;
+**Preview** opens a staged side panel: quick presets for **Selected recording sources**,
+**Surround · four views**, **Front + Rear** and **Surround + Front + Rear**, in that order.
+The four presets use full-width radio rows; **Other sources** offers one road source
+or cabin. These use the same saved source choice as Settings;
 preview changes never edit recording groups, source mappings or quality. Cancel,
 Back and outside dismissal do not save. A slim **Camera changes pending · Apply changes**
 banner appears above the main preview and beneath the Settings title. The selector

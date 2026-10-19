@@ -29,8 +29,10 @@ public final class MainPreviewPanel {
         content.setPadding(pad, 0, pad, 0);
         section(content, R.string.home_presets);
         RadioGroup sources = new RadioGroup(activity);
-        sources.setOrientation(narrow ? LinearLayout.VERTICAL : LinearLayout.HORIZONTAL); sources.setBaselineAligned(false);
+        // Four complete labels remain readable at the panel's fixed tablet width.
+        sources.setOrientation(LinearLayout.VERTICAL); sources.setBaselineAligned(false);
         Map<Integer, String> values = new LinkedHashMap<>();
+        add(sources, values, "selected", PreviewLayoutPicker.label(activity, "selected"));
         add(sources, values, "surround", activity.getString(R.string.home_surround_four));
         add(sources, values, "roads", PreviewLayoutPicker.label(activity, "roads"));
         add(sources, values, "surround_roads", PreviewLayoutPicker.label(activity, "surround_roads"));
@@ -60,7 +62,7 @@ public final class MainPreviewPanel {
         });
         reflectOther.run();
         otherSources.setOnClickListener(v -> {
-            String[] extra = {"selected", "roadfront", "roadrear", "cabin"};
+            String[] extra = {"roadfront", "roadrear", "cabin"};
             String[] labels = new String[extra.length];
             for (int i = 0; i < extra.length; i++) labels[i] = PreviewLayoutPicker.label(activity, extra[i]);
             CamDialogs.show(new MaterialAlertDialogBuilder(activity, R.style.Theme_Cam_MaterialAlertDialog)
