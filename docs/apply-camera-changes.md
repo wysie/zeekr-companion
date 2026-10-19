@@ -1,6 +1,6 @@
 # Applying camera configuration inside Zeekr Companion
 
-Camera configuration is saved independently of the running pipeline. A shared
+Available in **2.11.54-alpha.1**. Camera configuration is saved independently of the running pipeline. A shared
 **Camera changes pending · Apply changes** banner appears above the main preview
 and below the Settings title. No full app quit/relaunch is needed for these edits.
 

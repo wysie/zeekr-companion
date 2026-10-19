@@ -1,10 +1,10 @@
-# GPU 360° renderer — unreleased, 2026-10-19
+# GPU 360° renderer — alpha 54, 2026-10-20
 
 The new backend is opt-in under **Settings → 360° camera → Picture → 360° rendering
 → GPU (experimental)**. Tap Apply changes after changing it. **CPU compatibility
 remains the default**, retaining the installed camera route until the owner chooses
 the new backend. This is independent of the Developer GPU fisheye switches and is
-not in release 2.11.53-alpha.1.
+included in 2.11.54-alpha.1; it is absent from release 2.11.53-alpha.1.
 
 ## Rendering
 
@@ -102,8 +102,8 @@ Final validation on Android API 32 / ARM64 `sdk_gphone64_arm64`, SwiftShader:
   nonblocking route lookup/cancellation refinements passed all seven cases.
 - `:app:testDebugUnitTest :app:lintDebug :app:assembleDebug
   :app:assembleDebugAndroidTest :app:assembleRelease` pass. Signed release assembly
-  retains the existing application ID and signing certificate. This is an
-  unreleased development build, not a replacement asset for alpha 53.
+  retains the existing application ID and signing certificate. This evidence describes the initial development build; the feature is included
+  in alpha 54, rather than replacing the historical alpha 53 asset.
 
 The first UI screenshot assertion exposed normal acquisition-versus-compositor
 lag and now waits for a live presented image rather than taking the first possible

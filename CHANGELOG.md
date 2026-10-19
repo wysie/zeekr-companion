@@ -9,8 +9,9 @@ commit message, not here.
 
 ## [Unreleased]
 
-- Apply saved camera/source, native-size and GPU routing changes without quitting, with shared pending banners, clip finalization, confirmation and recording resumption.
+## [2.11.54-alpha.1] - 2026-10-20
 
+- Apply saved camera/source, native-size and GPU routing changes without quitting, with shared pending banners, clip finalization, confirmation and recording resumption.
 - Add an opt-in direct-texture GPU 360° renderer for main and popup views, preserving calibration, vehicle artwork, photos and recording behavior, with CPU compatibility and stitcher-failure fallback.
 
 ## [2.11.53-alpha.1] - 2026-10-19
