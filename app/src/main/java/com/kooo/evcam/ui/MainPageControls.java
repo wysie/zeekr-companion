@@ -156,6 +156,7 @@ public final class MainPageControls implements DefaultLifecycleObserver {
     }
 
     public void refresh() {
+        activity.refreshDrawerSwitches();
         RecordingCoordinator recorder = RecordingCoordinator.get(activity);
         boolean waitingUsb = recorder.isWaitingForStorage();
         boolean active = recorder.isRecordingOrResuming() || waitingUsb;

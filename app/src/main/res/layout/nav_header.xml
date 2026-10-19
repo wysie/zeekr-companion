@@ -1,47 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  抽屉头：平铺，不用渐变 —— 车机系统的面板都是平的，层次靠明度和留白。
-  三个 id（nav_header_title / subtitle / version）MainActivity 会去填，保留。
-
-  各语言统一显示 Zeekr Companion；作者与原项目来源在关于页说明。
--->
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:background="@color/nav_background"
-    android:orientation="vertical"
-    android:paddingStart="24dp"
-    android:paddingTop="32dp"
-    android:paddingEnd="24dp"
-    android:paddingBottom="20dp">
-
-    <TextView
-        android:id="@+id/nav_header_title"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/app_name"
-        android:textColor="@color/nav_header_text"
-        android:textAppearance="@style/TextAppearance.Cam.Title"
-        android:textStyle="bold" />
-
-    <TextView
-        android:id="@+id/nav_header_subtitle"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/nav_header_subtitle"
-        android:textColor="@color/nav_header_text_secondary"
-        android:textAppearance="@style/TextAppearance.Cam.Caption" />
-
-    <TextView
-        android:id="@+id/nav_header_version"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:fontFeatureSettings="tnum"
-        android:textColor="@color/nav_header_text_secondary"
-        android:textAppearance="@style/TextAppearance.Cam.Micro"
-        tools:text="Version 0.38.0" />
-
+    android:layout_width="match_parent" android:layout_height="wrap_content"
+    android:background="@color/nav_background" android:orientation="vertical"
+    android:paddingStart="20dp" android:paddingEnd="20dp" android:paddingTop="20dp" android:paddingBottom="16dp">
+    <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center_vertical">
+        <ImageView android:layout_width="28dp" android:layout_height="28dp" android:layout_marginEnd="12dp"
+            android:src="@drawable/ic_companion_mark" android:importantForAccessibility="no" />
+        <TextView android:id="@+id/nav_header_title" android:layout_width="0dp" android:layout_weight="1"
+            android:layout_height="wrap_content" android:text="@string/app_name" android:accessibilityHeading="true"
+            android:textAppearance="@style/TextAppearance.Cam.SettingsTitle" android:textColor="@color/nav_header_text" />
+    </LinearLayout>
+    <TextView android:id="@+id/nav_header_subtitle" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="6dp" android:paddingStart="40dp" android:paddingEnd="0dp"
+        android:text="@string/nav_header_subtitle" android:textColor="@color/nav_header_text_secondary"
+        android:textAppearance="@style/TextAppearance.Cam.SettingsMicro" />
+    <TextView android:id="@+id/nav_header_version" android:layout_width="match_parent" android:layout_height="wrap_content"
+        android:layout_marginTop="2dp" android:paddingStart="40dp" android:paddingEnd="0dp" android:fontFeatureSettings="tnum"
+        android:textColor="@color/nav_header_text_secondary" android:textAppearance="@style/TextAppearance.Cam.SettingsMicro"
+        tools:text="Version 2.11.54-alpha.1" />
 </LinearLayout>

@@ -35,6 +35,12 @@
                 android:title="@string/set_section_rearview"
                 app:actionLayout="@layout/nav_switch" />
             <item
+                android:id="@+id/nav_bird_eye_window"
+                android:checkable="false"
+                android:icon="@drawable/ic_camera"
+                android:title="@string/main_360_window"
+                app:actionLayout="@layout/nav_switch" />
+            <item
                 android:id="@+id/nav_floating_button"
                 android:checkable="false"
                 android:icon="@drawable/ic_floating"

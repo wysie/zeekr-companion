@@ -1164,15 +1164,18 @@ public class MainActivity extends AppCompatActivity {
      * 设置导航抽屉
      */
     private void setupNavigationDrawer() {
-        // 设置导航菜单点击监听
+        // Flat neutral drawer; avoid vendor/default Material tint and corner/elevation overrides.
+        drawerLayout.setDrawerElevation(0);
+        navigationView.setBackgroundTintList(null);
+        navigationView.setBackgroundColor(ContextCompat.getColor(this, R.color.nav_background));
         drawerLayout.addDrawerListener(new androidx.drawerlayout.widget.DrawerLayout.SimpleDrawerListener() {
             @Override
             public void onDrawerOpened(View drawerView) {
                 // 后视镜也可能在设置里、或者悬浮窗自己关掉过
-                syncRearViewSwitch();
+                syncDrawerSwitches();
             }
         });
-        syncRearViewSwitch();
+        syncDrawerSwitches();
 
         navigationView.setNavigationItemSelectedListener(item -> {
             int itemId = item.getItemId();
@@ -1180,6 +1183,14 @@ public class MainActivity extends AppCompatActivity {
             // 开关行：点一下就拨，不跳界面、不收抽屉 —— 拨完还看得见它变了没有
             if (itemId == R.id.nav_rearview) {
                 toggleRearViewFromDrawer();
+                return false;
+            }
+
+            if (itemId == R.id.nav_bird_eye_window) {
+                if (com.kooo.evcam.zeekr.BirdEyePopupService.isRunning())
+                    com.kooo.evcam.zeekr.BirdEyePopupService.stop(this);
+                else openBirdEyePopup();
+                syncDrawerSwitches();
                 return false;
             }
 
@@ -1212,8 +1223,9 @@ public class MainActivity extends AppCompatActivity {
             return true;
         });
 
-        // 默认选中录制界面
-        navigationView.setCheckedItem(R.id.nav_recording);
+        // A theme/configuration recreation restores Settings before the drawer is bound.
+        navigationView.setCheckedItem(getSupportFragmentManager().findFragmentById(R.id.fragment_container)
+                instanceof com.kooo.evcam.settings.SettingsShellFragment ? R.id.nav_settings : R.id.nav_recording);
     }
     
     /**
@@ -3640,7 +3652,7 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.msg_rearview_on, Toast.LENGTH_SHORT).show();
             com.kooo.evcam.ui.RearViewGuide.showOnce(this);
         }
-        syncRearViewSwitch();
+        syncDrawerSwitches();
     }
 
     /** 抽屉里的悬浮按钮开关，和后视镜那一行表现一致。 */
@@ -3650,15 +3662,21 @@ public class MainActivity extends AppCompatActivity {
             Toast.makeText(this, R.string.msg_need_overlay, Toast.LENGTH_SHORT).show();
             WakeUpHelper.requestOverlayPermission(this);
         }
-        syncRearViewSwitch();
+        syncDrawerSwitches();
     }
 
-    /** 行尾那两个开关照各自的真实状态摆。 */
-    private void syncRearViewSwitch() {
+    /** Main-page refresh also reconciles X, Settings and asynchronous popup startup/refusal. */
+    public void refreshDrawerSwitches() {
+        if (drawerLayout != null && drawerLayout.isDrawerOpen(GravityCompat.START)) syncDrawerSwitches();
+    }
+
+    /** Each switch reflects its existing feature authority, never a new persisted preference. */
+    private void syncDrawerSwitches() {
         if (navigationView == null || appConfig == null) {
             return;
         }
         syncNavSwitch(R.id.nav_rearview, appConfig.isRearViewEnabled());
+        syncNavSwitch(R.id.nav_bird_eye_window, com.kooo.evcam.zeekr.BirdEyePopupService.isRunning());
         syncNavSwitch(R.id.nav_floating_button, appConfig.isRecordingFloatingEnabled());
     }
 
@@ -3668,6 +3686,16 @@ public class MainActivity extends AppCompatActivity {
         View toggle = action != null ? action.findViewById(R.id.nav_switch) : null;
         if (toggle instanceof android.widget.CompoundButton) {
             ((android.widget.CompoundButton) toggle).setChecked(on);
+            View row = navigationView.findViewById(itemId);
+            if (row != null) androidx.core.view.ViewCompat.setAccessibilityDelegate(row,
+                    new androidx.core.view.AccessibilityDelegateCompat() {
+                @Override public void onInitializeAccessibilityNodeInfo(View host,
+                        androidx.core.view.accessibility.AccessibilityNodeInfoCompat info) {
+                    super.onInitializeAccessibilityNodeInfo(host, info);
+                    info.setClassName(android.widget.Switch.class.getName());
+                    info.setText(item.getTitle()); info.setCheckable(true); info.setChecked(on);
+                }
+            });
         }
     }
 
