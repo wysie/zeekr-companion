@@ -51,17 +51,32 @@ presentation. Recording authority, source/profile mappings, HAL sizes, HUD routi
 factory arbitration and actual side-popup rendering are unchanged.
 
 Sampling runs only while Picture is started and visible, at up to five samples per
-second with a reused bitmap capped at 2048 pixels along the strip (about 512 per
-lane for the known composite). It skips duplicate timestamps. This is a tuning
-preview, not a quality/FPS change to the actual blind camera. Closing/pausing the
-page stops callbacks and releases the sample reference.
+second with one reused bitmap. It preserves native 1280×5140 / 5120×1280 strips and
+3840×2160 composites; larger feeds are fitted within 8,388,608 pixels (32 MiB ARGB)
+and an 8192-pixel edge limit. The previous 2048-pixel strip cap reduced a 009 lane
+to about 510×510 before cropping/straightening. Keeping its 1280×1280 source detail
+also benefits the expanded settings preview. It skips duplicate timestamps. This
+is a tuning preview, not a quality/FPS change to the actual blind camera. Closing/
+pausing the page stops callbacks and releases the sample reference. Native sampling
+uses more readback bandwidth and memory than the old small copy; vehicle throughput
+has not been measured. No extra camera output or frame-rate increase is introduced.
 
 Reverse/factory camera views, screen-off, missing car connection, unavailable
 composite, failed readback and stale/nonprogressing textures cover the preview.
 A source must advance before it becomes live. GPU-corrected main textures are
 explicitly unavailable for this raw sampler to avoid double correction. Select a
-main preview containing Surround and quit/reopen if that source is not attached;
-turn experimental GPU preview correction off and reopen when applicable.
+main preview containing Surround and tap Apply changes if that source is not attached;
+turn experimental GPU preview correction off and apply when applicable.
+
+Native-detail regression (API 32 ARM64 emulator): a real TextureView receives a
+1280×5140 buffer with alternating two-row bars; production readback retains native
+dimensions and reuses the same allocation. Both corrected side images match 68/68
+interior source samples with a 0–255 contrast range. The existing lane-selection/
+stale-cover test and independent direct-texture popup fine-detail test pass. All
+1,514 JVM tests and debug/test builds pass; lint has zero errors. These fixtures
+verify spatial sampling, not vehicle image quality or readback throughput. Logs:
+`/tmp/companion-settings-native-build.log`, `/tmp/companion-settings-native-test.log`
+and `/tmp/companion-settings-popup-detail-test.log`.
 
 ## Density and navigation follow-up
 

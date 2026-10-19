@@ -9,6 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Preserve native camera detail in the Blind spot camera settings preview instead of shrinking each side image to about 510 pixels before correction.
 - Put Selected recording sources first in the preview quick presets, followed by the existing three presets.
 - Match the navigation drawer to the neutral Settings styling and add a live 360° window switch beneath Super mirror.
 

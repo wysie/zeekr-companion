@@ -123,7 +123,10 @@ for selected segments. All sidebar entries, including About and Quit, share one
 Picture · Window · HUD** tabs; changing tabs never resets settings. Picture has a
 Left/Right live settings preview with Expand/Restore and Hide/Show controls.
 It reads the existing main surround texture at up to five samples per second,
-without opening a camera or adding an output; configured popup/HUD frame rates are unchanged.
+preserving native detail for the known 1280×5140, 5120×1280 and 3840×2160 feeds before
+cropping/straightening, including when expanded. One reused sample is bounded to
+32 MiB / 8192 pixels per edge for larger feeds. It opens no camera or extra output;
+configured popup/HUD frame rates are unchanged.
 Choose a main preview that contains Surround and tap Apply changes if needed. The preview
 pauses for factory camera use, screen-off, lost vehicle connection or stale frames;
 the experimental GPU preview path needs to be disabled and applied to expose raw
