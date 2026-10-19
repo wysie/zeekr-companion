@@ -1,0 +1,5 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="set_hud_side_inner_crop_title">HUD 内侧裁剪（%）</string>
+    <string name="set_hud_side_inner_crop_summary">裁掉靠近 HUD 中央的一侧，保留外侧边缘；不拉伸画面。009 默认 25%，其他 HUD 默认 0%。移动中的原车图标仍可能重叠。</string>
+</resources>

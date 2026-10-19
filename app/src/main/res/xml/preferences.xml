@@ -384,6 +384,7 @@
             <PreferenceCategory android:key="group_hud_placement" android:title="@string/ui_hud_position_size">
                 <SeekBarPreference android:key="pref_hud_side_size" android:title="@string/set_hud_side_size_title" android:summary="@string/set_hud_side_size_summary" app:showSeekBarValue="true" />
                 <SeekBarPreference android:key="pref_hud_side_shape" android:title="@string/set_hud_side_shape_title" android:summary="@string/set_hud_side_shape_summary" app:showSeekBarValue="true" />
+                <SeekBarPreference android:key="pref_hud_side_inner_crop" android:title="@string/set_hud_side_inner_crop_title" android:summary="@string/set_hud_side_inner_crop_summary" app:showSeekBarValue="true" />
                 <SeekBarPreference android:key="pref_hud_side_left" android:title="@string/set_hud_side_left_title" android:summary="@string/set_hud_side_left_summary" app:showSeekBarValue="true" />
                 <SeekBarPreference android:key="pref_hud_side_vertical" android:title="@string/set_hud_side_vertical_title" android:summary="@string/set_hud_side_vertical_summary" app:showSeekBarValue="true" />
                 <SwitchPreferenceCompat android:key="pref_hud_side_follow" android:title="@string/set_hud_side_follow_title" android:summary="@string/set_hud_side_follow_summary" />

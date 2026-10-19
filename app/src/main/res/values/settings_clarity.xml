@@ -10,7 +10,7 @@
     <string name="ui_hud_reset_picture">重置 HUD 画面</string>
     <string name="ui_hud_reset_placement">重置 HUD 位置与大小</string>
     <string name="ui_hud_picture_reset_scope">跟随屏幕画面，清除自定义 HUD 取景、旋转、镜像和标签。保留 HUD 位置、大小、亮度和对比度。</string>
-    <string name="ui_hud_placement_reset_scope">重置当前车型的 HUD 位置、大小、比例及随转向灯切换侧边的设置。保留画面、亮度、对比度和输出选择。</string>
+    <string name="ui_hud_placement_reset_scope">重置当前车型的 HUD 位置、大小、比例、内侧裁剪及随转向灯切换侧边的设置。保留画面、亮度、对比度和输出选择。</string>
     <string name="ui_pending_camera_changes">摄像头/预览选择已保存 — 退出并重新打开以应用。退出会停止录制。</string>
     <string name="ui_start_logging">开始 USB 日志</string>
     <string name="ui_stop_logging">停止 USB 日志</string>

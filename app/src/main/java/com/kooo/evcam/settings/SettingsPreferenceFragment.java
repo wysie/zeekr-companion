@@ -1034,6 +1034,11 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                     appConfig.setHudSideShapePercent(value);
                     com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
                 });
+        bindSlider("pref_hud_side_inner_crop", 0, com.kooo.evcam.zeekr.HudPanelPlacement.MAX_INNER_CROP_PERCENT,
+                appConfig.getHudSideInnerCropPercent(), "%", value -> {
+                    appConfig.setHudSideInnerCropPercent(value);
+                    com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+                });
         bindSlider("pref_hud_side_left", 0, 100,
                 appConfig.getHudSideLeftPercent(), "%", value -> {
                     appConfig.setHudSideLeftPercent(value);

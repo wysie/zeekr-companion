@@ -59,6 +59,7 @@ public class SidePopupStartupAndroidTest {
         EGLContext eglContext;
         EGLSurface eglSurface;
         final int sourceWidth, sourceHeight;
+        int retainedPictureWidth, retainedOffsetX;
 
         Fixture() throws Exception {
             this(256, 1024);
@@ -80,7 +81,12 @@ public class SidePopupStartupAndroidTest {
             StreamLayoutTable.setCompositeCameraId("synthetic-test");
             AtomicReference<SideViewPopupView> created = new AtomicReference<>();
             main(() -> {
-                SideViewPopupView popup = new SideViewPopupView(context, config);
+                SideViewPopupView popup = new SideViewPopupView(context, config) {
+                    @Override protected int cameraPictureWidth() {
+                        return retainedPictureWidth > 0 ? retainedPictureWidth : getWidth();
+                    }
+                    @Override protected int cameraPictureOffsetX() { return retainedOffsetX; }
+                };
                 popup.setSourceSize(new Size(sourceWidth, sourceHeight));
                 popup.getTextureView().setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
                     @Override public void onSurfaceTextureAvailable(SurfaceTexture st, int w, int h) {
@@ -167,6 +173,20 @@ public class SidePopupStartupAndroidTest {
             assertTrue(EGL14.eglSwapBuffers(eglDisplay, eglSurface));
         }
 
+        void verticalBars() {
+            if (producer == null) frame(Color.BLACK);
+            GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+            GLES20.glClearColor(0, 0, 0, 1); GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+            GLES20.glClearColor(1, 1, 1, 1);
+            for (int x=0;x<sourceWidth;x+=16) {
+                GLES20.glScissor(x,0,8,sourceHeight); GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+            }
+            GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+            assertTrue(EGLExt.eglPresentationTimeANDROID(eglDisplay,eglSurface,System.nanoTime()));
+            assertTrue(EGL14.eglSwapBuffers(eglDisplay,eglSurface));
+        }
+
         @Override public void close() {
             if (producer != null) {
                 EGL14.eglMakeCurrent(eglDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT);
@@ -179,6 +199,61 @@ public class SidePopupStartupAndroidTest {
             main(view::detach);
             config.setSidePopupStraighten(oldStraighten);
             StreamLayoutTable.setCompositeCameraId(oldComposite);
+        }
+    }
+
+    @Test public void innerCropRetainsNativePixelsForBothEdgesRawAndCorrected() throws Exception {
+        for(boolean corrected:new boolean[]{false,true}) for(boolean right:new boolean[]{false,true}) {
+            try(Fixture f=new Fixture(1280,5140)) {
+                int oldFov=f.config.getSidePopupFov(),oldYaw=f.config.getSidePopupYaw();
+                int oldPitch=f.config.getSidePopupPitch(),oldRoll=f.config.getSidePopupRotation(LaneCycle.LEFT);
+                boolean oldMirror=f.config.isSidePopupMirrored();
+                Bitmap before=null,after=null;
+                try {
+                    f.config.setSidePopupStraighten(corrected); f.config.setSidePopupFov(90);
+                    f.config.setSidePopupYaw(0); f.config.setSidePopupPitch(0);
+                    f.config.setSidePopupRotation(LaneCycle.LEFT,30); f.config.setSidePopupMirrored(true);
+                    main(()->{f.view.applyConfig();f.view.show(LaneCycle.LEFT);});
+                    for(int n=0;n<12;n++){f.verticalBars();SystemClock.sleep(30);}
+                    int[] rect=new int[4];
+                    main(()->{f.view.getLocationOnScreen(rect);rect[2]=f.view.getWidth();rect[3]=f.view.getHeight();});
+                    before=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
+                    assertNotNull(before);
+                    SurfaceTexture original=f.view.getTextureView().getSurfaceTexture();
+                    int trim=rect[2]/4,offset=right?trim:0;
+                    main(()->{
+                        f.retainedPictureWidth=rect[2];f.retainedOffsetX=offset;
+                        WindowManager.LayoutParams params=(WindowManager.LayoutParams)f.view.getLayoutParams();
+                        params.width=rect[2]-trim;
+                        ((WindowManager)f.view.getContext().getSystemService(Context.WINDOW_SERVICE))
+                                .updateViewLayout(f.view,params);
+                    });
+                    for(int n=0;n<10;n++){f.verticalBars();SystemClock.sleep(30);}
+                    int[] cropped=new int[4];
+                    main(()->{
+                        f.view.getLocationOnScreen(cropped);cropped[2]=f.view.getWidth();cropped[3]=f.view.getHeight();
+                        assertEquals(rect[2]-trim,cropped[2]);assertEquals(rect[3],cropped[3]);
+                        assertEquals(rect[2],f.view.getTextureView().getWidth());
+                        assertSame("Cropping must keep the camera consumer",original,f.view.getTextureView().getSurfaceTexture());
+                    });
+                    after=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
+                    assertNotNull(after);
+                    int samples=0,matched=0,light=0,dark=0;
+                    for(int y=cropped[3]/3;y<cropped[3]*2/3;y+=5) for(int x=12;x<cropped[2]-12;x+=3) {
+                        int expected=Color.red(before.getPixel(rect[0]+x+offset,rect[1]+y));
+                        int actual=Color.red(after.getPixel(cropped[0]+x,cropped[1]+y));
+                        if(Math.abs(expected-actual)<20) matched++;
+                        if(actual>180) light++; if(actual<70) dark++; samples++;
+                    }
+                    assertTrue("Cropped picture must retain detail",light>samples/10&&dark>samples/10);
+                    assertTrue("Crop must preserve original pixel scale: corrected="+corrected+" right="+right
+                            +" matched="+matched+"/"+samples,matched>samples*.9);
+                } finally {
+                    if(before!=null)before.recycle();if(after!=null)after.recycle();
+                    f.config.setSidePopupFov(oldFov);f.config.setSidePopupYaw(oldYaw);f.config.setSidePopupPitch(oldPitch);
+                    f.config.setSidePopupRotation(LaneCycle.LEFT,oldRoll);f.config.setSidePopupMirrored(oldMirror);
+                }
+            }
         }
     }
 

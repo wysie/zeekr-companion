@@ -99,4 +99,41 @@ public class HudPanelPlacementTest {
         assertEquals(640,r.width);assertEquals(213,r.height);
         assertEquals(0,r.left);assertEquals(267,r.top);
     }
+
+    @Test public void innerCropKeepsEqualSignalWindowsAndTheirOuterEdges() {
+        HudPanelPlacement.Rect left = defaults(false), right = defaults(true);
+        HudPanelPlacement.Crop l = HudPanelPlacement.cropInnerEdge(left, 1440, 25);
+        HudPanelPlacement.Crop r = HudPanelPlacement.cropInnerEdge(right, 1440, 25);
+        assertEquals(l.bounds.width, r.bounds.width);
+        assertEquals(left.height, l.bounds.height);
+        assertEquals(right.height, r.bounds.height);
+        assertEquals(left.left, l.bounds.left);
+        assertEquals(right.left + right.width, r.bounds.left + r.bounds.width);
+        assertEquals(0, l.pictureOffsetX);
+        assertEquals(right.width - r.bounds.width, r.pictureOffsetX);
+        assertEquals(left.width, l.pictureWidth);
+        assertEquals(right.width, r.pictureWidth);
+    }
+
+    @Test public void fixedRightTrimsLeftRegardlessOfCameraDirection() {
+        HudPanelPlacement.Rect full = HudPanelPlacement.compute(1280,640,50,100,94,50);
+        HudPanelPlacement.Crop c = HudPanelPlacement.cropInnerEdge(full,1280,25);
+        assertEquals(240,c.bounds.width); assertEquals(320,c.bounds.height);
+        assertEquals(80,c.pictureOffsetX); assertEquals(320,c.pictureWidth);
+        assertEquals(full.left+80,c.bounds.left); assertEquals(full.top,c.bounds.top);
+    }
+
+    @Test public void disabledCropRestoresFullPictureAndExtremeValuesStayUsable() {
+        for (int[] viewport : new int[][]{{1280,640},{640,360},{40,30}}) {
+            HudPanelPlacement.Rect full=HudPanelPlacement.compute(viewport[0],viewport[1],100,300,100,100);
+            for(int percent:new int[]{-10,0,25,60,1000}) {
+                HudPanelPlacement.Crop c=HudPanelPlacement.cropInnerEdge(full,viewport[0],percent);
+                assertTrue(c.bounds.width>=Math.min(HudPanelPlacement.MIN_SIZE_PX,full.width));
+                assertTrue(c.bounds.left>=0&&c.bounds.left+c.bounds.width<=viewport[0]);
+                assertEquals(full.height,c.bounds.height);
+                assertEquals(full.width,c.pictureWidth);
+                if(percent<=0){assertEquals(full.width,c.bounds.width);assertEquals(full.left,c.bounds.left);assertEquals(0,c.pictureOffsetX);}
+            }
+        }
+    }
 }

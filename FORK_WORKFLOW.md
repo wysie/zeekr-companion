@@ -11,6 +11,7 @@ outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
 | --- | --- |
+| `fix/hud-inner-edge-crop` | Adjustable HUD-only inner-edge trim, retained camera scale and outer edge, 009 default 25%, independent generic layout and visible-window badges |
 | `fix/factory-menu-density` | System-sized typography, denser settings with preserved touch targets, direct Gallery access and correctly centred preview-state text |
 | `feature/companion-storage-folder` | New ZeekrCompanion public folders with read/lock/cleanup/sharing/archive compatibility for ZeekrShortcutApp and EVCam; unchanged Android identity |
 | `fix/recording-preview-isolation` | Separate recording compatibility from pending preview/overlay choices, retain recording-source/mapping restart checks and export distinct configuration evidence |

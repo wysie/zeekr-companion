@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Add an adjustable HUD inner-edge crop, starting at 25% on the 009, with equal side windows and labels/arrows inside the visible picture.
+
 - Follow the system text size without forced enlargement, tighten settings rows and reduce secondary header/footer emphasis in both themes.
 - Open Gallery directly on Videos, with Photos available in the same gallery.
 - Keep camera waiting messages centred and fully visible within their preview panes.
