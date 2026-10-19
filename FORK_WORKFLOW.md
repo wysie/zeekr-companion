@@ -11,6 +11,7 @@ outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
 | --- | --- |
+| `fix/minimise-icon` | Standard minus glyph for the background action, preserving tap-to-hide and long-press Quit app |
 | `fix/main-toolbar-status-polish` | Compact status action, evenly filled adaptive toolbar and concise preview states with retained troubleshooting detail |
 | `fix/hud-inner-edge-crop` | Adjustable HUD-only inner-edge trim, retained camera scale and outer edge, 009 default 25%, independent generic layout and visible-window badges |
 | `fix/factory-menu-density` | System-sized typography, denser settings with preserved touch targets, direct Gallery access and correctly centred preview-state text |

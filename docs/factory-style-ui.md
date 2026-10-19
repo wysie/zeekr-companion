@@ -158,3 +158,12 @@ discrepancy noted above can still affect the image viewer at normal text size;
 production paint colour and native pixel assertions remain unchanged/passing.
 The release certificate is unchanged. These checks establish UI layout/navigation,
 not vehicle-camera quality or physical HUD clearance.
+
+
+## Minimise icon clarification
+
+The header’s down-arrow-and-baseline glyph resembled a download action. It now
+uses a standard horizontal minus, in the existing 24dp vector grid and stroke.
+Tap still calls `moveTaskToBack(true)`; long-press still invokes Quit app. The
+accessible name and named Quit app long-click action are retained. Debug assembly
+and lint pass; this artwork-only correction adds no interaction or camera changes.

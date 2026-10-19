@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Replace the download-like Minimise arrow with a standard minus icon; retain tap to hide and long-press to quit.
+
 - Make Camera status a compact text action, balance the main toolbar across visible actions and shorten preview waiting/error messages.
 
 - Add an adjustable HUD inner-edge crop, starting at 25% on the 009, with equal side windows and labels/arrows inside the visible picture.
