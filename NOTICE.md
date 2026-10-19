@@ -223,3 +223,11 @@ The port removes dead microphone strings, adopts updater helper/comments/constan
 clearer verification errors and the literal-null digest regression. Companion
 retains its release repository/channels and adds an Android JSON/download-boundary
 check. Covered by the repository’s GPL-3.0 license.
+
+## dts88 manual recording-lock follow-up (2026-10-20)
+
+Adapted [upstream PR #61](https://github.com/dts88/zeekr-shortcut-car/pull/61),
+implementation `e8dedd811687f45e9d26221348ed34ed1e59000b` and approved text
+`ccd441a4df5480aaf5d584a5dc060613efdb62f6`, by dts88. Companion retains its
+braking-only automatic-lock budget, atomic list publication, exterior footage
+roles and double-tap dispatcher. Source authorship and co-author credit are retained.

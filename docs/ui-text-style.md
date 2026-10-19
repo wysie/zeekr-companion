@@ -175,6 +175,11 @@
 可以照本规范改；项目所有者批了哪一条，就把它移回上面的单子。
 
 - （PR #17，超级后视镜方向标签）set_rearview_camera_label_title「方向标签」/ Direction label / Label arah；set_rearview_camera_label_summary「在窗口左上角显示当前画面的方向」/ Shows the direction of the current view in the top-left corner of the window / Menunjukkan arah paparan semasa di penjuru kiri atas tetingkap；set_rearview_reset_summary 加上「方向标签」（「重置窗口与画面」会把它恢复成开）。
+- 悬浮按钮「锁定当前录像」（2026-10-19）：选项 floating_action_lock_footage「锁定当前录像」/ Lock the current recording / Kunci rakaman semasa；
+  锁上时 msg_footage_locked_around「已锁定前后 10 秒所在的录像片段」/ Locked the clips covering 10 seconds before and after /
+  Klip yang meliputi 10 saat sebelum dan selepas telah dikunci；「锁定影像」关着时 msg_footage_lock_needs_setting
+  「无法锁定，请先开启「设置 → 存储 → 锁定影像」」/ Can't lock. Turn on Settings → Storage → Lock footage first /
+  Tidak dapat mengunci. Hidupkan Tetapan → Storan → Kunci rakaman dahulu。没在录时沿用 msg_footage_nothing_here「当前时刻无可锁定的录像」。
 
 ---
 
