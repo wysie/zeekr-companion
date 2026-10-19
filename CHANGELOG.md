@@ -9,30 +9,19 @@ commit message, not here.
 
 ## [Unreleased]
 
-- Adopt dts88’s microphone-resource cleanup and clearer updater verification errors from the merged contribution follow-ups.
+## [2.11.53-alpha.1] - 2026-10-19
 
-- Replace the download-like Minimise arrow with a standard minus icon; retain tap to hide and long-press to quit.
-
-- Make Camera status a compact text action, balance the main toolbar across visible actions and shorten preview waiting/error messages.
-
-- Add an adjustable HUD inner-edge crop, starting at 25% on the 009, with equal side windows and labels/arrows inside the visible picture.
-
-- Follow the system text size without forced enlargement, tighten settings rows and reduce secondary header/footer emphasis in both themes.
+- Keep pending preview-only choices from blocking manual and automatic recording, with separate preview/recording status in Diagnostics.
+- Save new recordings, photos, logs and developer exports under ZeekrCompanion while retaining access, protection and sharing for older folders.
+- Apply factory-inspired settings rows, compact header controls and consistent system-sized text in both themes.
+- Add Blind spot camera Behavior, Picture, Window and HUD tabs, plus a shared-camera Left/Right settings preview with expand/hide controls.
+- Balance the main toolbar across visible actions, make Camera status compact and use a standard minus icon for Minimise.
 - Open Gallery directly on Videos, with Photos available in the same gallery.
-- Keep camera waiting messages centred and fully visible within their preview panes.
-
-- Save new recordings, photos, logs and developer exports under ZeekrCompanion, retaining playback, protection, cleanup, sharing and archives for older folders.
-
-- Keep pending preview-only changes from blocking manual and automatic recording; retain restart checks for recording-source and active camera-mapping changes.
-- Report pending preview and recording configurations separately in Diagnostics.
-
-- Apply factory-inspired settings rows, regular labels, orange-underlined tabs and compact equal-width main toolbar actions.
-- Add Blind spot camera Behavior, Picture, Window and HUD tabs with preserved saved settings.
-- Add a Left/Right settings preview using the existing surround texture, with expand/hide controls and factory/stale-frame guards.
-
-- Show the applied preview in the selector and the saved next choice in the reopen notice; avoid pending previews for equivalent source sets.
-- Explain single-source layout behavior and hide inactive source arrangement choices while retaining the saved layout.
-- Keep the recording toolbar control to action/clip detail, separate it from utility actions and move live screen-off behavior into long-press Recording details.
+- Show the applied preview choice separately from saved changes that require reopening, and explain single-source layout behavior.
+- Keep recording controls focused on action and clip detail, with live screen-off behavior in long-press Recording details.
+- Add a HUD-only inner-edge crop, starting at 25% on the 009, with equal side windows and labels/arrows inside the visible picture.
+- Shorten camera waiting/error messages and keep them centred and fully visible within their preview panes.
+- Adopt dts88’s unused microphone-resource cleanup and clearer updater verification errors, with Android null-digest regression coverage.
 
 ## [2.11.52-alpha.1] - 2026-10-19
 
