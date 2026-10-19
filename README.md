@@ -46,7 +46,7 @@ The app-name watermark on new recordings and normal photos uses **Zeekr Companio
 plus the version; existing footage keeps its original burned-in text. The logo itself
 is not added to the footage. Raw developer exports retain their existing behavior.
 
-Current test download: [Zeekr Companion 2.11.52-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.52-alpha.1).
+Current test download: [Zeekr Companion 2.11.53-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.53-alpha.1).
 For in-app delivery, select **Updates → Update channel → Alpha**; Beta and Stable
 channels deliberately exclude this release. It retains the application ID and
 signing certificate for an in-place update. New behavior still needs on-car testing.
@@ -80,7 +80,7 @@ pane without cutting off their beginning. Preview states now use brief labels su
 as Camera busy or Waiting for preview, with elapsed time and a Camera status hint
 after a longer wait. Full troubleshooting explanations remain in Camera status;
 preview waiting still does not establish whether recording is working. These
-refinements are newer than alpha 52.
+refinements ship in alpha 53.
 
 **Preview** opens a staged side panel: quick presets for **Surround · four views**,
 **Front + Rear** and **Surround + roads**, then **Other sources** for Follow recording,
@@ -95,13 +95,13 @@ Pending preview-only changes do not block manual or automatic recording with the
 current recording sources. Changes to enabled recording sources, their manual
 camera assignments or the vehicle mapping still require reopening before a new
 recording starts. Diagnostics report preview-pending and recording-pending states
-separately. This recording-start correction is newer than alpha 52; see the
+separately. This recording-start correction ships in alpha 53; see the
 [investigation and verification](docs/recording-preview-isolation.md).
 All existing source choices are preserved on upgrade. **Source layout** arranges
 separate source panes. With just Surround (or another single source), the panel
 explains this and hides inactive arrangement choices; it does not rearrange the
 four views inside Surround. The saved arrangement is retained for multi-source use.
-These further clarity/toolbar changes are newer than alpha 52.
+These further clarity/toolbar changes ship in alpha 53.
 
 Settings now use the owner-approved factory-inspired styling: regular-weight labels,
 flat near-white/dark rows, small corners, neutral sidebar selection and orange outlines
@@ -200,7 +200,7 @@ release numbers remain independent of upstream.
 
 - **Independent camera selection:** Surround, Front cabin and Rear cabin are opened according to their individual profile switches, including cabin-only profiles. Exit and reopen after changing recording switches or active camera mappings; recording shows an explicit restart message while the saved recording configuration differs from the live pipeline. A pending preview-only change does not block recording.
 
-- **One app folder:** new recordings, photos and exported diagnostics go under **ZeekrCompanion/Videos**, **Photos**, **Logs** and on-demand **Developer** exports on selected storage. Playback, protection, storage accounting and cleanup also support older `ZeekrShortcutApp` and EVCam folders without moving existing files. Equal filenames and lock lists remain separate; archives preserve each original relative path. This folder-name change is newer than alpha 52. See [storage layout](docs/app-storage-folders.md).
+- **One app folder:** new recordings, photos and exported diagnostics go under **ZeekrCompanion/Videos**, **Photos**, **Logs** and on-demand **Developer** exports on selected storage. Playback, protection, storage accounting and cleanup also support older `ZeekrShortcutApp` and EVCam folders without moving existing files. Equal filenames and lock lists remain separate; archives preserve each original relative path. This folder-name change ships in alpha 53. See [storage layout](docs/app-storage-folders.md).
 
 - **Recording and transfer integrity:** verified USB/archive copies preserve both files on collisions; relay buffers use private files instead of disposable Android cache. Failed protection-list replacement keeps the old list; developer repair first retains a verified original backup. See the [whole-project review](docs/project-safety-review.md) for fixes and remaining limits.
 - **Functional vehicle model selection:** Settings → System → Vehicle model replaces the cosmetic Interface name selector and separate 009 mapping switch. Auto accepts explicit, unambiguous Android model names; unknown devices use generic discovery and show a manual-selection prompt. The supplied 009 reports Pixel 3a, so select 009 manually. An existing enabled 009 mapping migrates to 009; the old cosmetic name alone never changes camera sources. Model defaults also drive builtin labels and Auto vehicle artwork. Saved manual camera mappings, recording choices, side-picture adjustments and custom profile names are kept; exit and reopen after changing. HUD still matches the actual display independently and retains its separate layout. The 009 image-fit calibration stays opt-in and is suspended without deletion on a selected/detected 7X; shared Manual 360 geometry is estimated, not a verified 7X calibration.
