@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Make Camera status a compact text action, balance the main toolbar across visible actions and shorten preview waiting/error messages.
+
 - Add an adjustable HUD inner-edge crop, starting at 25% on the 009, with equal side windows and labels/arrows inside the visible picture.
 
 - Follow the system text size without forced enlargement, tighten settings rows and reduce secondary header/footer emphasis in both themes.

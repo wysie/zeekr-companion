@@ -15,12 +15,21 @@
     <string name="camera_state_not_active">来源未加入当前管线；请检查映射，重新打开应用以应用更改</string>
     <string name="camera_state_unassigned">未分配</string>
     <string name="camera_preview_live">实时预览</string>
-    <string name="camera_preview_waiting">摄像头已有画面；等待预览</string>
+    <string name="camera_preview_waiting">等待预览</string>
     <string name="camera_waiting_elapsed">已等待 %1$d 秒</string>
-    <string name="camera_waiting_status_link">在“摄像头状态”中查看详情并保存诊断</string>
+    <string name="camera_waiting_status_link">在“摄像头状态”中查看详情</string>
     <string name="camera_saved_assignment">已保存的分配：%1$s</string>
     <string name="camera_saved_quality">已保存的画质：%1$s · %2$s fps · %3$s 码率</string>
     <string name="camera_source_recording">正在录制</string>
     <string name="camera_source_pending">已选择用于本次录制；当前未写入</string>
     <string name="camera_source_not_recording">不属于本次录制</string>
+    <string name="camera_preview_starting">正在启动摄像头…</string>
+    <string name="camera_preview_camera_waiting">等待摄像头</string>
+    <string name="camera_preview_busy">摄像头正忙</string>
+    <string name="camera_preview_reconnecting">正在重新连接…</string>
+    <string name="camera_preview_unavailable">摄像头不可用</string>
+    <string name="camera_preview_paused">摄像头已暂停</string>
+    <string name="camera_preview_inactive">摄像头未启用</string>
+    <string name="camera_preview_unassigned">未分配摄像头</string>
+    <string name="camera_preview_wait_details">已等待 %1$d 秒 · 查看摄像头状态</string>
 </resources>

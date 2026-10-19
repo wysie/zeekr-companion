@@ -15,12 +15,21 @@
     <string name="camera_state_not_active">Sumber tiada dalam saluran aktif; semak pemetaan dan buka semula untuk menggunakan perubahan</string>
     <string name="camera_state_unassigned">Tidak ditetapkan</string>
     <string name="camera_preview_live">Pratonton langsung</string>
-    <string name="camera_preview_waiting">Bingkai kamera tersedia; menunggu pratonton</string>
+    <string name="camera_preview_waiting">Menunggu pratonton</string>
     <string name="camera_waiting_elapsed">Menunggu %1$d s</string>
-    <string name="camera_waiting_status_link">Gunakan Status kamera untuk butiran dan diagnostik</string>
+    <string name="camera_waiting_status_link">Lihat Status kamera untuk butiran</string>
     <string name="camera_saved_assignment">Penetapan tersimpan: %1$s</string>
     <string name="camera_saved_quality">Kualiti tersimpan: %1$s · %2$s fps · kadar bit %3$s</string>
     <string name="camera_source_recording">Sedang merakam</string>
     <string name="camera_source_pending">Dipilih untuk rakaman ini; belum menulis</string>
     <string name="camera_source_not_recording">Bukan sebahagian daripada rakaman semasa</string>
+    <string name="camera_preview_starting">Memulakan kamera…</string>
+    <string name="camera_preview_camera_waiting">Menunggu kamera</string>
+    <string name="camera_preview_busy">Kamera sibuk</string>
+    <string name="camera_preview_reconnecting">Menyambung kamera…</string>
+    <string name="camera_preview_unavailable">Kamera tidak tersedia</string>
+    <string name="camera_preview_paused">Kamera dijeda</string>
+    <string name="camera_preview_inactive">Kamera tidak aktif</string>
+    <string name="camera_preview_unassigned">Tiada kamera ditetapkan</string>
+    <string name="camera_preview_wait_details">Menunggu %1$d s · Lihat Status kamera</string>
 </resources>

@@ -203,8 +203,43 @@ public class MainPageControlsAndroidTest {
                         assertTrue("Driver-side recording anchor", "left".equals(side)
                                 ? recording.getLeft() < action.getLeft() : recording.getLeft() > action.getLeft());
                     }
+                    assertBalancedToolbar(a);
                 });
             }
+        }
+    }
+
+    private void assertBalancedToolbar(MainActivity activity) {
+        android.widget.LinearLayout actions=activity.findViewById(R.id.main_dock_actions);
+        int gap=Math.round(8*activity.getResources().getDisplayMetrics().density),end=0,count=0;
+        for(int n=0;n<actions.getChildCount();n++) {
+            View child=actions.getChildAt(n);if(child.getVisibility()==View.GONE)continue;
+            assertEquals("No flexible empty gap between actions",count==0?0:gap,child.getLeft()-end);
+            end=child.getRight();count++;
+        }
+        int viewport=activity.findViewById(R.id.action_rail).getWidth();
+        assertTrue("Fill available space; only pixel-rounding remainder is allowed",end>=viewport-count);
+    }
+
+    @Test public void compactStatusOpensDetailsAndRoadToolbarFillsSpaceWithoutStraighten() {
+        config.setPreviewSourceMode("roadfront");
+        try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            final MultiCameraManager[] pipeline={null};
+            scenario.onActivity(a->{
+                pipeline[0]=CameraManagerHolder.getInstance().getCameraManager();
+                View status=a.findViewById(R.id.camera_status_chip);
+                assertTrue(status.isClickable());assertTrue(status.isFocusable());
+                assertTrue(status.getHeight()>=48*a.getResources().getDisplayMetrics().density);
+                assertTrue("Status should fit its label, not fill half the header",
+                        status.getWidth()<a.findViewById(R.id.main_header).getWidth()/2);
+                assertEquals(View.GONE,a.findViewById(R.id.btn_fisheye).getVisibility());
+                assertBalancedToolbar(a);
+            });
+            onView(withId(R.id.camera_status_chip)).perform(click());
+            onView(withId(R.id.camera_status_report)).check(androidx.test.espresso.assertion.ViewAssertions.matches(isDisplayed()));
+            androidx.test.espresso.Espresso.pressBack();
+            scenario.onActivity(a->assertSame(pipeline[0],CameraManagerHolder.getInstance().getCameraManager()));
         }
     }
     @Test public void explicit360ActionsIgnoreLegacyShortcutDestinationAndTrackWindowClosure() {
