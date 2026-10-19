@@ -34,7 +34,7 @@ import java.util.concurrent.atomic.AtomicBoolean;
  *
  * <ul>
  *   <li><b>录制中不归档</b>：正在写的那一段搬不得。</li>
- *   <li><b>只搬本应用的目录</b>：{@code ZeekrShortcutApp} 内的目录和旧 EVCam 目录，
+ *   <li><b>只搬本应用的目录</b>：{@code ZeekrCompanion} 内的目录和旧 EVCam 目录，
  *       保留各自的相对路径和锁定清单，盘上别人的东西一律不碰。
  *       应用自己的运行日志（内部存储）是<b>复制</b>不是搬 —— 它还在写。</li>
  *   <li><b>搬 = 复制、核对大小、再删源文件</b>；目标盘上同名且内容逐字节校验一致的文件当作搬过了，只删源文件；
@@ -133,18 +133,17 @@ public final class ArchiveFlow {
             // Preserve each source layout, including its lock lists and equal-name files.
             for (com.kooo.evcam.storage.StorageLayout.Kind kind : com.kooo.evcam.storage.StorageLayout.Kind.values()) {
                 for (File dir : com.kooo.evcam.storage.StorageLayout.readDirectories(source, kind)) {
-                    boolean legacy = dir.equals(com.kooo.evcam.storage.StorageLayout.legacyDirectory(source, kind));
-                    File out = legacy ? com.kooo.evcam.storage.StorageLayout.legacyDirectory(target, kind)
-                            : com.kooo.evcam.storage.StorageLayout.directory(target, kind);
+                    File out = com.kooo.evcam.storage.StorageLayout.archiveDirectoryOn(source, target, dir);
                     int count = collect(plan, dir, out, true);
                     if (kind == com.kooo.evcam.storage.StorageLayout.Kind.VIDEO) plan.videos += count;
                     else if (kind == com.kooo.evcam.storage.StorageLayout.Kind.PHOTO) plan.photos += count;
                     else plan.logs += count;
                 }
             }
-            plan.logs += collect(plan,
-                    com.kooo.evcam.storage.StorageLayout.developerDirectory(source),
-                    com.kooo.evcam.storage.StorageLayout.developerDirectory(target), true);
+            for (File dir : com.kooo.evcam.storage.StorageLayout.readDeveloperDirectories(source)) {
+                plan.logs += collect(plan, dir,
+                        com.kooo.evcam.storage.StorageLayout.archiveDirectoryOn(source, target, dir), true);
+            }
             // Live private session logs are copied, not moved, into the exported Logs folder.
             plan.logs += collect(plan, new File(activity.getFilesDir(), "logs"),
                     new File(com.kooo.evcam.storage.StorageLayout.directory(target,

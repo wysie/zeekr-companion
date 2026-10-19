@@ -74,6 +74,7 @@ public class RecordingPreviewIsolationAndroidTest extends MainPageControlsAndroi
             camera.preview.resolution = "1280x720"; camera.record.resolution = "1280x720";
             camera.record.fps = "10"; camera.record.grid = false; store.save(profile);
             directory[0] = StorageHelper.getVideoDir(context); assertNotNull(directory[0]); before.addAll(videos(directory[0]));
+            assertEquals("New recordings use the Companion public folder", "ZeekrCompanion", directory[0].getParentFile().getName());
             try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
                 awaitBuilt(); MultiCameraManager pipeline = pipeline();
                 config.setPreviewSourceMode("roads");

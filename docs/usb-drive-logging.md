@@ -2,7 +2,7 @@
 
 Developer options → Drive logging to USB is an explicit session action (not a
 persisted boot preference). With a writable USB present, it starts a low-importance
-foreground service and a unique `ZeekrShortcutApp/Logs/Drive_<time>_<id>` folder.
+foreground service and a unique `ZeekrCompanion/Logs/Drive_<time>_<id>` folder.
 The UI reports Checking USB, Saving logs to USB, Finishing, Saved or an error and
 shows the exact destination. Stop is also available in its ongoing notification.
 Wait for Saved and any other recording/export tasks to finish before unplugging.

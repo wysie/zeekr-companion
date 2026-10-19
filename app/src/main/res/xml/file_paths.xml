@@ -1,5 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <paths xmlns:android="http://schemas.android.com/apk/res/android">
+    <external-path name="companion_videos" path="ZeekrCompanion/Videos/" />
+    <external-path name="companion_photos" path="ZeekrCompanion/Photos/" />
+    <external-path name="companion_logs" path="ZeekrCompanion/Logs/" />
+    <!-- Retain old provider aliases as well as old files. -->
     <external-path name="app_videos" path="ZeekrShortcutApp/Videos/" />
     <external-path name="app_photos" path="ZeekrShortcutApp/Photos/" />
     <external-path name="app_logs" path="ZeekrShortcutApp/Logs/" />

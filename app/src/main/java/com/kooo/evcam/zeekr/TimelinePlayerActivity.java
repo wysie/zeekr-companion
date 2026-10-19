@@ -1264,7 +1264,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
 
     /**
      * 保存片段（2.10.8）：此刻前后各 15 秒，看的是哪一路就抄哪一路（网格或放大某一路时是环视那个文件），
-     * 存到 ZeekrShortcutApp/Videos/Clips，存好后打开「发送到手机」。不重新编码，几秒钟。
+     * 存到 ZeekrCompanion/Videos/Clips，存好后打开「发送到手机」。不重新编码，几秒钟。
      */
     private void showClipChoices() {
         Lane lane = expanded != null ? expanded : surround;
@@ -1319,7 +1319,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
 
     /**
      * 把 [fromMs, toMs] 抄成一个 MP4（2.10.8 起；2.11.0 之后可以自己选起止）：看的是哪一路就抄哪一路
-     * （网格或放大某一路时是环视那个文件），存到 ZeekrShortcutApp/Videos/Clips，存好后打开「发送到手机」。不重新编码，几秒钟。
+     * （网格或放大某一路时是环视那个文件），存到 ZeekrCompanion/Videos/Clips，存好后打开「发送到手机」。不重新编码，几秒钟。
      *
      * @param around 是「此刻前后 15 秒」（文件名、提示按此刻），不是自己选的一段
      */

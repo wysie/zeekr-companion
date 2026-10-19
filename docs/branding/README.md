@@ -17,4 +17,4 @@ redrawn as simple vector paths for crisp launcher and notification rendering.
   and `ic_stat_app.xml` under `app/src/main/res/drawable`.
 
 This is the independent app’s identity, not the official ZEEKR logo. The Android
-application ID, signing identity and `ZeekrShortcutApp` storage folders stay unchanged.
+application ID and signing identity stay unchanged. New public files use `ZeekrCompanion`; existing `ZeekrShortcutApp` and EVCam folders stay readable.

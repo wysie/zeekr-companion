@@ -31,7 +31,7 @@ import java.util.concurrent.Executors;
  *
  * <h3>清单放在 U 盘上</h3>
  *
- * <p>和影像同一个目录：{@code ZeekrShortcutApp/Videos/locked.txt}、{@code ZeekrShortcutApp/Photos/locked.txt}（旧目录的清单也保留），
+ * <p>和影像同一个目录：{@code ZeekrCompanion/Videos/locked.txt}、{@code ZeekrCompanion/Photos/locked.txt}（旧目录的清单也保留），
  * 一行一个文件名。换盘、重装、清除数据都还在；插到电脑上也能打开看锁了哪些。
  * 锁的是文件：录像是这一刻各路正在放的那几个文件，照片是同一次拍摄的一整组。</p>
  *
@@ -187,12 +187,14 @@ public final class FootageLocks {
     /** On the relay IO thread, before publishing a clip into the new public folder. */
     public static boolean keepRelayProtection(File target) {
         File dir = target.getParentFile();
-        File old = StorageLayout.legacyVideoDirectoryFor(dir);
-        if (old == null || !old.isDirectory()) return true;
         synchronized (GUARD) {
-            Set<String> before = read(old);
-            if (before == null) return false;
-            if (!before.contains(target.getName())) return true;
+            boolean protectedBeforeUpgrade = false;
+            for (File old : StorageLayout.priorVideoDirectoriesFor(dir)) {
+                Set<String> before = read(old);
+                if (before == null) return false;
+                protectedBeforeUpgrade |= before.contains(target.getName());
+            }
+            if (!protectedBeforeUpgrade) return true;
             Set<String> current = read(dir);
             if (current == null) return false;
             if (current.contains(target.getName())) return true;

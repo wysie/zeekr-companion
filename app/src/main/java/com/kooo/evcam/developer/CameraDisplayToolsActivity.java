@@ -265,7 +265,7 @@ public final class CameraDisplayToolsActivity extends AppCompatActivity {
     private void completeDisplays(DisplayRun run, String reason) {
         if (run.completed) return;
         run.completed = true; identifying = false; run.files.shutdown();
-        show(reason + "\nExports are under ZeekrShortcutApp/Developer/DisplayTest_…"); updateButtons();
+        show(reason + "\nExports are under ZeekrCompanion/Developer/DisplayTest_…"); updateButtons();
     }
     private static void writeReport(File folder, JSONObject report) throws Exception {
         File temp = new File(folder, "report.json.tmp");

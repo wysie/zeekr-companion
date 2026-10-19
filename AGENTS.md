@@ -24,4 +24,4 @@
   combined result before releasing and retain the existing signing identity for
   update compatibility.
 
-- This combined fork is **Zeekr Companion**. Use canonical `vX.Y.Z-alpha.N` / `vX.Y.Z-beta.N` / `vX.Y.Z` tags and `ZeekrCompanion-<versionName>.apk` downloads via `.github/scripts/package_release.py`. New alpha/beta releases use GitHub Pre-release. Keep Android application ID/signing/storage names and historical download URLs; keep this branding out of independent upstream PRs.
+- This combined fork is **Zeekr Companion**. Use canonical `vX.Y.Z-alpha.N` / `vX.Y.Z-beta.N` / `vX.Y.Z` tags and `ZeekrCompanion-<versionName>.apk` downloads via `.github/scripts/package_release.py`. New alpha/beta releases use GitHub Pre-release. New public files use `ZeekrCompanion`; preserve legacy `ZeekrShortcutApp` and EVCam compatibility. Keep Android application ID/signing identity and historical download URLs; keep this branding out of independent upstream PRs.

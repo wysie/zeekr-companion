@@ -39,7 +39,7 @@ included in Diagnostics exports. Reset does not affect any other feature.
 
 While the 360 view is selected, the main photo action exports the currently
 fresh stitched preview as a PNG at the active resolution, with a companion calibration/state
-TXT, under **ZeekrShortcutApp/Photos/360** on the configured storage. It includes the
+TXT, under **ZeekrCompanion/Photos/360** on the configured storage. It includes the
 selected 009/7X vehicle illustration or generic outline, and experimental watermark. A blocked, hidden or stale view is
 refused; it never saves an old retained image as a current capture. Compression
 and file writes run off the UI thread, with one save at a time and no queued

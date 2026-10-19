@@ -886,7 +886,7 @@
     <string name="dev_perm_not_granted">未授权 · %1$s</string>
     <string name="dev_perm_settings_unavailable">此车机无法打开对应的系统设置页</string>
     <string name="dev_raw_frame_title">拍照时另存原始整帧</string>
-    <string name="dev_raw_frame_summary">将未切分、未重排、未加水印的原始画面与几何说明保存至 ZeekrShortcutApp/Photos/Raw，用于分析相机排布与镜头参数</string>
+    <string name="dev_raw_frame_summary">将未切分、未重排、未加水印的原始画面与几何说明保存至 ZeekrCompanion/Photos/Raw，用于分析相机排布与镜头参数</string>
     <string name="dev_gpu_fisheye_preview_title">预览：GPU 逐像素鱼眼校正</string>
     <string name="dev_gpu_fisheye_preview_summary">主界面环视预览改用 GPU 逐像素校正（画面经应用内 GL 渲染后显示），效果与照片回放一致，不再分块近似。仅切换算法，是否校正仍由「鱼眼校正」按钮控制。重启应用后生效。</string>
     <string name="dev_gpu_fisheye_video_title">录像回放：GPU 逐像素鱼眼校正</string>
@@ -982,12 +982,12 @@
     <string name="set_footage_lock_brake_summary" formatted="false">录制时急刹车（包括车辆自动紧急制动），自动锁定此刻前后 10 秒所在的录像片段。自动锁定最多占录像空间的 10%，超出时先放开最早的。</string>
     <string name="msg_brake_locked">急刹车：已锁定前后 10 秒所在的录像片段</string>
     <string name="action_save_clip">保存片段</string>
-    <string name="clip_share_note_range">自己选的一段（%1$s），已存到 ZeekrShortcutApp/Videos/Clips，不会被自动清理。</string>
+    <string name="clip_share_note_range">自己选的一段（%1$s），已存到 ZeekrCompanion/Videos/Clips，不会被自动清理。</string>
     <string name="msg_clip_saved">片段已保存：%1$s</string>
     <string name="clip_cancel_range">取消选段</string>
     <string name="msg_clip_failed">片段没能保存</string>
     <string name="msg_clip_saving_range">正在保存这一段（%1$s）…</string>
-    <string name="clip_share_note">此刻前后约 30 秒的片段，已存到 ZeekrShortcutApp/Videos/Clips，不会被自动清理。</string>
+    <string name="clip_share_note">此刻前后约 30 秒的片段，已存到 ZeekrCompanion/Videos/Clips，不会被自动清理。</string>
     <string name="clip_save_around">此刻前后 15 秒</string>
     <string name="msg_deleting">正在删除…</string>
     <string name="clip_start_marked">起点定在 %1$s。拖到终点，再点「保存到此处」（最长 10 分钟）</string>
@@ -1058,7 +1058,7 @@
     <string name="bird_eye_slow">处理过慢或内存不足，360°已暂停</string>
     <string name="side_view_waiting_live">等待实时相机画面</string>
     <string name="dev_repair_backup_note">修复前的原始文件保存在录像目录的 repair-originals 子目录中。不会自动删除；空间不足时不会开始修复。</string>
-    <string name="bird_eye_photo_saved">360° 预览和校准信息已保存到 ZeekrShortcutApp/Photos/360</string>
+    <string name="bird_eye_photo_saved">360° 预览和校准信息已保存到 ZeekrCompanion/Photos/360</string>
     <string name="bird_eye_quality">360° 分辨率</string>
     <string name="bird_eye_quality_low">低 — 最快</string>
     <string name="bird_eye_quality_balanced">均衡 — 默认</string>
@@ -1067,8 +1067,8 @@
     <string name="bird_eye_quality_reduced">360° 处理太慢或内存不足，已降低分辨率。详细信息见诊断报告。</string>
     <string name="msg_record_profile_restart">相机选择已更改。请退出并重新打开应用后再录像。</string>
     <string name="dev_camera_display_title">相机与显示屏工具</string>
-    <string name="dev_camera_display_summary">批量保存相机画面、显示编号测试卡；导出至 ZeekrShortcutApp/Developer</string>
-    <string name="dev_camera_display_help">请先停止录像并关闭原厂相机。\n\n相机导出会检查公开 ID、物理相机或可用性回调报告的 ID，以及数字候选 0–15（最多 48 个候选、3 分钟）。对可访问的候选保存一张未校正画面、支持尺寸和失败记录。无效、不可用及无权限的 ID 会记录在报告中；不会绕过权限或读取原厂私有缓冲区。期间暂时释放本应用的常规画面。\n\n屏幕识别先显示主屏测试卡，再逐个测试公开副屏；请记录测试卡出现的位置或未看到。保存的 PNG 是生成的测试卡，不是截图。相机映射和 HUD 设置保持不变。\n\n文件保存在所选存储的 ZeekrShortcutApp/Developer。</string>
+    <string name="dev_camera_display_summary">批量保存相机画面、显示编号测试卡；导出至 ZeekrCompanion/Developer</string>
+    <string name="dev_camera_display_help">请先停止录像并关闭原厂相机。\n\n相机导出会检查公开 ID、物理相机或可用性回调报告的 ID，以及数字候选 0–15（最多 48 个候选、3 分钟）。对可访问的候选保存一张未校正画面、支持尺寸和失败记录。无效、不可用及无权限的 ID 会记录在报告中；不会绕过权限或读取原厂私有缓冲区。期间暂时释放本应用的常规画面。\n\n屏幕识别先显示主屏测试卡，再逐个测试公开副屏；请记录测试卡出现的位置或未看到。保存的 PNG 是生成的测试卡，不是截图。相机映射和 HUD 设置保持不变。\n\n文件保存在所选存储的 ZeekrCompanion/Developer。</string>
     <string name="dev_camera_export">导出全部相机画面</string>
     <string name="dev_display_identify">识别显示屏并导出测试卡</string>
     <string name="dev_probe_stop">停止</string>
@@ -1215,7 +1215,7 @@
     <string name="bird_eye_car_auto">自动（未知车型使用轮廓）</string>
     <string name="bird_eye_car_outline">通用轮廓</string>
     <string name="drive_log_title">行车日志直接保存到 U 盘</string>
-    <string name="drive_log_summary">出发前开启，结束后关闭并等待保存完成再拔盘。自动在 ZeekrShortcutApp/Logs/Drive_… 中保存原始车辆信号、应用和生命周期日志及开始/结束诊断。仅 U 盘，不录视频或截图。8 小时、256 MiB、空间不足或 U 盘异常时停止；不随开机启动。仅能记录车机提供的信号。</string>
+    <string name="drive_log_summary">出发前开启，结束后关闭并等待保存完成再拔盘。自动在 ZeekrCompanion/Logs/Drive_… 中保存原始车辆信号、应用和生命周期日志及开始/结束诊断。仅 U 盘，不录视频或截图。8 小时、256 MiB、空间不足或 U 盘异常时停止；不随开机启动。仅能记录车机提供的信号。</string>
     <string name="drive_log_status_title">行车日志状态</string>
     <string name="drive_log_idle">已关闭，尚未开始行车日志</string>
     <string name="drive_log_starting">正在检查 U 盘…</string>
