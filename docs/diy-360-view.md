@@ -335,3 +335,21 @@ synthetic Android rendering cost and lookup memory without lowering quality.
 Diagnostics now separate worker queue, output publication and total processing.
 UI-thread TextureView copying and the existing per-quality frame caps remain;
 vehicle smoothness still needs measurement. See [benchmark and limits](360-render-performance-2026-10-19.md).
+
+## Half-screen expansion (unreleased, 2026-10-20)
+
+The 360° popup uses the same temporary portrait half-screen expansion as the
+blind-side popup. It fills the usable overlay height and half its width, with
+control margins, anchored to the half nearest its normal position. On extremely
+wide displays width is capped at height. Restore returns the exact normal size
+and position. Native bounds/inset changes continue to refit the expanded panel
+without saving its geometry. The stitched picture retains its proportions inside
+the panel; calibration, capture resolution, camera routing and recording do not
+change.
+
+Validation for the half-screen follow-up: all 1,516 JVM tests, debug/test builds
+and lint (zero errors) pass. Three native API 32 tests cover shortened app metrics,
+inset changes without losing expansion, exact restoration, retained preferences,
+drag and Close. Native screenshots confirm half-screen bounds and reachable corner
+controls; the emulator has no vehicle camera feed. Logs:
+`/tmp/companion-360-half-build.log`, `/tmp/companion-360-half-native.log`.

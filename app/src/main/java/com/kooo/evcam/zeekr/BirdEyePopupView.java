@@ -158,9 +158,9 @@ final class BirdEyePopupView extends ViewGroup {
     private void expand() {
         refreshViewport();
         if (expansion.expanded()) {
-            expansion.restore(); place();
+            setGeometry(expansion.restore());
         } else {
-            setGeometry(expansion.toggle(new SideViewExpansion.Geometry(params.x, params.y,
+            setGeometry(expansion.toggleHalfScreen(new SideViewExpansion.Geometry(params.x, params.y,
                     params.width, params.height), viewport.getWidth(), viewport.getHeight(), margin()));
         }
         controls.setExpanded(expansion.expanded()); windows.updateViewLayout(this, params);

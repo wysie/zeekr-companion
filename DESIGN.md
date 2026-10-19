@@ -376,6 +376,7 @@ aspect ratio. Fill the usable overlay height with existing control margins; use
 half the available width, capped at the panel height on extremely wide displays.
 Anchor to the half nearest the normal window. Restore its exact original geometry;
 never save the expanded size or aspect. Apply this to the separate popup and a
-blind-side replacement in Super mirror. HUD, normal mirror and 360° expansion keep
-their own geometry policies. Native overlay bounds/insets drive expanded sizing
+blind-side replacement in Super mirror and the 360° window. The 360° picture stays
+proportional inside the larger panel. HUD and normal mirror keep their own geometry
+policies. Native overlay bounds/insets drive expanded sizing
 and refits while system bars change.

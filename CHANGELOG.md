@@ -9,6 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Use the same portrait half-screen expansion for the 360° window, with exact size and position restoration.
 - Expand the blind-side camera into a portrait half-screen panel regardless of its saved aspect ratio, with exact window restoration.
 - Preserve native camera detail in the Blind spot camera settings preview instead of shrinking each side image to about 510 pixels before correction.
 - Put Selected recording sources first in the preview quick presets, followed by the existing three presets.

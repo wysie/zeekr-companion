@@ -432,8 +432,9 @@ screen height and half its width, on the side nearest the original window; on ve
 wide displays its width is capped at its height. It uses native overlay bounds and
 system-bar insets, independently of the saved aspect ratio. **Restore** returns to
 the exact original shape, size and position. The same expansion applies to a
-blind-side replacement in Super mirror; normal Super mirror and 360° window expansion
-retain their existing aspect ratios. Expanded bounds follow system-bar/display
+blind-side replacement in Super mirror and the **360° window**; normal Super mirror
+retains its existing aspect ratio. The 360° picture keeps its proportions inside
+the expanded panel. Expanded bounds follow system-bar/display
 changes without saving the larger geometry. Existing square sizes remain unchanged.
 Corrected framing uses the actual window ratio rather than stretching the camera
 pixels; changing shape can change the visible coverage. High aim angles can still

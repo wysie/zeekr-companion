@@ -24,7 +24,7 @@ public final class SideViewExpansion {
         return toggle(current, screenWidth, screenHeight, margin, false);
     }
 
-    /** Blind-side expansion ignores the saved popup aspect; restore retains it exactly. */
+    /** Blind-side/360 expansion ignores the saved popup aspect; restore retains it exactly. */
     public Geometry toggleHalfScreen(Geometry current, int screenWidth, int screenHeight, int margin) {
         return toggle(current, screenWidth, screenHeight, margin, true);
     }
