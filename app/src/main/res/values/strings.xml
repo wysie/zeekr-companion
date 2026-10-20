@@ -1361,4 +1361,11 @@
     <string name="settings_restore_status">最近一次恢复</string>
     <string name="settings_restore_success">设置已恢复</string>
     <string name="settings_restore_failed">恢复失败，原有设置已保留。</string>
+    <string name="side_upscaling_category">GPU 画质</string>
+    <string name="side_upscaling_title">图像放大</string>
+    <string name="side_upscaling_bilinear">双线性（当前方式）</string>
+    <string name="side_upscaling_soft">双三次柔和</string>
+    <string name="side_upscaling_sharp">双三次清晰</string>
+    <string name="side_sharpening_title">锐化 (%)</string>
+    <string name="side_upscaling_help">用于盲区弹窗、HUD、超级后视镜侧视和此预览。需要在系统 → GPU 图像处理中启用盲区侧视相机或全部。该路径启用时实时生效。双三次需要更多 GPU 运算；噪点明显时请降低锐化。不改变取景、录像或相机分辨率。</string>
 </resources>

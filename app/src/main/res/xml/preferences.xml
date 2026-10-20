@@ -296,6 +296,18 @@
                 android:key="pref_side_popup_straighten"
                 android:title="@string/set_side_popup_straighten_title"
                 android:summary="@string/set_side_popup_straighten_summary" />
+            <ListPreference
+                android:key="pref_side_upscaling"
+                android:title="@string/side_upscaling_title" />
+            <SeekBarPreference
+                android:key="pref_side_sharpening"
+                android:title="@string/side_sharpening_title"
+                app:showSeekBarValue="true" />
+            <Preference
+                android:key="pref_side_upscaling_note"
+                android:summary="@string/side_upscaling_help"
+                android:selectable="false"
+                android:persistent="false" />
             <SwitchPreferenceCompat
                 android:key="pref_side_popup_auto_fit"
                 android:title="@string/set_side_popup_auto_fit_title"

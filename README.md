@@ -411,6 +411,22 @@ still be necessary. This uses the existing live feed; it does not increase its
 native resolution or establish factory-equivalent sharpness. With Straighten
 picture off, the existing crop/rotation behaviour is retained.
 
+Under **Blind spot camera → Picture → GPU picture quality**, **Upscaling** offers
+Bilinear (default), Bicubic soft (Mitchell-Netravali) and Bicubic sharp
+(Catmull-Rom). **Sharpening** is independently adjustable from 0–100%, default 0.
+These experimental controls apply live to GPU blind-side popup/HUD pictures,
+Super mirror's temporary side view and the settings preview. Enable the blind-side
+GPU route under System → GPU image processing (or select All); compatibility
+rendering retains these choices but does not apply them. No camera rebuild is
+needed for sampling edits on an active GPU route. Quality is shared across these
+blind-side outputs, independent of HUD framing overrides. Labels/arrows stay at
+final display resolution. Cubic taps and bounded sharpening stay inside the selected
+native lane, including separator edges; missing coverage remains black. Bicubic
+uses more texture samples and sharpening can emphasize camera noise, so compare
+moving footage on the car. They cannot recover absent camera detail. Normal Super
+mirror, surround/360°, playback and recorded files are unchanged. Reset side-camera
+settings restores Bilinear and zero sharpening; settings backups include both.
+
 The 009 export reports a 1280×5140 live composite with four 1280×1280 camera
 images. The side popup receives this same full-size buffer; the drawing path does
 not make a small preview bitmap before taking its camera crop. An Android

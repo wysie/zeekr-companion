@@ -102,3 +102,45 @@ Local evidence: `/tmp/companion-unified-gpu-verified-build.log`,
 `/tmp/companion-gpu-system-{light,dark}.png`. These temporary files are not release
 assets. Recordings are checked with the emulator camera; synthetic GL tests and
 emulator recording checks do not establish simultaneous-output performance on a car.
+
+## Experimental blind-side upscaling
+
+Blind spot camera → Picture → GPU picture quality offers Bilinear (default),
+Bicubic soft (Mitchell-Netravali, B=C=1/3) and Bicubic sharp (Catmull-Rom,
+B=0, C=1/2), plus independent 0–100% sharpening (default zero). They are shared
+by popup, HUD, Super mirror side replacement and the settings raw-input tap,
+including when Straighten is off. Normal mirror, surround/360°, playback and
+recording do not use these sampling choices. No camera topology flag changes;
+with an active blind-side GPU route, editing them replaces shader parameters live.
+GPU Off/compatibility retains the saved choices without applying them.
+
+The cubic kernels reconstruct from a 4×4 native-pixel neighbourhood after mapping
+each destination pixel into its side-camera lane. All taps are clamped to native
+pixel centres within that lane before the OES texture matrix. This avoids camera
+separator/adjacent-lane bleed. Cubic overshoot is limited to the neighbourhood's
+channel bounds. Optional sharpening adds a bounded native-neighbour high-pass term,
+not a second dewarping pass; unsupported destination coverage still returns black.
+Labels and arrows remain separate final-resolution Canvas overlays. This is
+spatial reconstruction, not AI enhancement or recovered optical detail. Cubic
+uses 16 texture samples per output pixel, plus five when sharpening is enabled;
+car GPU performance and noise need owner comparison. Defaults retain one bilinear
+sample and no sharpening.
+
+Validation on a disposable API 32 emulator, 2026-10-20:
+
+- 1,528 JVM tests pass; Android lint has zero errors; signed release/debug and
+  instrumentation builds pass.
+- 23 relevant native tests pass: actual OES pixel results match an independent
+  CPU cubic/sharpening reference across both side lanes and method/strength changes;
+  methods yield distinct reconstructed pixels while retaining the input producer.
+  Corrected/raw, rotated, mirrored and unsupported-coverage projections pass for
+  all three methods. Existing GPU fallback, acquired-frame freshness, native 009
+  separators, Super mirror routing and popup lifecycle checks also pass.
+- Native Picture controls preserve 40° aim back, 11:5 aspect and recording choices;
+  preferences persist, are included in settings export, survive GPU Off/All, and
+  reset to Bilinear/zero. Camera topology flags remain unchanged. Actual light/dark
+  Picture screens were inspected, with a truthful unavailable-camera preview on the
+  emulator. No camera image, frame-rate or physical HUD validation is claimed.
+
+This does not resolve the owner's separately reported HUD label/arrow clipping;
+that report still needs evidence from the physical HUD.

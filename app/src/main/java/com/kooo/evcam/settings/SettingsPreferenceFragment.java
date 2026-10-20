@@ -197,6 +197,17 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         }
         Preference autoFit = findPreference("pref_side_popup_auto_fit");
         if (autoFit != null) { autoFit.setTitle(R.string.side_settings_auto_fit); autoFit.setSummary(R.string.side_settings_auto_fit_hint); }
+        androidx.preference.PreferenceCategory quality = new androidx.preference.PreferenceCategory(requireContext());
+        quality.setTitle(R.string.side_upscaling_category); quality.setOrder(2);
+        java.util.List<Preference> qualityRows = new java.util.ArrayList<>();
+        for (String key : new String[]{"pref_side_upscaling", "pref_side_sharpening", "pref_side_upscaling_note"}) {
+            Preference item = findPreference(key);
+            if (item != null) { getPreferenceScreen().removePreference(item); qualityRows.add(item); }
+        }
+        getPreferenceScreen().addPreference(quality);
+        for (int i = 0; i < qualityRows.size(); i++) {
+            qualityRows.get(i).setOrder(i); quality.addPreference(qualityRows.get(i));
+        }
         addSideHelp("pref_side_picture_help", R.string.side_picture_help, explanations.toString().trim());
     }
 
@@ -881,6 +892,18 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         bindSwitch("pref_side_popup_straighten", appConfig.isSidePopupStraighten(), value -> {
             appConfig.setSidePopupStraighten(value);
             refreshSideAutoFit();
+            com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+        });
+        bindEnum("pref_side_upscaling", SettingSpec.of("side_upscaling", "Blind-side upscaling", "bilinear",
+                SettingSpec.entry("bilinear", "Bilinear (default)", R.string.side_upscaling_bilinear),
+                SettingSpec.entry("bicubic_soft", "Bicubic soft", R.string.side_upscaling_soft),
+                SettingSpec.entry("bicubic_sharp", "Bicubic sharp", R.string.side_upscaling_sharp)),
+                appConfig.getSideUpscaling(), value -> {
+                    appConfig.setSideUpscaling(value);
+                    com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
+                });
+        bindSlider("pref_side_sharpening", 0, 100, appConfig.getSideSharpening(), "%", value -> {
+            appConfig.setSideSharpening(value);
             com.kooo.evcam.zeekr.SideViewPopupService.applyConfig();
         });
         bindSwitch("pref_side_popup_auto_fit", appConfig.isSidePopupAutoFit(), value -> {

@@ -191,14 +191,84 @@ public class BirdEyeGpuAndroidTest {
             assertTrue("Per-pixel shader matches CPU projection: "+matched+"/"+checked,matched>checked*.98);
         } finally {image.recycle();}
     }
+    /** Known native texels, enlarged through the actual OES shader and acquired TextureView. */
+    @Test public void sideSamplingMatchesCubicReferenceAndLiveChangesRetainInput() throws Exception {
+        try(Fixture f=new Fixture(false,64,256)) {
+            CompositeStreamGeometry.Plan plan=CompositeStreamGeometry.analyse("gpu-test",f.sw,f.sh);
+            SurfaceTexture input=f.pipe.output();
+            for(int lane:new int[]{LaneCycle.LEFT,LaneCycle.RIGHT}) {
+                int[][] rows=new int[3][];
+                String[] methods={"bilinear","bicubic_soft","bicubic_sharp"};
+                for(int method=0;method<3;method++)for(int sharp:new int[]{0,100}) {
+                    SideGpuPicture picture=new SideGpuPicture(plan,lane,RearViewGeometry.Viewport.full(),
+                            0,90,0,0,0,false,f.ow,f.oh).withSampling(methods[method],sharp);
+                    SideGlRequest request=new SideGlRequest(picture,f.ow,f.oh);f.pipe.setSide(request);
+                    for(int repeat=0;repeat<4;repeat++) {
+                        GLES20.glDisable(GLES20.GL_SCISSOR_TEST);GLES20.glClearColor(1,0,1,1);GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+                        GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+                        CompositeStreamGeometry.Lane bounds=plan.lane(lane);
+                        for(int x=0;x<bounds.width;x++) {
+                            float grey=sourceGrey(x)/255f;
+                            GLES20.glScissor(bounds.x+x,f.sh-bounds.y-bounds.height,1,bounds.height);
+                            GLES20.glClearColor(grey,grey,grey,1);GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+                        }
+                        GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+                        EGLExt.eglPresentationTimeANDROID(f.display,f.surface,System.nanoTime());
+                        assertTrue(EGL14.eglSwapBuffers(f.display,f.surface));SystemClock.sleep(55);
+                    }
+                    await("Sampling request acquired: "+request.frames.failure,()->request.frames.fresh(f.outputTimestamp,SystemClock.elapsedRealtime()));
+                    Bitmap image=f.bitmap();
+                    try {
+                        int[] row=new int[f.ow];
+                        for(int x=0;x<f.ow;x++) {
+                            double pos=(x+.5)*64/f.ow-.5;
+                            double raw=linearGrey(pos),value=raw;
+                            if(method>0) {
+                                value=0;int base=(int)Math.floor(pos);
+                                for(int i=-1;i<=2;i++)value+=sourceGrey(base+i)*cubicWeight(base+i-pos,method==1?1./3:0,method==1?1./3:.5);
+                                value=Math.max(64,Math.min(192,value));
+                            }
+                            if(sharp>0) {
+                                double a=linearGrey(pos-1),b=linearGrey(pos+1);
+                                double low=Math.min(value,Math.min(raw,Math.min(a,b))),high=Math.max(value,Math.max(raw,Math.max(a,b)));
+                                value=Math.max(low,Math.min(high,value+(2*raw-a-b)*.25));
+                            }
+                            int colour=image.getPixel(x,f.oh/2);row[x]=Color.red(colour);
+                            assertEquals(methods[method]+" sharpen="+sharp+" x="+x,(int)Math.round(value),Color.red(colour),4);
+                            assertEquals("No neighbouring magenta lane",Color.red(colour),Color.green(colour),2);
+                            assertEquals(Color.red(colour),Color.blue(colour),2);
+                        }
+                        if(sharp==0)rows[method]=row;
+                    } finally {image.recycle();}
+                    assertSame("Sampling edits keep the camera producer",input,f.pipe.output());assertTrue(f.producer.isValid());
+                    request.cancel();f.pipe.clearSide(request);
+                }
+                int softDifference=0,sharpDifference=0;
+                for(int x=0;x<f.ow;x++){softDifference+=Math.abs(rows[0][x]-rows[1][x]);sharpDifference+=Math.abs(rows[0][x]-rows[2][x]);}
+                assertTrue("Soft cubic has distinct reconstructed pixels",softDifference>40);
+                assertTrue("Sharp cubic has distinct reconstructed pixels",sharpDifference>100);
+            }
+        }
+    }
+    private static int sourceGrey(int x) { return ((Math.max(0,Math.min(63,x))/4)%2)==0?64:192; }
+    private static double linearGrey(double x) {
+        int base=(int)Math.floor(x);double f=x-base;return sourceGrey(base)*(1-f)+sourceGrey(base+1)*f;
+    }
+    private static double cubicWeight(double x,double b,double c) {
+        x=Math.abs(x);
+        if(x<1)return ((12-9*b-6*c)*x*x*x+(-18+12*b+6*c)*x*x+6-2*b)/6;
+        if(x<2)return ((-b-6*c)*x*x*x+(6*b+30*c)*x*x+(-12*b-48*c)*x+8*b+24*c)/6;
+        return 0;
+    }
     @Test public void sideShaderMatchesAimRollMirrorAutoFitAndRawAcrossWindowShapes() throws Exception {
         try(Fixture f=new Fixture()) {
             CompositeStreamGeometry.Plan plan=CompositeStreamGeometry.analyse("gpu-test",f.sw,f.sh);
-            for(int lane:new int[]{LaneCycle.LEFT,LaneCycle.RIGHT})for(int scenario=0;scenario<4;scenario++){
+            for(int lane:new int[]{LaneCycle.LEFT,LaneCycle.RIGHT})for(int scenario=0;scenario<4;scenario++)
+                    for(String sampling:new String[]{"bilinear","bicubic_soft","bicubic_sharp"}){
                 int w=scenario==0?240:scenario==1?400:160,h=240,roll=lane==LaneCycle.LEFT?30:-30;
                 boolean corrected=scenario!=3,autoFit=scenario!=2;
                 SideViewFraming framing=new SideViewFraming();framing.configure(90,50,15,lane,w/(float)h,roll,autoFit);
-                SideGpuPicture picture=SideGpuPicture.side(plan,lane,w,h,corrected,90,50,15,roll,true,framing);
+                SideGpuPicture picture=SideGpuPicture.side(plan,lane,w,h,corrected,90,50,15,roll,true,framing).withSampling(sampling,35);
                 SideGlRequest request=new SideGlRequest(picture,w,h);f.pipe.setSide(request);f.freshSide(request);
                 assertSidePattern(f,lane,(u,v,out)->{
                     u=1-u;

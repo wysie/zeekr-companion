@@ -6,6 +6,8 @@ import java.util.Arrays;
 final class SideGpuPicture {
     final float[] lane, view, lens, turn, limit;
     final int mode;
+    final int sampling;
+    final float sharpening;
     SideGpuPicture(CompositeStreamGeometry.Plan plan, int laneIndex, RearViewGeometry.Viewport viewport,
             int mode, float fov, float yaw, float pitch, int rotation, boolean mirrored, int width, int height) {
         CompositeStreamGeometry.Lane l = plan.lane(laneIndex);
@@ -19,6 +21,7 @@ final class SideGpuPicture {
         limit = new float[]{mirrored ? 1 : 0, mode == 0 ? SideViewRotation.coverScale(rotation, width, height) : 1,
                 .5f / Math.max(1, l.width), .5f / Math.max(1, l.height)};
         this.mode = mode;
+        sampling = 0; sharpening = 0;
     }
     static SideGpuPicture side(CompositeStreamGeometry.Plan plan, int lane, int width, int height,
             boolean straighten, float fov, float yaw, float pitch, int roll, boolean mirrored, SideViewFraming framing) {
@@ -34,11 +37,20 @@ final class SideGpuPicture {
         return new SideGpuPicture(plan, lane, viewport, straighten ? 2 : 0,
                 straighten ? framing.effectiveFovDegrees() : fov, yaw, pitch, roll, mirrored, width, height);
     }
+    private SideGpuPicture(SideGpuPicture source, int sampling, float sharpening) {
+        lane=source.lane; view=source.view; lens=source.lens; turn=source.turn; limit=source.limit;
+        mode=source.mode; this.sampling=sampling; this.sharpening=sharpening;
+    }
+    SideGpuPicture withSampling(String method, int percent) {
+        int selected="bicubic_soft".equals(method)?1:"bicubic_sharp".equals(method)?2:0;
+        float amount=Math.max(0,Math.min(100,percent))/100f;
+        return selected==sampling && amount==sharpening ? this : new SideGpuPicture(this,selected,amount);
+    }
     @Override public boolean equals(Object other) {
         if (!(other instanceof SideGpuPicture)) return false;
         SideGpuPicture p = (SideGpuPicture) other;
-        return mode == p.mode && Arrays.equals(lane,p.lane) && Arrays.equals(view,p.view)
+        return mode == p.mode && sampling == p.sampling && sharpening == p.sharpening && Arrays.equals(lane,p.lane) && Arrays.equals(view,p.view)
                 && Arrays.equals(lens,p.lens) && Arrays.equals(turn,p.turn) && Arrays.equals(limit,p.limit);
     }
-    @Override public int hashCode() { return 31 * Arrays.hashCode(lane) + Arrays.hashCode(lens) + mode; }
+    @Override public int hashCode() { return 31 * Arrays.hashCode(lane) + Arrays.hashCode(lens) + mode + 7 * sampling + Float.floatToIntBits(sharpening); }
 }
