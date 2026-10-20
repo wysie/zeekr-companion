@@ -124,7 +124,7 @@ public class SettingsBackupAndroidTest extends MainPageControlsAndroidTest {
         File first=export(),second=export();assertNotEquals(first,second);
         assertEquals(SettingsBackup.Backup.Status.OK,SettingsBackup.read(app,first).status);
         assertEquals(SettingsBackup.Backup.Status.OK,SettingsBackup.read(app,second).status);
-        JSONObject report=new JSONObject(DiagnosticsJson.build(app,"test report"));assertEquals(3,report.getInt("schema_version"));
+        JSONObject report=new JSONObject(DiagnosticsJson.build(app,"test report"));assertEquals(4,report.getInt("schema_version"));
         JSONObject stores=report.getJSONObject("settings").getJSONObject("stores");
         assertEquals(5,stores.length());assertEquals(detail,stores.getJSONObject("bird_eye_calibration").getJSONObject("detail").getString("value"));
         assertFalse(stores.has("developer_mode"));assertFalse(stores.has("recording_intent"));

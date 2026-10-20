@@ -394,6 +394,7 @@
                 <SwitchPreferenceCompat android:key="pref_hud_picture_label" android:title="@string/set_rearview_camera_label_title" android:summary="@string/set_hud_picture_label_summary" />
             </PreferenceCategory>
             <PreferenceCategory android:key="group_hud_placement" android:title="@string/ui_hud_position_size">
+                <Preference android:key="pref_hud_visibility_test" android:title="@string/hud_test_title" android:summary="@string/hud_test_summary" />
                 <SeekBarPreference android:key="pref_hud_side_size" android:title="@string/set_hud_side_size_title" android:summary="@string/set_hud_side_size_summary" app:showSeekBarValue="true" />
                 <SeekBarPreference android:key="pref_hud_side_shape" android:title="@string/set_hud_side_shape_title" android:summary="@string/set_hud_side_shape_summary" app:showSeekBarValue="true" />
                 <SeekBarPreference android:key="pref_hud_side_inner_crop" android:title="@string/set_hud_side_inner_crop_title" android:summary="@string/set_hud_side_inner_crop_summary" app:showSeekBarValue="true" />

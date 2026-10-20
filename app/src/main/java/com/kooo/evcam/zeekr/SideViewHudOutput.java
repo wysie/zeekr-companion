@@ -133,11 +133,18 @@ final class SideViewHudOutput {
     void refreshLabel() { if (panel != null) panel.invalidate(); }
 
     void applyConfig() {
+        if (HudCalibrationSession.active()) { pauseForCalibration(); return; }
         presentKnown = false;
         failedUntilMs = 0;
         if (panel != null) {
             panel.applyConfig();
         }
+    }
+
+    /** Hide only the HUD picture, retaining its existing producer and recording intent. */
+    private void pauseForCalibration() {
+        cancelDelayedClose(); disarmReadyExpiry();
+        if (panel != null) panel.conceal();
     }
 
     // ================================================================= 判定
@@ -157,6 +164,7 @@ final class SideViewHudOutput {
     }
 
     private void apply(int want, boolean factory, boolean ready, int closeDelayMs) {
+        if (HudCalibrationSession.active()) { pauseForCalibration(); return; }
         lastReady = ready;
         if (want != SideViewDecision.NONE) {
             cancelDelayedClose();

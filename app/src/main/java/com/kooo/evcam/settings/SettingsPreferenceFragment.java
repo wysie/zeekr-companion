@@ -1090,6 +1090,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         onClick("pref_hud_reset_placement", pref -> confirmReset(pref, R.string.ui_hud_placement_reset_scope, () -> {
             appConfig.resetHudPlacement(); com.kooo.evcam.zeekr.SideViewPopupService.applyConfig(); bindSidePopup();
         }));
+        onClick("pref_hud_visibility_test", pref -> startActivity(new Intent(requireContext(), com.kooo.evcam.zeekr.HudCalibrationActivity.class)));
         onClick("pref_hud_edit_screen", pref -> openFragment(forSection("sub_side_image"), R.string.ui_hud_edit_screen));
         Preference inherited=findPreference("pref_hud_edit_screen");
         if(inherited!=null)inherited.setSummary(getString(R.string.ui_hud_inherited_picture,appConfig.getSidePopupFov(),appConfig.getSidePopupYaw(),appConfig.getSidePopupPitch()));

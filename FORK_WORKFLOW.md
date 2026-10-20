@@ -10,6 +10,7 @@ The [upstream contribution index](docs/upstream-contributions.md) instead tracks
 outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
+| `feature/hud-visible-area-test` | Temporary movable public-HUD square and bounded durable manual edge observations in Diagnostics, preserving recording intent and saved framing |
 | `fix/hud-body-priority-crop` | Camera/mirroring-aware HUD road-edge trim retaining body-side detail and final-resolution labels at the retained edge |
 | `fix/factory-charcoal-text` | Softer shared light-theme primary text following factory-menu photos, retaining regular settings type, size and night palette |
 | `fix/shared-recording-red` | One recording foreground red per theme across app and floating controls; live overlay theme selection and contrasting red-fill foreground |
