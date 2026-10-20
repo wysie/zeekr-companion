@@ -236,3 +236,9 @@
 | 确认按钮 | 知道了 | Got it | Faham | 不用「我知道了」 |
 | 画面调节 | 画面调节；画面调节窗口 | Image adjustment | Pelarasan imej | 不用「亮度 / 降噪调节」 |
 | 设置分区与页面 | 录制、存储、超级后视镜、悬浮按钮、界面、系统、开发者选项、检查更新、关于与致谢 | Recording、Storage、Super mirror、Floating button、Interface、System、Developer options、Check for updates、About & credits | Rakaman、Storan、Cermin super、Butang terapung、Antara muka、Sistem、Pilihan pembangun、Semak kemas kini、Perihal & penghargaan | 关于页没有马来文，见 §5 |
+
+## Companion settings backup follow-up (2026-10-20)
+
+Settings backup, Export settings and Import settings retain upstream #64 native Settings controls.
+Companion copy names the included calibration/window stores, same-major Companion compatibility,
+and the explicit exit/reopen restore flow. Import failure reports that original settings are retained.

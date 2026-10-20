@@ -31,6 +31,8 @@ public class KeepAliveProvider extends ContentProvider {
         if (context == null) {
             return false;
         }
+        // This provider precedes Application.onCreate and can read settings/start services.
+        com.kooo.evcam.settings.SettingsBackup.restoreOnStartup(context);
         
         // 这里是整个进程最早能执行的地方，「这条命是被谁开的」从这儿记
         com.kooo.evcam.blackbox.BlackBox.attach(context, "ContentProvider");

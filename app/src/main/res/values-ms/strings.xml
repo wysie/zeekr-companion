@@ -117,6 +117,25 @@
     <string name="set_camera_mapping_summary">Pilih kamera bagi paparan sekeliling, kabin depan dan kabin belakang secara manual (penyelesaian masalah)</string>
     <string name="set_diagnostics_title">Maklumat diagnostik</string>
     <string name="set_diagnostics_summary">Lihat dan eksport butiran kamera, paparan dan storan serta log terkini</string>
+    <string name="set_settings_export_title">Eksport tetapan</string>
+    <string name="set_settings_export_summary">Simpan fail tetapan Companion di sebelah laporan diagnostik</string>
+    <string name="set_settings_import_title">Import tetapan</string>
+    <string name="set_settings_import_summary">Pulihkan sandaran Companion %1$d.x; aplikasi keluar dan menggunakannya apabila dibuka semula</string>
+    <string name="settings_exported">Dieksport ke:\n%1$s</string>
+    <string name="settings_export_failed">Tidak dapat mengeksport tetapan</string>
+    <string name="settings_export_failed_reason">Eksport tetapan gagal: %1$s</string>
+    <string name="settings_pick_title">Pilih fail tetapan</string>
+    <string name="settings_file_label">%1$s · versi %2$s</string>
+    <string name="settings_none_title">Tiada fail tetapan ditemui</string>
+    <string name="settings_none_msg">Fail tetapan dibaca daripada folder ini: %1$s.</string>
+    <string name="settings_import_refused_title">Tidak dapat mengimport</string>
+    <string name="settings_other_version_msg">Fail ini dieksport oleh versi %1$s. Hanya fail tetapan yang dieksport oleh versi %2$d.x boleh diimport.</string>
+    <string name="settings_unreadable">Tidak dapat membaca fail tetapan ini</string>
+    <string name="settings_import_confirm_title">Import tetapan?</string>
+    <string name="settings_import_confirm_msg">Gantikan tetapan, pemetaan kamera, profil, penentukuran dan tetapan tetingkap? Rakaman akan berhenti dan aplikasi akan keluar. Buka semula Companion untuk menggunakan sandaran. Akses pembangun dan perkakasan dikesan kekal pada unit ini.</string>
+    <string name="settings_import_action">Import dan keluar</string>
+    <string name="settings_import_failed">Tidak dapat mengimport tetapan</string>
+    <string name="settings_imported_reopen">Tetapan diimport; berkuat kuasa selepas apl dibuka semula</string>
     <!-- System info (experimental): groups, signal names, values -->
     <string name="set_vehicle_info_title">Maklumat sistem (percubaan)</string>
     <string name="set_vehicle_info_summary">Isyarat kenderaan yang didedahkan unit kepala dan keadaan semasanya; item yang ditanda dipaparkan pada Bar maklumat pemanduan</string>
@@ -1323,4 +1342,11 @@
     <string name="gpu_processing_playback">Pembetulan main balik video</string>
     <string name="gpu_processing_details_title">Tentang pemprosesan imej GPU</string>
     <string name="gpu_processing_details">Semua mengaktifkan semua laluan. Tersuai membolehkan pilihan berasingan; pilihan disimpan semasa menukar mod. Suis Luruskan masih mengawal pembetulan. Ketik Gunakan perubahan untuk laluan kamera; main balik berubah apabila dibuka semula. Rakaman tidak berubah. Jika GPU gagal, laluan serasi digunakan jika tersedia; laluan terhenti mungkin perlu Mati dan Gunakan perubahan. Keserasian dan prestasi perlu diuji dalam kereta.</string>
+    <string name="settings_backup_title">Sandaran tetapan</string>
+    <string name="settings_backup_summary">Simpan dan pulihkan tetapan Companion serta penentukuran kamera</string>
+    <string name="settings_backup_help">Termasuk pilihan kenderaan dan kamera, profil, pilihan GPU, penentukuran 360°, warna dan tetapan tetingkap. Akses pembangun, perkakasan dikesan dan keadaan rakaman semasa kekal pada unit ini.</string>
+    <string name="settings_backup_busy">Operasi sandaran tetapan sedang berjalan</string>
+    <string name="settings_restore_status">Pemulihan terakhir</string>
+    <string name="settings_restore_success">Tetapan dipulihkan</string>
+    <string name="settings_restore_failed">Pemulihan gagal. Tetapan asal dikekalkan.</string>
 </resources>

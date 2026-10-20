@@ -392,3 +392,11 @@ Developer switches. Keep the native Settings row styles and theme tokens. The
 short visible note explains Straighten and Apply; detailed compatibility/recording
 information lives under About GPU image processing. The blind-camera settings
 picture follows its renderer and uses the shared raw-input shader when enabled.
+
+### Settings backup, 2026-10-20
+
+System → Settings backup uses the existing native Settings detail page and row typography.
+A short non-interactive note names coverage and local-only state. Export reports its saved
+path in a persistent dialog. Import lists backups, then uses the shared destructive
+confirmation to explain replacement, recording stop and exit/reopen. Cancel preserves
+all choices. The last restore result stays on the page after reopening.

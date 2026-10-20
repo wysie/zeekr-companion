@@ -117,6 +117,25 @@
     <string name="set_camera_mapping_summary">Choose which camera feeds the surround, front cabin and rear cabin views (troubleshooting)</string>
     <string name="set_diagnostics_title">Diagnostics</string>
     <string name="set_diagnostics_summary">View and export camera, display and storage details and recent logs</string>
+    <string name="set_settings_export_title">Export settings</string>
+    <string name="set_settings_export_summary">Save a Companion settings file beside diagnostics reports</string>
+    <string name="set_settings_import_title">Import settings</string>
+    <string name="set_settings_import_summary">Restore a Companion %1$d.x backup; the app exits and applies it when reopened</string>
+    <string name="settings_exported">Exported to:\n%1$s</string>
+    <string name="settings_export_failed">Can\'t export settings</string>
+    <string name="settings_export_failed_reason">Settings export failed: %1$s</string>
+    <string name="settings_pick_title">Choose a settings file</string>
+    <string name="settings_file_label">%1$s · version %2$s</string>
+    <string name="settings_none_title">No settings file found</string>
+    <string name="settings_none_msg">Settings files are read from this folder: %1$s.</string>
+    <string name="settings_import_refused_title">Can\'t import</string>
+    <string name="settings_other_version_msg">This file was exported by version %1$s. Only settings files exported by version %2$d.x can be imported.</string>
+    <string name="settings_unreadable">Can\'t read this settings file</string>
+    <string name="settings_import_confirm_title">Import settings?</string>
+    <string name="settings_import_confirm_msg">Replace saved preferences, camera mappings, profiles, calibration and window settings? Recording will stop and the app will exit. Reopen Companion to apply the backup. Developer access and detected hardware stay on this unit.</string>
+    <string name="settings_import_action">Import and exit</string>
+    <string name="settings_import_failed">Can\'t import settings</string>
+    <string name="settings_imported_reopen">Settings imported; they take effect after the app is reopened</string>
     <!-- System info (experimental): groups, signal names, values -->
     <string name="set_vehicle_info_title">System info (experimental)</string>
     <string name="set_vehicle_info_summary">Vehicle signals the head unit exposes and their current state; ticked items appear on the Driving info bar</string>
@@ -1346,4 +1365,11 @@
     <string name="gpu_processing_playback">Video playback correction</string>
     <string name="gpu_processing_details_title">About GPU image processing</string>
     <string name="gpu_processing_details">All enables every path. Custom lets you choose below; your custom choices are retained when switching modes. Straighten switches still control whether correction is applied. Tap Apply changes for camera routing; playback uses the selection when next opened. Recordings stay unchanged. If a GPU route fails, compatibility rendering is used where available; a stopped route may need Off and Apply changes. Vehicle compatibility and performance need testing.</string>
+    <string name="settings_backup_title">Settings backup</string>
+    <string name="settings_backup_summary">Save and restore Companion preferences and camera calibration</string>
+    <string name="settings_backup_help">Includes vehicle and camera choices, profiles, GPU options, 360° calibration, colours and window settings. Developer access, detected hardware and current recording state stay on this unit.</string>
+    <string name="settings_backup_busy">A settings backup operation is already running</string>
+    <string name="settings_restore_status">Last restore</string>
+    <string name="settings_restore_success">Settings restored</string>
+    <string name="settings_restore_failed">Restore failed. Original settings were retained.</string>
 </resources>

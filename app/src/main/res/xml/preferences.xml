@@ -613,6 +613,12 @@
             android:defaultValue="true"
             android:title="@string/set_auto_start_title"
             android:summary="@string/set_auto_start_summary" />
+        <PreferenceScreen android:key="sub_settings_backup" android:title="@string/settings_backup_title" android:summary="@string/settings_backup_summary">
+            <Preference android:key="pref_settings_backup_help" android:selectable="false" android:summary="@string/settings_backup_help" />
+            <Preference android:key="pref_settings_export" android:title="@string/set_settings_export_title" android:summary="@string/set_settings_export_summary" />
+            <Preference android:key="pref_settings_import" android:title="@string/set_settings_import_title" />
+            <Preference android:key="pref_settings_restore_status" android:selectable="false" />
+        </PreferenceScreen>
         <PreferenceScreen android:key="sub_gpu_processing" android:title="@string/gpu_processing_title" android:summary="@string/gpu_processing_summary">
             <ListPreference android:key="pref_gpu_mode" android:title="@string/gpu_processing_mode" app:useSimpleSummaryProvider="false" />
             <Preference android:key="pref_gpu_help" android:selectable="false" android:summary="@string/gpu_processing_help" />

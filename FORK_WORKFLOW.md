@@ -11,6 +11,9 @@ outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
 | --- | --- |
+| `feature/settings-backup` | Companion five-store settings backup, native System flow, staged startup restore and durable multi-store rollback/recovery |
+| `feature/manual-recording-lock` | dts88 #61 adapted to tap/double tap/hold with manual protection outside the braking-only budget |
+| `review/upstream-refresh-20261020` | Combined validation of refreshed #46/#48/#52–#54 against upstream eb7d5732; preserves independent scopes and dependencies |
 | `feature/unified-gpu-rendering` | Shared System GPU policy, optional native side/mirror shaders and raw-input GPU settings tap; retained compatibility and recording paths |
 | `fix/360-half-screen-expand` | Shared portrait half-screen expansion for the 360° window with retained source/calibration and exact restore |
 | `fix/blind-popup-half-screen-expand` | Temporary portrait half-screen blind popup/mirror replacement expansion, native overlay bounds and exact restore |
