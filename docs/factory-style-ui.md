@@ -244,3 +244,21 @@ Four native emulator tests cover ultra-wide popup expansion/restore with retaine
 SurfaceTexture, mirror replacement cleanup, unchanged normal mirror expansion,
 and 360° inset refitting. Physical fit/framing still needs a vehicle check. Logs:
 `/tmp/companion-half-screen-build.log`, `/tmp/companion-half-screen-native.log`.
+
+## Softer light-theme primary text — 2026-10-20
+
+The owner’s factory-menu comparison photos show a softer charcoal treatment than
+Companion’s very dark `#2A2B2E`. Shared light `text_primary` is now `#414347`,
+covering ordinary menu, settings/header and control text through existing aliases
+and selectors. Settings already use regular sans-serif; font sizes, weights and
+layout are retained. Secondary text, recording/destructive accents, camera-overlay
+labels and the night palette retain their existing roles. This is an approximation
+from the photographed appearance, not a measured factory software colour.
+
+Calculated primary-text contrast is 9.50:1 on settings rows, 8.86:1 on the page
+background and 7.95:1 on neutral selected rows. Validation: 1,528 JVM tests pass,
+lint has zero errors, signed release/debug/instrumentation builds pass, and three
+existing native sidebar/drawer checks pass across light/dark, recycled About/Quit
+rows and larger system text. Actual light/dark settings captures were inspected
+on a disposable API 32 emulator; this does not establish colour parity on the
+physical head unit. No new downloadable release is part of this change.

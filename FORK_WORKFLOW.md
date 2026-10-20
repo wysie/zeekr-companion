@@ -10,6 +10,7 @@ The [upstream contribution index](docs/upstream-contributions.md) instead tracks
 outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
+| `fix/factory-charcoal-text` | Softer shared light-theme primary text following factory-menu photos, retaining regular settings type, size and night palette |
 | `fix/shared-recording-red` | One recording foreground red per theme across app and floating controls; live overlay theme selection and contrasting red-fill foreground |
 | `feature/blind-camera-upscaling` | Experimental live blind-side bilinear/bicubic sampling and bounded adjustable sharpening, with retained framing and recording |
 | --- | --- |
