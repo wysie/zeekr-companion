@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+## [2.11.56-alpha.1] - 2026-10-20
+
 - Add 360° on/off to all floating-button gestures and reorder the seven actions while preserving saved assignments.
 - Lighten the 009 Green illustration to a muted silver-sage/grey-green finish with a matching surround.
 - Separate update version details from scrollable, spaced release notes with smaller body text and fixed installation actions.

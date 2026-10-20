@@ -42,8 +42,8 @@ changed by this feature.
   settings screenshot inspection passed. New strings cover Chinese, English and
   Malay. Vehicle touch timing still needs owner testing.
 
-This feature is recorded under Unreleased; it does not change an existing release
-tag or downloadable APK.
+The seven-action extension is included in 2.11.56-alpha.1. Earlier release tags
+and downloads remain unchanged.
 
 ## 360° action and ordering — 2026-10-20
 

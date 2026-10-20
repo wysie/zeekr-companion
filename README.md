@@ -46,7 +46,7 @@ The app-name watermark on new recordings and normal photos uses **Zeekr Companio
 plus the version; existing footage keeps its original burned-in text. The logo itself
 is not added to the footage. Raw developer exports retain their existing behavior.
 
-Current test download: [Zeekr Companion 2.11.55-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.55-alpha.1).
+Current test download: [Zeekr Companion 2.11.56-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.56-alpha.1).
 For in-app delivery, select **Updates → Update channel → Alpha**; Beta and Stable
 channels deliberately exclude this release. It retains the application ID and
 signing certificate for an in-place update. New behavior still needs on-car testing.
