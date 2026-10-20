@@ -9,7 +9,7 @@ colors:
   light-card: "#E6E6E8"
   light-settings-row: "#FAFAFB"
   light-line: "#DDDDE0"
-  light-text-primary: "#2A2B2E"
+  light-text-primary: "#414347"
   light-text-secondary: "#5F6166"
   light-text-tertiary: "#9EA0A5"
   light-energy: "#F0622D"
@@ -228,7 +228,7 @@ The palette combines neutral surfaces with three distinct functional accent fami
 ### Neutral
 
 - **Background and surfaces:** `bg`, `surface`, `sunken`, `panel`, `card` and `line` supply screen, content, secondary control, settings and separator layers. `panel` is not a generic elevated card: its dark value matches the black background.
-- **Text:** `text_primary`, `text_secondary` and `text_tertiary` provide the existing hierarchy. Legacy resource names alias these semantic roles; do not fork a second palette.
+- **Text:** `text_primary`, `text_secondary` and `text_tertiary` provide the existing hierarchy. Light primary text uses softer charcoal `#414347`, following the owner’s factory-menu reference photos; regular settings type and the night palette are retained. This is a visual approximation, not a colour sampled from factory software. Legacy resource names alias these semantic roles; do not fork a second palette.
 - **Camera chrome:** `preview_frame_background`, `side_control_*`, `camera_label_*` and `side_arrow_background` distinguish controls and labels over imagery. `status_overlay_text` and its dim variant remain light in both themes because they sit over camera masks. `black` and `white` are explicit constants.
 - **Native interaction:** `nav_ripple_color` and `dialog_guide_button_ripple` preserve theme-aware press feedback.
 

@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Soften light-theme primary menu/settings text to charcoal grey, following the factory-menu reference while retaining existing type sizes and night colours.
+
 - Standardize recording/status/quit reds across the app and make the floating button follow the selected app theme, retaining contrast on solid red actions.
 
 ## [2.11.57-alpha.1] - 2026-10-20

@@ -12,7 +12,7 @@
     <color name="panel">#FFFAFAFB</color>  <!-- 主界面那一整块（日间同 surface；夜间和底色一样黑，像车机的界面） -->
     <color name="card">#FFE6E6E8</color>  <!-- 设置行的卡片（日间和 sunken 同值；夜间更暗，见夜间那份） -->
     <color name="line">#FFDDDDE0</color>  <!-- 1px 分隔线 -->
-    <color name="text_primary">#FF2A2B2E</color>  <!-- 正文：不用纯黑 / 纯白 -->
+    <color name="text_primary">#FF414347</color>  <!-- 正文：不用纯黑 / 纯白 -->
     <color name="text_secondary">#FF5F6166</color>  <!-- 说明、状态 -->
     <color name="text_tertiary">#FF9EA0A5</color>  <!-- 最弱一级 -->
     <color name="energy">#FFF0622D</color>  <!-- 能量色 = 极氪橙：开关、指示、选中下划线 -->
