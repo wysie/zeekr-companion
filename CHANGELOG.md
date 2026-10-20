@@ -9,12 +9,11 @@ commit message, not here.
 
 ## [Unreleased]
 
+## [2.11.58-alpha.1] - 2026-10-20
+
 - Add a movable, resizable HUD calibration square with fine/coarse positioning, colour choices and durable manual edge observations included in Diagnostics; retain saved camera framing and recording intent.
-
 - Make HUD trimming preserve the car-body edge according to camera side and mirroring, with direction labels anchored inside that retained edge after cropping/upscaling.
-
 - Soften light-theme primary menu/settings text to charcoal grey, following the factory-menu reference while retaining existing type sizes and night colours.
-
 - Standardize recording/status/quit reds across the app and make the floating button follow the selected app theme, retaining contrast on solid red actions.
 
 ## [2.11.57-alpha.1] - 2026-10-20
