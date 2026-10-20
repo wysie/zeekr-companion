@@ -7,15 +7,35 @@ Latest status review (**2026-10-20**, upstream `eb7d5732`): **17 open, 3 merged,
 4 closed**. #17/#28/#38 are merged (#28/#38 through maintainer #58/#59).
 #19 remains closed in favour of adapted #41/#43. #31 is now closed in favour of
 merged #62; #33/#35 were declined for storage-retention/repair-space policy reasons.
-All 17 open heads have passing builds and no maintainer review/comment; five
-conflict with current main: **#46, #48, #52, #53, #54**. The remaining twelve are
-mergeable: #29/#30/#32/#34/#36/#37/#44/#45/#47/#49/#50/#51.
-[Current review, maintainer explanations and incoming candidates](source-review-20261020.md)
-records the exact source boundaries and limitations. Existing PR heads were not edited.
+All 17 open heads now have passing GitHub builds and are mergeable against current
+main. Refreshed **#46, #48, #52, #53, #54** with non-forced merge updates; other
+published heads were preserved. PR descriptions include current dependency and
+validation details. See [completed recommendations](recommendations-completed-20261020.md).
+The [initial review](source-review-20261020.md) retains the earlier conflict snapshot.
 
 The [earlier maintainer differences, adopted follow-ups and verification](upstream-contribution-followups-20261019.md)
 are recorded separately. Historical open-status statements below describe their
-original review times. Existing published PR heads remain unchanged.
+original review times. The refreshed heads are listed below; unrelated heads remain unchanged.
+
+## Five PRs refreshed — 2026-10-20
+
+Each includes upstream `eb7d5732`; #53/#54 each include the updated #52 prerequisite
+and remain independent of one another. Published history is preserved without force pushes.
+
+| PR | Updated head | Result |
+| --- | --- | --- |
+| [#46](https://github.com/dts88/zeekr-shortcut-car/pull/46) | `455e9a897d72664b5f6abc1491bc81bcc13a869c` | Open, mergeable, GitHub build passing |
+| [#48](https://github.com/dts88/zeekr-shortcut-car/pull/48) | `6acd823e92fbb5188344f9be7dab692025392279` | Open, mergeable, GitHub build passing |
+| [#52](https://github.com/dts88/zeekr-shortcut-car/pull/52) | `4f521d02ecfa4776a6c6054974dd66e5eb395845` | Open, mergeable, GitHub build passing |
+| [#53](https://github.com/dts88/zeekr-shortcut-car/pull/53) | `c1935b2c8f05bce78b90cf6baf9247b21c8667b3` | Open, mergeable, GitHub build passing |
+| [#54](https://github.com/dts88/zeekr-shortcut-car/pull/54) | `77aa8a7f7a0aae19779c48bbc4b61df58cf31899` | Open, mergeable, GitHub build passing |
+
+Each updated branch passes its JVM suite and debug/test/release assembly. Combined
+validation `a910c669` passes 1,172 JVM and 19 native API32 tests, plus builds/release
+lint. Shared README/resource additions still need integration resolutions when
+combining independent PRs; the validation branch resolves those and deduplicates
+`record_group_roads`, including its Chinese override. No Companion branding,
+release configuration or signing change was added to these contribution diffs.
 
 Submitted on 2026-10-16 against dts88 main at `0f145f7a` (2.12.0-alpha).
 
