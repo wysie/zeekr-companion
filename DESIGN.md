@@ -427,3 +427,15 @@ scale and saved layout. The arrow stays centred after image processing. Popup an
 normal mirror labels retain their incumbent positions. The preference key, percent,
 vehicle defaults and follow/custom framing choices are retained. Physical HUD
 visibility remains subject to projector masking and independent factory graphics.
+
+### HUD visible-area tool, 2026-10-20
+
+A native main-display page under HUD → Position & size controls a temporary public
+HUD Presentation. Start/Stop/Back remain above a scrolling set of sliders, 1/10px
+nudges, colours and explicit visibility observations. The incumbent theme/type
+and wrapping native action rows are retained. The HUD marker is a large solid
+square with contrasting edge labels, inset border and crosshair; projection
+outside it is transparent. Red is diagnostic content, independent of themed
+recording red. No physical visibility is inferred from Android drawing success.
+Leaving, screen-off, display loss and inactivity remove the marker. Diagnostics
+retain bounded manual evidence separately from backed-up vehicle settings.

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hud_test_title">Ujian kawasan HUD yang kelihatan</string>
+    <string name="hud_test_summary">Gerakkan petak berwarna pada HUD dan rekod tempat tepinya hilang.</string>
+    <string name="hud_test_help">Semasa diparkir, mulakan petak dan gerakkannya ke setiap tepi. Simpan Kelihatan sepenuhnya sebelum tepi hilang, kemudian simpan sisi yang terpotong. Ulang pada ketinggian berbeza. L/R menandakan tepi imej, bukan sisi kenderaan. Berhenti apabila anda keluar atau selepas 3 minit tanpa input.</string>
+    <string name="hud_test_start">Mulakan petak</string>
+    <string name="hud_test_stop">Hentikan petak</string>
+    <string name="hud_test_back">Kembali</string>
+    <string name="hud_test_idle">Petak dihentikan. Bingkai kamera dan tetapan HUD yang disimpan kekal.</string>
+    <string name="hud_test_x">Kedudukan mendatar</string>
+    <string name="hud_test_y">Kedudukan menegak</string>
+    <string name="hud_test_size">Saiz petak</string>
+    <string name="hud_test_left">Gerak kiri</string>
+    <string name="hud_test_right">Gerak kanan</string>
+    <string name="hud_test_up">Gerak atas</string>
+    <string name="hud_test_down">Gerak bawah</string>
+    <string name="hud_test_fine">Langkah: 1 px</string>
+    <string name="hud_test_coarse">Langkah: 10 px</string>
+    <string name="hud_test_red">Merah</string>
+    <string name="hud_test_cyan">Sian</string>
+    <string name="hud_test_white">Putih</string>
+    <string name="hud_test_observe">Apa yang anda lihat pada cermin hadapan?</string>
+    <string name="hud_test_visible">Kelihatan sepenuhnya</string>
+    <string name="hud_test_clip_left">Kiri terpotong</string>
+    <string name="hud_test_clip_right">Kanan terpotong</string>
+    <string name="hud_test_clip_top">Atas terpotong</string>
+    <string name="hud_test_clip_bottom">Bawah terpotong</string>
+    <string name="hud_test_not_seen">Tidak kelihatan</string>
+    <string name="hud_test_log_help">128 pemerhatian terkini kekal selepas aplikasi ditutup dan disertakan dalam eksport Diagnostik. Android tidak dapat melihat pemotongan optik atau grafik kilang. Ujian ini tidak menggunakan sempadan kamera baharu.</string>
+    <string name="hud_test_diagnostics">Buka Diagnostik untuk eksport</string>
+    <string name="hud_test_timeout">Petak dihentikan selepas 3 minit tanpa input. Pemerhatian yang disimpan dikekalkan.</string>
+    <string name="hud_test_stopped">Petak dihentikan. Pemerhatian yang disimpan dikekalkan.</string>
+    <string name="hud_test_no_display">Tiada paparan HUD awam dikesan. Hidupkan HUD dan cuba lagi.</string>
+    <string name="hud_test_failed">Tidak dapat menunjukkan petak HUD (%1$s). Tetapan yang disimpan tidak berubah.</string>
+    <string name="hud_test_save_failed">Pemerhatian tidak dapat disimpan. Cuba lagi.</string>
+    <string name="hud_test_not_ready">Tunggu petak HUD muncul sebelum menyimpan pemerhatian.</string>
+    <string name="hud_test_saved">Disimpan: %1$s · x %2$d, y %3$d, saiz %4$d px. %5$d pemerhatian dikekalkan.</string>
+    <string name="hud_test_position">Paparan HUD %1$d · ruang pandang %2$d × %3$d px · x %4$d, y %5$d · petak %6$d px</string>
+</resources>

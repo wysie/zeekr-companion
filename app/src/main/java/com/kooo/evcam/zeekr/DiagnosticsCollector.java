@@ -79,6 +79,8 @@ public final class DiagnosticsCollector {
         timings.run("stall watch", () -> appendStallWatch(sb, context));
         timings.run("multi mapping", () -> appendMultiMapping(sb, context));
         timings.run("displays", () -> appendDisplays(sb, context));
+        timings.run("HUD visibility observations", () -> sb.append("## HUD visibility test (manual observations, latest 128)\n")
+                .append(HudCalibrationLog.read(context)).append("\n\n"));
         timings.run("DIY 360", () -> {
             sb.append("## DIY 360 prototype\n").append(FourLaneContainer.describeAttached()).append('\n');
             sb.append("360 popup: ").append(BirdEyePopupService.describe()).append('\n');

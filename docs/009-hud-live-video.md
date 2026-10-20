@@ -161,3 +161,36 @@ independent 009/generic reset and existing popup freshness/lifecycle also pass.
 Composed mirrored left/right captures were inspected on both renderers. These are
 software bounds checks, not an optical-resolution or physical HUD visibility claim.
 Existing crop values/defaults are retained; no new release is published here.
+
+### Manual HUD visibility observations — 2026-10-20
+
+Blind spot camera → HUD → Position & size → HUD visible-area test opens main-display
+controls and a temporary square on the existing detected public HUD. The marker
+starts at 200px, supports Red/Cyan/White, pixel-position/size sliders and 1/10px
+nudges. It can deliberately cross logical display edges. Save a Fully visible and
+a cut-off observation at each physical boundary, repeating at different heights.
+These are user-entered observations, never inferred projector limits. Factory
+objects may hide a marker inside an otherwise visible region; a single pair of
+observations does not prove one permanent rectangular safe area.
+
+The latest 128 explicit observations are committed to a separate local log, with
+session/timestamp/version, display identity/dimensions/flags, measured content
+viewport and origin, requested square coordinates/size/colour, logical visible
+intersection and current HUD placement/trim/mirroring. Diagnostics schema 4 includes
+`hud_visibility_observations` and the text report includes the same bounded data.
+The controls link to existing Diagnostics export. No derived bounds are applied;
+normal video is temporarily concealed, saved framing and recording intent retained.
+Leaving, screen-off, Presentation dismissal or three minutes without input stop
+the marker; returning never restarts it automatically.
+
+Validation: 1,531 JVM tests pass; lint has zero errors and no new calibration-file
+warnings; debug, instrumentation and signed release APK builds pass. Twelve native
+checks pass across the calibration tool, existing HUD window/picture/settings and
+Diagnostics settings-export regression. A real public 1280×640 Presentation captured
+through ImageReader shows the expected clipped red square at both logical edges.
+Manual observations remain explicit, correctly exported and bounded to 128; leaving
+and display removal close the session. Normal HUD concealment retains its attached
+panel and TextureView. Light/dark native control captures were visually inspected.
+These checks establish Android behavior, not windscreen visibility, automatic
+optical calibration, timed physical projector response or recording on a car.
+No release was published for this change.

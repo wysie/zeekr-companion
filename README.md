@@ -444,6 +444,24 @@ Under **HUD picture**, **Follow popup picture settings** defaults on for unconfi
 
 Height (30–100%), shape (width/height, 100–300%), road-edge trim (0–60%), horizontal/vertical position, opacity (20–100%), contrast, night brightness and edge fade always stay HUD-only, in either mode. The 009 layout defaults to 50% height, square shape, horizontal 94% (right), vertical 50%, and Follow indicator side off, so either camera appears on the right. Its layout is saved independently from the previous generic/7X layout (74% height, horizontal 6%). **HUD road-edge trim** is under Blind spot camera → HUD → Position & size. It starts at 25% on the recognised 009 display, including upgrades without a saved crop; generic/7X HUDs keep 0%. It prioritizes the car-body edge of the displayed camera picture: mirrored Left trims from the left; mirrored Right trims from the right. Mirroring off reverses these edges. This follows the camera side and HUD picture mirroring, independently of fixed/follow-indicator window placement. The visible panel still shrinks away from the HUD centre while retaining its outer placement, height and original picture scale. Both cameras keep equal visible widths. HUD direction labels sit at the bottom of the retained car-body edge (mirrored Left at bottom-right, mirrored Right at bottom-left); labels and arrows are drawn after cropping/upscaling inside the visible window. Set 0% to restore the full picture; this setting and its reset are independent of popup picture following. Existing position, shape, aim and recording settings are retained. The 25% starting value reduces the footprint; physical projector masking and changing factory graphics still need an in-car check. HUD windows have no touch controls. Reset restores Screen output, follow-popup mode and picture/layout defaults while retaining the main feature switch and shared popup labels.
 
+**HUD visible-area test** under Blind spot camera → HUD → Position & size projects a
+200px red square onto the same detected public HUD. From the main screen, adjust
+its size and position, nudge by 1 or 10 logical pixels, or select Red/Cyan/White.
+The square can cross Android's reported edges; L/R/T/B identify its image edges.
+While parked, save **Fully visible** just before an edge disappears, then save
+**Left/Right/Top/Bottom cut off** (or **Not visible**). Repeat at different heights
+to investigate a shaped optical boundary or factory graphics. Only these explicit
+observations are saved, with timestamps, session/display details, actual measured
+viewport/origin, marker rectangle, logical visible intersection and current HUD
+placement/mirroring. The latest 128 survive closing the app and appear in
+Diagnostics JSON (`hud_visibility_observations`) and its text report; **Open
+Diagnostics to export** leads to the existing save/send controls. Observations are
+not settings backups and do not automatically change camera bounds. Normal HUD
+camera video is temporarily hidden; recording intent is retained. The marker stops
+when leaving the page, turning the screen off, losing its display or after three
+minutes without input, and never restarts automatically. This is manual evidence:
+Android cannot measure physical projector clipping or identify a factory overlay.
+
 The HUD has no app speed threshold, but reverse, factory views, parking assist and screen-off still suppress it. Closing the screen side view also dismisses the HUD for that signal activation; it returns after cancelling and signalling again. HUD video is covered when frames stop arriving. Its optional camera output yields before screen output, mirror and recording when the session cannot support it. Diagnostics include display flags, the detected HUD, output mode, mirroring choices and recent HUD window state. The owner has confirmed live HUD video; physical fit and smoothness of these layout changes still need an on-car check. Factory speed/warnings/navigation may remain visible over the camera because the ordinary Presentation cannot mask a separate factory layer.
 
 Side-camera correction and aim follow the selected picture mode. Under **Blind spot camera →

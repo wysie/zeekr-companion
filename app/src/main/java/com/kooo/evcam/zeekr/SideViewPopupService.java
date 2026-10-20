@@ -169,6 +169,14 @@ public class SideViewPopupService extends Service {
         }
     }
 
+    /** Temporary camera-free HUD test; retain all recording and popup configuration. */
+    static void hudCalibrationChanged() {
+        SideViewPopupService svc = instance;
+        if (svc == null) return;
+        if (svc.hud != null) svc.hud.applyConfig();
+        svc.evaluate();
+    }
+
     public static void refreshCameraLabel() {
         SideViewPopupService svc = instance;
         if (svc != null) {

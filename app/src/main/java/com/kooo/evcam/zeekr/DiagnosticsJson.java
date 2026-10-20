@@ -42,7 +42,8 @@ public final class DiagnosticsJson {
      * <p>3：加 settings —— 导出这一刻的全部设置，和「导出设置」同一份（SettingsBackup.snapshot），不截断
      * （项目所有者 2026-10-19：导出日志时把当前设置也写进去）。文本报告里那份原始值每项截到 80 字。</p>
      */
-    private static final int SCHEMA_VERSION = 3;
+    // 4: durable, explicitly manual HUD visibility observations, independent of settings backup.
+    private static final int SCHEMA_VERSION = 4;
 
     private DiagnosticsJson() {
     }
@@ -61,6 +62,7 @@ public final class DiagnosticsJson {
             root.put("generated_at", System.currentTimeMillis());
             root.put("meta", meta(context));
             root.put("settings", settings(context));
+            root.put("hud_visibility_observations", HudCalibrationLog.read(context));
             root.put("text_report", textReport != null ? textReport : "");
         } catch (Throwable t) {
             AppLog.e(TAG, "组装 JSON 失败", t);

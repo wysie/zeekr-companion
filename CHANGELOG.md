@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Add a movable, resizable HUD calibration square with fine/coarse positioning, colour choices and durable manual edge observations included in Diagnostics; retain saved camera framing and recording intent.
+
 - Make HUD trimming preserve the car-body edge according to camera side and mirroring, with direction labels anchored inside that retained edge after cropping/upscaling.
 
 - Soften light-theme primary menu/settings text to charcoal grey, following the factory-menu reference while retaining existing type sizes and night colours.
