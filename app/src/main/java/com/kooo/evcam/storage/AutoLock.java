@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.LinkedHashMap;
 import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
@@ -118,16 +119,20 @@ public final class AutoLock implements Telemetry.Listener {
         /** 闪远光：人要的，和回放里手动锁一样，不受自动锁定的上限管。 */
         FLASH,
         /** 急刹车：车自己判断的，记成「自动锁的」，超了上限先放开（{@link AutoLockBudget}）。 */
-        BRAKE
+        BRAKE,
+        /** Explicit user request, independent of automatic signal switches. */
+        BUTTON
     }
 
     private static boolean enabled(Context context, Source source) {
-        return source == Source.BRAKE ? brakeEnabled(context) : flashEnabled(context);
+        return source == Source.BUTTON ? FootageLocks.enabled(context)
+                : source == Source.BRAKE ? brakeEnabled(context) : flashEnabled(context);
     }
 
     /** 黑匣子里那一行的开头。 */
     private static String label(Source source) {
-        return "auto-lock[" + (source == Source.BRAKE ? "brake" : "flash") + "]";
+        return source == Source.BUTTON ? "manual-lock[button]"
+                : "auto-lock[" + (source == Source.BRAKE ? "brake" : "flash") + "]";
     }
 
     // ================================================================= 什么时候看信号
@@ -228,6 +233,26 @@ public final class AutoLock implements Telemetry.Listener {
     /** 刹车深度（行程 %）到这么多算踩着 —— 刹车开关读不到时的后备。 */
     private static final float BRAKING_PERCENT = 10f;
 
+    /**
+     * 悬浮按钮「锁定当前录像」：按下那一刻前后 10 秒，和闪远光同一套（{@link #lockAround}）。哪个线程调都行。
+     * 没在录、「锁定影像」关着时不锁，直接说一句。
+     */
+    public void lockNow(Context context) {
+        final long momentMs = System.currentTimeMillis();
+        final Context appContext = context.getApplicationContext();
+        main.post(() -> {
+            if (!recording) {
+                BlackBox.note("悬浮按钮锁定：没在录，不锁");
+                toast(appContext, R.string.msg_footage_nothing_here);
+            } else if (!FootageLocks.enabled(appContext)) {
+                BlackBox.note("悬浮按钮锁定：「锁定影像」关着，不锁");
+                toast(appContext, R.string.msg_footage_lock_needs_setting);
+            } else {
+                lockAround(appContext, momentMs, Source.BUTTON);
+            }
+        });
+    }
+
     // ================================================================= 锁
 
     /** 这一刻前后 10 秒：现在锁一遍，窗口结束后再锁一遍。主线程。 */
@@ -235,8 +260,9 @@ public final class AutoLock implements Telemetry.Listener {
         final LockWindow window = LockWindow.around(momentMs);
         // 这次录像的中转目标跟着这一下走：第二遍时可能已经停了录、又开了一次
         final File target = relayTarget;
-        worker.post(() -> pass(context, window, target, 0, source));
-        worker.postDelayed(() -> pass(context, window, target, 1, source),
+        final Reply reply = source == Source.BUTTON ? new Reply(context) : null;
+        worker.post(() -> pass(context, window, target, 0, source, reply));
+        worker.postDelayed(() -> pass(context, window, target, 1, source, reply),
                 window.endMs - momentMs + LockWindow.SECOND_PASS_DELAY_MS);
     }
 
@@ -246,7 +272,7 @@ public final class AutoLock implements Telemetry.Listener {
      * @param relayTarget 中转写入的目标目录（见 {@link #scan}）；不是中转写入为 null
      * @param round       0 = 当时，1 = 补锁（窗口结束后），2 起 = 等中转目标目录回来再试
      */
-    private void pass(Context context, LockWindow window, File relayTarget, int round, Source source) {
+    private void pass(Context context, LockWindow window, File relayTarget, int round, Source source, Reply reply) {
         if (!enabled(context, source)) {
             BlackBox.noteImportant(label(source) + (round == 0 ? "（当时）" : round == 1 ? "（补锁）" : "（等盘回来）")
                     + " " + describe(window) + "：开关已关，不锁");
@@ -263,6 +289,9 @@ public final class AutoLock implements Telemetry.Listener {
         waiting.retainAll(hit);
         List<String> locking = new ArrayList<>();
         int alreadyLocked = 0;
+        boolean found = false;
+        Map<File, Set<String>> toLock = new LinkedHashMap<>();
+        Map<File, Set<String>> eventByDir = new LinkedHashMap<>();
         for (Map.Entry<File, Set<String>> entry : scan.byListDir.entrySet()) {
             Set<String> names = new TreeSet<>(entry.getValue());
             names.retainAll(hit);
@@ -270,32 +299,37 @@ public final class AutoLock implements Telemetry.Listener {
                 continue;
             }
             // 这一次事件碰到的全部文件（第一遍已经锁上的也在内）：放开超额时一个都不能放（审查 2026-10-08）
-            final Set<String> eventNames = new TreeSet<>(names);
+            found = true;
+            eventByDir.put(entry.getKey(), new TreeSet<>(names));
             Set<String> listed = FootageLocks.read(entry.getKey());
             if (listed != null) {
-                int before = names.size();
-                names.removeAll(listed);
-                alreadyLocked += before - names.size();
+                Set<String> existing = new TreeSet<>(names);
+                existing.retainAll(listed);
+                alreadyLocked += existing.size();
+                // A manual press upgrades automatic brake locks to user-owned locks too.
+                if (source != Source.BUTTON) names.removeAll(listed);
             }
             if (names.isEmpty()) {
                 continue;
             }
             locking.addAll(names);
-            FootageLocks.Result toast = round == 0
-                    ? (source == Source.BRAKE ? toastWhenBrakeLocked : toastWhenLocked) : null;
+            toLock.put(entry.getKey(), names);
+        }
+        FootageLocks.Result result = reply != null ? reply.after(round, found, !waiting.isEmpty(), toLock.size())
+                : round == 0 ? (source == Source.BRAKE ? toastWhenBrakeLocked : toastWhenLocked) : null;
+        for (Map.Entry<File, Set<String>> entry : toLock.entrySet()) {
+            File dir = entry.getKey();
             if (source == Source.BRAKE) {
-                File dir = entry.getKey();
-                long cap = AutoLockBudget.capBytes(new AppConfig(context).getVideoStorageLimitGb(),
-                        dir.getTotalSpace());
-                FootageLocks.lockAuto(dir, names, eventNames, cap, toast);
+                long cap = AutoLockBudget.capBytes(new AppConfig(context).getVideoStorageLimitGb(), dir.getTotalSpace());
+                FootageLocks.lockAuto(dir, entry.getValue(), eventByDir.get(dir), cap, result);
             } else {
-                FootageLocks.set(entry.getKey(), names, true, toast);
+                FootageLocks.set(dir, entry.getValue(), true, result);
             }
         }
         // 第二遍起还有锁不了的：隔一阵再试，等盘回来（第一遍不用，第二遍本来就排着）
         boolean retry = !waiting.isEmpty() && round >= 1 && round < RELAY_RETRY_LIMIT;
         if (retry) {
-            worker.postDelayed(() -> pass(context, window, relayTarget, round + 1, source), RELAY_RETRY_MS);
+            worker.postDelayed(() -> pass(context, window, relayTarget, round + 1, source, reply), RELAY_RETRY_MS);
         }
         // 等盘回来的那几遍只在锁上了、或者不再等时记一行，不然一小时能记一百多行
         if (round <= 1 || !locking.isEmpty() || !retry) {
@@ -341,6 +375,63 @@ public final class AutoLock implements Telemetry.Listener {
         lastToastAt = now;
         Toast.makeText(context, Languages.localized(context).getString(messageRes),
                 Toast.LENGTH_SHORT).show();
+    }
+
+    /**
+     * 手动锁定（悬浮按钮）回的那一句：一次按下只回一句，由两遍里先碰到录像的那一遍回 ——
+     * 碰到的都锁上了（新锁的、本来就锁着的都算）说「已锁定」，有一份清单没写成说「无法保存锁定状态」；
+     * 两遍都没碰到说「当前时刻无可锁定的录像」。中转写入、目标盘不在、要等盘回来才能锁的不算碰到，
+     * 也不说没有（开发者选项里才有中转写入）。
+     */
+    private final class Reply {
+        private final Context context;
+        /** 已经有一遍认领了这一句。只在 {@link #worker} 上读写（两遍都在它上面）。 */
+        private boolean claimed;
+
+        Reply(Context context) {
+            this.context = context;
+        }
+
+        /**
+         * 这一遍之后回不回、怎么回。{@link #worker} 上。
+         *
+         * @param found   这一遍碰到了能锁的录像（已经锁着的也算）
+         * @param waiting 这一遍碰到了要等盘回来才能锁的
+         * @param lists   这一遍要写几份清单（0 = 碰到的都已经锁着）
+         * @return 每份清单写完时的回调；不用回调时为 null
+         */
+        FootageLocks.Result after(int round, boolean found, boolean waiting, int lists) {
+            if (claimed || round > 1) {
+                return null;
+            }
+            if (!found) {
+                if (round == 1 && !waiting) {
+                    claimed = true;
+                    main.post(() -> toast(context, R.string.msg_footage_nothing_here));
+                }
+                return null;
+            }
+            claimed = true;
+            if (lists == 0) {
+                main.post(() -> toast(context, R.string.msg_footage_locked_around));
+                return null;
+            }
+            // 几份清单都写完再说（FootageLocks 在主线程上回调）
+            final int[] left = {lists};
+            final boolean[] failed = {false};
+            return ok -> {
+                failed[0] |= !ok;
+                if (--left[0] == 0) {
+                    toast(context, failed[0] ? R.string.msg_footage_lock_failed : R.string.msg_footage_locked_around);
+                }
+            };
+        }
+    }
+
+    /** 主线程。没保存成的说得久一点，和回放里一样。 */
+    private static void toast(Context context, int message) {
+        Toast.makeText(context, Languages.localized(context).getString(message),
+                message == R.string.msg_footage_lock_failed ? Toast.LENGTH_LONG : Toast.LENGTH_SHORT).show();
     }
 
     // ================================================================= 盘上有什么
