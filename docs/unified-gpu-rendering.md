@@ -102,3 +102,34 @@ Local evidence: `/tmp/companion-unified-gpu-verified-build.log`,
 `/tmp/companion-gpu-system-{light,dark}.png`. These temporary files are not release
 assets. Recordings are checked with the emulator camera; synthetic GL tests and
 emulator recording checks do not establish simultaneous-output performance on a car.
+
+## HUD clipping investigation — 2026-10-20
+
+After alpha 56, the owner reports both direction text and the turn arrow being cut
+off with GPU set to All. This report is unresolved; no runtime fix is claimed.
+The production code draws these badges after restoring the camera crop/rotation
+and HUD picture-tone/edge-fade layers, using the visible cropped panel dimensions.
+
+A new native reproduction uses the actual SideViewHudPanel Presentation on a
+disposable 1280×640 public secondary display, 1280×5140 synthetic EGL input, GPU
+All, the fixed-right 009 layout and 25%/60% inner-edge crop. Both left/right views
+use the real aimed/rotated shader. ImageReader captures the final display output;
+more than 95% of fully drawn text/arrow pixels match the complete independent
+badge rendering. The initial run passes on unchanged alpha-56 runtime code.
+This checks the combined window/shader/crop/badge path, rather than badges alone.
+
+It does not reproduce the owner's physical projector, display firmware, optical
+masking or factory graphics layering, nor establish that these cause the report.
+An affected HUD photo and its actual size/aspect/crop/position values or Diagnostics
+are needed to narrow that difference. Retain the new reproduction as evidence;
+do not apply guessed framing changes or claim the vehicle issue is fixed.
+
+Local initial evidence: `/tmp/companion-hud-gpu-repro.log` and
+`/tmp/companion-hud-gpu-before-25-left.png`,
+`/tmp/companion-hud-gpu-before-60-right.png`. These are synthetic test images,
+not owner camera frames.
+
+The extended native popup/HUD suite subsequently passes all nine cases, including
+the new final-display reproduction and existing crop-detail, freshness, expansion
+and mirror-handover checks. Log: `/tmp/companion-hud-gpu-crop-suite.log`. This is
+research evidence only; runtime code and the published alpha remain unchanged.
