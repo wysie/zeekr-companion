@@ -1,4 +1,8 @@
 <resources>
+    <item name="side_quality_capture" type="id" />
+    <item name="side_quality_result" type="id" />
+    <item name="side_quality_share" type="id" />
+    <item name="side_quality_copy" type="id" />
     <item name="update_offer_notes" type="id" />
     <item name="side_settings_tabs" type="id" />
     <item name="side_settings_body" type="id" />

@@ -439,3 +439,15 @@ outside it is transparent. Red is diagnostic content, independent of themed
 recording red. No physical visibility is inferred from Android drawing success.
 Leaving, screen-off, display loss and inactivity remove the marker. Diagnostics
 retain bounded manual evidence separately from backed-up vehicle settings.
+
+### Blind-camera comparison export, 2026-10-20
+
+Picture settings retain the existing Left/Right preview, framing controls and
+window controls. A native outlined Capture quality comparison action sits below
+the picture and its existing hint. Its caption identifies a diagnostic render,
+not a live-window screenshot. Busy/unavailable/cancelled/error/saved feedback is
+separate from the camera freshness message. A saved path wraps and can be selected;
+Send comparison to phone and Copy file location expose the completed file. The
+footer scrolls within a 180dp cap to retain preview space. Typography, neutral
+outlined actions and colours follow the incumbent settings theme. The latest
+completed path is local export state, separate from vehicle settings backups.

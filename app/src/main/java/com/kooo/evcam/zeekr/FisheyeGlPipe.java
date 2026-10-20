@@ -618,6 +618,28 @@ public final class FisheyeGlPipe {
         } else { rawOutputs.set(nextRawOutput++ & 7, marker); }
     }
 
+    /** Explicit diagnostic only: acquire neither a new camera output nor another live tap. */
+    boolean captureSideQuality(SideQualitySpec spec,java.util.concurrent.atomic.AtomicBoolean cancelled,SideQualityCapture.Pixels result) {
+        if(released)return false;
+        return handler.post(() -> {
+            if(cancelled.get())return;
+            try {
+                if(released||outputBroken||input==null||frames==0
+                        || !CameraFrameFreshness.freshAt(sourceFreshness.changedAt(),SystemClock.elapsedRealtime()))
+                    throw new IllegalStateException("No fresh native source frame");
+                if(inputWidth!=spec.plan.frameWidth||inputHeight!=spec.plan.frameHeight)
+                    throw new IllegalStateException("Source geometry changed");
+                if(sideRenderer==null)sideRenderer=new SideGpuRenderer();
+                SideQualityPair pair=SideQualityGl.capture(spec,sideRenderer,texture,texMatrix,quad,
+                        input.getTimestamp(),sourceFreshness.changedAt(),describeOutput());
+                if(cancelled.get())pair.close();else result.complete(pair,null);
+            } catch(Exception|OutOfMemoryError failure) {
+                AppLog.w(TAG,name+" comparison capture failed: "+failure);
+                result.complete(null,"Could not capture a fresh native source frame. Try again.");
+            }
+        });
+    }
+
     /** A settings-only output shares the existing raw GL input; no camera declaration or readback. */
     private void drawSideTap() {
         SideTap tap=sideTap;

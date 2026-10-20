@@ -430,6 +430,35 @@ moving footage on the car. They cannot recover absent camera detail. Normal Supe
 mirror, surround/360°, playback and recorded files are unchanged. Reset side-camera
 settings restores Bilinear and zero sharpening; settings backups include both.
 
+**Capture quality comparison** is below the live preview under **Blind spot camera →
+Picture**. Keep Surround selected in the applied main preview, choose **Left** or
+**Right**, and tap it while the source is live. It saves one ZIP with
+`native-side.png` (the native-sized decoded side lane in camera orientation),
+`popup-render.png` (the same source frame rendered with your popup framing), and
+`comparison.json` (timestamps, source/output dimensions, renderer, aim, rotation,
+mirroring, Auto-fit and sampling settings). The GPU path uses the popup's side
+shader; compatibility uses its Canvas mesh. The native GPU reference uses nearest
+texels before app picture processing, then restores the live sampler. The render
+uses the currently shown same-side popup's dimensions when available, otherwise
+the saved normal popup size. It is a **diagnostic render, not a live-window
+screenshot**; labels, arrows, controls and HUD-specific cropping/tone are excluded.
+Both files use one captured frame, not separate live reads. The action neither
+opens a popup nor changes camera declarations, recording intent or saved settings.
+
+The ZIP is saved to the diagnostics export directory (normally
+`ZeekrCompanion/Logs`, with the existing internal/app-folder fallback). The result
+shows its full location and offers **Send comparison to phone** and **Copy file
+location**; the latest completed location survives reopening. Capture is explicit,
+one at a time, and refused for missing/frozen sources, reverse, factory views or
+screen-off. Leaving/hiding the preview or changing side cancels pending work;
+completed ZIPs remain available. Files are lossless PNGs inside a uniquely named,
+completed ZIP; partial writes are removed on failure/cancellation. Native source
+and render are bounded to 4096px per edge and 8,388,608 combined pixels; the direct
+full-frame read also has an 8,388,608-pixel/8192px limit. Oversized captures are
+refused instead of silently downscaled. This is a one-off readback/compression
+operation and can briefly load the renderer/storage; no in-car timing or optical
+quality improvement is claimed. See [capture architecture and validation](docs/blind-quality-comparison.md).
+
 The 009 export reports a 1280×5140 live composite with four 1280×1280 camera
 images. The side popup receives this same full-size buffer; the drawing path does
 not make a small preview bitmap before taking its camera crop. An Android

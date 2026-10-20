@@ -10,13 +10,14 @@ The [upstream contribution index](docs/upstream-contributions.md) instead tracks
 outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
+| --- | --- |
+| `feature/blind-quality-comparison` | Explicit same-frame native side/popup-render comparison export, renderer-state metadata and Picture-page save/share controls |
 | `fix/surround-preview-buffer-size` | Reproduce native strip-detail loss after pane resize; retain GPU output dimensions and restore direct preview buffers without camera rebuild |
 | `feature/hud-visible-area-test` | Temporary movable public-HUD square and bounded durable manual edge observations in Diagnostics, preserving recording intent and saved framing |
 | `fix/hud-body-priority-crop` | Camera/mirroring-aware HUD road-edge trim retaining body-side detail and final-resolution labels at the retained edge |
 | `fix/factory-charcoal-text` | Softer shared light-theme primary text following factory-menu photos, retaining regular settings type, size and night palette |
 | `fix/shared-recording-red` | One recording foreground red per theme across app and floating controls; live overlay theme selection and contrasting red-fill foreground |
 | `feature/blind-camera-upscaling` | Experimental live blind-side bilinear/bicubic sampling and bounded adjustable sharpening, with retained framing and recording |
-| --- | --- |
 | `feature/settings-backup` | Companion five-store settings backup, native System flow, staged startup restore and durable multi-store rollback/recovery |
 | `feature/manual-recording-lock` | dts88 #61 adapted to tap/double tap/hold with manual protection outside the braking-only budget |
 | `review/upstream-refresh-20261020` | Combined validation of refreshed #46/#48/#52–#54 against upstream eb7d5732; preserves independent scopes and dependencies |

@@ -36,6 +36,10 @@ final class SideGpuOutput {
     boolean failed() { return request!=null && request.frames.failure!=null; }
     boolean requested() { return request!=null && !request.frames.cancelled && request.frames.failure==null; }
     String state() { return request==null?"compatibility":request.frames.failure!=null?"fallback: "+request.frames.failure:"GPU"; }
+    String describe() {
+        return state()+(request==null?"":" requested="+request.width+"x"+request.height)
+                +(pipe==null?"":" {"+pipe.describeOutput()+"}");
+    }
     void release() {
         if(pipe!=null && request!=null){if(tap)pipe.clearSideTap(request);else pipe.clearSide(request);request.cancel();}
         request=null;pipe=null;
