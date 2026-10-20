@@ -169,6 +169,61 @@ public class BirdEyeGpuAndroidTest {
             config.setGpuBirdEye(previousGpu); StreamLayoutTable.reset();
         }
     }
+    /** A four-camera strip must not be downsampled to the short main-screen pane after relayout. */
+    @Test public void nativeSurroundDetailSurvivesPaneResizesWithoutApplyOrNewProducer() throws Exception {
+        try (Fixture f = new Fixture(false,1280,5140)) {
+            Surface original = f.producer;
+            SurfaceTexture texture = f.output.get();
+            for (int[] bounds : new int[][]{{320,480},{800,320},{480,720},{320,480}}) {
+                main(() -> {
+                    WindowManager.LayoutParams p = (WindowManager.LayoutParams)f.root.getLayoutParams();
+                    p.width=bounds[0];p.height=bounds[1];f.windows.updateViewLayout(f.root,p);
+                });
+                await("Pane resized", () -> f.view.getWidth()==bounds[0] && f.view.getHeight()==bounds[1]);
+                for(int repeat=0;repeat<4;repeat++) {
+                    GLES20.glViewport(0,0,f.sw,f.sh);GLES20.glEnable(GLES20.GL_SCISSOR_TEST);
+                    for(int y=0;y<f.sh;y+=4) {
+                        GLES20.glScissor(0,y,f.sw,Math.min(4,f.sh-y));
+                        float grey=(y/4)%2;GLES20.glClearColor(grey,grey,grey,1);GLES20.glClear(GLES20.GL_COLOR_BUFFER_BIT);
+                    }
+                    GLES20.glDisable(GLES20.GL_SCISSOR_TEST);
+                    EGLExt.eglPresentationTimeANDROID(f.display,f.surface,System.nanoTime());
+                    assertTrue(EGL14.eglSwapBuffers(f.display,f.surface));SystemClock.sleep(80);
+                }
+                AtomicReference<Bitmap> result = new AtomicReference<>();
+                main(() -> result.set(f.view.getBitmap(32,f.sh)));
+                Bitmap image=result.get();assertNotNull(image);
+                try {
+                    int strong=0,total=0;
+                    for(int y=8;y<f.sh-12;y++) {
+                        int a=Color.red(image.getPixel(16,y)),b=Color.red(image.getPixel(16,y+4));
+                        if(Math.abs(a-b)>180)strong++;total++;
+                    }
+                    assertTrue("Native 4px strip detail lost after pane " + bounds[0]+"x"+bounds[1]+": "+strong+"/"+total,
+                            strong>total*.85);
+                } finally {image.recycle();}
+                assertSame(original,f.producer);assertSame(texture,f.output.get());assertTrue(f.pipe.isAlive());
+            }
+        }
+    }
+    @Test public void explicitVideoOutputSizeAndSideProjectionKeepIndependentContracts() throws Exception {
+        try (Fixture f = new Fixture()) {
+            f.pipe.setOutputSize(512,2048);
+            for(int i=0;i<4;i++){f.patternFrame();SystemClock.sleep(65);}
+            assertTrue(f.pipe.describeOutput(),f.pipe.describeOutput().contains("rendered=512x2048"));
+            CompositeStreamGeometry.Plan plan=CompositeStreamGeometry.analyse("gpu-test",f.sw,f.sh);
+            SideGpuPicture picture=new SideGpuPicture(plan,LaneCycle.LEFT,RearViewGeometry.Viewport.full(),
+                    0,90,0,0,0,false,f.ow,f.oh);
+            SideGlRequest request=new SideGlRequest(picture,f.ow,f.oh);f.pipe.setSide(request);f.freshSide(request);
+            assertTrue(f.pipe.describeOutput(),f.pipe.describeOutput().contains("rendered=160x240 mode=side"));
+            f.pipe.clearSide(request);
+            main(() -> { WindowManager.LayoutParams p=(WindowManager.LayoutParams)f.root.getLayoutParams();
+                p.width=600;p.height=360;f.windows.updateViewLayout(f.root,p); });
+            await("Video pane resized",()->f.view.getWidth()==600 && f.view.getHeight()==360);
+            for(int i=0;i<4;i++){f.patternFrame();SystemClock.sleep(65);}
+            assertTrue(f.pipe.describeOutput(),f.pipe.describeOutput().contains("rendered=512x2048 mode=strip/video"));
+        }
+    }
     private void assertSidePattern(Fixture f,int lane,FisheyeMesh.SourceMap reference) {
         assertSidePattern(f.bitmap(),lane,reference);
     }

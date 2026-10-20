@@ -1040,6 +1040,21 @@ public class SingleCamera {
         return previewSize;
     }
 
+    /** Main TextureView relayout/re-attachment must not shrink the direct camera buffer. */
+    public void restorePreviewBufferSize(SurfaceTexture texture) {
+        if (texture == null || texture.isReleased()) return;
+        synchronized (outputLock) {
+            if (declaredPreview == null || declaredPreview.out.consumer != texture) return;
+        }
+        // GPU outputs may currently be projected as 360 or a side view. Their own GL thread
+        // owns the output dimensions; only their INPUT retains the full native strip size.
+        if (com.kooo.evcam.zeekr.PreviewDewarp.ownsOutput(texture)) return;
+        Size buffer = getPreviewBufferSize();
+        if (buffer == null || buffer.getWidth() <= 0 || buffer.getHeight() <= 0) return;
+        try { texture.setDefaultBufferSize(buffer.getWidth(), buffer.getHeight()); }
+        catch (RuntimeException e) { AppLog.w(TAG, "Preview buffer resize skipped after texture removal: " + e); }
+    }
+
     /**
      * 切换到仅预览模式 —— 停止往要走的录像输出送帧（相机线程，只由「改输出」那一步在重配之前调，{@link #reconfigure}；
      * 大纲阶段 5d）：
@@ -1536,6 +1551,7 @@ public class SingleCamera {
             }
             applyLaneTransform();
         }
+        restorePreviewBufferSize(texture);
         if (changed) {
             AppLog.d(TAG, "Camera " + cameraId + " preview declared: " + texture);
             tidyLater();
@@ -2460,7 +2476,8 @@ public class SingleCamera {
         Size buffer = getPreviewBufferSize();
         Surface created;
         try {
-            if (out.consumer instanceof SurfaceTexture && buffer != null) {
+            if (out.consumer instanceof SurfaceTexture && buffer != null
+                    && !com.kooo.evcam.zeekr.PreviewDewarp.ownsOutput((SurfaceTexture)out.consumer)) {
                 // 每次建会话都拨一次：TextureView 尺寸一变就把它改成自己的布局尺寸，和 OutputConfiguration 对不上
                 ((SurfaceTexture) out.consumer).setDefaultBufferSize(buffer.getWidth(), buffer.getHeight());
             }

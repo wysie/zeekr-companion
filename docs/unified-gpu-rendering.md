@@ -153,3 +153,56 @@ public 24,149,806-byte APK was downloaded and verified against its checksum:
 Its existing Android app ID and signing-certificate SHA-256 are unchanged.
 The release is an alpha pre-release, not marked Latest. Physical-car quality,
 frame rate and the separately reported HUD badge clipping remain unverified.
+
+## Surround buffer detail after relayout — 2026-10-20
+
+The owner reported intermittently poor surround detail in Selected recording
+sources, restored by switching preview sources and applying changes. The reported
+photograph alone cannot establish the actual buffer dimensions. A native synthetic
+1280×5140 EGL reproduction nevertheless confirms a matching software failure:
+normal strip output can be reset by TextureView relayout to the short pane size.
+FourLaneContainer still splits the full normalized strip into four lanes, so the
+intermediate downsampling destroys detail before those lane pictures are enlarged.
+The existing route restored its default at session construction or when leaving
+side/360° projection, rather than on normal strip rendering. Applying the source
+choice rebuilt the output and therefore temporarily restored it.
+
+FisheyeGlPipe now pins its normal output to the immutable source size (or an
+explicit playback output override) before startup and each ordinary strip/video
+draw. Side and 360° requests still select their own projected output sizes and
+return to the normal contract on cancellation/failure. Input/producer identity,
+source timestamps, projection calibration and recorded pixels remain independent.
+There is no extra camera declaration, bitmap readback, output replacement, session
+rebuild or automatic Apply operation. Restoring native pixels can require more GPU
+work than the accidental undersized buffer; no car frame-rate improvement is claimed.
+
+Main direct-preview callbacks restore only their own declared SurfaceTexture buffer
+on resize and once after acquiring a frame on a new/retained layer. Re-declaration
+also restores a retained direct buffer. The camera's session-surface resolution
+setup now leaves active GPU output dimensions to the GL thread. These guards do
+not change the Camera2 input size, recorder output or preview/recording choices.
+The normal preview's diagnostic description records input size, normal target,
+last actual EGL render extent and strip/video, side or 360° mode; it deliberately
+does not claim to read the physical camera's optical detail.
+
+Validation:
+
+- The new native-detail regression was first run on the unchanged alpha 58 render
+  code. Its initial full-size strip retained detail; after the pane changed to
+  800×320, zero of 5,120 sampled 4px stripe pairs retained the required contrast.
+  This is a confirmed software reproduction, not an inference from the car photo.
+- After the fix, the same real 1280×5140 EGL/TextureView source passes through
+  320×480 → 800×320 → 480×720 → 320×480, retaining high contrast in over 85% of
+  tested native stripe pairs, with the same producer, texture and GL route.
+- Twenty-six focused native checks pass across GPU raw/360°/side/tap rendering,
+  sampling, timestamp freshness, fallback, popup/HUD lifecycle, declared direct
+  buffer ownership/reattachment and explicit playback-size override restoration.
+  Two recording-isolation checks also pass, including synthetic video writing
+  with pending preview changes. No physical Camera2/HAL recording result is implied.
+- The recording test subclass also ran its fourteen inherited main-page cases:
+  thirteen pass; the existing Preview dialog Automatic tile visibility assertion
+  fails at 70%, matching the previously established alpha 57 baseline documented
+  in [main-screen validation](main-screen-validation.md). It remains separate from
+  the buffer fix; no full UI-suite pass is claimed.
+- All 1,531 JVM tests pass, lint has zero errors, and debug, instrumentation and
+  signed release builds pass. This fix was not published as a new release.
