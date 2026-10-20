@@ -143,3 +143,14 @@ camera freshness. The 009 colour checks now expect the lighter low-chroma finish
 7X checks retain their previous green requirement. Popup/preview snapshots were
 visually inspected; debug/test builds and lint pass. This does not establish a
 physical paint match or new vehicle calibration.
+
+## Requested backing-shape follow-up
+
+On 2026-10-20 the owner clarified that the square corners refer to the backing
+around the car, rather than the outside corners of the complete 360° popup. They
+requested publication of the current test release first. Alpha 56 therefore retains
+the existing backing shape; the lighter 009 Green paint/backing colour is included.
+The remaining shape change must account for the opaque rectangular unobserved
+footprint in both the projection and illustration; simply clipping its rounded
+corners would expose the unstitched mask. No camera geometry, coverage or shape
+change is implemented by this release.
