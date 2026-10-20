@@ -46,7 +46,10 @@ public class BirdEyeVehicleOverlayAndroidTest {
                         int hood = image.getPixel(width / 2, (int)(body.top + body.height() * .07f));
                         int roof = image.getPixel(width / 2, (int)(body.top + body.height() * .5f));
                         if (BirdEyeAppearance.WHITE.equals(colour)) assertTrue("White hood faces upward", Color.red(hood) > 180);
-                        else if (BirdEyeAppearance.GREEN.equals(colour)) assertTrue("Green body", Color.green(hood) > Color.red(hood) + 5);
+                        else if (BirdEyeAppearance.GREEN.equals(colour)) {
+                            if (BirdEyeAppearance.MODEL_009.equals(model)) assertSage009(hood);
+                            else assertTrue("7X retains its green body", Color.green(hood) > Color.red(hood) + 5);
+                        }
                         else assertTrue("Black body", Color.red(hood) < 90);
                         assertTrue("Dark roof glass", Color.red(roof) < 120);
                         String theme = background == 0xffdedee2 ? "day" : "night";
@@ -110,7 +113,7 @@ public class BirdEyeVehicleOverlayAndroidTest {
                     Bitmap image=Bitmap.createBitmap(240,600,Bitmap.Config.ARGB_8888);
                     assertTrue(overlay.draw(new Canvas(image),new RectF(30,40,210,560)));
                     int hood=image.getPixel(120,76);
-                    assertTrue(Color.green(hood)>Color.red(hood)+5);image.recycle();
+                    assertSage009(hood);image.recycle();
                 }
             });
         } finally {
@@ -125,6 +128,13 @@ public class BirdEyeVehicleOverlayAndroidTest {
                 else appearance.setModel(previousModel);
             });
         }
+    }
+    private static void assertSage009(int paint) {
+        assertTrue("009 Green is lighter than the former dark forest paint",
+                Color.red(paint) > 110 && Color.red(paint) < 200);
+        assertTrue("009 paint has a subtle green-grey undertone, not saturated teal",
+                Color.green(paint) >= Color.red(paint) && Color.green(paint) > Color.blue(paint)
+                        && Color.green(paint) - Color.red(paint) <= 18);
     }
     private static Object get(Object owner,String name) {
         try { java.lang.reflect.Field f=owner.getClass().getDeclaredField(name);f.setAccessible(true);return f.get(owner); }
