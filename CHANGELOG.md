@@ -9,10 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+## [2.11.55-alpha.1] - 2026-10-20
+
 - Add Companion settings export/import, including camera profiles, vehicle/GPU choices and 360° calibration/window settings, with restore on reopening and rollback protection.
-
 - Add Lock current recording to floating-button tap, double tap and long press, protecting clips covering ten seconds before and after across all recording sources.
-
 - Add System → GPU image processing with Off, All and Custom choices, preserving existing GPU selections and independent Straighten controls.
 - Add shared per-pixel GPU rendering for blind-side popup/HUD, Super mirror and the blind-camera settings preview, with compatibility rendering retained.
 - Use the same portrait half-screen expansion for the 360° window, with exact size and position restoration.

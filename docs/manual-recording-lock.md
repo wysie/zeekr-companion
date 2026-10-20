@@ -1,4 +1,4 @@
-# Manual recording lock — unreleased, 2026-10-20
+# Manual recording lock — 2.11.55-alpha.1, 2026-10-20
 
 Floating button → Tap / Double tap / Long press now offers Lock current recording.
 Existing assignments and default-off double tap are preserved. Lock footage must

@@ -1,4 +1,4 @@
-# Companion settings backup — unreleased, 2026-10-20
+# Companion settings backup — 2.11.55-alpha.1, 2026-10-20
 
 System → Settings backup offers Export settings and Import settings. Files are
 `ZeekrCompanion-settings_yyyyMMdd_HHmmss_SSS.json`, beside diagnostics reports,

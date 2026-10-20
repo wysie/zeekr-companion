@@ -1,4 +1,4 @@
-# Shared GPU image processing — unreleased, 2026-10-20
+# Shared GPU image processing — 2.11.55-alpha.1, 2026-10-20
 
 Settings → System → GPU image processing (experimental) offers Off, All and Custom.
 The five choices are surround preview correction, 360° stitching, blind-side camera,
