@@ -303,9 +303,11 @@ public final class AutoLock implements Telemetry.Listener {
             eventByDir.put(entry.getKey(), new TreeSet<>(names));
             Set<String> listed = FootageLocks.read(entry.getKey());
             if (listed != null) {
-                int before = names.size();
-                names.removeAll(listed);
-                alreadyLocked += before - names.size();
+                Set<String> existing = new TreeSet<>(names);
+                existing.retainAll(listed);
+                alreadyLocked += existing.size();
+                // A manual press upgrades automatic brake locks to user-owned locks too.
+                if (source != Source.BUTTON) names.removeAll(listed);
             }
             if (names.isEmpty()) {
                 continue;

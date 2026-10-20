@@ -25,8 +25,6 @@ public enum FloatingAction {
     TOGGLE_MIRROR("toggle_mirror"),
     /** 不执行动作；双击默认关闭，保留原来单击的即时响应。 */
     NONE("none"),
-    /** 开 / 关超级镜子。 */
-    TOGGLE_MIRROR("toggle_mirror"),
     /** 锁定此刻前后 10 秒所在的录像：和闪远光自动锁定同一套（{@code AutoLock#lockNow}）。 */
     LOCK_FOOTAGE("lock_footage");
 
