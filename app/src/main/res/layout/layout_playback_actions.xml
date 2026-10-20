@@ -110,7 +110,7 @@
             android:paddingStart="18dp"
             android:paddingEnd="18dp"
             android:text="@string/action_delete"
-            android:textColor="@color/on_energy"
+            android:textColor="@color/on_recording"
             app:backgroundTint="@color/recording" />
 
         <com.google.android.material.button.MaterialButton

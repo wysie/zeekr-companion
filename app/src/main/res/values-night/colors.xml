@@ -19,10 +19,11 @@
     <color name="energy_text">#FFF58A5E</color>  <!-- 橙色文字用它；实心按钮一律用 energy -->
     <color name="energy_quiet">#FF3A2419</color>  <!-- 橙色的淡底 -->
     <color name="on_energy">#FFFFFFFF</color>  <!-- 能量色上面的字 -->
-    <color name="recording">#FFF0555A</color>  <!-- 只标「正在录」与不可逆操作；比极氪橙更偏红，两者不混 -->
+    <color name="recording">#FFF59A9D</color>  <!-- 只标「正在录」与不可逆操作；比极氪橙更偏红，两者不混 -->
+    <color name="on_recording">#FF202124</color>  <!-- Contrast on solid recording/destructive red. -->
     <color name="recording_quiet">#FF33191A</color>  <!-- 录制中那一块的底 -->
     <color name="recording_track">#FF52282A</color>  <!-- 分段进度环的轨道 -->
-    <color name="recording_text">#FFF59A9D</color>  <!-- 录制状态文字 -->
+    <color name="recording_text">@color/recording</color>  <!-- 录制状态文字 -->
     <color name="locked">#FFF2B630</color>  <!-- 锁定的影像（回放进度条下面那条）：琥珀色，和录制红、极氪橙都分得开 -->
 
     <!-- 昼夜各自取值的 -->

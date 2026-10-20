@@ -32,6 +32,7 @@
         <item name="colorSecondaryContainer">@color/sunken</item>
         <item name="colorOnSecondaryContainer">@color/text_primary</item>
         <item name="colorError">@color/recording</item>
+        <item name="colorOnError">@color/on_recording</item>
         <item name="android:colorBackground">@color/bg</item>
         <item name="colorOnBackground">@color/text_primary</item>
         <item name="colorSurface">@color/surface</item>

@@ -35,6 +35,7 @@ import com.kooo.evcam.AppLog;
 import com.kooo.evcam.MainActivity;
 import com.kooo.evcam.R;
 import com.kooo.evcam.WakeUpHelper;
+import com.kooo.evcam.settings.AppTheme;
 import com.kooo.evcam.overlay.FloatingAction;
 import com.kooo.evcam.overlay.FloatingButtonGesture;
 
@@ -432,7 +433,28 @@ public class RecordingFloatingService extends Service {
         int buttonSize = (int) (buttonSizeDp * density);
 
         // 创建容器
-        floatingContainer = new FrameLayout(this);
+        floatingContainer = new FrameLayout(this) {
+            private int paletteMode = -1;
+            @Override protected void onAttachedToWindow() { super.onAttachedToWindow(); AppTheme.observe(this); }
+            @Override protected void onDetachedFromWindow() { AppTheme.forget(this); super.onDetachedFromWindow(); }
+            @Override protected void onConfigurationChanged(android.content.res.Configuration config) {
+                super.onConfigurationChanged(config); paletteMode = -1; invalidate();
+            }
+            @Override protected void dispatchDraw(Canvas canvas) {
+                int mode = AppTheme.nightMode(getContext());
+                if (mode != paletteMode) {
+                    paletteMode = mode;
+                    Context palette = AppTheme.palette(getContext());
+                    if (timeTextView != null) {
+                        timeTextView.setTextColor(ContextCompat.getColor(palette, R.color.text_primary));
+                        timeTextView.setBackgroundColor(ContextCompat.getColor(palette, R.color.surface));
+                    }
+                    // The child has its own hardware display list; invalidate it too.
+                    if (recordingButton != null) recordingButton.invalidate();
+                }
+                super.dispatchDraw(canvas);
+            }
+        };
         // 透明度沿用原来那个按钮的设置项，合并之后它管这一个
         floatingContainer.setAlpha(appConfig.getFloatingWindowAlpha() / 100f);
 
@@ -921,6 +943,14 @@ public class RecordingFloatingService extends Service {
         private float radius;
         private int buttonSize;
         private float cornerRadius;
+        private Context palette;
+        private int paletteMode = -1;
+
+        private Context palette() {
+            int mode = AppTheme.nightMode(getContext());
+            if (mode != paletteMode) { paletteMode = mode; palette = AppTheme.palette(getContext()); }
+            return palette;
+        }
 
         public RecordingButtonView(Context context, int buttonSize) {
             super(context);
@@ -936,7 +966,7 @@ public class RecordingFloatingService extends Service {
             // 中间那个点 / 方块是录制状态本身，所以它是红的；底色不是
             iconPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             iconPaint.setStyle(Paint.Style.FILL);
-            iconPaint.setColor(ContextCompat.getColor(getContext(), R.color.recording));
+            iconPaint.setColor(ContextCompat.getColor(palette(), R.color.recording));
 
             ringPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             ringPaint.setStyle(Paint.Style.STROKE);
@@ -945,7 +975,7 @@ public class RecordingFloatingService extends Service {
             progressPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
             progressPaint.setStyle(Paint.Style.STROKE);
             progressPaint.setStrokeCap(Paint.Cap.ROUND);
-            progressPaint.setColor(ContextCompat.getColor(getContext(), R.color.recording));
+            progressPaint.setColor(ContextCompat.getColor(palette(), R.color.recording));
         }
 
         /** 本段录到哪儿了，0–1。只在录制中画。 */
@@ -984,7 +1014,7 @@ public class RecordingFloatingService extends Service {
 
             // Ferix styling: neutral background; only the live recording icon is red.
             boolean live = isRecording && !waiting;
-            backgroundPaint.setColor(ContextCompat.getColor(getContext(),
+            backgroundPaint.setColor(ContextCompat.getColor(palette(),
                     R.color.sunken));
 
             // 绘制圆角矩形背景（iOS 扁平化风格）
@@ -1006,7 +1036,8 @@ public class RecordingFloatingService extends Service {
             float ringRadius = radius * 0.46f;
             ringPaint.setStrokeWidth(stroke);
             progressPaint.setStrokeWidth(stroke);
-            ringPaint.setColor(ContextCompat.getColor(getContext(),
+            progressPaint.setColor(ContextCompat.getColor(palette(), R.color.recording));
+            ringPaint.setColor(ContextCompat.getColor(palette(),
                     live ? R.color.recording_track : waiting ? R.color.text_tertiary : R.color.text_primary));
             canvas.drawCircle(centerX, centerY, ringRadius, ringPaint);
 
@@ -1019,7 +1050,7 @@ public class RecordingFloatingService extends Service {
                 }
 
                 // 停止方块：在录是红的；等摄像头时是灰的 —— 还是方块，按一下照样是停
-                iconPaint.setColor(ContextCompat.getColor(getContext(),
+                iconPaint.setColor(ContextCompat.getColor(palette(),
                         live ? R.color.recording : R.color.text_tertiary));
                 float rectSize = radius * 0.32f;
                 float iconCornerRadius = rectSize * 0.2f;
@@ -1037,9 +1068,9 @@ public class RecordingFloatingService extends Service {
                 //
                 // 试过中间不画东西，只剩一个空圈 —— 太素，一眼认不出这是个按钮。
                 // 红色仍然只在录制时出现：说明「正在录」的是颜色，不是有没有点。
-                iconPaint.setColor(ContextCompat.getColor(getContext(), R.color.text_primary));
+                iconPaint.setColor(ContextCompat.getColor(palette(), R.color.text_primary));
                 canvas.drawCircle(centerX, centerY, radius * 0.2f, iconPaint);
-                iconPaint.setColor(ContextCompat.getColor(getContext(), R.color.recording));
+                iconPaint.setColor(ContextCompat.getColor(palette(), R.color.recording));
             }
         }
     }
