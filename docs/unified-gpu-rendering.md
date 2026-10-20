@@ -144,3 +144,12 @@ Validation on a disposable API 32 emulator, 2026-10-20:
 
 This does not resolve the owner's separately reported HUD label/arrow clipping;
 that report still needs evidence from the physical HUD.
+
+Published as **2.11.57-alpha.1** (version code 340), tag
+`v2.11.57-alpha.1` at `74270f9b7789212235e5914695cdd86d88592c27`.
+Tagged CI run `39394174050` passed both build and draft-publishing jobs. The
+public 24,149,806-byte APK was downloaded and verified against its checksum:
+`b000bd932f85699562ca5fb4f9d53aeefb0dc57aba377faeaed159336459db02`.
+Its existing Android app ID and signing-certificate SHA-256 are unchanged.
+The release is an alpha pre-release, not marked Latest. Physical-car quality,
+frame rate and the separately reported HUD badge clipping remain unverified.
