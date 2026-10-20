@@ -6,6 +6,10 @@ review, not a runtime integration or release. All published contribution heads
 are unchanged. The remote-tracking refs were refreshed; local unmodified source
 mirror branches were not advanced in this pass.
 
+The snapshot below is the **initial review**. The owner subsequently authorized the
+recommendations: #61/#64 are now adapted and the five conflicting PRs are refreshed.
+See [completed work and current status](recommendations-completed-20261020.md).
+
 ## Incoming main commits
 
 | Source and exact reviewed range | Finding and disposition |
