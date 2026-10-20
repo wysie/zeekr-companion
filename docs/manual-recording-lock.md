@@ -25,4 +25,5 @@ tests check gesture arbitration, cancellation, foreground visibility and persist
 of the sixth action through native Settings/recreation. Local logs:
 `/tmp/companion-manual-lock-build.log` and `/tmp/companion-manual-lock-native.log`.
 Emulator storage/touch tests do not prove USB durability, vehicle timing or every
-simultaneous recording combination. No release published by this change.
+simultaneous recording combination. Included by verified tag `v2.11.55-alpha.1`
+at `98d5c57fd0bf8bb2f987d193451e982bc765a7b6`.

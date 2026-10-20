@@ -1,7 +1,9 @@
 # Recommended follow-ups completed — 2026-10-20
 
 The owner authorized the [review recommendations](source-review-20261020.md).
-All three work items are complete; no new release was requested or published.
+All three work items are complete. They were subsequently published in
+[2.11.55-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.55-alpha.1)
+at the owner's request; tag `98d5c57f` includes both feature integrations.
 
 ## Existing upstream PRs
 
@@ -69,5 +71,4 @@ themes in one batch; detector returned no findings.
 No application ID, signer, release version/tag or source-mirror branch was changed.
 No Ferix recovery patch, wholesale upstream #62 XML, unverified rear-cabin mapping
 or signing-key migration was imported. Vehicle/USB performance, physical power-loss
-durability and a real 009/7X restore remain unverified. These changes are in source,
-not a newly published downloadable release.
+durability and a real 009/7X restore remain unverified. These changes are included in the verified alpha 55 tag.
