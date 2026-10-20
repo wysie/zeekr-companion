@@ -684,7 +684,8 @@ public class SideViewPopupView extends ViewGroup {
         int rotation = readRotation(lane);
         if(straighten)framing.configure(viewFov,yaw,pitch,lane,(float)width/height,rotation,readAutoFit());
         boolean gpu = gpuPicture.prepare(textureView, PreviewDewarp.rawPipeFor(textureView),
-                SideGpuPicture.side(plan,lane,width,height,straighten,viewFov,yaw,pitch,rotation,readMirrored(),framing),
+                SideGpuPicture.side(plan,lane,width,height,straighten,viewFov,yaw,pitch,rotation,readMirrored(),framing)
+                        .withSampling(appConfig.getSideUpscaling(),appConfig.getSideSharpening()),
                 width,height,appConfig.isGpuSide());
         int inner = gpu ? canvas.save() : SideViewRotation.begin(canvas, straighten ? 0 : rotation, width, height, readMirrored());
         if(gpu) {

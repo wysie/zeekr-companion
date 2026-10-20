@@ -1190,6 +1190,9 @@ public final class DiagnosticsCollector {
         sb.append("GPU processing: ").append(recordingConfig.getGpuRenderingMode());
         for(String feature:GpuRendering.FEATURES)sb.append(" ").append(feature).append("=").append(recordingConfig.isGpuFeatureEnabled(feature));
         sb.append('\n');
+        sb.append("Blind-side GPU quality: ").append(recordingConfig.getSideUpscaling())
+                .append("; sharpening=").append(recordingConfig.getSideSharpening()).append("%")
+                .append("; GPU side requested=").append(recordingConfig.isGpuSide()).append('\n');
         sb.append("  Driver recording start=").append(recordingConfig.isDriveAutoStart())
                 .append("; stop=").append(recordingConfig.isDriveAutoStop()).append('\n');
         sb.append("  Recording intent: ").append(com.kooo.evcam.recording.RecordingIntent.current().describe()).append('\n');

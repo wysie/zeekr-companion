@@ -10,6 +10,7 @@ The [upstream contribution index](docs/upstream-contributions.md) instead tracks
 outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
+| `feature/blind-camera-upscaling` | Experimental live blind-side bilinear/bicubic sampling and bounded adjustable sharpening, with retained framing and recording |
 | --- | --- |
 | `feature/settings-backup` | Companion five-store settings backup, native System flow, staged startup restore and durable multi-store rollback/recovery |
 | `feature/manual-recording-lock` | dts88 #61 adapted to tap/double tap/hold with manual protection outside the braking-only budget |

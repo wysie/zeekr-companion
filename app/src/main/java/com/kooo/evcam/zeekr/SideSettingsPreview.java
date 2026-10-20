@@ -251,7 +251,8 @@ public final class SideSettingsPreview extends LinearLayout {
                     if(straighten)framing.configure(config.getSidePopupFov(),config.getSidePopupYaw(),config.getSidePopupPitch(),lane,
                             (float)width/height,rotation,config.isSidePopupAutoFit());
                     SideGpuPicture p=SideGpuPicture.side(plan,lane,width,height,straighten,config.getSidePopupFov(),
-                            config.getSidePopupYaw(),config.getSidePopupPitch(),rotation,config.isSidePopupMirrored(),framing);
+                            config.getSidePopupYaw(),config.getSidePopupPitch(),rotation,config.isSidePopupMirrored(),framing)
+                            .withSampling(config.getSideUpscaling(),config.getSideSharpening());
                     boolean handled=gpuSample.prepare(gpuTexture,settingsSource,p,width,height,true);
                     if(handled){
                         drawChild(canvas,gpuTexture,getDrawingTime());

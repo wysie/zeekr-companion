@@ -722,7 +722,8 @@ public class RearViewMirrorView extends ViewGroup {
             if(sideStraighten)sideFraming.configure(sideFov,sideYaw,sidePitch,selectedLane,(float)width/height,
                     appConfig.getSidePopupRotation(selectedLane),appConfig.isSidePopupAutoFit());
             projected=SideGpuPicture.side(plan,selectedLane,width,height,sideStraighten,sideFov,sideYaw,sidePitch,
-                    appConfig.getSidePopupRotation(selectedLane),appConfig.isSidePopupMirrored(),sideFraming);
+                    appConfig.getSidePopupRotation(selectedLane),appConfig.isSidePopupMirrored(),sideFraming)
+                    .withSampling(appConfig.getSideUpscaling(),appConfig.getSideSharpening());
         } else projected=new SideGpuPicture(plan,laneIndex,viewport(),fisheyeCorrection?1:0,fovDegrees,0,0,0,
                 LaneCycle.isMirrored(laneIndex),width,height);
         boolean gpu=gpuPicture.prepare(textureView,PreviewDewarp.rawPipeFor(textureView),projected,width,height,

@@ -1376,4 +1376,11 @@
     <string name="settings_restore_status">Last restore</string>
     <string name="settings_restore_success">Settings restored</string>
     <string name="settings_restore_failed">Restore failed. Original settings were retained.</string>
+    <string name="side_upscaling_category">GPU picture quality</string>
+    <string name="side_upscaling_title">Upscaling</string>
+    <string name="side_upscaling_bilinear">Bilinear (default)</string>
+    <string name="side_upscaling_soft">Bicubic soft</string>
+    <string name="side_upscaling_sharp">Bicubic sharp</string>
+    <string name="side_sharpening_title">Sharpening (%)</string>
+    <string name="side_upscaling_help">Requires System → GPU image processing → Blind-side camera or All. Applies live to popup, HUD, Super mirror side view and this preview. Bicubic may run slower; sharpening can emphasize noise. Framing and recordings stay unchanged.</string>
 </resources>

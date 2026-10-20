@@ -1353,4 +1353,11 @@
     <string name="settings_restore_status">Pemulihan terakhir</string>
     <string name="settings_restore_success">Tetapan dipulihkan</string>
     <string name="settings_restore_failed">Pemulihan gagal. Tetapan asal dikekalkan.</string>
+    <string name="side_upscaling_category">Kualiti gambar GPU</string>
+    <string name="side_upscaling_title">Penskalaan</string>
+    <string name="side_upscaling_bilinear">Bilinear (semasa)</string>
+    <string name="side_upscaling_soft">Bikubik lembut</string>
+    <string name="side_upscaling_sharp">Bikubik tajam</string>
+    <string name="side_sharpening_title">Penajaman (%)</string>
+    <string name="side_upscaling_help">Untuk tetingkap sisi titik buta, HUD, pandangan sisi Super mirror dan pratonton ini. Memerlukan Sistem → Pemprosesan imej GPU → Kamera sisi titik buta (atau Semua). Perubahan berkuat kuasa serta-merta apabila laluan itu aktif. Bikubik menggunakan lebih banyak GPU; kurangkan penajaman jika hingar bertambah. Tidak mengubah pembingkaian, rakaman atau resolusi kamera.</string>
 </resources>

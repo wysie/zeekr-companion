@@ -110,6 +110,8 @@ public class AppConfig {
     public static final int SIDE_POPUP_MAX_MIN_SPEED = 80;
     private static final String KEY_SIDE_POPUP_STRAIGHTEN = "side_popup_straighten";  // 侧视拉直鱼眼
     private static final String KEY_SIDE_POPUP_AUTO_FIT = "side_popup_auto_fit";
+    private static final String KEY_SIDE_UPSCALING = "side_upscaling";
+    private static final String KEY_SIDE_SHARPENING = "side_sharpening";
     private static final String KEY_SIDE_POPUP_INSTANT = "side_popup_instant";  // D 档时备着相机，打灯即出画面
     private static final String KEY_SIDE_POPUP_CLOSE_DELAY_MS = "side_popup_close_delay_ms";  // 灯灭后再留多少毫秒
     private static final String KEY_SIDE_POPUP_SIZE = "side_popup_size";  // 高度，屏幕高度的百分比
@@ -1864,6 +1866,8 @@ public class AppConfig {
                 .remove(KEY_SIDE_POPUP_MIN_SPEED)
                 .remove(KEY_SIDE_POPUP_STRAIGHTEN)
                 .remove(KEY_SIDE_POPUP_AUTO_FIT)
+                .remove(KEY_SIDE_UPSCALING)
+                .remove(KEY_SIDE_SHARPENING)
                 .remove(KEY_SIDE_POPUP_FOV)
                 .remove(KEY_SIDE_POPUP_YAW)
                 .remove(KEY_SIDE_POPUP_PITCH)
@@ -1945,6 +1949,20 @@ public class AppConfig {
     public void setSidePopupMinSpeed(int kmh) {
         prefs.edit().putInt(KEY_SIDE_POPUP_MIN_SPEED,
                 Math.max(0, Math.min(SIDE_POPUP_MAX_MIN_SPEED, kmh))).apply();
+    }
+
+    /** GPU blind-side sampling only; independent of framing, topology and recording. */
+    public String getSideUpscaling() {
+        String value = prefs.getString(KEY_SIDE_UPSCALING, "bilinear");
+        return "bicubic_soft".equals(value) || "bicubic_sharp".equals(value) ? value : "bilinear";
+    }
+    public void setSideUpscaling(String value) {
+        prefs.edit().putString(KEY_SIDE_UPSCALING,
+                "bicubic_soft".equals(value) || "bicubic_sharp".equals(value) ? value : "bilinear").apply();
+    }
+    public int getSideSharpening() { return Math.max(0, Math.min(100, prefs.getInt(KEY_SIDE_SHARPENING, 0))); }
+    public void setSideSharpening(int percent) {
+        prefs.edit().putInt(KEY_SIDE_SHARPENING, Math.max(0, Math.min(100, percent))).apply();
     }
 
     /** Shared corrected side-image framing for popup, HUD and Super mirror replacement. */
