@@ -971,4 +971,10 @@
     <string name="record_source_settings">Tetapan kamera</string>
     <string name="record_group_cabin">Kabin</string>
     <string name="record_group_roads">Hadapan + Belakang</string>
+
+    <string name="record_preview_layout">Susun atur pratonton</string>
+    <string name="record_preview_surround_roads">Sekeliling + Hadapan + Belakang</string>
+    <string name="record_preview_current">Susun atur pratonton: %1$s</string>
+    
+    <string name="record_preview_selected">Sumber rakaman dipilih</string>
 </resources>

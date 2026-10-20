@@ -982,4 +982,10 @@
     <string name="record_source_settings">相机设置</string>
     <string name="record_group_cabin">座舱</string>
     <string name="record_group_roads">前方 + 后方</string>
+
+    <string name="record_preview_layout">预览布局</string>
+    <string name="record_preview_surround_roads">环视 + 前后道路</string>
+    <string name="record_preview_current">预览布局：%1$s</string>
+    
+    <string name="record_preview_selected">选中的录制来源</string>
 </resources>
