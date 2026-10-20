@@ -3,10 +3,17 @@
 This index tracks outgoing PRs. Incoming source reviews, imports, adaptations and
 exclusions are tracked in the [source integration ledger](source-integration-ledger.md).
 
-Latest status review (2026-10-19, upstream `151040e4`): **#17, #28 and #38 are
-merged**; #28/#38 were accepted through maintainer follow-up PRs #58/#59. #19
-remains closed in favour of adapted #41/#43. Twenty batch PRs remain open.
-[Maintainer differences, adopted follow-ups and verification](upstream-contribution-followups-20261019.md)
+Latest status review (**2026-10-20**, upstream `eb7d5732`): **17 open, 3 merged,
+4 closed**. #17/#28/#38 are merged (#28/#38 through maintainer #58/#59).
+#19 remains closed in favour of adapted #41/#43. #31 is now closed in favour of
+merged #62; #33/#35 were declined for storage-retention/repair-space policy reasons.
+All 17 open heads have passing builds and no maintainer review/comment; five
+conflict with current main: **#46, #48, #52, #53, #54**. The remaining twelve are
+mergeable: #29/#30/#32/#34/#36/#37/#44/#45/#47/#49/#50/#51.
+[Current review, maintainer explanations and incoming candidates](source-review-20261020.md)
+records the exact source boundaries and limitations. Existing PR heads were not edited.
+
+The [earlier maintainer differences, adopted follow-ups and verification](upstream-contribution-followups-20261019.md)
 are recorded separately. Historical open-status statements below describe their
 original review times. Existing published PR heads remain unchanged.
 
