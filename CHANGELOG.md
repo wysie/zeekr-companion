@@ -9,6 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Add 360° on/off to all floating-button gestures and reorder the seven actions while preserving saved assignments.
 - Lighten the 009 Green illustration to a muted silver-sage/grey-green finish with a matching surround.
 - Separate update version details from scrollable, spaced release notes with smaller body text and fixed installation actions.
 - Match the drawer Quit app label and power icon to the red Settings quit action in both themes.

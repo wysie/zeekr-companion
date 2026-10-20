@@ -86,6 +86,7 @@
     <string name="floating_action_toggle_recording">Mula / henti rakaman</string>
     <string name="floating_action_take_photo">Ambil foto</string>
     <string name="floating_action_toggle_mirror">Hidupkan / matikan Cermin super</string>
+    <string name="floating_action_toggle_360">Hidupkan / matikan 360°</string>
     <string name="floating_action_lock_footage">Kunci rakaman semasa</string>
     <string name="set_recording_stats_title">Paparan status rakaman</string>
     <string name="set_recording_stats_summary">Menunjukkan masa berlalu dan nombor klip semasa di sudut semasa merakam</string>

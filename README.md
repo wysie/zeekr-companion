@@ -659,8 +659,7 @@ The side camera displays an upright left/right arrow between the top corner cont
 ## Night theme and floating record button
 
 Settings → Floating button → Actions offers **Tap**, **Double tap** and **Long press**.
-Each can open the app, start/stop recording, take a photo, toggle Super mirror or
-do nothing. Double tap defaults to **Do nothing**, preserving immediate single taps
+Each offers, in order: Open the app, Start / stop recording, Take a photo, Lock current recording, Super mirror on / off, 360° on / off and Do nothing. The 360° action opens/closes the existing manual popup session, including a temporarily suspended session, without bringing the app forward or adding an automatic-start preference. It uses the same overlay permission and factory-priority rules as Windows → 360° window. Existing gesture choices are preserved by their saved keys. Double tap defaults to **Do nothing**, preserving immediate single taps
 and existing tap/hold assignments. Assigning a double-tap action makes a single
 tap wait briefly for Android's double-tap timeout; a recognised double tap runs
 only its own action. Long press stays at 600 ms. Dragging, cancelled/multi-finger
