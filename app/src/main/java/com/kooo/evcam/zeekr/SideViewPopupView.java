@@ -180,6 +180,10 @@ public class SideViewPopupView extends ViewGroup {
     }
 
     public String gpuState() { return gpuPicture.state(); }
+    String qualityDescription() {
+        return "view="+getWidth()+"x"+getHeight()+" attached="+isAttached()+" showing="+isShowing()
+                +" lane="+lane+" renderer={"+gpuPicture.describe()+"}";
+    }
 
     public AutoFitTextureView getTextureView() {
         return textureView;

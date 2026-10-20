@@ -43,6 +43,10 @@ public final class SideSettingsPreview extends LinearLayout {
     private final FrameLayout stage;
     private final TextView message;
     private final MaterialButton show, expand;
+    private final MaterialButton capture, shareCapture, copyCapture;
+    private final TextView captureStatus;
+    private SideQualityCapture.Request qualityRequest;
+    private java.io.File lastComparison;
     private final java.util.function.Consumer<Boolean> onExpand;
     private final CameraFrameFreshness freshness = new CameraFrameFreshness();
     private Bitmap sample;
@@ -77,6 +81,7 @@ public final class SideSettingsPreview extends LinearLayout {
         sides.addTab(sides.newTab().setText(R.string.zeekr_lane_right));
         sides.addOnTabSelectedListener(new TabLayout.OnTabSelectedListener() {
             @Override public void onTabSelected(TabLayout.Tab tab) {
+                cancelQuality();
                 lane = tab.getPosition() == 0 ? LaneCycle.LEFT : LaneCycle.RIGHT;
                 picture.invalidate();
             }
@@ -115,24 +120,66 @@ public final class SideSettingsPreview extends LinearLayout {
         show = new MaterialButton(activity);
         show.setText(R.string.side_settings_show); show.setVisibility(GONE);
         addView(show, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
-        show.setOnClickListener(v -> { hidden = false; picture.attachGpuTexture(); stage.setVisibility(VISIBLE); show.setVisibility(GONE); sample(); });
         TextView hint = text(R.string.side_settings_unchanged, R.style.TextAppearance_Cam_SettingsMicro);
         hint.setPadding(0, dp(10), 0, 0); hint.setTextColor(ContextCompat.getColor(activity, R.color.text_secondary));
         addView(hint, new LayoutParams(LayoutParams.MATCH_PARENT, LayoutParams.WRAP_CONTENT));
+        LinearLayout qualityContent=new LinearLayout(activity);qualityContent.setOrientation(VERTICAL);
+        android.widget.ScrollView qualityFooter=new android.widget.ScrollView(activity) {
+            @Override protected void onMeasure(int widthSpec,int heightSpec) {
+                int limit=dp(180);
+                if(MeasureSpec.getMode(heightSpec)!=MeasureSpec.UNSPECIFIED)limit=Math.min(limit,MeasureSpec.getSize(heightSpec));
+                super.onMeasure(widthSpec,MeasureSpec.makeMeasureSpec(limit,MeasureSpec.AT_MOST));
+            }
+        };
+        qualityFooter.addView(qualityContent);addView(qualityFooter,new LayoutParams(-1,-2));
+        com.kooo.evcam.ui.WrappingActionRow qualityActions=new com.kooo.evcam.ui.WrappingActionRow(activity,null);
+        capture=qualityButton(R.string.side_quality_capture,R.id.side_quality_capture);qualityActions.addView(capture);
+        capture.setOnClickListener(v -> captureQuality());
+        qualityContent.addView(qualityActions,new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
+        captureStatus=text(R.string.side_quality_help,R.style.TextAppearance_Cam_SettingsMicro);
+        captureStatus.setId(R.id.side_quality_result);captureStatus.setTextIsSelectable(true);
+        captureStatus.setTextColor(ContextCompat.getColor(activity,R.color.text_secondary));
+        captureStatus.setPadding(0,dp(6),0,dp(6));
+        captureStatus.setAccessibilityLiveRegion(ACCESSIBILITY_LIVE_REGION_POLITE);
+        qualityContent.addView(captureStatus,new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
+        com.kooo.evcam.ui.WrappingActionRow savedActions=new com.kooo.evcam.ui.WrappingActionRow(activity,null);
+        shareCapture=qualityButton(R.string.side_quality_share,R.id.side_quality_share);
+        copyCapture=qualityButton(R.string.side_quality_copy,R.id.side_quality_copy);
+        savedActions.addView(shareCapture);savedActions.addView(copyCapture);
+        qualityContent.addView(savedActions,new LayoutParams(LayoutParams.MATCH_PARENT,LayoutParams.WRAP_CONTENT));
+        shareCapture.setVisibility(GONE);copyCapture.setVisibility(GONE);
+        show.setOnClickListener(v -> { hidden = false;capture.setEnabled(true); picture.attachGpuTexture(); stage.setVisibility(VISIBLE); show.setVisibility(GONE); sample(); });
+
+        shareCapture.setOnClickListener(v -> {if(lastComparison!=null && lastComparison.isFile())
+            com.kooo.evcam.share.PhoneShare.show(activity,lastComparison);});
+        copyCapture.setOnClickListener(v -> {if(lastComparison!=null) {
+            android.content.ClipboardManager clipboard=(android.content.ClipboardManager)activity.getSystemService(android.content.Context.CLIPBOARD_SERVICE);
+            if(clipboard!=null)clipboard.setPrimaryClip(android.content.ClipData.newPlainText(getContext().getString(R.string.side_quality_capture),lastComparison.getAbsolutePath()));
+        }});
+        String last=getContext().getSharedPreferences("side_quality_exports",0).getString("last_file",null);
+        if(last!=null) {
+            lastComparison=new java.io.File(last);
+            captureStatus.setText(getContext().getString(R.string.side_quality_saved,last));
+            copyCapture.setVisibility(VISIBLE);
+            if(lastComparison.isFile())shareCapture.setVisibility(VISIBLE);
+        }
+
+
     }
 
     private void hidePreview() {
-        hidden = true; clear(); picture.detachGpuTexture(); stage.setVisibility(GONE); show.setVisibility(VISIBLE);
+        hidden = true;capture.setEnabled(false); clear(); picture.detachGpuTexture(); stage.setVisibility(GONE); show.setVisibility(VISIBLE);
         if (expanded) { expanded = false; expand.setIconResource(R.drawable.ic_side_expand);
             expand.setContentDescription(getContext().getString(R.string.side_settings_expand)); onExpand.accept(false); }
         clear(); message.setVisibility(GONE);
     }
 
-    public void start() { running = true; failedGpuSource = null; picture.attachGpuTexture(); clear(); removeCallbacks(tick); post(tick); }
-    public void stop() { running = false; removeCallbacks(tick); clear(); picture.detachGpuTexture(); sample = null; plan = null; }
+    public void start() { running = true;capture.setEnabled(!hidden); failedGpuSource = null; picture.attachGpuTexture(); clear(); removeCallbacks(tick); post(tick); }
+    public void stop() { running = false;capture.setEnabled(false); removeCallbacks(tick); clear(); picture.detachGpuTexture(); sample = null; plan = null; }
     @Override protected void onDetachedFromWindow() { stop(); super.onDetachedFromWindow(); }
 
     private void clear() {
+        cancelQuality();
         gpuSample.release(); settingsSource = null;
         freshness.reset(); copiedIdentity = null; copiedTimestamp = 0;
         picture.invalidate(); message.setVisibility(VISIBLE);
@@ -206,6 +253,56 @@ public final class SideSettingsPreview extends LinearLayout {
         sample.eraseColor(Color.TRANSPARENT);
         return source.getBitmap(sample) != null && source.getSurfaceTexture() == identity
                 && sample.getPixel(width / 2, height / 2) >>> 24 == 255;
+    }
+
+    private void cancelQuality() {
+        if(qualityRequest!=null) {
+            qualityRequest.cancel();qualityRequest=null;
+            capture.setEnabled(running&&!hidden);captureStatus.setText(R.string.side_quality_cancelled);
+        }
+    }
+    private void captureQuality() {
+        if(qualityRequest!=null)return;
+        lastComparison=null;shareCapture.setVisibility(GONE);copyCapture.setVisibility(GONE);
+        sample();
+        TextureView source=activity.settingsPreviewTexture();
+        MultiCameraManager manager=CameraManagerHolder.getInstance().getCameraManager();
+        SingleCamera camera=manager==null?null:manager.getCamera(CameraSlots.KEY_SURROUND);
+        Readings r=Telemetry.get().readings();
+        boolean blocked=ScreenState.dark()||!Telemetry.get().carLinkConnected()||"R".equals(r.text(Signal.GEAR))
+                ||Boolean.TRUE.equals(r.bool(Signal.STOCK_360))||Boolean.TRUE.equals(r.bool(Signal.STOCK_POPUP))
+                ||Boolean.TRUE.equals(r.bool(Signal.PARK_ASSIST));
+        if(!running||hidden||blocked||source==null||!source.isAvailable()||plan==null||camera==null) {
+            com.kooo.evcam.AppLog.w("SideQualityCapture","Comparison unavailable: running="+running+" hidden="+hidden
+                    +" blocked="+blocked+" car="+Telemetry.get().carLinkConnected()+" dark="+ScreenState.dark()
+                    +" source="+(source==null?"none":source.isAvailable())+" plan="+(plan==null?"none":plan)
+                    +" camera="+(camera==null?"none":camera.getCameraId()+"@"+camera.getPreviewSize())
+                    +" composite="+StreamLayoutTable.compositeCameraId());
+            captureStatus.setText(R.string.side_quality_need_source);return;
+        }
+        try {
+            FisheyeGlPipe shared=PreviewDewarp.rawPipeFor(source);
+            SideQualitySpec spec=SideQualitySpec.create(activity,plan,lane,config.isGpuSide()&&shared!=null&&shared.isAlive());
+            captureStatus.setText(R.string.side_quality_working);capture.setEnabled(false);
+            qualityRequest=SideQualityCapture.start(activity,source,spec,freshness.changedAt(),(file,error) -> {
+                qualityRequest=null;capture.setEnabled(running&&!hidden);
+                if(file==null){captureStatus.setText(R.string.side_quality_failed);return;}
+                lastComparison=file;
+                captureStatus.setText(getContext().getString(R.string.side_quality_saved,file.getAbsolutePath()));
+                shareCapture.setVisibility(VISIBLE);copyCapture.setVisibility(VISIBLE);
+            });
+            if(qualityRequest==null){capture.setEnabled(true);captureStatus.setText(R.string.side_quality_busy);}
+        } catch(RuntimeException failure) {
+            com.kooo.evcam.AppLog.w("SideQualityCapture","Comparison configuration unavailable: "+failure);
+            capture.setEnabled(true);captureStatus.setText(R.string.side_quality_failed);
+        }
+    }
+    private MaterialButton qualityButton(int label,int id) {
+        MaterialButton button=new MaterialButton(activity,null,com.google.android.material.R.attr.materialButtonOutlinedStyle);
+        button.setId(id);button.setText(label);button.setAllCaps(false);button.setSingleLine(false);
+        button.setTextAppearance(R.style.TextAppearance_Cam_SettingsBody);
+        button.setTextColor(ContextCompat.getColor(activity,R.color.text_primary));button.setMinHeight(dp(48));
+        button.setCornerRadius(dp(4));return button;
     }
 
     /** Fit the whole window shape, including its controls, instead of adding black side bars. */

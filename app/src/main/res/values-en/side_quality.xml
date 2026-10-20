@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="side_quality_capture">Capture quality comparison</string>
+    <string name="side_quality_help">Saves a native side image and a same-frame render using popup settings. A diagnostic render, not a window screenshot; labels and arrows are excluded.</string>
+    <string name="side_quality_share">Send comparison to phone</string>
+    <string name="side_quality_copy">Copy file location</string>
+    <string name="side_quality_working">Capturing one source frame and saving comparison…</string>
+    <string name="side_quality_saved">Comparison saved:\n%1$s</string>
+    <string name="side_quality_need_source">Keep the Surround preview live and this picture open. Capture is unavailable during factory views, reverse or screen-off.</string>
+    <string name="side_quality_failed">Could not capture or save. Keep the Surround preview live, check storage and try again.</string>
+    <string name="side_quality_busy">Another comparison is being saved. Try again when it finishes.</string>
+    <string name="side_quality_cancelled">Capture cancelled. Your picture settings are unchanged.</string>
+</resources>

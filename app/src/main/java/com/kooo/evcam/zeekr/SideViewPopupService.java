@@ -177,6 +177,19 @@ public class SideViewPopupService extends Service {
         svc.evaluate();
     }
 
+    /** UI-thread read of same-side popup dimensions; never opens a diagnostic window. */
+    static android.util.Size qualityWindowSize(int lane) {
+        SideViewPopupService svc=instance;
+        SideViewPopupView view=svc==null?null:svc.popup;
+        return view!=null && view.isShowing() && view.lane()==lane && view.getWidth()>0 && view.getHeight()>0
+                ?new android.util.Size(view.getWidth(),view.getHeight()):null;
+    }
+
+    static String qualityWindowState(int lane) {
+        SideViewPopupService svc=instance;SideViewPopupView view=svc==null?null:svc.popup;
+        return view==null?"no popup window":(view.lane()==lane?"same-side popup: ":"other-side popup: ")+view.qualityDescription();
+    }
+
     public static void refreshCameraLabel() {
         SideViewPopupService svc = instance;
         if (svc != null) {

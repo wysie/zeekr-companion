@@ -224,6 +224,90 @@ public class BirdEyeGpuAndroidTest {
             assertTrue(f.pipe.describeOutput(),f.pipe.describeOutput().contains("rendered=512x2048 mode=strip/video"));
         }
     }
+    private void restorePreferences(android.content.SharedPreferences preferences,java.util.Map<String,?> values) {
+        android.content.SharedPreferences.Editor edit=preferences.edit().clear();
+        for(java.util.Map.Entry<String,?> entry:values.entrySet()) {
+            Object value=entry.getValue();String key=entry.getKey();
+            if(value instanceof Boolean)edit.putBoolean(key,(Boolean)value);
+            else if(value instanceof Integer)edit.putInt(key,(Integer)value);
+            else if(value instanceof Long)edit.putLong(key,(Long)value);
+            else if(value instanceof Float)edit.putFloat(key,(Float)value);
+            else if(value instanceof String)edit.putString(key,(String)value);
+            else if(value instanceof java.util.Set)edit.putStringSet(key,(java.util.Set<String>)value);
+        }
+        edit.commit();
+    }
+    private SideQualityPair qualityPair(Fixture f,SideQualitySpec spec) {
+        AtomicReference<SideQualityPair> result=new AtomicReference<>();AtomicReference<String> error=new AtomicReference<>();
+        assertTrue(f.pipe.captureSideQuality(spec,new java.util.concurrent.atomic.AtomicBoolean(),(pair,failure) -> {
+            result.set(pair);error.set(failure);
+        }));
+        await("Quality capture finished: "+error.get(),()->result.get()!=null||error.get()!=null);
+        assertNull(error.get());return result.get();
+    }
+    @Test public void comparisonPreservesNativeLaneAndMatchesLiveShaderWithoutReplacingProducer() throws Exception {
+        android.content.SharedPreferences prefs=InstrumentationRegistry.getInstrumentation().getTargetContext().getSharedPreferences("app_config",0);
+        java.util.Map<String,?> before=prefs.getAll();
+        try(Fixture f=new Fixture()) {
+            f.config.setSidePopupYaw(0);f.config.setSidePopupPitch(0);f.config.setSidePopupFov(90);
+            f.config.setSidePopupRotation(LaneCycle.LEFT,0);f.config.setSidePopupRotation(LaneCycle.RIGHT,0);
+            f.config.setSidePopupStraighten(true);f.config.setSidePopupAutoFit(true);f.config.setSidePopupMirrored(false);
+            f.config.setSideUpscaling("bicubic_sharp");f.config.setSideSharpening(25);
+            CompositeStreamGeometry.Plan plan=CompositeStreamGeometry.analyse("gpu-test",f.sw,f.sh);
+            Surface producer=f.producer;SurfaceTexture texture=f.output.get();
+            for(int lane:new int[]{LaneCycle.LEFT,LaneCycle.RIGHT}) {
+                SideQualitySpec spec=new SideQualitySpec(plan,lane,f.ow,f.oh,f.config,true,"test actual window extent");
+                SideGlRequest live=new SideGlRequest(spec.adjusted(),f.ow,f.oh);f.pipe.setSide(live);f.freshSide(live);
+                try(SideQualityPair pair=qualityPair(f,spec)) {
+                    assertEquals(256,pair.original.getWidth());assertEquals(256,pair.original.getHeight());
+                    for(int y:new int[]{32,96,192})for(int x:new int[]{32,96,192}) {
+                        int pixel=pair.original.getPixel(x+4,y+4);
+                        assertEquals("Native R / horizontal orientation",x,Color.red(pixel),2);
+                        assertEquals("Native G / vertical orientation",y,Color.green(pixel),2);
+                        assertEquals("Native lane / no channel swap",lane*85,Color.blue(pixel),2);
+                    }
+                    assertSidePattern(pair.rendered.copy(Bitmap.Config.ARGB_8888,false),lane,spec.framing::sourcePoint);
+                    Bitmap actual=f.bitmap();
+                    try {
+                        int matches=0,total=0;
+                        for(int y=4;y<f.oh-4;y+=3)for(int x=4;x<f.ow-4;x+=3) {
+                            int a=actual.getPixel(x,y),b=pair.rendered.getPixel(x,y);total++;
+                            if(Math.abs(Color.red(a)-Color.red(b))<4&&Math.abs(Color.green(a)-Color.green(b))<4
+                                    &&Math.abs(Color.blue(a)-Color.blue(b))<4)matches++;
+                        }
+                        assertTrue("Diagnostic matches live popup shader: "+matches+"/"+total,matches>total*.99);
+                    } finally {actual.recycle();}
+                    assertTrue(pair.metadata.getBoolean("pair_same_source_frame"));
+                    assertTrue(pair.metadata.getLong("source_timestamp_ns")>0);
+                    int frozen=pair.original.getPixel(36,36);f.frame();SystemClock.sleep(80);
+                    assertEquals("Export pixels do not advance with the camera",frozen,pair.original.getPixel(36,36));
+                }
+                f.freshSide(live);assertSame(producer,f.producer);assertSame(texture,f.output.get());
+                assertNull(live.frames.failure);assertTrue(live.frames.fresh(f.outputTimestamp,SystemClock.elapsedRealtime()));
+            }
+        } finally {restorePreferences(prefs,before);}
+    }
+    @Test public void comparisonRejectsFrozenSourceAndCancelledRequestWithoutBreakingLiveOutput() throws Exception {
+        try(Fixture f=new Fixture(false,1280,5140)) {
+            CompositeStreamGeometry.Plan plan=CompositeStreamGeometry.analyse("gpu-test",f.sw,f.sh);
+            SideQualitySpec spec=new SideQualitySpec(plan,LaneCycle.LEFT,640,480,f.config,true,"native 009");
+            for(int i=0;i<4;i++){f.frame();SystemClock.sleep(60);}
+            try(SideQualityPair pair=qualityPair(f,spec)) {
+                assertEquals(1280,pair.original.getWidth());assertEquals(1280,pair.original.getHeight());
+                for(int x:new int[]{0,640,1279})for(int y:new int[]{0,640,1279})assertEquals(Color.BLUE,pair.original.getPixel(x,y));
+            }
+            AtomicReference<SideQualityPair> late=new AtomicReference<>();AtomicReference<String> error=new AtomicReference<>();
+            java.util.concurrent.atomic.AtomicBoolean cancelled=new java.util.concurrent.atomic.AtomicBoolean(true);
+            assertTrue(f.pipe.captureSideQuality(spec,cancelled,(pair,failure)->{late.set(pair);error.set(failure);}));
+            SystemClock.sleep(100);assertNull(late.get());assertNull(error.get());
+            SystemClock.sleep(550);
+            assertTrue(f.pipe.captureSideQuality(spec,new java.util.concurrent.atomic.AtomicBoolean(),(pair,failure)->{late.set(pair);error.set(failure);}));
+            await("Frozen capture is rejected",()->error.get()!=null);assertNull(late.get());assertTrue(f.pipe.isAlive());
+            long previousTimestamp=f.outputTimestamp;
+            for(int i=0;i<3;i++){f.frame();SystemClock.sleep(65);}
+            await("Live output resumes after capture refusal",()->f.outputTimestamp!=previousTimestamp && f.pipe.rawOutputReady(f.outputTimestamp));
+        }
+    }
     private void assertSidePattern(Fixture f,int lane,FisheyeMesh.SourceMap reference) {
         assertSidePattern(f.bitmap(),lane,reference);
     }
