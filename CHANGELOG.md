@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+## [2.11.57-alpha.1] - 2026-10-20
+
+- Add live Bilinear, Bicubic soft and Bicubic sharp upscaling choices with adjustable sharpening under Blind spot camera → Picture → GPU picture quality, shared by the popup, HUD, Super mirror side view and settings preview; default to Bilinear with zero sharpening.
+
 ## [2.11.56-alpha.1] - 2026-10-20
 
 - Add 360° on/off to all floating-button gestures and reorder the seven actions while preserving saved assignments.
