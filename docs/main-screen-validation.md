@@ -187,3 +187,34 @@ Validation:
   This is a separate existing dialog-layout issue, not resolved by the colour work.
 
 No physical-car colour matching or new downloadable release is claimed here.
+
+## Alpha 58 publication verification — 2026-10-20
+
+Published **Zeekr Companion 2.11.58-alpha.1**, versionCode **341**, from tag
+`v2.11.58-alpha.1` at `c85a900e560061ba71477ffb1a43dbdfc9f534d8`.
+[Release](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.58-alpha.1)
+and [tag workflow](https://github.com/wysie/zeekr-shortcut-car/actions/runs/39423542570)
+were checked after publication. GitHub Pre-release is on and Latest is off.
+
+This release contains the shared recording red/live floating-theme fix, softer
+light-theme charcoal text, body-priority HUD trimming/retained-edge labels and
+movable HUD visible-area test. The earlier “not released” notes above and in the
+feature documents describe their original validation time; these changes are now
+included in this exact release tag. Physical HUD limits still require owner-entered
+observations; no automatic optical bounds or in-car performance result is claimed.
+The separately documented baseline Preview dialog tile visibility assertion remains
+outside these fixes.
+
+Local verification passed 1,531 JVM tests, zero lint errors, signed release assembly
+and three release packaging tests. The final HUD-tool validation passed twelve
+native checks as recorded in [HUD validation](009-hud-live-video.md). The tag CI
+completed its packaging/JVM/build/publish jobs successfully. Generated notes and
+the draft's two canonical assets were checked before publication.
+
+The CI APK and public downloaded APK both verify against their checksum:
+`d4b7978d186ee24f2c1699539f564cbca4bcbb17997c02261bea1fd3c742bab3`
+(**24,192,434 bytes**). APK metadata confirms version 2.11.58-alpha.1/code 341,
+application ID `io.github.dts88.zeekrshortcut` and the retained signing certificate
+SHA-256 `a40da80a59d170caa950cf15c18c454d47a39b26989d8b640ecd745ba71bf5dc`.
+The public artifact was downloaded and hash-compared after the release left draft
+state at 2026-10-20 12:38:57 UTC.
