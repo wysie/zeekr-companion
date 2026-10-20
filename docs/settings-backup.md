@@ -4,6 +4,8 @@ System → Settings backup offers Export settings and Import settings. Files are
 `ZeekrCompanion-settings_yyyyMMdd_HHmmss_SSS.json`, beside diagnostics reports,
 following the configured export storage. Export reports the saved path in a dialog.
 The import picker lists backup files newest first and requires confirmation.
+It retains file metadata while listing and loads only the selected settings map
+for confirmation, so many backup files do not retain many complete maps in memory.
 Cancel changes nothing. Confirmation stops recording and exits normally; reopen
 Companion to apply the saved settings. Last restore status remains on this page.
 
@@ -78,6 +80,7 @@ engine directly to verify its preference and journal boundaries.
 
 Local evidence: `/tmp/companion-settings-backup-build.log`,
 `/tmp/companion-settings-backup-native.log`,
+`/tmp/companion-settings-backup-picker-native.log` (final selected-file loading),
 `/tmp/companion-backup-fresh-process.log`,
 `/tmp/companion-recommendations-ui-detect.json`, and six
 `/tmp/companion-{backup,import-confirm,lock-action}-{light,dark}.png` captures.

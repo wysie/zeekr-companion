@@ -72,7 +72,9 @@ public final class SettingsBackupFlow {
             File folder = SettingsBackup.folder(activity);
             List<SettingsBackup.Backup> backups = new ArrayList<>();
             for (File file : SettingsBackup.list(activity)) {
-                backups.add(SettingsBackup.read(activity, file));
+                SettingsBackup.Backup parsed = SettingsBackup.read(activity, file);
+                // The picker retains metadata only, not a complete preference map per backup file.
+                backups.add(new SettingsBackup.Backup(file, parsed.status, parsed.appVersion, parsed.exportedAt, null));
             }
             MAIN.post(() -> {
                 BUSY.set(false);
@@ -93,10 +95,21 @@ public final class SettingsBackupFlow {
                 }
                 CamDialogs.show(builder(activity)
                         .setTitle(R.string.settings_pick_title)
-                        .setItems(labels, (d, which) -> chosen(activity, backups.get(which)))
+                        .setItems(labels, (d, which) -> readChosen(activity, backups.get(which).file))
                         .setNegativeButton(R.string.action_cancel, null));
             });
         }, "settings-import-list").start();
+    }
+
+    private static void readChosen(Activity activity, File file) {
+        if (!begin(activity)) return;
+        new Thread(() -> {
+            SettingsBackup.Backup backup = SettingsBackup.read(activity, file);
+            MAIN.post(() -> {
+                BUSY.set(false);
+                if (!activity.isFinishing() && !activity.isDestroyed()) chosen(activity, backup);
+            });
+        }, "settings-import-read").start();
     }
 
     /** 列表里的一行：导出时间 · 版本；读不出来的写文件名。 */
