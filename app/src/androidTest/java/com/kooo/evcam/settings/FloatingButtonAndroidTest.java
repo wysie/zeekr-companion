@@ -166,14 +166,29 @@ public class FloatingButtonAndroidTest {
                     assertNotNull(page.findPreference("pref_floating_long_press"));
                     ListPreference doubleTap = page.findPreference("pref_floating_double_tap");
                     assertTrue(doubleTap.isEnabled()); assertEquals(NONE.key, doubleTap.getValue());
-                    assertEquals(6, doubleTap.getEntryValues().length);
+                    String[] expected = {OPEN_APP.key, TOGGLE_RECORDING.key, TAKE_PHOTO.key,
+                            LOCK_FOOTAGE.key, TOGGLE_MIRROR.key, TOGGLE_360.key, NONE.key};
+                    for (String key : new String[]{"pref_floating_tap", "pref_floating_double_tap", "pref_floating_long_press"}) {
+                        ListPreference choice = page.findPreference(key);
+                        assertArrayEquals("Requested order applies to every gesture", expected, choice.getEntryValues());
+                        assertEquals(activity.getString(R.string.floating_action_toggle_360), choice.getEntries()[5]);
+                    }
                     assertTrue(doubleTap.callChangeListener(LOCK_FOOTAGE.key)); doubleTap.setValue(LOCK_FOOTAGE.key);
                     assertEquals(LOCK_FOOTAGE.key, new AppConfig(context).getFloatingDoubleTapAction());
+                    assertTrue(doubleTap.callChangeListener(TOGGLE_360.key)); doubleTap.setValue(TOGGLE_360.key);
+                    assertEquals(TOGGLE_360.key, new AppConfig(context).getFloatingDoubleTapAction());
                     assertEquals(preservedTap, config.getFloatingTapAction());
                     assertEquals(preservedHold, config.getFloatingLongPressAction());
                 });
+                scenario.onActivity(activity -> {
+                    SettingsShellFragment shell = (SettingsShellFragment) activity.getSupportFragmentManager()
+                            .findFragmentById(R.id.fragment_container);
+                    SettingsPreferenceFragment page = (SettingsPreferenceFragment) shell.getChildFragmentManager()
+                            .findFragmentById(R.id.settings_detail);
+                    page.findPreference("pref_floating_tap").performClick();
+                });
                 InstrumentationRegistry.getInstrumentation().waitForIdleSync();
-                SystemClock.sleep(200);
+                SystemClock.sleep(3500);
                 android.graphics.Bitmap screenshot = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
                 assertNotNull(screenshot);
                 try (java.io.FileOutputStream out = new java.io.FileOutputStream(
@@ -181,13 +196,15 @@ public class FloatingButtonAndroidTest {
                     screenshot.compress(android.graphics.Bitmap.CompressFormat.PNG, 100, out);
                 } catch (java.io.IOException e) { throw new AssertionError(e); }
                 finally { screenshot.recycle(); }
+                androidx.test.espresso.Espresso.onView(androidx.test.espresso.matcher.ViewMatchers.withText(R.string.action_cancel))
+                        .perform(androidx.test.espresso.action.ViewActions.click());
                 scenario.recreate();
                 scenario.onActivity(activity -> {
                     SettingsShellFragment shell = (SettingsShellFragment) activity.getSupportFragmentManager()
                             .findFragmentById(R.id.fragment_container);
                     SettingsPreferenceFragment page = (SettingsPreferenceFragment) shell.getChildFragmentManager()
                             .findFragmentById(R.id.settings_detail);
-                    assertEquals(LOCK_FOOTAGE.key, ((ListPreference) page.findPreference("pref_floating_double_tap")).getValue());
+                    assertEquals(TOGGLE_360.key, ((ListPreference) page.findPreference("pref_floating_double_tap")).getValue());
                 });
             }
             context.getSharedPreferences("app_config", Context.MODE_PRIVATE).edit()
@@ -195,4 +212,44 @@ public class FloatingButtonAndroidTest {
             assertEquals(NONE.key, new AppConfig(context).getFloatingDoubleTapAction());
         } finally { config.setFloatingDoubleTapAction(oldDouble); config.setRecordingFloatingEnabled(oldEnabled); }
     }
+    private void dispatch360(RecordingFloatingService service) {
+        main(() -> {
+            try {
+                Method method = RecordingFloatingService.class.getDeclaredMethod("perform", FloatingAction.class);
+                method.setAccessible(true); method.invoke(service, TOGGLE_360);
+            } catch (Exception e) { throw new AssertionError(e); }
+        });
+    }
+    private void await360(boolean running) {
+        long end = SystemClock.uptimeMillis() + 5000;
+        while (com.kooo.evcam.zeekr.BirdEyePopupService.isRunning() != running
+                && SystemClock.uptimeMillis() < end) SystemClock.sleep(40);
+        assertEquals(running, com.kooo.evcam.zeekr.BirdEyePopupService.isRunning());
+    }
+    @Test public void floating360UsesActualSessionStateWithAndWithoutMainActivity() throws Exception {
+        org.junit.Assume.assumeTrue(android.os.Build.PRODUCT.contains("sdk") || android.os.Build.HARDWARE.contains("ranchu"));
+        Context context = target();
+        java.util.Map<String, ?> window = context.getSharedPreferences("bird_eye_window", 0).getAll();
+        java.util.Map<String, ?> sources = context.getSharedPreferences("profiles", 0).getAll();
+        main(() -> com.kooo.evcam.zeekr.BirdEyePopupService.stop(context)); await360(false);
+        try (Fixture fixture = new Fixture()) {
+            try (ActivityScenario<MainActivity> scenario = ActivityScenario.launch(MainActivity.class)) {
+                dispatch360(fixture.service); await360(true);
+                // With no car link, the emulator session is suspended but still toggles off.
+                assertFalse(com.kooo.evcam.zeekr.BirdEyePopupService.isWindowVisible());
+                dispatch360(fixture.service); await360(false);
+                assertTrue("Main stays open", scenario.getState().isAtLeast(androidx.lifecycle.Lifecycle.State.STARTED));
+            }
+            assertNull(MainActivity.getInstance());
+            dispatch360(fixture.service); await360(true);
+            assertNull("Floating action does not launch the app", MainActivity.getInstance());
+            main(() -> com.kooo.evcam.zeekr.BirdEyePopupService.stop(context)); await360(false);
+            dispatch360(fixture.service); await360(true);
+            dispatch360(fixture.service); await360(false);
+            assertEquals("No saved popup layout/start preference changes", window,
+                    context.getSharedPreferences("bird_eye_window", 0).getAll());
+            assertEquals("Recording sources are retained", sources, context.getSharedPreferences("profiles", 0).getAll());
+        } finally { main(() -> com.kooo.evcam.zeekr.BirdEyePopupService.stop(context)); }
+    }
+
 }

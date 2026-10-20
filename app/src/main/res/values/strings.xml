@@ -101,6 +101,7 @@
     <string name="floating_action_toggle_recording">开始 / 停止录制</string>
     <string name="floating_action_take_photo">拍照</string>
     <string name="floating_action_toggle_mirror">开启 / 关闭超级后视镜</string>
+    <string name="floating_action_toggle_360">开启 / 关闭 360° 窗口</string>
     <string name="floating_action_lock_footage">锁定当前录像</string>
     <string name="set_recording_stats_title">录制状态显示</string>
     <string name="set_recording_stats_summary">录制时在画面角落显示已录时长和当前片段序号</string>

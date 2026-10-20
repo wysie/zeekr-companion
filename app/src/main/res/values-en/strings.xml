@@ -86,7 +86,8 @@
     <string name="floating_action_toggle_recording">Start / stop recording</string>
     <string name="floating_action_take_photo">Take a photo</string>
     <string name="floating_action_toggle_mirror">Super mirror on / off</string>
-    <string name="floating_action_lock_footage">Lock the current recording</string>
+    <string name="floating_action_toggle_360">360° on / off</string>
+    <string name="floating_action_lock_footage">Lock current recording</string>
     <string name="set_recording_stats_title">Recording status readout</string>
     <string name="set_recording_stats_summary">Shows the elapsed time and current clip number in a corner while recording</string>
     <string name="set_reset_floating_title">Reset floating button</string>

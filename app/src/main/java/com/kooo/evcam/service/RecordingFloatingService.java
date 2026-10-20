@@ -613,6 +613,9 @@ public class RecordingFloatingService extends Service {
             case TOGGLE_MIRROR:
                 toggleMirror();
                 return;
+            case TOGGLE_360:
+                toggle360();
+                return;
             case LOCK_FOOTAGE:
                 com.kooo.evcam.storage.AutoLock.get().lockNow(this);
                 return;
@@ -639,6 +642,20 @@ public class RecordingFloatingService extends Service {
     private void takePhoto() {
         com.kooo.evcam.camera.CameraManagerHolder.getInstance().getOrInit(this)
                 .takePhoto(new com.kooo.evcam.ui.PhotoFeedback(this));
+    }
+
+    private void toggle360() {
+        if (com.kooo.evcam.zeekr.BirdEyePopupService.isRunning()) {
+            com.kooo.evcam.zeekr.BirdEyePopupService.stop(this);
+            return;
+        }
+        MainActivity activity = MainActivity.getInstance();
+        if (activity != null && !activity.isFinishing() && !activity.isDestroyed()) {
+            // Reuse the existing handoff from the main 360 view; do not bring the app forward.
+            activity.openBirdEyePopup();
+        } else if (!com.kooo.evcam.zeekr.BirdEyePopupService.start(this)) {
+            Toast.makeText(this, R.string.msg_need_overlay, Toast.LENGTH_SHORT).show();
+        }
     }
 
     private void toggleMirror() {

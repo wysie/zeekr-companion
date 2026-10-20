@@ -1,8 +1,12 @@
 # Floating-button gestures
 
 Settings → Floating button → Actions now has Tap, Double tap and Long press.
-All three offer Open the app, Start / stop recording, Take a photo, Super mirror
-on / off and Do nothing. Existing tap/hold keys and saved choices are unchanged.
+All three offer, in order: Open the app, Start / stop recording, Take a photo,
+Lock current recording, Super mirror on / off, 360° on / off and Do nothing.
+The 360° action uses the manual popup service’s session state, including temporary
+factory/screen suspension, to open or close it. It does not toggle the main
+preview mode, bring the app forward or save a startup preference. It reuses the
+existing permission gate, main-view handoff and camera/factory priority. Existing tap/hold keys and saved choices are unchanged.
 The new `floating_double_tap_action` defaults to `none`; unknown values also
 resolve to none. The existing layout reset still resets layout only.
 
@@ -20,8 +24,8 @@ changes apply to subsequent touches without restarting the app.
 Dragging, movement while position-locked, multiple fingers, ACTION_CANCEL,
 window removal/service shutdown and position reset cancel pending gesture timers.
 Dragging still saves the button position at release; locking position does not
-disable stationary gestures. The existing action dispatcher/recording coordinator
-is unchanged. No camera mapping, automatic recording trigger or HUD behavior is
+disable stationary gestures. Gesture recognition and the recording coordinator
+are unchanged; each action reuses its existing feature authority. No camera mapping, automatic recording trigger or HUD behavior is
 changed by this feature.
 
 ## Validation
@@ -40,3 +44,23 @@ changed by this feature.
 
 This feature is recorded under Unreleased; it does not change an existing release
 tag or downloadable APK.
+
+## 360° action and ordering — 2026-10-20
+
+`toggle_360` is a new saved key. All six previous keys are unchanged, so moving
+Lock current recording before Super mirror and Do nothing to the end preserves
+existing assignments. All three pickers use the same ordered action list. With a
+live MainActivity, opening reuses its 360-main-to-popup handoff without bringing
+it forward. Without one, the existing popup service opens directly. Closing uses
+actual service session state even while factory/screen rules suspend the picture;
+X/other entry-point closure is respected on the next gesture. Overlay permission
+and camera priority are unchanged; no automatic startup preference is created.
+
+Validation: 1,528 JVM tests, zero lint errors and debug/test builds pass. Five
+existing/extended native floating-button cases pass: real gesture timing and
+cancellation, foreground visibility, all three picker orders, 360 assignment
+persistence/recreation with unchanged tap/hold choices, plus actual popup-session
+start/stop with and without MainActivity and after external closure. Camera-source
+and popup-layout preferences remain unchanged. The seven-row native picker was
+visually inspected. Emulator suspension/session tests do not validate vehicle
+image quality, concurrent camera support or performance.
