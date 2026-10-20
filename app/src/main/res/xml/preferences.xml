@@ -377,6 +377,9 @@
             android:title="@string/set_language_title"
             android:summary="%s" />
 
+        <ListPreference android:key="pref_theme" android:title="@string/set_theme_title" android:summary="%s" />
+        <Preference android:key="pref_theme_help" android:summary="@string/set_theme_summary" android:selectable="false" />
+
         <PreferenceCategory
             android:title="@string/set_group_main_screen">
 

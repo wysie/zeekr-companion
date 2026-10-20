@@ -152,3 +152,10 @@ Settings → Floating button adds Double tap alongside Tap and Long press. It st
 off, preserving immediate single taps and existing assignments. Assigning Double
 tap makes a single tap wait briefly so only one action fires. Dragging, multiple
 fingers, cancellation and removing the window cancel pending actions.
+
+### App appearance
+
+Settings → Interface → Theme offers Follow system (default), Light and Dark.
+Confirm a choice to apply it; Cancel preserves the current theme. The selected
+palette also colours camera-direction badges and the side-popup Close button.
+Camera pixels and recording files remain unchanged.
