@@ -9,6 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Lighten the 009 Green illustration to a muted silver-sage/grey-green finish with a matching surround.
 - Separate update version details from scrollable, spaced release notes with smaller body text and fixed installation actions.
 - Match the drawer Quit app label and power icon to the red Settings quit action in both themes.
 

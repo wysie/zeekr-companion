@@ -30,10 +30,10 @@ final class BirdEyeVehicleOverlay {
 
     void prepare(Resources resources, String model, String colour) {
         colour = BirdEyeAppearance.normalize(colour);
-        // Muted dark tones keep unknown ground visually distinct without a bright tray.
-        backingColour = BirdEyeAppearance.WHITE.equals(colour) ? 0xff353b3d
-                : BirdEyeAppearance.GREEN.equals(colour) ? 0xff29352f : 0xff25292c;
         boolean suv = BirdEyeAppearance.MODEL_7X.equals(model);
+        // Keep unknown ground distinct; 009 Green follows the lighter, desaturated sage paint.
+        backingColour = BirdEyeAppearance.WHITE.equals(colour) ? 0xff353b3d
+                : BirdEyeAppearance.GREEN.equals(colour) ? (suv ? 0xff29352f : 0xff414942) : 0xff25292c;
         source = suv ? SOURCE_7X : SOURCE_009;
         mirrorExtension = suv ? 26f / 604f : 58f / 612f;
         artwork = suv || BirdEyeAppearance.MODEL_009.equals(model)

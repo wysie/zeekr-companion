@@ -114,3 +114,32 @@ were visually reviewed. Vehicle appearance remains to be checked on the 009.
 See [7X provenance and prompts](7x-car-overlay.md) for the three original
 generated assets, source-rectangle bounds and testing limitations. The previous
 009 assets remain unchanged.
+
+## Lighter 009 Green — 2026-10-20
+
+The owner requested a lighter green/grey finish using their factory overhead-view
+photo as a colour reference. The built-in image-generation tool edited the existing
+009 Green sprite into a muted silver-sage finish. The reference photo is not shipped.
+The file remains `app/src/main/res/drawable-nodpi/bird_eye_car_009_green.png`; both
+its verified 971×1620 canvas and transparent background are retained. Existing source bounds,
+footprint mapping, body/mirror placement and colour preference are retained. The
+009 Green opaque surround uses `#414942`; 7X Green retains `#29352F`. White, Black,
+7X artwork, geometry, camera frames and recordings are unchanged. Already-selected
+009 Green uses the new artwork after updating. This is an illustrative screen-colour
+match, not a calibrated physical paint sample.
+
+Final built-in edit prompt:
+
+```text
+Use case: precise-object-edit. Image 1 is the EDIT TARGET: the existing original transparent top-down Zeekr 009 MPV sprite. Image 2 is a PAINT COLOUR REFERENCE ONLY: the silvery muted light green-grey factory overhead car at the centre of the owner's screen photograph. Change ONLY Image 1's painted body to a substantially lighter, less saturated silvery sage grey-green, with grey dominant and a subtle warm green undertone. Aim for painted midtones around #89968B, soft silver-green highlights around #B9C2B5 and shaded paint around #59675E. Avoid deep forest green, blue/teal, turquoise, mint or bright green. Keep the metallic shading and clean detailed finish. Preserve the entire existing 971 x 1619 pixel canvas, exact vehicle position/scale, orthographic top-down geometry, front pointing up, closed doors, both mirrors, body silhouette, panel seams, trim, tyres, lamps, dark windscreen and panoramic roof glass. Preserve the alpha silhouette and genuinely transparent background; no ground, external shadows or extra objects. Do not redraw, move, rotate, crop, reframe or redesign the vehicle. Do not copy the open door, camera scenery, reflections, screen moire or any other details from Image 2. Deliver only the recoloured original isolated sprite at its original dimensions with transparent alpha.
+```
+
+Validation for this recolour: both old and new PNGs are 971×1620 RGBA with
+transparent backgrounds; thresholded silhouette edges differ by at most four
+source pixels. The three existing native overlay tests pass, covering both models
+and all three colours at 320/640/960 widths on light/dark backgrounds, opaque
+underbody, unchanged surrounding ground and live repaint without invalidating
+camera freshness. The 009 colour checks now expect the lighter low-chroma finish;
+7X checks retain their previous green requirement. Popup/preview snapshots were
+visually inspected; debug/test builds and lint pass. This does not establish a
+physical paint match or new vehicle calibration.
