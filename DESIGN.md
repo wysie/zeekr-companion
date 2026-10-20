@@ -358,7 +358,9 @@ Selected rows use the Settings 5dp corner radius. Disable Material active-label 
 use a flat 320dp panel without drawer elevation or rounded outer corners. Both main
 source layouts include `layout_navigation_drawer.xml`. Rows remain at least 52dp tall,
 wrap to two lines and scroll for larger system fonts. The three window/control rows
-share native switches and the existing feature authorities. 360° window is a manual
+share native switches and the existing feature authorities. Quit app uses `recording_text`
+for its label and power icon in both themes, matching the Settings quit action;
+ordinary destinations retain their neutral checked/pressed icon states. 360° window is a manual
 service session, rather than a persisted boot toggle or the main preview's 360° mode.
 
 ### Preview quick presets, 2026-10-20
