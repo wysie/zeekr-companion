@@ -132,7 +132,8 @@ public final class CamDialogs {
 
     private static void paintButtons(Dialog dialog, boolean destructive) {
         paint(button(dialog, DialogInterface.BUTTON_POSITIVE),
-                destructive ? R.color.recording : R.color.energy, R.color.on_energy, true);
+                destructive ? R.color.recording : R.color.energy,
+                destructive ? R.color.on_recording : R.color.on_energy, true);
         paint(button(dialog, DialogInterface.BUTTON_NEGATIVE),
                 R.color.sunken, R.color.text_primary, false);
         paint(button(dialog, DialogInterface.BUTTON_NEUTRAL),

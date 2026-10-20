@@ -683,6 +683,14 @@ touches and hiding the button cancel pending gestures. Actions apply without an
 app restart; position lock still allows gestures but prevents moving the button.
 See [gesture behavior and validation](docs/floating-button-gestures.md).
 
+Recording icons, progress arcs and status text use one shared foreground red per
+theme across the main screen, header stop controls, floating button, gallery and
+Quit actions. Soft backgrounds and progress tracks remain quieter tints. The
+floating button and its duration label follow the app's Follow system/Light/Dark
+choice live, including when it differs from the head unit's theme. Saved overlay
+opacity still applies to the whole floating button. Solid red destructive buttons
+use a contrasting foreground in each theme; recording state and gestures are unchanged.
+
 Night mode uses a black page/main panel with darker settings rows and a distinct selected-row shade. Day layout and primary colors are retained; setting descriptions have stronger contrast. The floating record button has a smaller, thinner icon and no shadow; its background stays neutral while live recording uses a red ring/stop icon. The current upstream waiting-for-cameras state remains grey.
 
 ## Whole-project review and data handling

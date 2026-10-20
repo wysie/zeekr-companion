@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Standardize recording/status/quit reds across the app and make the floating button follow the selected app theme, retaining contrast on solid red actions.
+
 ## [2.11.57-alpha.1] - 2026-10-20
 
 - Add live Bilinear, Bicubic soft and Bicubic sharp upscaling choices with adjustable sharpening under Blind spot camera → Picture → GPU picture quality, shared by the popup, HUD, Super mirror side view and settings preview; default to Bilinear with zero sharpening.

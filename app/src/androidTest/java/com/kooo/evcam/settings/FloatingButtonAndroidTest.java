@@ -97,6 +97,61 @@ public class FloatingButtonAndroidTest {
             config.setFloatingLongPressAction(oldHold); config.setFloatingPositionLocked(oldLock);
         }
     }
+    @Test public void retainedOverlayMatchesHeaderAndMainRedAcrossAppThemeOverrides() throws Exception {
+        int oldNight=androidx.appcompat.app.AppCompatDelegate.getDefaultNightMode();
+        try(Fixture f=new Fixture()) {
+            Object button=get(f.service,"recordingButton");
+            Method state=button.getClass().getDeclaredMethod("setRecording",boolean.class,boolean.class);state.setAccessible(true);
+            Method progress=button.getClass().getDeclaredMethod("setProgress",float.class);progress.setAccessible(true);
+            main(()->{try {f.view.setAlpha(1);state.invoke(button,true,false);progress.invoke(button,.65f);}catch(Exception error){throw new AssertionError(error);}});
+            for(String choice:new String[]{AppTheme.LIGHT,AppTheme.DARK,AppTheme.LIGHT}) {
+                int[] expected={0};android.graphics.Rect bounds=new android.graphics.Rect();
+                main(()->{
+                    AppTheme.apply(choice);
+                    Context palette=AppTheme.palette(target());int red=palette.getColor(R.color.recording);expected[0]=red;
+                    Context themed=new ContextThemeWrapper(palette,R.style.Theme_Cam);
+                    View rail=android.view.LayoutInflater.from(themed).inflate(R.layout.layout_action_rail,null);
+                    com.kooo.evcam.ui.RecordButtonUi mainControl=new com.kooo.evcam.ui.RecordButtonUi(rail.findViewById(R.id.btn_start_record));
+                    mainControl.setState(com.kooo.evcam.ui.RecordButtonUi.State.RECORDING);
+                    assertEquals(red,((android.graphics.drawable.GradientDrawable)rail.findViewById(R.id.record_dot).getBackground()).getColor().getDefaultColor());
+                    assertEquals(red,((com.google.android.material.progressindicator.CircularProgressIndicator)rail.findViewById(R.id.record_ring)).getIndicatorColor()[0]);
+                    View header=android.view.LayoutInflater.from(themed).inflate(R.layout.fragment_settings_two_pane,null);
+                    com.google.android.material.button.MaterialButton stop=header.findViewById(R.id.in_app_record_stop);
+                    assertEquals(red,stop.getIconTint().getDefaultColor());assertEquals(red,palette.getColor(R.color.recording_text));
+                    assertTrue("Recording text contrast",androidx.core.graphics.ColorUtils.calculateContrast(red,palette.getColor(R.color.settings_row))>=4.5);
+                    assertTrue("Solid red button contrast",androidx.core.graphics.ColorUtils.calculateContrast(palette.getColor(R.color.on_recording),red)>=4.5);
+                    assertTrue("Main control contrast",androidx.core.graphics.ColorUtils.calculateContrast(red,palette.getColor(R.color.bg))>=4.5);
+                    assertSame(button,getUnchecked(f.service,"recordingButton"));
+                    int[] xy=new int[2];f.view.getLocationOnScreen(xy);bounds.set(xy[0],xy[1],xy[0]+f.view.getWidth(),xy[1]+f.view.getHeight());
+                });
+                InstrumentationRegistry.getInstrumentation().waitForIdleSync();SystemClock.sleep(250);
+                // Actual composed hardware output: parent-only invalidation can otherwise leave
+                // the child's old cached red on screen even though a software draw looks correct.
+                android.graphics.Bitmap image=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
+                try {
+                    int matched=0;
+                    for(int y=Math.max(0,bounds.top);y<Math.min(image.getHeight(),bounds.bottom);y++)
+                        for(int x=Math.max(0,bounds.left);x<Math.min(image.getWidth(),bounds.right);x++)if(image.getPixel(x,y)==expected[0])matched++;
+                    assertTrue("Retained hardware overlay paints the selected red after "+choice+": "+matched,matched>20);
+                    if("true".equals(InstrumentationRegistry.getArguments().getString("captureRecordingColours"))) {
+                        try(java.io.FileOutputStream out=new java.io.FileOutputStream(new java.io.File(target().getExternalFilesDir(null),"recording-colours-"+choice+".png"))){assertTrue(image.compress(android.graphics.Bitmap.CompressFormat.PNG,100,out));}
+                    }
+                } finally {image.recycle();}
+            }
+            main(()->{
+                try {state.invoke(button,true,true);}catch(Exception error){throw new AssertionError(error);}
+                int red=AppTheme.palette(target()).getColor(R.color.recording);
+                android.graphics.Bitmap image=android.graphics.Bitmap.createBitmap(f.view.getWidth(),f.view.getHeight(),android.graphics.Bitmap.Config.ARGB_8888);
+                try {f.view.draw(new android.graphics.Canvas(image));int matched=0;
+                    for(int y=0;y<image.getHeight();y++)for(int x=0;x<image.getWidth();x++)if(image.getPixel(x,y)==red)matched++;
+                    assertEquals("Waiting remains neutral",0,matched);
+                }finally{image.recycle();}
+            });
+        } finally {main(()->androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(oldNight));}
+    }
+    private static Object getUnchecked(Object service,String key) {
+        try {return get(service,key);}catch(Exception error){throw new AssertionError(error);}
+    }
     @Test public void realOverlayDoubleTapAndHoldNeverFireSingleAction() throws Exception {
         try (Fixture f = new Fixture()) {
             f.tap(); f.expect(); SystemClock.sleep(50); f.tap();

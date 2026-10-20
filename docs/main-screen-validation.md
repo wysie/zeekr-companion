@@ -151,3 +151,39 @@ preserved source/profile choices. A dedicated repeated-driver-side regression
 covers native text layout after returning from settings. The native retained-source
 Picture preview and its guards still need on-car performance validation. This
 follow-up is newer than the alpha 52 downloadable release.
+
+## Shared recording red — 2026-10-20
+
+The owner’s photos showed the main/floating recording indicator and header stop
+control using different reds. `recording_text` now aliases `recording`: one
+foreground red per palette, retaining the previous readable text shades
+(light `#B32A2F`, dark `#F59A9D`). Main dots/progress, header stop glyphs, live
+status, gallery and Quit accents therefore resolve to the same colour. Muted
+tracks/backgrounds remain separate. `on_recording` supplies white in light mode
+and dark text in dark mode on solid red destructive buttons; `colorOnError` uses
+that role too. Encoded telemetry artwork/vehicle lamp colours are not UI palette
+roles and are unchanged.
+
+The retained floating window observes app-local theme changes. Its button resolves
+AppTheme.palette, its progress paint refreshes along with the stop glyph, and its
+duration label changes palette in place. Parent and child hardware display lists
+are invalidated on a theme transition, without replacing the overlay or changing
+recording state, placement, opacity or gestures. Saved whole-window opacity still
+blends the selected colour with whatever is underneath it.
+
+Validation:
+
+- 1,528 JVM tests pass; lint has zero errors; signed release/debug/test builds pass.
+- Eight targeted native checks pass for floating gestures/actions, theme-aware
+  camera controls and drawer authority, including actual composed overlay pixels
+  across Light → Dark → Light on the same attached window. Main record-dot/ring
+  and header-stop colours match the overlay palette. Text and solid-red action
+  foregrounds meet 4.5:1 in the tested palettes; waiting remains neutral. Actual
+  light/dark overlay captures were inspected on the disposable API 32 emulator.
+- An initial broader UI run passed 22 of 23 cases. The inherited
+  `captureLightAndDarkMainPage` case failed because the Preview dialog’s Automatic
+  tile was only 70% visible. Running that case on unchanged alpha 57
+  (`f82578861e788c696e821d9ef2f16f3f99f221a0`) reproduced the same assertion.
+  This is a separate existing dialog-layout issue, not resolved by the colour work.
+
+No physical-car colour matching or new downloadable release is claimed here.

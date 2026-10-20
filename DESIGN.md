@@ -16,7 +16,8 @@ colors:
   light-energy-text: "#B83E15"
   light-energy-quiet: "#FDEDE6"
   light-on-energy: "#FFFFFF"
-  light-recording: "#E0393E"
+  light-recording: "#B32A2F"
+  light-on-recording: "#FFFFFF"
   light-recording-quiet: "#FCEBEB"
   light-recording-track: "#F3D3D4"
   light-recording-text: "#B32A2F"
@@ -50,7 +51,8 @@ colors:
   dark-energy-text: "#F58A5E"
   dark-energy-quiet: "#3A2419"
   dark-on-energy: "#FFFFFF"
-  dark-recording: "#F0555A"
+  dark-recording: "#F59A9D"
+  dark-on-recording: "#202124"
   dark-recording-quiet: "#33191A"
   dark-recording-track: "#52282A"
   dark-recording-text: "#F59A9D"
@@ -216,7 +218,7 @@ The palette combines neutral surfaces with three distinct functional accent fami
 
 ### Secondary
 
-- **Recording red:** `recording`, `recording_quiet`, `recording_track` and `recording_text` distinguish the live recording control, progress and status. They are not another orange selection state.
+- **Recording red:** `recording` is the single foreground red for indicators, progress, status and destructive actions in each theme; `recording_text` aliases it for compatibility. `recording_quiet` and `recording_track` remain subdued fills/tracks. `on_recording` contrasts with a solid red fill. Floating controls resolve the app-selected palette live, including forced Light/Dark overrides. Red is not an orange selection state.
 
 ### Tertiary
 
