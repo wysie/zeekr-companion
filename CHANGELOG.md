@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Match the drawer Quit app label and power icon to the red Settings quit action in both themes.
+
 ## [2.11.55-alpha.1] - 2026-10-20
 
 - Add Companion settings export/import, including camera profiles, vehicle/GPU choices and 360° calibration/window settings, with restore on reopening and rollback protection.

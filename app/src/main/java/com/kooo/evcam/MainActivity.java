@@ -1161,12 +1161,38 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
+    private void tintDrawerItems(Menu menu) {
+        for (int i = 0; i < menu.size(); i++) {
+            MenuItem item = menu.getItem(i);
+            boolean quit = item.getItemId() == R.id.nav_exit;
+            if (item.getIcon() != null) {
+                android.graphics.drawable.Drawable icon = androidx.core.graphics.drawable.DrawableCompat
+                        .wrap(item.getIcon()).mutate();
+                androidx.core.graphics.drawable.DrawableCompat.setTintList(icon, quit
+                        ? android.content.res.ColorStateList.valueOf(ContextCompat.getColor(this, R.color.recording_text))
+                        : ContextCompat.getColorStateList(this, R.color.nav_icon_color_selector));
+                item.setIcon(icon);
+            }
+            if (quit) {
+                android.text.SpannableString title = new android.text.SpannableString(item.getTitle());
+                title.setSpan(new android.text.style.ForegroundColorSpan(
+                        ContextCompat.getColor(this, R.color.recording_text)), 0, title.length(),
+                        android.text.Spanned.SPAN_EXCLUSIVE_EXCLUSIVE);
+                item.setTitle(title);
+            }
+            if (item.hasSubMenu()) tintDrawerItems(item.getSubMenu());
+        }
+    }
+
     /**
      * 设置导航抽屉
      */
     private void setupNavigationDrawer() {
         // Flat neutral drawer; avoid vendor/default Material tint and corner/elevation overrides.
         drawerLayout.setDrawerElevation(0);
+        // Per-item tint keeps Quit red without recoloring ordinary destinations.
+        navigationView.setItemIconTintList(null);
+        tintDrawerItems(navigationView.getMenu());
         navigationView.setBackgroundTintList(null);
         navigationView.setBackgroundColor(ContextCompat.getColor(this, R.color.nav_background));
         drawerLayout.addDrawerListener(new androidx.drawerlayout.widget.DrawerLayout.SimpleDrawerListener() {
