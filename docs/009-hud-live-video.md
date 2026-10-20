@@ -54,24 +54,32 @@ changes address clipping risks in the app; physical projector masking and the
 new right-hand picture still need a vehicle check. Corrected-camera ray fitting
 and the configured field of view remain in use.
 
-### Inner-edge crop
+### Road-edge trim
 
-**Blind spot camera → HUD → Position & size → HUD inner-edge crop** trims 0–60%
+**Blind spot camera → HUD → Position & size → HUD road-edge trim** trims 0–60%
 of the original fitted width. The recognised 009 layout starts at 25%, including
 existing installations without an explicit crop preference. Generic/7X starts at
 0% and stores its choice separately. Existing size, shape and position values
 are retained; zero restores their full picture. Placement reset restores the
 current layout’s crop default, while picture reset leaves it alone.
 
-The actual panel position determines its inner edge, independently of camera
-direction. Left-side panels lose their right edge; right-side panels lose their
-left edge. Fixed-right placement therefore always trims the left edge. Mirrored
-indicator-side placements have equal visible widths and retain their outer edges.
-The original full-width camera is rendered at its existing scale and then clipped;
-there is no squeeze, extra zoom or change to saved aim. Arrows and labels are
-positioned in the narrower visible bounds, with no HUD arrow space reserved for
-the absent touch controls. Native texture consumers, camera sessions and recording
-are retained. The new rectangle applies immediately without restarting cameras.
+The displayed camera picture retains the car-body edge first. With mirroring on,
+Left trims its left/road edge and Right trims its right/road edge; mirroring off
+reverses those picture edges. Custom HUD mirroring is respected when picture
+following is off. The visible panel still shrinks inward from its outer HUD
+placement, but picture offset is independent of that window position. A fixed-right
+panel therefore keeps the same bounds for both cameras while retaining different
+parts of their pictures. No extra zoom/squeeze or saved-aim change is applied.
+
+Direction labels are anchored at the bottom car-body edge inside the final visible
+rectangle: mirrored Left at bottom-right, mirrored Right at bottom-left. Popup,
+Super mirror and settings-preview label placement is unchanged. Labels and the
+centred turn arrow remain separate final-resolution drawing after image cropping,
+GPU scaling, tone and fade. The existing 0–60% preference and independent 009/generic
+defaults are retained, including settings backup/reset compatibility. Diagnostics
+retain the crop percentage/picture offset and now add actual trim edge, lane and
+mirroring. A label missing on the physical HUD is not established to have been
+software-cropped; projector masking/factory-layer overlap still need a car check.
 
 25% is an initial overlap-reduction value, not a measured projector calibration
 or a guarantee against all navigation/speed graphics. The owner still needs to
@@ -133,3 +141,23 @@ coverage checks, vehicle-label independence, settings navigation and settings
 screenshot review). The existing signing certificate is retained. The new
 right-hand layout and physical clipping still require an owner check on the car;
 the supplied photos confirm live video before these changes.
+
+### Body-edge trim verification — 2026-10-20
+
+The camera/mirroring-aware policy supersedes the earlier position-only crop rule.
+The missing physical Left label was not reproduced as software clipping; its HUD
+anchor now moves to the retained car-body edge to keep it inside the remaining
+picture, with the final optical/factory-layer outcome still awaiting a car check.
+
+Validation: 1,528 JVM tests pass, zero lint errors, and debug/instrumentation/signed
+release builds pass. Nineteen native checks pass, including a real 1280×640 public
+Presentation captured through ImageReader with synthetic 1280×5140 EGL input.
+For both side cameras, mirroring on/off and GPU All/Canvas compatibility, 25%/60%
+trims retain the expected pixels at the original scale and keep the same camera
+TextureView/producer. GPU coverage includes Bicubic sharp with 25% sharpening.
+Complete white-label and green-arrow pixels match final-visible-window references;
+48/120/240px badge bounds, smaller Presentation viewports, follow/custom preferences,
+independent 009/generic reset and existing popup freshness/lifecycle also pass.
+Composed mirrored left/right captures were inspected on both renderers. These are
+software bounds checks, not an optical-resolution or physical HUD visibility claim.
+Existing crop values/defaults are retained; no new release is published here.

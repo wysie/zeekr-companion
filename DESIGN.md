@@ -415,3 +415,15 @@ hanging native bullet spans. Existing release-section and version headings use
 18sp SettingsBody medium type. The dialog is capped at 760dp width and 94% of
 the visible activity width. Later and Download and install use the shared 52dp
 actions outside the scrolling notes. No notes are discarded or rewritten.
+
+### HUD body-priority trim, 2026-10-20
+
+HUD road-edge trim retains the car-body edge by camera side and final picture
+mirroring, independent of HUD window location. Mirrored Left trims left and anchors
+its final-resolution label bottom-right; mirrored Right trims right and labels
+bottom-left. Disabling mirroring reverses these picture/label edges. The visible
+window retains its existing centre-facing shrink and outer placement, preserving
+scale and saved layout. The arrow stays centred after image processing. Popup and
+normal mirror labels retain their incumbent positions. The preference key, percent,
+vehicle defaults and follow/custom framing choices are retained. Physical HUD
+visibility remains subject to projector masking and independent factory graphics.

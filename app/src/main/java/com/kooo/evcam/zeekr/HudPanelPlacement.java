@@ -78,17 +78,24 @@ public final class HudPanelPlacement {
         }
     }
 
+    /** Car-body edge in the final mirrored picture; independent of where the HUD panel sits. */
+    public static boolean keepsRightEdge(int lane, boolean mirrored) {
+        if (lane != LaneCycle.LEFT && lane != LaneCycle.RIGHT) throw new IllegalArgumentException("Not a side camera");
+        return (lane == LaneCycle.LEFT) == mirrored;
+    }
+
     /**
-     * Trim the edge nearest the HUD centre, preserving the outer edge and picture scale.
-     * Use the panel's actual position: a fixed-right panel must trim its left edge for
-     * BOTH cameras. Signal-side following naturally produces equal mirrored windows.
+     * Retain the car-body edge of the displayed picture, trimming the road-side edge.
+     * Panel bounds still shrink away from the HUD centre to retain the saved outer
+     * placement, but source offset follows camera side/mirroring, not panel position.
      */
-    public static Crop cropInnerEdge(Rect panel, int hudWidth, int percent) {
+    public static Crop cropRoadEdge(Rect panel, int hudWidth, int percent, int lane, boolean mirrored) {
         int removed = Math.min(Math.max(0, panel.width - MIN_SIZE_PX),
                 Math.round(panel.width * Math.max(0, Math.min(MAX_INNER_CROP_PERCENT, percent)) / 100f));
         boolean onRight = panel.left * 2 + panel.width >= hudWidth;
-        int offset = onRight ? removed : 0;
-        return new Crop(new Rect(panel.left + offset, panel.top, panel.width - removed, panel.height),
-                panel.width, offset);
+        int boundsOffset = onRight ? removed : 0;
+        int pictureOffset = keepsRightEdge(lane, mirrored) ? removed : 0;
+        return new Crop(new Rect(panel.left + boundsOffset, panel.top, panel.width - removed, panel.height),
+                panel.width, pictureOffset);
     }
 }

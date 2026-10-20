@@ -732,7 +732,7 @@ public class SideViewPopupView extends ViewGroup {
             return;
         }
         if (readCameraLabel()) {
-            cameraLabel.drawBottom(canvas, lane, width, height);
+            cameraLabel.drawBottom(canvas, lane, width, height, cameraLabelAtRight());
         }
         sideArrow.draw(canvas, lane, indicatorDisplay, width, height, showControls());
         if (showControls()) drawChild(canvas, controls, getDrawingTime());
@@ -760,6 +760,8 @@ public class SideViewPopupView extends ViewGroup {
     /** Optional HUD-only image treatment; labels and stale covers stay outside it. */
     protected Paint pictureTone() { return null; }
     protected int edgeFadePercent() { return 0; }
+    /** Screen views retain their label position; HUD can anchor at the car-body edge. */
+    protected boolean cameraLabelAtRight() { return false; }
     /** HUD may retain only one side of the full picture; badges use the visible view size. */
     protected int cameraPictureWidth() { return getWidth(); }
     protected int cameraPictureOffsetX() { return 0; }

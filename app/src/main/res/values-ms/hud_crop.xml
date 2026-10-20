@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="set_hud_side_inner_crop_title">Pangkas tepi dalam HUD (%)</string>
-    <string name="set_hud_side_inner_crop_summary">Pangkas tepi berhampiran tengah HUD, kekalkan tepi luar dan skala gambar. Lalai 009 ialah 25%; HUD lain 0%. Grafik kilang yang bergerak masih boleh bertindih.</string>
+    <string name="set_hud_side_inner_crop_title">Pangkas tepi jalan HUD (%)</string>
+    <string name="set_hud_side_inner_crop_summary">Kekalkan tepi badan kereta dan pangkas bahagian jalan mengikut kamera dan pencerminan. Skala gambar tidak berubah. Lalai 009 ialah 25%; HUD lain 0%. Grafik kilang masih boleh bertindih.</string>
 </resources>
