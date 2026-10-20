@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Add Companion settings export/import, including camera profiles, vehicle/GPU choices and 360° calibration/window settings, with restore on reopening and rollback protection.
+
 - Add Lock current recording to floating-button tap, double tap and long press, protecting clips covering ten seconds before and after across all recording sources.
 
 - Add System → GPU image processing with Off, All and Custom choices, preserving existing GPU selections and independent Straighten controls.

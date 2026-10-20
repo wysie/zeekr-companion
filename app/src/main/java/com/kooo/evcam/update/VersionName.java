@@ -90,6 +90,12 @@ public final class VersionName {
                 && (suffix.equals("alpha") || suffix.startsWith("alpha."));
     }
 
+    /** Major version for backup compatibility, using the same strict parser as updates. */
+    public static int major(String version) {
+        Parts parts = parse(version);
+        return parts == null ? -1 : parts.core[0];
+    }
+
     private static boolean beta(String suffix) {
         String lower = suffix.toLowerCase(Locale.US);
         return CHANNEL.matcher(lower).matches() && (lower.equals("beta") || lower.startsWith("beta."));

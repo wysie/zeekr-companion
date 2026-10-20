@@ -279,6 +279,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        com.kooo.evcam.settings.SettingsBackupFlow.showRestoreNotice(this);
         restoreExpandedMain = savedInstanceState != null && savedInstanceState.getBoolean("main_preview_expanded", false);
         restoreMainBirdEye = savedInstanceState != null && savedInstanceState.getBoolean("main_bird_eye", false);
         getOnBackPressedDispatcher().addCallback(this, new androidx.activity.OnBackPressedCallback(true) {

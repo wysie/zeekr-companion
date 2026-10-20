@@ -26,6 +26,7 @@ public class ZeekrShortcutApp extends Application {
     @Override
     public void onCreate() {
         super.onCreate();
+        com.kooo.evcam.settings.SettingsBackup.restoreOnStartup(this);
         com.kooo.evcam.ui.AppRecordingControls.install(this);
         com.kooo.evcam.settings.AppTheme.apply(new AppConfig(this).getThemeMode());
         com.kooo.evcam.settings.DeveloperMode.init(this);

@@ -183,4 +183,12 @@ public class VersionNameTest {
             assertFalse(String.valueOf(value), VersionName.isEligible(value, false, UpdateChannel.ALPHA));
         }
     }
+    @Test public void majorUsesTheValidatedForkVersionParser() {
+        assertTrue(VersionName.major("2.14.0-alpha") == 2);
+        assertTrue(VersionName.major("v10.1") == 10);
+        assertTrue(VersionName.major("3.0.0+abc") == 3);
+        assertTrue(VersionName.major("fork-2.11.44-alpha.1") == 2);
+        for (String value : new String[]{null, "", "nightly", "02.1.0", "99999999999999.0.0"})
+            assertTrue(VersionName.major(value) == -1);
+    }
 }

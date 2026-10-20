@@ -231,3 +231,12 @@ implementation `e8dedd811687f45e9d26221348ed34ed1e59000b` and approved text
 `ccd441a4df5480aaf5d584a5dc060613efdb62f6`, by dts88. Companion retains its
 braking-only automatic-lock budget, atomic list publication, exterior footage
 roles and double-tap dispatcher. Source authorship and co-author credit are retained.
+
+## dts88 settings backup adaptation (2026-10-20)
+
+Adapted [open upstream PR #64](https://github.com/dts88/zeekr-shortcut-car/pull/64),
+commit `35bdfc197c208a983eb4fb5dc1c8ede4813db265`, by dts88. Its typed
+backup/parser, native export/import flow and diagnostics snapshot are retained with
+Companion-specific stores and file identity, strict version parsing, staged startup
+application and durable multi-store rollback/recovery. The original author and
+co-author attribution are retained. This is not an import of the entire upstream tree.
