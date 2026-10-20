@@ -14,6 +14,7 @@ import android.os.HandlerThread;
 import android.os.Looper;
 import android.os.SystemClock;
 import android.view.Surface;
+import android.util.Size;
 
 import com.kooo.evcam.AppLog;
 
@@ -190,6 +191,10 @@ public final class FisheyeGlPipe {
     private FloatBuffer quad;
     private long frames;
     private long startedAtMs;
+    /** Normal strip/video output keeps source detail regardless of TextureView layout size. */
+    private volatile Size normalOutputSize;
+    private volatile int renderedWidth, renderedHeight;
+    private volatile String renderedMode = "not drawn";
     private volatile BirdEyeGlRequest birdEyeRequest;
     private BirdEyeGlRenderer birdEyeRenderer;
     private final CameraFrameFreshness sourceFreshness = new CameraFrameFreshness();
@@ -248,6 +253,7 @@ public final class FisheyeGlPipe {
         this.output = output;
         this.inputWidth = inputWidth;
         this.inputHeight = inputHeight;
+        this.normalOutputSize = new Size(inputWidth, inputHeight);
         int count = Math.min(MAX_LANES, lanes == null ? 0 : lanes.length / 4);
         this.laneCount = count;
         this.lanes = Arrays.copyOf(lanes == null ? new float[0] : lanes, MAX_LANES * 4);
@@ -369,14 +375,26 @@ public final class FisheyeGlPipe {
 
     /** 输出多大（像素）。视频知道自己的尺寸之后按它来，放大一格时才不糊。 */
     public void setOutputSize(int width, int height) {
-        if (width <= 0 || height <= 0 || released) {
-            return;
-        }
+        if (width <= 0 || height <= 0 || released) return;
+        normalOutputSize = new Size(width, height);
         handler.post(() -> {
             if (!released && !output.isReleased()) {
-                output.setDefaultBufferSize(width, height);
+                if (frames == 0) restoreNormalOutputSize();
+                drawLatest();
             }
         });
+    }
+
+    private void restoreNormalOutputSize() {
+        Size target = normalOutputSize;
+        output.setDefaultBufferSize(target.getWidth(), target.getHeight());
+    }
+
+    /** Last actual EGL render extent, separate from input and pane/layout dimensions. */
+    public String describeOutput() {
+        Size target = normalOutputSize;
+        return "input=" + inputWidth + "x" + inputHeight + " normal=" + target
+                + " rendered=" + renderedWidth + "x" + renderedHeight + " mode=" + renderedMode;
     }
 
     /** 收掉。任何线程都能调；在别的线程上调会等它收完（最多 1 秒），免得新管线接不上同一块输出。 */
@@ -435,6 +453,7 @@ public final class FisheyeGlPipe {
             throw new IllegalStateException("eglCreateContext failed 0x"
                     + Integer.toHexString(EGL14.eglGetError()));
         }
+        restoreNormalOutputSize();
         // 屏幕上那一块已经被别的生产者接着的话，这一步会失败 —— 那就照旧直连
         surface = EGL14.eglCreateWindowSurface(display, configs[0], output,
                 new int[]{EGL14.EGL_NONE}, 0);
@@ -516,7 +535,7 @@ public final class FisheyeGlPipe {
         BirdEyeGlRequest request = birdEyeRequest;
         if (birdEyeRenderer != null && (request != birdEyeRenderer.request || request.cancelled || request.failure != null)) {
             birdEyeRenderer.release(); birdEyeRenderer = null;
-            output.setDefaultBufferSize(inputWidth, inputHeight);
+            restoreNormalOutputSize();
         }
         if (request != null && !request.cancelled && request.failure == null && birdEyeRenderer == null && request.map != null) {
             try {
@@ -531,15 +550,21 @@ public final class FisheyeGlPipe {
                 && !request.cancelled && request.failure == null;
         SideGlRequest side = sideRequest;
         boolean projectedSide = !bird && side != null && !side.frames.cancelled && side.frames.failure == null;
-        if (!projectedSide && sideWasProjected) { output.setDefaultBufferSize(inputWidth,inputHeight);sideWasProjected=false; }
+        if (!projectedSide && sideWasProjected) { restoreNormalOutputSize();sideWasProjected=false; }
         long now = SystemClock.elapsedRealtime();
         // Latest-frame rendering only; never queue a history of camera frames. 30 fps ceiling.
         if (bird && now - lastBirdEyeAt < 33) return;
         long began = now;
         if (bird) output.setDefaultBufferSize(birdEyeRenderer.width, birdEyeRenderer.height);
         if (projectedSide) output.setDefaultBufferSize(side.width,side.height);
+        // TextureView can overwrite the default with its pane dimensions after any relayout.
+        // Four lanes still occupy one tall strip: rendering at pane height loses source detail
+        // before the parent splits it. Reassert the current route's contract on every draw.
+        if (!bird && !projectedSide) restoreNormalOutputSize();
         EGL14.eglQuerySurface(display, surface, EGL14.EGL_WIDTH, size, 0);
         EGL14.eglQuerySurface(display, surface, EGL14.EGL_HEIGHT, size, 1);
+        renderedWidth = size[0]; renderedHeight = size[1];
+        renderedMode = bird ? "360" : projectedSide ? "side" : "strip/video";
         GLES20.glViewport(0, 0, size[0], size[1]);
 
         if (bird) {
@@ -547,14 +572,14 @@ public final class FisheyeGlPipe {
             catch (RuntimeException | OutOfMemoryError error) {
                 request.failure = error.toString(); request.frame = null;
                 birdEyeRenderer.release(); birdEyeRenderer = null;
-                output.setDefaultBufferSize(inputWidth, inputHeight);
+                restoreNormalOutputSize();
                 AppLog.w(TAG, name + " 360 GPU draw failed; falling back to CPU: " + error);
                 return;
             }
         } else if (projectedSide) {
             try { if(sideRenderer==null)sideRenderer=new SideGpuRenderer();sideRenderer.draw(side.picture,texture,texMatrix,quad); }
             catch(RuntimeException | OutOfMemoryError error){side.frames.failure=error.toString();side.frames.frame=null;
-                output.setDefaultBufferSize(inputWidth,inputHeight);AppLog.w(TAG,name+" side GPU failed: "+error);return;}
+                restoreNormalOutputSize();AppLog.w(TAG,name+" side GPU failed: "+error);return;}
         } else {
             Correction c = correction;
             GLES20.glUseProgram(program);

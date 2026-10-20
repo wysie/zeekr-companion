@@ -819,14 +819,18 @@ public class MainActivity extends AppCompatActivity {
         if(target!=null&&target.getParent() instanceof com.kooo.evcam.zeekr.LivePreview)
             ((com.kooo.evcam.zeekr.LivePreview)target.getParent()).setSourceKey(cameraKey);
         return new TextureView.SurfaceTextureListener() {
+            private boolean restoreBufferOnFrame = true;
             @Override
             public void onSurfaceTextureAvailable(@NonNull android.graphics.SurfaceTexture surface, int width, int height) {
+                restoreBufferOnFrame = true;
                 resetPreviewFrames(cameraKey);
                 onPreviewCanvasReady(cameraKey);
             }
 
             @Override
             public void onSurfaceTextureSizeChanged(@NonNull android.graphics.SurfaceTexture surface, int width, int height) {
+                restoreBufferOnFrame = true;
+                restorePreviewBuffer(cameraKey, surface);
                 AppLog.d(TAG, "TextureView " + cameraKey + " size changed: " + width + "x" + height);
             }
 
@@ -851,6 +855,10 @@ public class MainActivity extends AppCompatActivity {
 
             @Override
             public void onSurfaceTextureUpdated(@NonNull android.graphics.SurfaceTexture surface) {
+                if (restoreBufferOnFrame) {
+                    restoreBufferOnFrame = false;
+                    restorePreviewBuffer(cameraKey, surface);
+                }
                 // 这个回调每来一帧就响一次 —— 这就是「不录制时相机的出帧率」，
                 // 也就是这条视频流本身的上限。录制时的帧率再低，也不会比它高。
                 com.kooo.evcam.camera.PreviewFrameRates.onFrame(cameraKey);
@@ -859,6 +867,12 @@ public class MainActivity extends AppCompatActivity {
                     ((com.kooo.evcam.zeekr.LivePreview) canvas.getParent()).noteFrame(surface);
             }
         };
+    }
+
+    private void restorePreviewBuffer(String key, android.graphics.SurfaceTexture texture) {
+        if (cameraManager == null) return;
+        com.kooo.evcam.camera.SingleCamera camera = cameraManager.getCamera(key);
+        if (camera != null) camera.restorePreviewBufferSize(texture);
     }
 
     private void resetPreviewFrames(String key) {

@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Preserve native surround-preview detail after pane resizes and retained-view reattachment without requiring Apply changes, while keeping projected 360°/side dimensions and recording surfaces unchanged.
+
 ## [2.11.58-alpha.1] - 2026-10-20
 
 - Add a movable, resizable HUD calibration square with fine/coarse positioning, colour choices and durable manual edge observations included in Diagnostics; retain saved camera framing and recording intent.

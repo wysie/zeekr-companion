@@ -508,6 +508,7 @@ public class FourLaneContainer extends ViewGroup implements LivePreview {
                 + " shown=" + isShown()
                 + " size=" + getWidth() + "x" + getHeight()
                 + " source=" + sourceWidth + "x" + sourceHeight
+                + " output={" + PreviewDewarp.describeOutput(textureView) + "}"
                 + " compositeCamera=" + StreamLayoutTable.compositeCameraId()
                 + " plan=" + (current == null ? "none"
                         : current.isComposite() ? "split into " + current.laneCount() : "not split")

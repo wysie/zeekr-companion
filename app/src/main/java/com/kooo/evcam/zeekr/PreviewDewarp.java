@@ -70,6 +70,10 @@ public final class PreviewDewarp {
     }
     /** Projected GL outputs have window-sized buffers; their input retains the native camera size. */
     public static boolean ownsOutput(SurfaceTexture output) { return rawPipeFor(output)!=null; }
+    public static String describeOutput(TextureView view) {
+        FisheyeGlPipe current = rawPipeFor(view);
+        return current == null ? "direct" : current.describeOutput();
+    }
     /** Same optional route for the existing lowest-priority popup output; no extra camera output. */
     public static Surface birdEyeSurfaceFor(Context context, SurfaceTexture texture, Size buffer) {
         return birdEyeSurfaceFor(context, texture, buffer, com.kooo.evcam.camera.CameraSessionOptions.read(context));
