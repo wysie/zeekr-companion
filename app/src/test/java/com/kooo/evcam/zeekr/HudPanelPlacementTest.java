@@ -102,8 +102,8 @@ public class HudPanelPlacementTest {
 
     @Test public void innerCropKeepsEqualSignalWindowsAndTheirOuterEdges() {
         HudPanelPlacement.Rect left = defaults(false), right = defaults(true);
-        HudPanelPlacement.Crop l = HudPanelPlacement.cropInnerEdge(left, 1440, 25);
-        HudPanelPlacement.Crop r = HudPanelPlacement.cropInnerEdge(right, 1440, 25);
+        HudPanelPlacement.Crop l = HudPanelPlacement.cropRoadEdge(left, 1440, 25, LaneCycle.LEFT, false);
+        HudPanelPlacement.Crop r = HudPanelPlacement.cropRoadEdge(right, 1440, 25, LaneCycle.RIGHT, false);
         assertEquals(l.bounds.width, r.bounds.width);
         assertEquals(left.height, l.bounds.height);
         assertEquals(right.height, r.bounds.height);
@@ -115,19 +115,27 @@ public class HudPanelPlacementTest {
         assertEquals(right.width, r.pictureWidth);
     }
 
-    @Test public void fixedRightTrimsLeftRegardlessOfCameraDirection() {
-        HudPanelPlacement.Rect full = HudPanelPlacement.compute(1280,640,50,100,94,50);
-        HudPanelPlacement.Crop c = HudPanelPlacement.cropInnerEdge(full,1280,25);
-        assertEquals(240,c.bounds.width); assertEquals(320,c.bounds.height);
-        assertEquals(80,c.pictureOffsetX); assertEquals(320,c.pictureWidth);
-        assertEquals(full.left+80,c.bounds.left); assertEquals(full.top,c.bounds.top);
+    @Test public void fixedPlacementPreservesBodyEdgeByCameraAndMirroring() {
+        for(int position:new int[]{6,50,94}) {
+            HudPanelPlacement.Rect full=HudPanelPlacement.compute(1280,640,50,100,position,50);
+            for(int lane:new int[]{LaneCycle.LEFT,LaneCycle.RIGHT})for(boolean mirrored:new boolean[]{false,true}) {
+                HudPanelPlacement.Crop c=HudPanelPlacement.cropRoadEdge(full,1280,25,lane,mirrored);
+                assertEquals(240,c.bounds.width);assertEquals(320,c.bounds.height);assertEquals(320,c.pictureWidth);
+                // Mirrored left loses left road edge; mirrored right loses right road edge.
+                // Turning mirroring off reverses picture edges, without changing window bounds.
+                int expectedOffset=(lane==LaneCycle.LEFT)==mirrored?80:0;
+                assertEquals(expectedOffset,c.pictureOffsetX);
+                assertEquals(full.left+(full.left*2+full.width>=1280?80:0),c.bounds.left);
+                assertEquals(full.top,c.bounds.top);
+            }
+        }
     }
 
     @Test public void disabledCropRestoresFullPictureAndExtremeValuesStayUsable() {
         for (int[] viewport : new int[][]{{1280,640},{640,360},{40,30}}) {
             HudPanelPlacement.Rect full=HudPanelPlacement.compute(viewport[0],viewport[1],100,300,100,100);
-            for(int percent:new int[]{-10,0,25,60,1000}) {
-                HudPanelPlacement.Crop c=HudPanelPlacement.cropInnerEdge(full,viewport[0],percent);
+            for(int percent:new int[]{-10,0,25,60,1000}) for(int lane:new int[]{LaneCycle.LEFT,LaneCycle.RIGHT}) for(boolean mirrored:new boolean[]{false,true}) {
+                HudPanelPlacement.Crop c=HudPanelPlacement.cropRoadEdge(full,viewport[0],percent,lane,mirrored);
                 assertTrue(c.bounds.width>=Math.min(HudPanelPlacement.MIN_SIZE_PX,full.width));
                 assertTrue(c.bounds.left>=0&&c.bounds.left+c.bounds.width<=viewport[0]);
                 assertEquals(full.height,c.bounds.height);

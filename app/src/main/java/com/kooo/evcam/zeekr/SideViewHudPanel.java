@@ -56,6 +56,7 @@ public class SideViewHudPanel extends SideViewPopupView {
 
     @Override protected int cameraPictureWidth() { return uncroppedPictureWidth > 0 ? uncroppedPictureWidth : getWidth(); }
     @Override protected int cameraPictureOffsetX() { return pictureOffsetX; }
+    @Override protected boolean cameraLabelAtRight() { return HudPanelPlacement.keepsRightEdge(lane, readMirrored()); }
 
     public SideViewHudPanel(Context context, AppConfig appConfig, Display display) {
         super(context, appConfig, false); // Projected HUD keeps its dark-backed, light foreground badges.
@@ -284,7 +285,7 @@ public class SideViewHudPanel extends SideViewPopupView {
                 appConfig.getHudSideSizePercent(), appConfig.getHudSideShapePercent(),
                 appConfig.getHudSideLeftPercent(), appConfig.getHudSideVerticalPercent(),
                 appConfig.isHudSideFollowSignal() && lane == LaneCycle.RIGHT);
-        HudPanelPlacement.Crop crop = HudPanelPlacement.cropInnerEdge(full, width, appConfig.getHudSideInnerCropPercent());
+        HudPanelPlacement.Crop crop = HudPanelPlacement.cropRoadEdge(full, width, appConfig.getHudSideInnerCropPercent(), lane, readMirrored());
         HudPanelPlacement.Rect rect = crop.bounds;
         boolean pictureChanged = uncroppedPictureWidth != crop.pictureWidth || pictureOffsetX != crop.pictureOffsetX;
         uncroppedPictureWidth = crop.pictureWidth;
@@ -301,7 +302,8 @@ public class SideViewHudPanel extends SideViewPopupView {
         lastLayout = "viewport=" + width + "x" + height + " panel=" + rect.left + "," + rect.top
                 + " " + rect.width + "x" + rect.height + " layout=" + (appConfig.is009HudLayout() ? "009" : "standard")
                 + " innerCrop=" + appConfig.getHudSideInnerCropPercent() + "% picture=" + uncroppedPictureWidth
-                + " offsetX=" + pictureOffsetX;
+                + " offsetX=" + pictureOffsetX + " trimEdge=" + (cameraLabelAtRight() ? "left" : "right")
+                + " lane=" + lane + " mirrored=" + readMirrored();
     }
 
     @Override

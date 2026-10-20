@@ -33,14 +33,18 @@ final class CameraLabel {
     }
 
     void draw(Canvas canvas, int lane, int width, int height) {
-        draw(canvas, lane, width, height, false);
+        draw(canvas, lane, width, height, false, false);
     }
 
     void drawBottom(Canvas canvas, int lane, int width, int height) {
-        draw(canvas, lane, width, height, true);
+        draw(canvas, lane, width, height, true, false);
     }
 
-    private void draw(Canvas canvas, int lane, int width, int height, boolean bottom) {
+    void drawBottom(Canvas canvas, int lane, int width, int height, boolean atRight) {
+        draw(canvas, lane, width, height, true, atRight);
+    }
+
+    private void draw(Canvas canvas, int lane, int width, int height, boolean bottom, boolean atRight) {
         if (lane < 0 || lane >= names.length || width <= 0 || height <= 0) {
             return;
         }
@@ -70,8 +74,9 @@ final class CameraLabel {
         float badgeWidth = text.measureText(names[lane]) + 2f * paddingX;
         float badgeHeight = text.descent() - top + 2f * paddingY;
         float y = bottom ? Math.max(margin, height - margin - badgeHeight) : margin;
-        canvas.drawRoundRect(margin, y, margin + badgeWidth, y + badgeHeight,
+        float x = atRight ? Math.max(margin, width - margin - badgeWidth) : margin;
+        canvas.drawRoundRect(x, y, x + badgeWidth, y + badgeHeight,
                 paddingY, paddingY, background);
-        canvas.drawText(names[lane], margin + paddingX, y + paddingY - top, text);
+        canvas.drawText(names[lane], x + paddingX, y + paddingY - top, text);
     }
 }

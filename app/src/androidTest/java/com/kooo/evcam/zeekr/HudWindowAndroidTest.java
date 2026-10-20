@@ -113,8 +113,9 @@ public class HudWindowAndroidTest {
                 assertEquals(480,panel.getWidth()); assertEquals(213,panel.getHeight());
                 assertEquals(160,panel.getLeft()); assertEquals(640,panel.getRight());
                 assertEquals("Trim pixels, never squeeze the camera",640,panel.getTextureView().getWidth());
-                assertEquals(160,panel.cameraPictureOffsetX());
-                assertTrue(SideViewHudPanel.lastState().contains("innerCrop=25% picture=640 offsetX=160"));
+                int offset=HudPanelPlacement.keepsRightEdge(LaneCycle.RIGHT,config.isHudSideMirrored())?160:0;
+                assertEquals(offset,panel.cameraPictureOffsetX());
+                assertTrue(SideViewHudPanel.lastState().contains("innerCrop=25% picture=640 offsetX="+offset));
                 assertEquals(0f, ((WindowManager.LayoutParams) ref.get().getRootView().getLayoutParams()).alpha, 0f);
                 ref.get().detach(); assertFalse(ref.get().isAttached());
             });

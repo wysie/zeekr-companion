@@ -59,7 +59,7 @@ public class SidePopupStartupAndroidTest {
         boolean gpuRoute;
         java.util.Map<String,?> gpuBefore;
         void enableGpu(){
-            gpuBefore=InstrumentationRegistry.getInstrumentation().getTargetContext().getSharedPreferences("app_config",0).getAll();
+            if (gpuBefore == null) gpuBefore=InstrumentationRegistry.getInstrumentation().getTargetContext().getSharedPreferences("app_config",0).getAll();
             config.setGpuRenderingMode("custom");config.setGpuFeature("side",true);gpuRoute=true;
         }
         EGLDisplay eglDisplay;
@@ -67,12 +67,18 @@ public class SidePopupStartupAndroidTest {
         EGLSurface eglSurface;
         final int sourceWidth, sourceHeight;
         int retainedPictureWidth, retainedOffsetX;
+        android.hardware.display.VirtualDisplay hudDisplay;
+        android.media.ImageReader hudImages;
+        android.os.HandlerThread hudConsumer;
+        final AtomicReference<android.media.Image> hudImage = new AtomicReference<>();
 
         Fixture() throws Exception {
             this(256, 1024);
         }
 
-        Fixture(int sourceWidth, int sourceHeight) throws Exception {
+        Fixture(int sourceWidth, int sourceHeight) throws Exception { this(sourceWidth, sourceHeight, false); }
+
+        Fixture(int sourceWidth, int sourceHeight, boolean hud) throws Exception {
             this.sourceWidth = sourceWidth;
             this.sourceHeight = sourceHeight;
             Context target = InstrumentationRegistry.getInstrumentation().getTargetContext();
@@ -84,11 +90,36 @@ public class SidePopupStartupAndroidTest {
             Context context = new ContextThemeWrapper(target, R.style.Theme_Cam);
             config = new AppConfig(context);
             oldStraighten = config.isSidePopupStraighten();
+            if (hud) {
+                gpuBefore = target.getSharedPreferences("app_config", 0).getAll();
+                config.selectHudLayout(true); config.setHudSideSizePercent(50); config.setHudSideShapePercent(100);
+                config.setHudSideLeftPercent(94); config.setHudSideVerticalPercent(50);
+                config.setHudSideInnerCropPercent(25); config.setHudSideFollowSignal(false);
+                config.setHudSideContrastPercent(100); config.setHudSideFadePercent(0);
+                config.setHudSideOpacityPercent(100); config.setHudFollowingPopupPicture(true);
+                config.setRearViewCameraLabelEnabled(true);
+                hudImages = android.media.ImageReader.newInstance(1280, 640, android.graphics.PixelFormat.RGBA_8888, 3);
+                hudConsumer = new android.os.HandlerThread("hud-gpu-badges"); hudConsumer.start();
+                hudImages.setOnImageAvailableListener(reader -> {
+                    android.media.Image next = reader.acquireLatestImage();
+                    if (next != null) {
+                        android.media.Image previous = hudImage.getAndSet(next); if (previous != null) previous.close();
+                    }
+                }, new android.os.Handler(hudConsumer.getLooper()));
+                android.hardware.display.DisplayManager displays = (android.hardware.display.DisplayManager)
+                        target.getSystemService(Context.DISPLAY_SERVICE);
+                hudDisplay = displays.createVirtualDisplay("Disposable GPU HUD", 1280, 640, 160,
+                        hudImages.getSurface(), android.hardware.display.DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC
+                        | android.hardware.display.DisplayManager.VIRTUAL_DISPLAY_FLAG_PRESENTATION
+                        | android.hardware.display.DisplayManager.VIRTUAL_DISPLAY_FLAG_OWN_CONTENT_ONLY);
+                assertNotNull(hudDisplay);
+            }
             config.setSidePopupStraighten(false);
             StreamLayoutTable.setCompositeCameraId("synthetic-test");
             AtomicReference<SideViewPopupView> created = new AtomicReference<>();
             main(() -> {
-                SideViewPopupView popup = new SideViewPopupView(context, config) {
+                SideViewPopupView popup = hud ? new SideViewHudPanel(context, config, hudDisplay.getDisplay())
+                        : new SideViewPopupView(context, config) {
                     @Override protected int cameraPictureWidth() {
                         return retainedPictureWidth > 0 ? retainedPictureWidth : getWidth();
                     }
@@ -112,7 +143,8 @@ public class SidePopupStartupAndroidTest {
                         if (timestamp > 0 && timestamp != lastTimestamp) {
                             lastTimestamp = timestamp;
                             frames++;
-                            float alpha = ((WindowManager.LayoutParams) popup.getLayoutParams()).alpha;
+                            float alpha = hud ? 1f : ((WindowManager.LayoutParams) popup.getLayoutParams()).alpha;
+                            if (hud) ((SideViewHudPanel) popup).setCover(SideViewHudPanel.COVER_NONE);
                             if (frames == 1) firstFrameAlpha.set(alpha);
                             if (frames == 2) secondFrameAlpha.set(alpha);
                         }
@@ -194,6 +226,26 @@ public class SidePopupStartupAndroidTest {
             assertTrue(EGL14.eglSwapBuffers(eglDisplay,eglSurface));
         }
 
+        Bitmap hudSnapshot() {
+            await("HUD display composed an image", () -> hudImage.get() != null);
+            try (android.media.Image image = hudImage.getAndSet(null)) {
+                assertNotNull(image);
+                android.media.Image.Plane plane = image.getPlanes()[0];
+                java.nio.ByteBuffer buffer = plane.getBuffer();
+                Bitmap result = Bitmap.createBitmap(image.getWidth(), image.getHeight(), Bitmap.Config.ARGB_8888);
+                int[] row = new int[image.getWidth()];
+                for (int y = 0; y < image.getHeight(); y++) {
+                    for (int x = 0; x < row.length; x++) {
+                        int at = y * plane.getRowStride() + x * plane.getPixelStride();
+                        row[x] = Color.argb(buffer.get(at + 3) & 255, buffer.get(at) & 255,
+                                buffer.get(at + 1) & 255, buffer.get(at + 2) & 255);
+                    }
+                    result.setPixels(row, 0, row.length, 0, y, row.length, 1);
+                }
+                return result;
+            }
+        }
+
         @Override public void close() {
             if (producer != null) {
                 EGL14.eglMakeCurrent(eglDisplay, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_SURFACE, EGL14.EGL_NO_CONTEXT);
@@ -205,6 +257,15 @@ public class SidePopupStartupAndroidTest {
             }
             FisheyeGlPipe pipe=PreviewDewarp.rawPipeFor(view.getTextureView());if(pipe!=null)pipe.release();
             main(view::detach);
+            if (hudDisplay != null) hudDisplay.release();
+            if (hudImages != null) hudImages.setOnImageAvailableListener(null, null);
+            if (hudConsumer != null) {
+                hudConsumer.quitSafely();
+                try { hudConsumer.join(1000); } catch (InterruptedException e) { Thread.currentThread().interrupt(); }
+            }
+            if (hudImages != null) {
+                android.media.Image last = hudImage.getAndSet(null); if (last != null) last.close(); hudImages.close();
+            }
             config.setSidePopupStraighten(oldStraighten);
             if(gpuBefore!=null){
                 android.content.SharedPreferences.Editor edit=InstrumentationRegistry.getInstrumentation().getTargetContext().getSharedPreferences("app_config",0).edit().clear();
@@ -216,6 +277,67 @@ public class SidePopupStartupAndroidTest {
                 }edit.commit();
             }
             StreamLayoutTable.setCompositeCameraId(oldComposite);
+        }
+    }
+
+    @Test public void hudBodyEdgeAndBadgesSurviveCropOnBothRenderers() throws Exception {
+        for(boolean gpu:new boolean[]{false,true}) try(Fixture f=new Fixture(1280,5140,true)) {
+            if(gpu){f.enableGpu();f.config.setGpuRenderingMode("all");}else f.config.setGpuRenderingMode("off");
+            f.config.setSidePopupStraighten(true);f.config.setSidePopupFov(90);f.config.setSidePopupYaw(40);f.config.setSidePopupPitch(15);
+            f.config.setSidePopupRotation(LaneCycle.LEFT,30);f.config.setSidePopupRotation(LaneCycle.RIGHT,-30);
+            f.config.setSideUpscaling("bicubic_sharp");f.config.setSideSharpening(25);
+            for(boolean mirrored:new boolean[]{false,true}) for(int lane:new int[]{LaneCycle.LEFT,LaneCycle.RIGHT}) {
+                f.config.setSidePopupMirrored(mirrored);f.config.setHudSideInnerCropPercent(0);
+                main(()->{f.view.applyConfig();f.view.show(lane);f.view.setIndicatorDisplay(null);});
+                for(int n=0;n<16;n++){f.verticalBars();SystemClock.sleep(40);}
+                SurfaceTexture input=f.view.getTextureView().getSurfaceTexture();
+                int[] full=new int[4];main(()->{full[0]=f.view.getLeft();full[1]=f.view.getTop();full[2]=f.view.getWidth();full[3]=f.view.getHeight();});
+                Bitmap before=f.hudSnapshot();
+                try {
+                    for(int crop:new int[]{25,60}) {
+                        f.config.setHudSideInnerCropPercent(crop);main(f.view::applyConfig);
+                        for(int n=0;n<12;n++){f.verticalBars();SystemClock.sleep(40);}
+                        int[] area=new int[4];
+                        main(()->{area[0]=f.view.getLeft();area[1]=f.view.getTop();area[2]=f.view.getWidth();area[3]=f.view.getHeight();
+                            assertEquals(full[2],f.view.getTextureView().getWidth());assertSame(input,f.view.getTextureView().getSurfaceTexture());
+                            assertEquals(gpu?"GPU":"compatibility",f.view.gpuState());
+                            assertEquals(HudPanelPlacement.keepsRightEdge(lane,mirrored)?full[2]-area[2]:0,f.view.cameraPictureOffsetX());});
+                        int offset=(lane==LaneCycle.LEFT)==mirrored?full[2]-area[2]:0;
+                        Bitmap cropped=f.hudSnapshot();
+                        try {
+                            int checked=0,matched=0;
+                            for(int y=90;y<area[3]-70;y+=3)for(int x=8;x<area[2]-8;x+=3) {
+                                int expected=Color.red(before.getPixel(full[0]+offset+x,full[1]+y));
+                                int actual=Color.red(cropped.getPixel(area[0]+x,area[1]+y));
+                                checked++;if(Math.abs(expected-actual)<20)matched++;
+                            }
+                            assertTrue("Retain body-side pixels at original scale: gpu="+gpu+" lane="+lane+" mirror="+mirrored
+                                    +" crop="+crop+" matched="+matched+"/"+checked,checked>100&&matched>checked*.9);
+                        }finally{cropped.recycle();}
+                        for(int n=0;n<12;n++){f.frame(0xff203050);SystemClock.sleep(40);}
+                        Bitmap actual=f.hudSnapshot(),expected=Bitmap.createBitmap(area[2],area[3],Bitmap.Config.ARGB_8888);
+                        try {
+                            android.graphics.Canvas canvas=new android.graphics.Canvas(expected);
+                            new CameraLabel(f.view.getContext(),false).drawBottom(canvas,lane,area[2],area[3],(lane==LaneCycle.LEFT)==mirrored);
+                            new SideTurnArrow(f.view.getContext(),false).draw(canvas,lane,null,area[2],area[3],false);
+                            int white=0,whiteMatched=0,green=0,greenMatched=0;
+                            for(int y=0;y<area[3];y++)for(int x=0;x<area[2];x++) {
+                                int e=expected.getPixel(x,y),a=actual.getPixel(area[0]+x,area[1]+y);
+                                if(Color.alpha(e)>240&&Color.red(e)>210&&Color.green(e)>210&&Color.blue(e)>210) {
+                                    white++;if(Color.red(a)>190&&Color.green(a)>190&&Color.blue(a)>190)whiteMatched++;
+                                }
+                                if(Color.green(e)>Color.red(e)+60&&Color.green(e)>Color.blue(e)+60) {
+                                    green++;if(Color.green(a)>Color.red(a)+40&&Color.green(a)>Color.blue(a)+40)greenMatched++;
+                                }
+                            }
+                            assertTrue("Complete direction text, lane="+lane+" mirror="+mirrored+" crop="+crop,white>20&&whiteMatched>white*.95);
+                            assertTrue("Complete turn arrow",green>20&&greenMatched>green*.95);
+                            if(mirrored&&crop==25)try(java.io.FileOutputStream out=new java.io.FileOutputStream(new java.io.File(
+                                    f.view.getContext().getExternalFilesDir(null),"hud-body-trim-"+gpu+"-"+lane+".png"))){actual.compress(Bitmap.CompressFormat.PNG,100,out);}
+                        }finally{actual.recycle();expected.recycle();}
+                    }
+                }finally{before.recycle();}
+            }
         }
     }
 
