@@ -530,6 +530,9 @@
     <string name="upd_found_msg">%1$s%2$s\n\n当前版本 %3$s\n\n下载完成后将打开系统安装界面。</string>
     <string name="upd_found_msg_notes">%1$s%2$s\n\n当前版本 %3$s\n\n更新内容（来自 GitHub 发布页）：\n\n%4$s\n\n下载完成后将打开系统安装界面。</string>
     <string name="upd_download">下载并安装</string>
+    <string name="upd_offer_current">已安装 %1$s</string>
+    <string name="upd_offer_size">下载大小约 %1$s MB</string>
+    <string name="upd_offer_no_notes">下载完成后将打开系统安装界面。</string>
     <string name="upd_later">稍后</string>
     <string name="upd_guide_start">知道了，开始下载</string>
     <string name="upd_guide_image">安装提示：下载完成后将打开系统安装界面。安装完成后请点击左上角「返回」，不要点击中间的「打开」。</string>
