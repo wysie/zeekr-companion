@@ -402,3 +402,14 @@ A short non-interactive note names coverage and local-only state. Export reports
 path in a persistent dialog. Import lists backups, then uses the shared destructive
 confirmation to explain replacement, recording stop and exit/reopen. Cancel preserves
 all choices. The last restore result stays on the page after reopening.
+
+### Update offer readability
+
+The available-update dialog uses the existing neutral Material surface and title,
+a SettingsTitle version label and SettingsCaption metadata. Notes are a separate
+scroll region capped at 42% of the visible activity height and 360dp, with 16sp
+regular SettingsCaption text, 4dp extra line spacing, 12dp between changes and
+hanging native bullet spans. Existing release-section and version headings use
+18sp SettingsBody medium type. The dialog is capped at 760dp width and 94% of
+the visible activity width. Later and Download and install use the shared 52dp
+actions outside the scrolling notes. No notes are discarded or rewritten.

@@ -9,6 +9,7 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Separate update version details from scrollable, spaced release notes with smaller body text and fixed installation actions.
 - Match the drawer Quit app label and power icon to the red Settings quit action in both themes.
 
 ## [2.11.55-alpha.1] - 2026-10-20

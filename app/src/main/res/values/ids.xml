@@ -1,4 +1,5 @@
 <resources>
+    <item name="update_offer_notes" type="id" />
     <item name="side_settings_tabs" type="id" />
     <item name="side_settings_body" type="id" />
     <item name="side_settings_preferences" type="id" />
