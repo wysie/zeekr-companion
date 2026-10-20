@@ -998,6 +998,6 @@
     <string name="record_preview_layout">Preview layout</string>
     <string name="record_preview_surround_roads">Surround + Front + Rear</string>
     <string name="record_preview_current">Preview layout: %1$s</string>
-    
+
     <string name="record_preview_selected">Selected recording sources</string>
 </resources>
