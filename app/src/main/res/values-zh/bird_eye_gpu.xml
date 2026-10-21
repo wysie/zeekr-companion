@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="bird_eye_renderer">360° 渲染方式</string>
-    <string name="bird_eye_renderer_gpu">GPU（实验性）</string>
-    <string name="bird_eye_renderer_cpu">CPU 兼容模式</string>
-    <string name="bird_eye_renderer_note">GPU 直接处理相机帧，失败时回退至 CPU。更改后请点击「应用更改」。</string>
-</resources>

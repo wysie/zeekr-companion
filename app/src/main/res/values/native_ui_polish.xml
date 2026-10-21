@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="zh">
     <string name="gallery_item_locked">已锁定</string>
     <string name="gallery_item_not_selected">未选中</string>
     <string name="player_empty_recordings">未找到录像</string>

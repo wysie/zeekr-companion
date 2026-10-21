@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Complete Malay About/help, standardize Simplified Chinese and Malay terminology, localize update notes by app language and validate coverage/format arguments across every resource file.
+
 - Stop hidden/docked GPU camera outputs from rendering while retaining their live input and session.
 - Remove recording callback waits, use acquired-frame timestamps and count only successful submissions.
 - Keep camera capability queries off the settings UI thread and cancel pending Apply cleanly when quitting.

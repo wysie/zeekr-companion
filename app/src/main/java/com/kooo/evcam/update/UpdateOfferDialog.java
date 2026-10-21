@@ -74,7 +74,7 @@ final class UpdateOfferDialog {
             String value = paragraph.trim();
             if (value.isEmpty()) continue;
             boolean bullet = value.startsWith("• ");
-            boolean heading = value.equalsIgnoreCase("What changed")
+            boolean heading = value.equals(activity.getString(R.string.upd_notes_heading))
                     || (value.startsWith("[") && value.endsWith("]"));
             TextView item = text(activity, bullet ? value.substring(2) : value,
                     heading ? R.style.TextAppearance_Cam_SettingsBody

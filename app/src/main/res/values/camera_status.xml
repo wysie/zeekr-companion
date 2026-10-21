@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="zh">
     <string name="camera_status_title">摄像头状态</string>
     <string name="camera_status_diagnostics">保存诊断…</string>
     <string name="camera_status_summary">查看哪些来源正在录制，哪些摄像头仍在等待。</string>

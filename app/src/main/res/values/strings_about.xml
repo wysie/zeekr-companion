@@ -1,29 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  关于页的文字：只有中文和英文两份。中文界面用中文（values-zh），其他界面一律用英文（这一份，values 默认）。
-  和只做了中英两套的图片同一条规则（drawable-zh-nodpi / drawable-nodpi）。关于页文字长、改得勤，
-  不再逐种语言翻译，免得应用越来越大。条目对不对得上由 StringResourceParityTest 管。
-  MissingTranslation is ignored only for this intentionally English/Chinese-only file.
--->
-<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="en" tools:ignore="MissingTranslation">
-    <string name="about_tagline">I’m wysie. I maintain Zeekr Companion, a fork of Zeekr Shortcut by dts88. I use it primarily for my ZEEKR 009, with my own improvements, experiments and contributions adapted from the open-source community.</string>
-    <string name="about_project_title">Projects and downloads</string>
-    <string name="about_project_body">My source code and downloads are linked below, alongside dts88’s original project and Ferix’s CAMCORDER project. For issues with Zeekr Companion, please use my repository and attach a report from Settings → System → Diagnostics.</string>
-    <string name="about_storage_title">About USB drives</string>
-    <string name="about_storage_body">Recordings go to USB drives only, not to the head unit\'s internal storage (except with developer options): its write endurance is limited and it can\'t be replaced.\n\n• The USB drive supplied with the car is enough for basic recording.\n\n• For higher bitrates or longer retention without using the car\'s own drive, add a USB drive or SSD to the left Type-C port. It is detected automatically and can be removed at any time.\n\n• With Sentry Mode on after you leave the car, only the USB-A port stays powered. A drive on the Type-C port loses power, and recording moves to the drive on the USB-A port.\n\n• Tested: a 128 GB USB drive, and an NVMe SSD (much faster, runs slightly warmer).\n\n• Optane M10 drives are good value but small: about the last 20 hours of recordings, depending on capacity and bitrate.</string>
-    <string name="about_privacy_title">Privacy and network use</string>
-    <string name="about_privacy_body">Recordings and photos stay on your USB drive. The app does not upload them.\n\n⚠ Recordings and photos on the drive are not encrypted. Anyone with the drive can read them.\n\nThe app goes online only when you start one of these:\n\n• Check for updates: asks GitHub for the latest version and, if you confirm, downloads it from GitHub. No device data is sent.\n\n• Send to phone: serves one file on your local network until you close the window.</string>
-    <string name="about_safety_title">Safety notice</string>
-    <string name="about_safety_body">Experimental, unofficial software, not affiliated with ZEEKR. While driving, watch the road, not this app. Recordings are not guaranteed to be complete. Use at your own risk.</string>
-    <string name="about_thanks_title">Original project’s community acknowledgements</string>
-    <string name="about_thanks_body">dts88’s original project grew out of the Singapore Zeekr Group. I also want to preserve its acknowledgements of the people and communities who helped it get started and improve:\n\n• Jon (Singapore Zeekr Group) — head-unit app installation guidance.\n\n• SW (same group) — sharing the AVM Recorder project.\n\n• Patrick (same group) — key information for getting started.\n\n• Gabriel (same group) — testing and feedback.\n\n• Singapore Zeekr Group — its administrators and members, for sharing knowledge.\n\n• R. Manochvarma (Zeekr Owners Community Malaysia, ZOCM) — the Super mirror button-mode suggestion.\n\n• Storm Oshyer (Zeekr 7X Australia, Facebook community) — blind-spot, turn-signal and lane-change suggestions, encouragement and promotion.\n\n• 理查 Richard (Zeekr 7X Australia owners’ WeChat group) — horn and other signal-triggered recording suggestions.\n\n• Bilibili Zeekr 7X owners’ circle WeChat group, including 深藏功与名, G.T, 宇 and others — Chinese-market 7X knowledge and long-term experience.\n\nThe original project also thanks its users, ZEEKR and Geely.</string>
-    <string name="about_credits_title">Credits and open source</string>
-    <string name="about_credits_dts88">Thank you to dts88 for creating the original Zeekr Shortcut and the foundation this edition builds on. For the original, more thoroughly tested version, please use dts88’s releases. My edition has more limited vehicle testing.</string>
-    <string name="about_credits_evcam">Thank you to suyunkai and the EVCam contributors for the underlying camera, recording and floating-window foundations. This edition remains open source under GNU GPL v3.0; source and attribution are available in the project repository.</string>
-    <string name="about_coffee_title">Support dts88</string>
-    <string name="about_coffee_body">If you would like to tip dts88, the original author, PayNow to 9271 6786. This number belongs to dts88. Tips are voluntary and do not unlock features.</string>
-    <string name="about_link_fork_label">Zeekr Companion — source and downloads</string>
-    <string name="about_link_upstream_label">dts88’s original project — more thoroughly tested builds</string>
-    <string name="about_link_ferix_label">Ferix’s CAMCORDER — source and downloads</string>
-    <string name="about_credits_ferix">Special thanks to Ferix — FerixzTanz (Felix Tan) — for his CAMCORDER project and original turn-signal side-camera work. This edition includes adaptations of his HUD, phone sharing, signal scanning, recording tools, gallery and UI improvements. His contributions are a big part of what makes this edition possible.</string>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="zh">
+    <string name="about_tagline">我是 wysie，负责维护 Zeekr Companion，这是基于 dts88 的极氪即刻（Zeekr Shortcut）的分支。我主要在自己的 ZEEKR 009 上使用，加入了自己的改进、实验功能，以及从开源社区改编的贡献。</string>
+    <string name="about_project_title">项目与下载</string>
+    <string name="about_project_body">下方分别是我的源码与下载、dts88 的原始项目，以及 Ferix 的 CAMCORDER 项目。反馈 Zeekr Companion 的问题时，请使用我的仓库，并附上从「设置 → 系统 → 诊断信息」导出的报告。</string>
+    <string name="about_storage_title">关于 U 盘</string>
+    <string name="about_storage_body">录像和照片保存在所选存储位置。启用中转写入时，已完成的片段会先缓存在应用的私有内部存储中，再传输到 U 盘。开发者选项也可允许内部录制。\n\n• 请使用车辆指定的行车记录仪／哨兵模式存储接口。其他接口可能在下车后断电；请确认所选存储设备仍可用。\n\n• 存储设备缺失或速度过慢可能中断录制。未完成传输的内部缓存会保留以便重试，但清除应用数据或卸载应用会删除这些缓存。\n\n• 写入或传输文件时，请勿拔出存储设备。重要录像请在其他设备上检查。</string>
+    <string name="about_privacy_title">隐私与联网</string>
+    <string name="about_privacy_body">录像和照片保存在本地，应用不会上传。所选存储设备和私有中转缓存可能包含未加密的影像；能够访问这些文件的人即可读取。\n\n联网功能由您主动发起：\n\n• 检查更新：查询 GitHub，并在您确认后下载安装包；不会上传车辆诊断信息或录像。\n\n• 发送到手机：在局域网内临时共享所选文件，关闭共享窗口后即停止。同一网络中持有有效链接的人可以下载。\n\n导出的诊断报告和设置备份可能包含车辆信息、位置或文件路径。请在共享前检查。</string>
+    <string name="about_safety_title">安全须知</string>
+    <string name="about_safety_body">试验性非官方应用，与极氪（ZEEKR）无任何关联。驾驶时请以实际路况为准，勿依赖本应用画面；录像不保证完整可用。使用风险自负。</string>
+    <string name="about_thanks_title">原始项目的社区致谢</string>
+    <string name="about_thanks_body">dts88 的原始项目起步于 Singapore Zeekr Group。我也希望保留原项目对以下人员和社区的致谢，感谢他们帮助原项目起步和改进：\n\n• Jon（Singapore Zeekr Group）—— 车机应用安装指导。\n\n• SW（同一个群组）—— 分享 AVM Recorder 项目。\n\n• Patrick（同一个群组）—— 提供起步的关键信息。\n\n• Gabriel（同一个群组）—— 测试与反馈。\n\n• Singapore Zeekr Group —— 管理团队和成员分享的知识。\n\n• R. Manochvarma（Zeekr Owners Community Malaysia，ZOCM）—— 超级后视镜按键模式的建议。\n\n• Storm Oshyer（Zeekr 7X Australia，Facebook 社区）—— 盲区显示、转向信号和变道检测建议，以及鼓励和推广。\n\n• 理查 Richard（极氪7X 澳洲车主微信群）—— 喇叭等信号触发录像的建议。\n\n• Bilibili 极氪7X 车友圈微信群，包括深藏功与名、G.T、宇等成员 —— 中国版 7X 的知识和长期使用经验。\n\n原始项目也感谢每一位用户、极氪和吉利。</string>
+    <string name="about_credits_title">致谢与开源</string>
+    <string name="about_credits_dts88">感谢 dts88 创建原始的极氪即刻，为这个版本打下基础。如需原版及测试更充分的版本，请使用 dts88 发布的版本。我的版本在实车上的测试相对有限。</string>
+    <string name="about_credits_evcam">感谢 suyunkai 和 EVCam 贡献者提供相机、录制及悬浮窗的底层基础。本版本继续以 GNU GPL v3.0 开源发布，源码和署名信息可在项目仓库中查看。</string>
+    <string name="about_coffee_title">支持原作者 dts88</string>
+    <string name="about_coffee_body">如果想给原作者 dts88 打赏，可以 PayNow 到 9271 6786。该号码属于 dts88。打赏完全自愿，不影响任何功能。</string>
+    <string name="about_link_fork_label">Zeekr Companion — 源码与下载</string>
+    <string name="about_link_upstream_label">dts88 的原始项目 — 测试更充分的版本</string>
+    <string name="about_link_ferix_label">Ferix 的 CAMCORDER — 源码与下载</string>
+    <string name="about_credits_ferix">特别感谢 Ferix — FerixzTanz（Felix Tan）— 的 CAMCORDER 项目及最初的转向侧视摄像头功能。本版本改编了他的 HUD、发送到手机、车辆信号扫描、录制工具、相册和界面改进。他的贡献是这个版本的重要基础。</string>
 </resources>

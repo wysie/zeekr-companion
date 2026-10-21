@@ -42,6 +42,21 @@ for in-place updates. New public files use `ZeekrCompanion`; older
 source remain [wysie/zeekr-shortcut-car](https://github.com/wysie/zeekr-shortcut-car);
 existing download links remain valid.
 
+The interface supports **English, Bahasa Melayu and Simplified Chinese**, including
+About & credits, the five Super mirror help pages and the installer reminder.
+Help uses theme-aware, scrollable native text, so larger text and accessibility
+services can read it. Malay terminology is consistent across settings, status and
+floating controls; Simplified Chinese has one canonical default resource set.
+Translation checks cover every text resource file, plural, array and format argument.
+
+Update notes follow the selected app language when an authored translation is
+available. English remains the original release text; older English-only notes are
+explicitly marked. Release preparation requires matching entries in
+`CHANGELOG.md`, `CHANGELOG.ms.md` and `CHANGELOG.zh-CN.md` for new versions.
+Diagnostic logs, technical identifiers, third-party installer text and named credits
+retain their original wording. The phone-download web page retains its bilingual
+English/Chinese instructions.
+
 The app-name watermark on new recordings and normal photos uses **Zeekr Companion**
 plus the version; existing footage keeps its original burned-in text. The logo itself
 is not added to the footage. Raw developer exports retain their existing behavior.

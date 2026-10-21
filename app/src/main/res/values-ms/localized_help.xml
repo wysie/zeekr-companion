@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_controls_title">Kawal tetingkap Cermin super</string>
+    <string name="guide_controls_body">Seret tepi kiri atau kanan untuk mengalihkan tetingkap. Leret di tengah untuk menukar kamera atau melaraskan bingkai. Cubit dengan dua jari untuk mengubah saiz.\n\nKawalan di penjuru membesarkan atau menutup tetingkap. Jika mod Butang diaktifkan dalam Tetapan, gunakan kawalan kamera dan bukannya leretan mendatar.</string>
+    <string name="guide_cameras_title">Leret untuk menukar kamera</string>
+    <string name="guide_cameras_body">Leret ke kanan di tengah: Belakang → Kiri → Hadapan → Kanan → Belakang. Leret ke kiri untuk urutan sebaliknya.\n\nPilihan Hadapan dan Belakang sahaja melangkau paparan sisi. Imej belakang dicerminkan seperti cermin pandang belakang.</string>
+    <string name="guide_framing_title">Laraskan bahagian imej yang kelihatan</string>
+    <string name="guide_framing_body">Tetingkap yang lebar dan rendah memaparkan sebahagian imej tanpa meregangkannya. Seret ke bawah di tengah untuk melihat lebih banyak bahagian atas; seret ke atas untuk melihat lebih banyak bahagian bawah.\n\nTetingkap yang hampir persegi sudah memaparkan kebanyakan imej, jadi ruang untuk melaraskannya mungkin terhad.</string>
+    <string name="guide_docking_title">Sembunyikan di tepi skrin</string>
+    <string name="guide_docking_body">Seret tepi tetingkap sehingga lebih separuh tetingkap berada di luar skrin, kemudian lepaskan. Jalur kecil akan kekal; ketik atau tarik jalur itu kembali untuk memulihkan tetingkap.\n\nTetingkap yang masih berada sepenuhnya dalam skrin tidak akan tersembunyi secara automatik, walaupun hampir dengan tepi.</string>
+    <string name="guide_resize_title">Ubah saiz tanpa meregangkan imej</string>
+    <string name="guide_resize_body">Jarakkan dua jari untuk membesarkan tetingkap; rapatkan untuk mengecilkannya. Bentuknya kekal sama. Gerakkan kedua-dua jari bersama untuk mengalihkan tetingkap sambil mengubah saiz.\n\nUntuk menukar bentuk, laraskan lebar dan tinggi secara berasingan dalam Tetapan. Tetingkap yang lebih rendah memangkas imej dan bukannya meregangkannya.</string>
+    <string name="guide_install_title">Selepas pemasangan, ketik Kembali</string>
+    <string name="guide_install_body">Ikut arahan pemasang sistem. Setelah pemasangan selesai, ketik Kembali di penjuru kiri atas dan bukannya Buka di tengah.\n\nPada unit utama yang terjejas, mengetik Buka boleh menyebabkan pemasang tersekat dan mengganggu kemas kini seterusnya. Kembali ke pelancar dan buka Zeekr Companion dari sana.\n\nMuat turun hanya bermula selepas anda mengesahkan di bawah. Tekan Kembali sekarang untuk membatalkan.</string>
+    <string name="upd_notes_original_language">Nota keluaran lama tersedia dalam bahasa Inggeris.</string>
+    <string name="upd_notes_heading">Perubahan</string>
+</resources>

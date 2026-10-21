@@ -67,7 +67,7 @@
     <string name="mirror_paused_tap">Gambar terhenti · ketik untuk sambung</string>
     <string name="mirror_resume_busy">Kamera sedang digunakan dan tidak dapat dibuka buat masa ini</string>
     <string name="mirror_resume_failed">Kamera tidak dapat dibuka: %1$s</string>
-    <string name="mirror_dock_label">Super mirror</string>
+    <string name="mirror_dock_label">Cermin super</string>
     <string name="rearview_guide_page">Halaman panduan %1$d daripada %2$d</string>
     <string name="set_floating_alpha_title">Kelegapan butang</string>
     <string name="set_recording_floating_summary">Menunjukkan status rakaman dalam butang terapung; tetapkan tindakan ketik, ketik dua kali dan tekan lama di bawah</string>
@@ -97,11 +97,11 @@
     <string name="set_auto_record_title">Rakam semasa dibuka</string>
     <string name="set_auto_record_summary">Mula merakam apabila apl dibuka, dan menyambung rakaman yang berhenti kerana skrin padam apabila skrin hidup semula; rakaman yang anda hentikan tidak dimulakan semula</string>
     <string name="set_screen_off_title">Rakaman skrin padam (kekal berjaga)</string>
-    <string name="set_screen_off_summary">Jika sedang merakam semasa skrin padam, terus merakam paparan sekeliling dan kekalkan unit kepala berjaga sehingga tempoh yang ditetapkan di bawah</string>
+    <string name="set_screen_off_summary">Jika sedang merakam semasa skrin padam, terus merakam paparan sekeliling dan kekalkan unit utama berjaga sehingga tempoh yang ditetapkan di bawah</string>
     <string name="set_screen_off_wake_title">Kekal berjaga sehingga (jam)</string>
     <string name="unit_hours">%1$s jam</string>
     <string name="set_screen_off_keep_title">Terus merakam apabila skrin padam</string>
-    <string name="set_screen_off_keep_summary">Hanya merakam paparan sekeliling ketika skrin padam; rakaman kabin depan dan belakang disambung semula apabila skrin hidup. Tanpa Mod Sentry, rakaman dijeda semasa unit kepala tidur dan disambung semula apabila bangun. Jika dimatikan, rakaman berhenti apabila skrin padam.</string>
+    <string name="set_screen_off_keep_summary">Hanya merakam paparan sekeliling ketika skrin padam; rakaman kabin depan dan belakang disambung semula apabila skrin hidup. Tanpa Mod Sentry, rakaman dijeda semasa unit utama tidur dan disambung semula apabila bangun. Jika dimatikan, rakaman berhenti apabila skrin padam.</string>
     <string name="sentry_status_on">Mod Sentry: hidup</string>
     <string name="sentry_status_armed">Mod Sentry: bersiaga</string>
     <string name="sentry_status_off">Mod Sentry: mati</string>
@@ -139,7 +139,7 @@
     <string name="settings_imported_reopen">Tetapan diimport; berkuat kuasa selepas apl dibuka semula</string>
     <!-- System info (experimental): groups, signal names, values -->
     <string name="set_vehicle_info_title">Maklumat sistem (percubaan)</string>
-    <string name="set_vehicle_info_summary">Isyarat kenderaan yang didedahkan unit kepala dan keadaan semasanya; item yang ditanda dipaparkan pada Bar maklumat pemanduan</string>
+    <string name="set_vehicle_info_summary">Isyarat kenderaan yang didedahkan unit utama dan keadaan semasanya; item yang ditanda dipaparkan pada Bar maklumat pemanduan</string>
     <string name="vi_legend">Item yang ditanda dipaparkan pada Bar maklumat pemanduan (memerlukan Tetapan → Rakaman &amp; foto → Tera &amp; maklumat pemanduan → Bar maklumat pemanduan): sebagai ikon jika ada, jika tidak sebagai teks buat masa ini, seperti dinyatakan di bawah setiap baris; item yang tidak muat tidak dipaparkan. Warna label menunjukkan tahap pengesahan: warna teks biasa, konsisten dalam ujian di kereta (masih disemak silang); kelabu, boleh digunakan, butiran belum muktamad; kelabu pudar, boleh dibaca tetapi belum disahkan, hanya boleh ditanda apabila pilihan pembangun dihidupkan.</string>
     <string name="vi_position">Kedudukan (lat/long)</string>
     <string name="vi_position_source">Lokasi sistem</string>
@@ -259,7 +259,7 @@
     <string name="vi_v_hazard">Kecemasan</string>
     <string name="vi_v_light_position">Lampu kedudukan</string>
     <string name="vi_v_light_low">Lampu rendah</string>
-    <string name="vi_v_light_auto">Auto</string>
+    <string name="vi_v_light_auto">Automatik</string>
     <string name="vi_v_mirror_normal">Normal</string>
     <string name="vi_v_mirror_tilting">Sedang condong</string>
     <string name="vi_v_mirror_down">Telah condong</string>
@@ -274,7 +274,7 @@
     <string name="vi_v_screen_on">Skrin hidup</string>
     <string name="set_language_title">Bahasa / Language</string>
     <string name="lang_auto">Ikut sistem</string>
-    <string name="lang_zh">中文</string>
+    <string name="lang_zh">简体中文</string>
     <string name="lang_en">English</string>
     <string name="lang_ms">Bahasa Melayu</string>
 
@@ -314,7 +314,7 @@
     <string name="set_side_popup_straighten_title">Luruskan gambar</string>
     <string name="set_side_popup_straighten_summary">Membetulkan lengkungan mata ikan dan melaraskan pandangan sisi dalam kedua-dua tetingkap; rakaman tidak berubah.</string>
     <string name="set_side_popup_auto_fit_title">Muat automatik untuk elak tompok hitam</string>
-    <string name="set_side_popup_auto_fit_summary">Dihidupkan secara lalai. Dengan Luruskan gambar hidup, mengecilkan pandangan apabila perlu untuk mengelakkan kawasan hitam. Matikan untuk mengekalkan Lebar pandangan dan sudut pilihan; kawasan tanpa liputan kamera menjadi hitam. Dikongsi oleh pop timbul, HUD dan pandangan sisi Super mirror; rakaman tidak berubah.</string>
+    <string name="set_side_popup_auto_fit_summary">Dihidupkan secara lalai. Dengan Luruskan gambar hidup, mengecilkan pandangan apabila perlu untuk mengelakkan kawasan hitam. Matikan untuk mengekalkan Lebar pandangan dan sudut pilihan; kawasan tanpa liputan kamera menjadi hitam. Dikongsi oleh tetingkap timbul, HUD dan pandangan sisi Cermin super; rakaman tidak berubah.</string>
     <string name="set_side_popup_fov_title">Lebar pandangan (°)</string>
     <string name="set_side_popup_fov_summary">Nilai lebih tinggi meluaskan pandangan; lebih rendah mengezum masuk. Dengan Luruskan gambar dan Muat automatik hidup, lebar sebenar mungkin dikurangkan berhampiran tepi imej kamera.</string>
     <string name="set_side_popup_yaw_title">Hala ke belakang (°)</string>
@@ -371,7 +371,7 @@
     <!-- Panduan mula pertama -->
     <string name="guide_title">Sebelum anda mula</string>
     <string name="guide_1">Perisian percubaan tidak rasmi tanpa pensijilan keselamatan kenderaan. Ia tidak menggantikan kamera papan pemuka kilang, kamera undur atau pemantau titik buta. Jangan mengendalikannya semasa memandu, dan jangan bergantung pada paparannya untuk menilai keadaan jalan.</string>
-    <string name="guide_2">Video dan foto disimpan ke pemacu USB sahaja; tanpanya, rakaman tidak bermula dan foto tidak dapat diambil. Penulisan berterusan akan menghauskan storan dalaman unit kepala, yang biasanya tidak boleh diganti. Video dan foto tidak disulitkan: sesiapa yang memegang pemacu boleh membacanya.</string>
+    <string name="guide_2">Video dan foto disimpan ke pemacu USB sahaja; tanpanya, rakaman tidak bermula dan foto tidak dapat diambil. Penulisan berterusan akan menghauskan storan dalaman unit utama, yang biasanya tidak boleh diganti. Video dan foto tidak disulitkan: sesiapa yang memegang pemacu boleh membacanya.</string>
     <string name="guide_3">Butang menu sentiasa di kiri atas. Letakkan butang tindakan di sebelah pemandu melalui Tetapan → Antara muka → Sebelah butang tindakan. Cermin super dimatikan secara lalai; hidupkannya dari menu atau Tetapan → Cermin super. Seret sisinya untuk mengalihkannya, cubit untuk mengubah saiz, dan di bahagian tengah leret ke atas atau ke bawah untuk melaraskan bingkai, atau ke kiri atau ke kanan untuk menukar kamera.</string>
     <string name="guide_4">Jika ada yang tidak kena, mulakan semula apl. Jika berterusan, eksport laporan dari Tetapan → Sistem → Maklumat diagnostik dan lampirkannya pada isu.</string>
     <string name="action_got_it_guide">Faham</string>
@@ -529,7 +529,7 @@
     <string name="upd_offer_no_notes">Pemasang akan dibuka apabila muat turun selesai.</string>
     <string name="upd_later">Nanti</string>
     <string name="upd_guide_start">Faham, muat turun</string>
-    <string name="upd_guide_image">Sebelum memasang: selepas muat turun, pemasang unit kepala dibuka. Selepas dipasang, ketik Kembali di kiri atas, bukan Buka di tengah.</string>
+    <string name="upd_guide_image">Sebelum memasang: selepas muat turun, pemasang unit utama dibuka. Selepas dipasang, ketik Kembali di kiri atas, bukan Buka di tengah.</string>
     <string name="upd_downloading_pct">Memuat turun… %1$d%% (%2$s / %3$s MB)</string>
     <string name="upd_download_title">Memuat turun %1$s</string>
     <string name="upd_download_failed">Muat turun gagal: %1$s</string>
@@ -594,7 +594,7 @@
     <string name="share_phone_need_hotspot_msg">Unit kepala tidak disambungkan ke Wi-Fi dan hotspotnya dimatikan.</string>
 
     <!-- Gesaan perkongsian -->
-    <string name="share_phone_network_hint">Telefon dan unit kepala mesti berada pada rangkaian yang sama. Hidupkan hotspot telefon dan sambungkan unit kepala kepadanya.</string>
+    <string name="share_phone_network_hint">Telefon dan unit utama mesti berada pada rangkaian yang sama. Hidupkan hotspot telefon dan sambungkan unit utama kepadanya.</string>
     <string name="share_video_segment_note">Hanya menghantar klip semasa (%1$s setiap satu). Dalam paparan semua kamera atau paparan sekeliling (walaupun satu kamera dibesarkan), rakaman sekeliling dihantar; jika melihat kamera kabin sahaja, klip kamera itu dihantar. Untuk menghantar bahagian lain, seret bar kemajuan ke situ dahulu.</string>
     <string name="share_minutes">%1$d minit</string>
     <string name="action_back">Kembali</string>
@@ -655,7 +655,6 @@
     <string name="record_unavailable_detail">Tiada pemacu USB</string>
     <string name="record_waiting_cameras">Menunggu kamera</string>
     <string name="record_waiting_detail">Disambung semula secara automatik apabila tersedia</string>
-    <!-- 配置名只做中英两种：马来文界面也用英文名 -->
     <string name="status_profile_composite">Zeekr (sekeliling)</string>
     <string name="status_profile_composite_multi">Zeekr (sekeliling + kabin depan dan belakang)</string>
     <string name="status_fps">≤%1$s fps</string>
@@ -743,7 +742,7 @@
     <string name="editor_scale_y">Zum y</string>
     <string name="editor_pan_x">Alih x</string>
     <string name="editor_pan_y">Alih y</string>
-    <string name="editor_auto">Auto</string>
+    <string name="editor_auto">Automatik</string>
     <string name="editor_max">Maks</string>
     <string name="editor_resolved">%1$s → %2$s</string>
     <string name="editor_resolved_by_camera">ditentukan oleh kamera</string>
@@ -857,7 +856,7 @@
     <string name="adj_default">Lalai</string>
     <string name="adj_reset">Set semula</string>
     <string name="adj_save_close">Simpan dan tutup</string>
-    <string name="awb_auto">Auto</string>
+    <string name="awb_auto">Automatik</string>
     <string name="awb_incandescent">Pijar</string>
     <string name="awb_fluorescent">Kalimantang</string>
     <string name="awb_warm_fluorescent">Kalimantang hangat</string>
@@ -984,17 +983,17 @@
     <string name="side_control_restore">Pulihkan saiz tetingkap</string>
     <string name="set_section_blind_spot_camera">Kamera titik buta</string>
     <string name="share_status_connected_media">Telefon disambungkan ✓</string>
-    <string name="share_phone_links_seen">Pautan rangkaian pada unit kepala, tiada satu pun dikenali sebagai Wi-Fi, hotspot atau USB: %1$s</string>
-    <string name="share_status_unreachable">Telefon anda belum sampai ke unit kepala (%1$s). Sambungkan telefon ke Wi-Fi yang sama dengan unit kepala, atau hidupkan hotspot telefon dan sambungkan unit kepala kepadanya. Jika telefon disambungkan ke Wi-Fi lain (seperti hotspot kereta), putuskan dahulu. Pada rangkaian yang sama, IP telefon biasanya bermula dengan nombor yang sama seperti unit kepala. Jika data mudah alih telefon dihidupkan, matikannya dan cuba lagi: sesetengah telefon menghantar alamat tempatan melalui data mudah alih apabila Wi-Fi tiada internet.</string>
+    <string name="share_phone_links_seen">Pautan rangkaian pada unit utama, tiada satu pun dikenali sebagai Wi-Fi, hotspot atau USB: %1$s</string>
+    <string name="share_status_unreachable">Telefon anda belum sampai ke unit utama (%1$s). Sambungkan telefon ke Wi-Fi yang sama dengan unit utama, atau hidupkan hotspot telefon dan sambungkan unit utama kepadanya. Jika telefon disambungkan ke Wi-Fi lain (seperti hotspot kereta), putuskan dahulu. Pada rangkaian yang sama, IP telefon biasanya bermula dengan nombor yang sama seperti unit utama. Jika data mudah alih telefon dihidupkan, matikannya dan cuba lagi: sesetengah telefon menghantar alamat tempatan melalui data mudah alih apabila Wi-Fi tiada internet.</string>
     <string name="share_status_done">Dihantar ✓</string>
     <string name="share_status_done_media">Pada telefon anda ✓ Tekan lama untuk menyimpan, kemudian tutup ini</string>
     <string name="share_status_sending">Menghantar…</string>
     <string name="share_status_connected">Telefon disambungkan ✓ Ketik Download pada telefon</string>
     <string name="share_status_stopped">Penghantaran terhenti sebelum selesai. Ketik Download pada telefon sekali lagi</string>
-    <string name="share_status_wrong_link">Telefon anda sampai ke unit kepala, tetapi pautannya tidak lengkap. Imbas kod ini sekali lagi</string>
-    <string name="share_status_waiting">Menunggu telefon anda… Sambungkan ke Wi-Fi yang sama dengan unit kepala (unit kepala: %1$s)</string>
+    <string name="share_status_wrong_link">Telefon anda sampai ke unit utama, tetapi pautannya tidak lengkap. Imbas kod ini sekali lagi</string>
+    <string name="share_status_waiting">Menunggu telefon anda… Sambungkan ke Wi-Fi yang sama dengan unit utama (unit utama: %1$s)</string>
     <string name="dev_signal_scan_title">Rakam semua isyarat kenderaan</string>
-    <string name="dev_signal_scan_summary">Apabila dihidupkan, mendengar setiap isyarat yang diberikan unit kepala dan merekod setiap perubahan (masa, kelajuan, kod, nilai, nama), untuk mencari isyarat yang belum dipetakan seperti amaran titik buta. Baca sahaja. Keputusan dalam Diagnostik di bawah \"Signal scan\". Berjalan sehingga 3 jam, kemudian dimatikan sendiri.</string>
+    <string name="dev_signal_scan_summary">Apabila dihidupkan, mendengar setiap isyarat yang diberikan unit utama dan merekod setiap perubahan (masa, kelajuan, kod, nilai, nama), untuk mencari isyarat yang belum dipetakan seperti amaran titik buta. Baca sahaja. Keputusan dalam Diagnostik di bawah \"Signal scan\". Berjalan sehingga 3 jam, kemudian dimatikan sendiri.</string>
     <string name="set_footage_lock_brake_title">Kunci rakaman semasa brek mengejut</string>
     <string name="set_footage_lock_brake_summary" formatted="false">Semasa merakam, brek mengejut (termasuk brek kecemasan automatik kereta) mengunci klip yang meliputi 10 saat sebelum hingga 10 saat selepas. Kuncian automatik menggunakan paling banyak 10% ruang rakaman; yang paling lama dilepaskan dahulu.</string>
     <string name="msg_brake_locked">Brek mengejut: klip yang meliputi 10 saat sebelum dan selepas telah dikunci</string>
@@ -1018,7 +1017,7 @@
     <string name="msg_left_car_stopped">Anda telah meninggalkan kereta. Rakaman dihentikan.</string>
     <string name="set_drive_auto_stop_title">Henti merakam apabila anda meninggalkan kereta</string>
     <string name="set_side_popup_mirror_title">Cerminkan imej kamera sisi</string>
-    <string name="set_side_popup_mirror_summary">Balikkan kiri dan kanan dalam tetingkap sisi dan penggantian Super mirror. Dimatikan secara lalai; rakaman tidak berubah.</string>
+    <string name="set_side_popup_mirror_summary">Balikkan kiri dan kanan dalam tetingkap sisi dan penggantian Cermin super. Dimatikan secara lalai; rakaman tidak berubah.</string>
     <string name="side_popup_no_picture">Tiada gambar langsung</string>
     <string name="set_hud_side_mirror_title">Cerminkan gambar HUD seperti cermin pintu</string>
     <string name="set_hud_side_mirror_summary">Balikkan kiri dan kanan pada gambar HUD tersuai sahaja. Tetapan cermin tetingkap timbul dan rakaman tidak berubah.</string>
@@ -1091,7 +1090,7 @@
     <string name="dev_probe_stop">Henti</string>
     <string name="dev_probe_back">Kembali</string>
     <string name="vehicle_name_title">Nama kenderaan</string>
-    <string name="vehicle_name_auto">Auto</string>
+    <string name="vehicle_name_auto">Automatik</string>
     <string name="vehicle_name_generic">Zeekr</string>
     <string name="vehicle_name_009">Zeekr 009</string>
     <string name="vehicle_name_7x">Zeekr 7X</string>
@@ -1104,14 +1103,14 @@
     <string name="bird_eye_display_title">Butang 360° membuka</string>
     <string name="bird_eye_display_main">Skrin utama</string>
     <string name="bird_eye_display_popup">Tetingkap timbul</string>
-    <string name="bird_eye_popup_button">Popup 360°</string>
-    <string name="bird_eye_popup_open">Buka popup 360°</string>
-    <string name="bird_eye_popup_close">Tutup popup 360°</string>
+    <string name="bird_eye_popup_button">Tetingkap timbul 360°</string>
+    <string name="bird_eye_popup_open">Buka tetingkap timbul 360°</string>
+    <string name="bird_eye_popup_close">Tutup tetingkap timbul 360°</string>
     <string name="bird_eye_popup_summary">Seret untuk gerak, cubit untuk ubah saiz, atau gunakan butang besar dan tutup. Kekal terbuka apabila aplikasi diminimumkan; tidak dibuka secara automatik semasa but atau isyarat.</string>
-    <string name="bird_eye_popup_size">Ketinggian popup (%)</string>
-    <string name="bird_eye_popup_reset">Tetapkan semula saiz dan kedudukan popup</string>
+    <string name="bird_eye_popup_size">Ketinggian tetingkap timbul (%)</string>
+    <string name="bird_eye_popup_reset">Tetapkan semula saiz dan kedudukan tetingkap timbul</string>
     <string name="bird_eye_calibration_reset">Tetapkan semula penentukuran dan kualiti</string>
-    <string name="bird_eye_popup_rejected">Popup 360° ditutup: kamera tidak menyokong tetingkap tambahan ini. Output kamera lain diberi keutamaan.</string>
+    <string name="bird_eye_popup_rejected">Tetingkap timbul 360° ditutup: kamera tidak menyokong tetingkap tambahan ini. Output kamera lain diberi keutamaan.</string>
     <string name="set_hud_side_contrast_title">Kontras gambar HUD (%)</string>
     <string name="set_hud_side_contrast_summary">Lebih tinggi menjadikan bahagian gelap lebih gelap, supaya gambar tidak pudar pada HUD. 100 ialah gambar asal kamera</string>
     <string name="set_hud_side_night_title">Kecerahan gambar HUD pada waktu malam (%)</string>
@@ -1125,10 +1124,10 @@
     <string name="set_developer_mode_title">Dayakan mod pembangun</string>
     <string name="set_developer_mode_summary">Amaran: ciri eksperimen dan alat penyelesaian masalah boleh menjejaskan kamera, rakaman dan storan. Mati pada pemasangan baharu; pilihan dikekalkan selepas mula semula dan kemas kini. Mematikannya menyembunyikan pilihan pembangun dan menyahaktifkan tetapannya tanpa memadam nilai tersimpan. Perubahan kamera menggunakan tindakan Gunakan perubahan.</string>
     <string name="set_side_mirror_mode_title">Apabila Cermin super aktif</string>
-    <string name="set_side_mirror_mode_summary">Guna tetingkap cermin, papar kedua-dua tetingkap, atau sembunyikan cermin semasa pop timbul sisi kelihatan. Gambar HUD sahaja tidak menyembunyikannya.</string>
+    <string name="set_side_mirror_mode_summary">Guna tetingkap cermin, papar kedua-dua tetingkap, atau sembunyikan cermin semasa tetingkap timbul sisi kelihatan. Gambar HUD sahaja tidak menyembunyikannya.</string>
     <string name="set_side_mirror_replace">Guna tetingkap Cermin super</string>
     <string name="set_side_mirror_both">Papar kedua-dua tetingkap</string>
-    <string name="set_side_mirror_hide">Sembunyikan cermin semasa pop timbul</string>
+    <string name="set_side_mirror_hide">Sembunyikan cermin semasa tetingkap timbul</string>
     <!-- Grouped settings navigation; groups are headings, not extra pages. -->
     <string name="menu_cameras">Kamera</string>
     <string name="menu_automatic_recording">Rakaman automatik</string>
@@ -1151,7 +1150,7 @@
     <string name="menu_popup_gestures">Seret untuk alih; cubit untuk ubah saiz sambil mengekalkan nisbah aspek. Besarkan mengisi panel potret separuh skrin buat sementara; Pulihkan mengembalikan bentuk dan kedudukan asal. Ini juga terpakai pada paparan sisi dalam Cermin super. X menutup paparan bagi isyarat semasa; batalkan dan beri isyarat semula untuk buka. Susun atur HUD kekal berasingan.</string>
     <string name="menu_placement">Kedudukan</string>
     <string name="menu_advanced_experimental">Lanjutan · percubaan</string>
-    <string name="menu_output">Output</string>
+    <string name="menu_output">Paparan output</string>
     <string name="menu_activation">Pengaktifan</string>
     <string name="menu_timing">Masa paparan</string>
     <string name="menu_opening">Cara membuka</string>
@@ -1165,8 +1164,8 @@
     <string name="menu_image_rendering">Imej &amp; pemaparan</string>
     <string name="menu_camera_research">Penyelidikan kamera &amp; diagnostik</string>
     <string name="menu_maintenance">Penyelenggaraan</string>
-    <string name="dev_usb_internal_fallback_title">Benarkan sandaran storan dalaman</string>
-    <string name="dev_usb_internal_fallback_summary">Mati secara lalai: tunggu USB. Hidup: benarkan storan dalaman selepas 10 saat semasa mula rakaman, atau jika USB gagal semasa merakam. Fail aktif tidak dipindahkan. Pilihan Storan dalaman dan Penulisan geganti berasingan.</string>
+    <string name="dev_usb_internal_fallback_title">Benarkan rakaman dalaman jika USB tidak tersedia</string>
+    <string name="dev_usb_internal_fallback_summary">Mati secara lalai: tunggu USB. Hidup: benarkan storan dalaman selepas 10 saat semasa mula rakaman, atau jika USB gagal semasa merakam. Fail aktif tidak dipindahkan. Pilihan Storan dalaman dan Penulisan perantara berasingan.</string>
     <string name="msg_wait_usb_before_internal">Menunggu USB sehingga 10 saat sebelum menggunakan storan dalaman.</string>
     <string name="record_waiting_usb">Menunggu USB</string>
     <string name="record_cancel_usb_wait">Ketik untuk batal menunggu</string>
@@ -1260,7 +1259,7 @@
     <string name="vehicle_profile_defaults_title">Lalai model dan suapan disahkan</string>
     <string name="vehicle_profile_summary">%1$s · Gunakan perubahan selepas memilih</string>
     <string name="vehicle_profile_unknown">Auto · Tidak dikenal pasti. Pilih model.</string>
-    <string name="vehicle_profile_defaults_009">Eksport pemilik 009: Surround = kamera 3, Jalan hadapan = 0, Jalan belakang = 1, Kabin = 2. Suapan kabin kedua belum disahkan. Pemetaan manual mengatasi nilai lalai ini. HUD menggunakan padanan paparan dan susun atur tersendiri. Unjuran 360° Automatik menggunakan padanan 009 eksperimen; pilihan jelas dan larasan manual diutamakan. Ketepatan jarak dan rakaman serentak masih memerlukan ujian kenderaan.</string>
+    <string name="vehicle_profile_defaults_009">Eksport pemilik 009: paparan sekeliling = kamera 3, Jalan hadapan = 0, Jalan belakang = 1, Kabin = 2. Suapan kabin kedua belum disahkan. Pemetaan manual mengatasi nilai lalai ini. HUD menggunakan padanan paparan dan susun atur tersendiri. Unjuran 360° Automatik menggunakan padanan 009 eksperimen; pilihan jelas dan larasan manual diutamakan. Ketepatan jarak dan rakaman serentak masih memerlukan ujian kenderaan.</string>
     <string name="vehicle_profile_defaults_7x">Bukti 7X huluan: komposit sekeliling serta kabin hadapan dan belakang. Sumber ditemui secara automatik; pemetaan manual diutamakan. Suapan jalan hadapan/belakang berasingan belum disahkan dan perlu dikenal pasti secara manual. HUD mengekalkan padanan dan susun atur tersendiri. DIY 360° menggunakan unjuran Manual, tanpa padanan imej 009. Penjajaran 7X masih perlu diuji pada kereta.</string>
     <string name="vehicle_profile_defaults_unknown">Auto hanya menerima nama model 009 atau 7X yang jelas daripada Android. Nama umum seperti Pixel 3a tidak mengenal pasti kereta. Pilihan sumber dan rakaman dikekalkan. HUD menyemak paparan sebenar secara berasingan. DIY 360° kekal eksperimen tanpa andaian penentukuran model.</string>
     <string name="vehicle_profile_stop_recording">Hentikan rakaman sebelum menukar model kenderaan.</string>
@@ -1277,7 +1276,7 @@
     <string name="camera_source_automatic">Automatik · %1$s</string>
     <string name="camera_source_manual">Manual · %1$s</string>
     <string name="camera_source_legacy">Kamera tambahan lama</string>
-    <string name="set_hud_follow_popup_picture_title">Ikut tetapan gambar pop timbul</string>
+    <string name="set_hud_follow_popup_picture_title">Ikut tetapan gambar tetingkap timbul</string>
     <string name="set_hud_follow_popup_picture_summary">Gunakan tetapan gambar tetingkap skrin. Kedudukan, saiz, kecerahan dan kontras HUD kekal berasingan.</string>
     <string name="set_hud_custom_picture_title">Gambar HUD tersuai</string>
     <string name="set_hud_picture_straighten_summary">Betulkan herotan mata ikan pada gambar HUD sahaja.</string>
@@ -1306,7 +1305,7 @@
     <string name="home_windows_help">Buka tetingkap di atas aplikasi lain. Saiz dan kedudukannya berasingan daripada pratonton utama.</string>
     <string name="home_preview_single">Satu sumber</string>
     <string name="home_preview_multiple">%1$d sumber</string>
-    <string name="home_layout_single">Satu sumber memenuhi pratonton. Susun atur mengatur sumber berasingan, bukan empat pandangan Surround.</string>
+    <string name="home_layout_single">Satu sumber memenuhi pratonton. Susun atur mengatur sumber berasingan, bukan empat pandangan paparan sekeliling.</string>
     <string name="home_surround_unavailable">360° memerlukan Sekeliling dalam pratonton aktif. Pilih pratetap dengan Sekeliling, kemudian ketik Gunakan perubahan.</string>
     <string name="home_pending_selection">Pratonton: %1$s · belum digunakan</string>
     <string name="home_layout_selected">Dipilih</string>
@@ -1329,7 +1328,7 @@
     <string name="side_settings_auto_fit_hint">Elakkan kawasan hitam</string>
     <string name="side_behavior_help">Perihal tetapan tingkah laku</string>
     <string name="side_settings_output_note">Menggunakan skrin jika HUD tiada. Kelajuan dan amaran kilang mungkin muncul di atas gambar HUD.</string>
-    <string name="side_settings_mirror_note">Pilih sama ada paparan sisi menggunakan, mengekalkan atau menyembunyikan sementara tetingkap Super mirror.</string>
+    <string name="side_settings_mirror_note">Pilih sama ada paparan sisi menggunakan, mengekalkan atau menyembunyikan sementara tetingkap Cermin super.</string>
     <string name="gpu_processing_title">Pemprosesan imej GPU (eksperimen)</string>
     <string name="gpu_processing_summary">Mati, Semua atau Tersuai untuk kamera dan main balik</string>
     <string name="gpu_processing_location">Tetapkan di Sistem → Pemprosesan imej GPU</string>
@@ -1341,7 +1340,7 @@
     <string name="gpu_processing_preview">Pembetulan pratonton keliling</string>
     <string name="gpu_processing_360">Cantuman 360°</string>
     <string name="gpu_processing_side">Kamera sisi titik buta</string>
-    <string name="gpu_processing_side_summary">Pop timbul, HUD dan gantian sisi Cermin super. Pratonton tetapan mengikuti perender ini.</string>
+    <string name="gpu_processing_side_summary">Tetingkap timbul, HUD dan gantian sisi Cermin super. Pratonton tetapan mengikuti perender ini.</string>
     <string name="gpu_processing_mirror">Cermin super — paparan kamera biasa</string>
     <string name="gpu_processing_playback">Pembetulan main balik video</string>
     <string name="gpu_processing_details_title">Tentang pemprosesan imej GPU</string>
@@ -1354,10 +1353,10 @@
     <string name="settings_restore_success">Tetapan dipulihkan</string>
     <string name="settings_restore_failed">Pemulihan gagal. Tetapan asal dikekalkan.</string>
     <string name="side_upscaling_category">Kualiti gambar GPU</string>
-    <string name="side_upscaling_title">Penskalaan</string>
-    <string name="side_upscaling_bilinear">Bilinear (semasa)</string>
+    <string name="side_upscaling_title">Penskalaan imej</string>
+    <string name="side_upscaling_bilinear">Bilinear (lalai)</string>
     <string name="side_upscaling_soft">Bikubik lembut</string>
     <string name="side_upscaling_sharp">Bikubik tajam</string>
     <string name="side_sharpening_title">Penajaman (%)</string>
-    <string name="side_upscaling_help">Untuk tetingkap sisi titik buta, HUD, pandangan sisi Super mirror dan pratonton ini. Memerlukan Sistem → Pemprosesan imej GPU → Kamera sisi titik buta (atau Semua). Perubahan berkuat kuasa serta-merta apabila laluan itu aktif. Bikubik menggunakan lebih banyak GPU; kurangkan penajaman jika hingar bertambah. Tidak mengubah pembingkaian, rakaman atau resolusi kamera.</string>
+    <string name="side_upscaling_help">Untuk tetingkap sisi titik buta, HUD, pandangan sisi Cermin super dan pratonton ini. Memerlukan Sistem → Pemprosesan imej GPU → Kamera sisi titik buta (atau Semua). Perubahan berkuat kuasa serta-merta apabila laluan itu aktif. Bikubik menggunakan lebih banyak GPU; kurangkan penajaman jika hingar bertambah. Tidak mengubah pembingkaian, rakaman atau resolusi kamera.</string>
 </resources>

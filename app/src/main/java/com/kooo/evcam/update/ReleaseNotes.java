@@ -41,6 +41,9 @@ public final class ReleaseNotes {
     /** 对话框里放得下、也读得完的长度。 */
     public static final int MAX_CHARS = 3000;
 
+    private static final Pattern TRANSLATION = Pattern.compile(
+            "(?s)<!-- companion-notes:([a-zA-Z-]+) -->\\s*(.*?)\\s*<!-- /companion-notes -->");
+
     private ReleaseNotes() {
     }
 
@@ -64,6 +67,9 @@ public final class ReleaseNotes {
         if (markdown == null || markdown.trim().isEmpty()) {
             return "";
         }
+        int translations = markdown.indexOf("<!-- companion-translations -->");
+        if (translations >= 0) markdown = markdown.substring(0, translations);
+        markdown = TRANSLATION.matcher(markdown).replaceAll("");
         String[] lines = markdown.replace("\r\n", "\n").split("\n", -1);
         StringBuilder out = new StringBuilder();
         boolean titleSkipped = false;
@@ -129,6 +135,12 @@ public final class ReleaseNotes {
      * @return 纯文本；一个有内容的版本都没有时返回空字符串
      */
     public static String combine(List<Entry> newerThanCurrent) {
+        return combine(newerThanCurrent, "en", "");
+    }
+
+    /** Select authored notes using the app locale; mark older English-only notes explicitly. */
+    public static String combine(List<Entry> newerThanCurrent, String languageTag,
+            String originalLanguageNotice) {
         if (newerThanCurrent == null || newerThanCurrent.isEmpty()) {
             return "";
         }
@@ -138,7 +150,7 @@ public final class ReleaseNotes {
             if (shown >= MAX_VERSIONS) {
                 break;
             }
-            String summary = summarise(entry.body);
+            String summary = localizedSummary(entry.body, languageTag, originalLanguageNotice);
             if (summary.isEmpty()) {
                 continue;
             }
@@ -158,6 +170,23 @@ public final class ReleaseNotes {
             text = text.substring(0, cut > MAX_CHARS / 2 ? cut : MAX_CHARS).trim() + "\n…";
         }
         return text;
+    }
+
+    static String localizedSummary(String markdown, String languageTag, String originalLanguageNotice) {
+        String language = languageTag == null ? "en" : languageTag.toLowerCase(Locale.ROOT);
+        String wanted = language.startsWith("ms") ? "ms" : language.startsWith("zh") ? "zh-cn" : "en";
+        if (!wanted.equals("en") && markdown != null) {
+            Matcher matcher = TRANSLATION.matcher(markdown);
+            while (matcher.find()) {
+                if (matcher.group(1).equalsIgnoreCase(wanted)) {
+                    String translated = summarise(matcher.group(2));
+                    if (!translated.isEmpty()) return translated;
+                }
+            }
+        }
+        String original = summarise(markdown);
+        return !wanted.equals("en") && !original.isEmpty() && originalLanguageNotice != null
+                && !originalLanguageNotice.isEmpty() ? originalLanguageNotice + "\n\n" + original : original;
     }
 
     private static boolean isBoilerplate(String heading) {

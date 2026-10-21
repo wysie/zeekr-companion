@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="zh">
     <string name="ui_updates_title">更新</string>
     <string name="ui_reset_confirm">重置</string>
     <string name="ui_side_reset_scope">重置盲区摄像头的触发/计时、输出、屏幕/HUD 画面及窗口设置。保留启用状态、车型、摄像头映射和录像。</string>

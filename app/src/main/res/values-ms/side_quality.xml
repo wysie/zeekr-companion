@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="side_quality_capture">Tangkap perbandingan kualiti</string>
-    <string name="side_quality_help">Simpan imej sisi asli dan hasil bingkai yang sama menggunakan tetapan tetingkap timbul. Ini render diagnostik, bukan tangkapan skrin; label dan anak panah tidak disertakan.</string>
+    <string name="side_quality_help">Simpan imej sisi asal dan imej terproses daripada bingkai yang sama menggunakan tetapan tetingkap timbul. Ini imej diagnostik yang dijana, bukan tangkapan skrin; label dan anak panah tidak disertakan.</string>
     <string name="side_quality_share">Hantar perbandingan ke telefon</string>
     <string name="side_quality_copy">Salin lokasi fail</string>
     <string name="side_quality_working">Menangkap satu bingkai sumber dan menyimpan perbandingan…</string>
     <string name="side_quality_saved">Perbandingan disimpan:\n%1$s</string>
-    <string name="side_quality_need_source">Pastikan pratonton Surround langsung dan halaman gambar ini terbuka. Tangkapan tidak tersedia semasa paparan kilang, undur atau skrin padam.</string>
-    <string name="side_quality_failed">Tidak dapat menangkap atau menyimpan. Pastikan pratonton Surround langsung, semak storan dan cuba lagi.</string>
+    <string name="side_quality_need_source">Pastikan pratonton langsung paparan sekeliling dan halaman Gambar ini terbuka. Tangkapan tidak tersedia semasa kamera asal kenderaan digunakan, ketika mengundur atau apabila skrin padam.</string>
+    <string name="side_quality_failed">Tidak dapat menangkap atau menyimpan. Pastikan pratonton langsung paparan sekeliling tersedia, semak storan dan cuba lagi.</string>
     <string name="side_quality_busy">Perbandingan lain sedang disimpan. Cuba lagi apabila selesai.</string>
     <string name="side_quality_cancelled">Tangkapan dibatalkan. Tetapan gambar tidak berubah.</string>
 </resources>
