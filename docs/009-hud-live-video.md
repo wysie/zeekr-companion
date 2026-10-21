@@ -194,3 +194,19 @@ panel and TextureView. Light/dark native control captures were visually inspecte
 These checks establish Android behavior, not windscreen visibility, automatic
 optical calibration, timed physical projector response or recording on a car.
 No release was published for this change.
+
+### Owner viewing-position observation — 2026-10-21
+
+The owner tested the red square and reports that apparent cut-off changes with
+viewing angle: moving their head can reveal the previously missing portion. This
+supports an optical viewing-position contribution rather than establishing a fixed
+Android clipping boundary. It does not prove every label/arrow issue resolved, nor
+provide coordinates from which to derive a universal safe rectangle. No saved HUD
+placement, trim, scale or defaults are changed in response. Subsequent visibility
+observations should use the owner's normal seat/head position and allow ordinary
+head movement, rather than treating a maximum revealed area as always visible.
+
+This interpretation is consistent with the HUD eyebox described in
+[Texas Instruments' HUD optical guidance](https://www.ti.com/lit/an/dlpa073a/dlpa073a.pdf),
+sections 4.4 and Figure 8. That general optical reference does not establish the
+009's projector design or its exact viewing limits.

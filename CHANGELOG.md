@@ -9,9 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
-- Add same-frame blind-camera quality comparison ZIPs with native source, popup-rendered picture and metadata, plus saved-location and phone-sharing controls in Picture settings.
+## [2.11.59-alpha.1] - 2026-10-21
 
-- Preserve native surround-preview detail after pane resizes and retained-view reattachment without requiring Apply changes, while keeping projected 360°/side dimensions and recording surfaces unchanged.
+- Preserve native surround-preview detail after pane resizes and retained-view reattachment without requiring Apply changes.
+- Add Capture quality comparison under Blind spot camera → Picture, saving same-frame native/processed images and settings in a ZIP with phone-sharing controls.
 
 ## [2.11.58-alpha.1] - 2026-10-20
 
