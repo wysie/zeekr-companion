@@ -32,7 +32,8 @@ public class CameraApplyAndroidTest extends MainPageControlsAndroidTest {
     private void await(String label, BooleanSupplier condition) {
         long end = SystemClock.elapsedRealtime() + 35000;
         while (!condition.getAsBoolean() && SystemClock.elapsedRealtime() < end) SystemClock.sleep(60);
-        assertTrue(label, condition.getAsBoolean());
+        assertTrue(label + "\n" + holder().configurationSummary(context) + "\nApply busy=" + CameraChanges.busy()
+                + ", recording=" + recorder.isRecording() + ", waiting=" + recorder.isWaiting(), condition.getAsBoolean());
     }
     private CameraManagerHolder holder() { return CameraManagerHolder.getInstance(); }
     private MultiCameraManager pipeline() { return holder().getCameraManager(); }
@@ -68,6 +69,8 @@ public class CameraApplyAndroidTest extends MainPageControlsAndroidTest {
     private void stageNativeSize() {
         ProfileStore store=new ProfileStore(context); Profile p=store.current();
         p.camera(CameraProfile.ROLE_COMPOSITE).preview.resolution="640x480"; store.save(p);
+        assertTrue("Native-size edit must be pending before testing Apply: " + holder().configurationSummary(context),
+                holder().hasPendingChannelChange(context));
     }
     private void screenshot(String name) throws Exception {
         android.graphics.Bitmap bitmap=InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
@@ -193,6 +196,82 @@ public class CameraApplyAndroidTest extends MainPageControlsAndroidTest {
                 });
                 screenshot(mode==AppCompatDelegate.MODE_NIGHT_YES?"camera-apply-main-dark-large":"camera-apply-main-light-large");
             }
+        }
+    }
+
+    @Test public void quitAndReopenDuringHeldApplyClearsBothGatesAndRejectsOldCompletion() throws Exception {
+        java.util.concurrent.CountDownLatch entered = new java.util.concurrent.CountDownLatch(1);
+        java.util.concurrent.CountDownLatch unblock = new java.util.concurrent.CountDownLatch(1);
+        try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
+            built();
+            java.lang.reflect.Field setupField=CameraManagerHolder.class.getDeclaredField("setup");
+            setupField.setAccessible(true);
+            java.util.concurrent.Executor setup=(java.util.concurrent.Executor)setupField.get(holder());
+            setup.execute(() -> {
+                entered.countDown();
+                try { unblock.await(20,java.util.concurrent.TimeUnit.SECONDS); }
+                catch(InterruptedException error) { Thread.currentThread().interrupt(); }
+            });
+            assertTrue(entered.await(3,java.util.concurrent.TimeUnit.SECONDS));
+            stageNativeSize();
+            scenario.onActivity(CameraChanges::request);
+            await("Apply entered replacement while setup is held",()->holder().configurationSummary(context).contains("applying=true"));
+            assertTrue(CameraChanges.busy());
+            assertTrue(recorder.busyForDeveloperProbe());
+            // Same cancellation/exit primitives as exitApp, without killing the instrumentation process.
+            main(() -> {
+                UserExit.markExited(context);
+                RecordingIntent.current().reset();
+                recorder.stop(RecordingStops.Reason.USER);
+                holder().release();
+                assertFalse(CameraChanges.busy());
+                assertFalse(recorder.busyForDeveloperProbe());
+            });
+            scenario.recreate(); // Manual reopening clears UserExit in this same process.
+            assertFalse(UserExit.isExited(context));
+            final int revision=holder().configurationRevision();
+            unblock.countDown();
+            built();
+            SystemClock.sleep(300);
+            assertEquals("Cancelled setup cannot publish its old successful Apply",revision,holder().configurationRevision());
+            assertFalse("Quit must not resume recording",recorder.isRecordingOrResuming());
+            assertFalse(CameraChanges.busy());
+            main(() -> { RecordingIntent.current().noteUserStarted(); recorder.request(RecordingCoordinator.Why.USER); });
+            await("Manual recording works in the reopened process",()->pipeline().hasWrittenFirstData());
+        } finally { unblock.countDown(); UserExit.clear(context,"apply-test-cleanup"); }
+    }
+
+    @Test public void confirmationSurvivesOwnerRecreationAndImmediateCancelRetryWithoutLatching() throws Exception {
+        java.lang.reflect.Field field=CameraChanges.class.getDeclaredField("confirmation");field.setAccessible(true);
+        try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)) {
+            built();main(()->recorder.request(RecordingCoordinator.Why.USER));
+            await("Recording writes before confirmation",()->pipeline().hasWrittenFirstData());
+            stageNativeSize();scenario.onActivity(CameraChanges::request);
+            onView(withText(R.string.camera_apply_title)).check(androidx.test.espresso.assertion.ViewAssertions.matches(isDisplayed()));
+            scenario.recreate();
+            scenario.onActivity(CameraChanges::request);
+            onView(withText(R.string.camera_apply_title)).check(androidx.test.espresso.assertion.ViewAssertions.matches(isDisplayed()));
+            android.app.Dialog[] retried={null};
+            scenario.onActivity(activity->{
+                try {
+                    android.app.Dialog old=(android.app.Dialog)((java.lang.ref.WeakReference<?>)field.get(null)).get();
+                    assertNotNull(old);old.dismiss();
+                    // The dismiss listener is still queued on main. A new request must work now.
+                    CameraChanges.request(activity);
+                    retried[0]=(android.app.Dialog)((java.lang.ref.WeakReference<?>)field.get(null)).get();
+                    assertNotNull(retried[0]);assertNotSame(old,retried[0]);assertTrue(retried[0].isShowing());
+                } catch(IllegalAccessException error) { throw new AssertionError(error); }
+            });
+            InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+            scenario.onActivity(activity->{
+                try {
+                    assertSame("Old onDismiss cannot clear the newer confirmation",retried[0],((java.lang.ref.WeakReference<?>)field.get(null)).get());
+                    CameraChanges.request(activity);
+                    assertSame("Repeated request reuses the current confirmation",retried[0],((java.lang.ref.WeakReference<?>)field.get(null)).get());
+                } catch(IllegalAccessException error) { throw new AssertionError(error); }
+            });
+            onView(withText(android.R.string.cancel)).perform(click());
+            assertFalse(CameraChanges.busy());assertTrue("Cancelling does not stop recording",recorder.isRecording());
         }
     }
 }

@@ -1,5 +1,9 @@
 # Whole-project safety and reliability review — 2026-10-14
 
+For the later combined application and recording/rendering follow-ups, see the
+[21 October codebase audit](codebase-audit-20261021.md). The baseline and historical
+findings below describe the 14 October review.
+
 Baseline: `f785483309dbc5b2bcf58be0f7cfa8082761db6e`, combined `main`,
 2.11.18-personal-alpha. Corrections are on `review/project-safety` for integration
 into the combined build. Existing upstream PR branches are unchanged.

@@ -28,9 +28,14 @@ public final class CameraCapabilities {
      * 要参数的地方先来这里拿；相机打开时记一次，之后参数不会变。
      */
     private static final Map<String, CameraCharacteristics> CHARACTERISTICS = new ConcurrentHashMap<>();
+    private static volatile String[] advertisedIds = new String[0];
 
     private CameraCapabilities() {
     }
+
+    /** Enumeration is performed on camera/setup workers; UI readers only consume this snapshot. */
+    public static void recordIds(String[] ids) { advertisedIds = ids == null ? new String[0] : ids.clone(); }
+    public static String[] advertisedIds() { return advertisedIds.clone(); }
 
     /** 相机打开时调一次，把它声明的最高帧率记下来。 */
     public static void record(String cameraId, CameraCharacteristics characteristics) {
@@ -95,5 +100,6 @@ public final class CameraCapabilities {
         MAX_FPS.clear();
         FPS_RANGES.clear();
         CHARACTERISTICS.clear();
+        advertisedIds = new String[0];
     }
 }

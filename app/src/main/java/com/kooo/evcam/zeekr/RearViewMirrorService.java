@@ -333,6 +333,7 @@ public class RearViewMirrorService extends Service {
                 new TextureView.SurfaceTextureListener() {
                     @Override
                     public void onSurfaceTextureAvailable(SurfaceTexture st, int w, int h) {
+                        if (mirrorView != null) mirrorView.syncGpuPresentation();
                         bindCamera(st);
                     }
 
@@ -399,6 +400,7 @@ public class RearViewMirrorService extends Service {
         }
         try {
             mirrorView.getTextureView().setSurfaceTexture(kept);
+            mirrorView.syncGpuPresentation();
         } catch (RuntimeException e) {
             // 接不上：还给管线，照旧等它离开会话再放；还不回去（管线里已经没有环视那一路）就放掉，这块画布不在它的会话里
             AppLog.w(TAG, "接回留着的后视镜画布失败: " + e);

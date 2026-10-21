@@ -81,6 +81,8 @@ public class TimelinePlayerActivity extends AppCompatActivity {
 
 
     private static final String TAG = "TimelinePlayer";
+    /** One destructive I/O job at a time; changed only on the UI thread. */
+    private boolean deletingFiles;
     /** 进度刷新、几路对齐的间隔。 */
     private static final long TICK_MS = 500L;
     /** 连续出错多少次就停止自动续播。 */
@@ -1607,24 +1609,7 @@ public class TimelinePlayerActivity extends AppCompatActivity {
     }
 
     private void deleteChosen(List<LaneTrack.Clip> files) {
-        // 正在播的那一段可能也在里面，先停下，否则删的是一个还开着的文件
-        for (Lane lane : lanes) {
-            resetLane(lane);
-        }
-        int deleted = 0;
-        int kept = 0;
-        for (LaneTrack.Clip clip : files) {
-            File file = new File(clip.path);
-            if (isLocked(clip.path)) {
-                kept++;
-            } else if (file.exists() && file.delete()) {
-                deleted++;
-            }
-        }
-        AppLog.i(TAG, "多选删除：" + deleted + "/" + files.size() + " 个文件，锁定的留下 " + kept + " 个");
-        Toast.makeText(this, deletedText(deleted, kept), Toast.LENGTH_SHORT).show();
-        setSelecting(false);
-        loadTimelines();
+        deleteFilesAsync(files, true);
     }
 
     private void confirmDeleteSession(int index, List<LaneTrack.Clip> files) {
@@ -1637,37 +1622,42 @@ public class TimelinePlayerActivity extends AppCompatActivity {
     }
 
     private void deleteSession(int index, List<LaneTrack.Clip> files) {
-        // 先停下，否则删的是一个还开着的文件。不只是在播这一条的时候：这一条的座舱文件
-        // 也可能正在相邻那一条的画面上（跨着两条的归重叠得多的那条，见 LaneTrack#belongingTo）。
-        // 删完反正要重扫、重开
+        deleteFilesAsync(files, false);
+    }
+
+    private void deleteFilesAsync(List<LaneTrack.Clip> clips, boolean clearSelection) {
+        if (deletingFiles) return;
+        deletingFiles = true;
+        // Release playback handles on the UI thread; lock reads and USB unlinking stay off it.
         for (Lane lane : lanes) {
             resetLane(lane);
         }
-        int deleted = 0;
-        int kept = 0;
-        for (LaneTrack.Clip clip : files) {
-            File file = new File(clip.path);
-            if (isLocked(clip.path)) {
-                kept++;
-            } else if (file.exists() && file.delete()) {
-                deleted++;
+        List<File> files = new ArrayList<>();
+        for (LaneTrack.Clip clip : clips) files.add(new File(clip.path));
+        android.content.Context app = getApplicationContext();
+        new Thread(() -> {
+            int[] outcome;
+            try { outcome = com.kooo.evcam.playback.GalleryDelete.files(app, files); }
+            catch (RuntimeException failure) {
+                AppLog.e(TAG, "Timeline deletion failed", failure);
+                outcome = new int[]{0, 0, files.size()};
             }
-        }
-        AppLog.i(TAG, "删除时间轴 " + index + "：" + deleted + "/" + files.size() + " 个文件，锁定的留下 " + kept + " 个");
-        Toast.makeText(this, deletedText(deleted, kept), Toast.LENGTH_SHORT).show();
-        loadTimelines();
+            final int[] result = outcome;
+            AppLog.i(TAG, "Timeline delete: deleted=" + result[0] + " protected=" + result[1] + " failed=" + result[2]);
+            runOnUiThread(() -> {
+                deletingFiles = false;
+                if (isFinishing() || isDestroyed()) return;
+                Toast.makeText(this, deletedText(result), Toast.LENGTH_SHORT).show();
+                if (clearSelection) setSelecting(false);
+                loadTimelines();
+            });
+        }, "timeline-delete").start();
     }
 
     // ------------------------------------------------------------------ 锁定影像
 
-    /** 锁定的文件回放里不能直接删：先解锁（锁定影像关着时不算）。 */
-    private boolean isLocked(String path) {
-        return lockEnabled && lockedVideos.contains(new File(path).getAbsolutePath());
-    }
-
-    private String deletedText(int deleted, int kept) {
-        return getResources().getQuantityString(R.plurals.player_deleted, deleted, deleted)
-                + (kept > 0 ? getResources().getQuantityString(R.plurals.msg_kept_locked, kept, kept) : "");
+    private String deletedText(int[] result) {
+        return getString(R.string.gallery_delete_result, result[0], result[1], result[2]);
     }
 
     /**

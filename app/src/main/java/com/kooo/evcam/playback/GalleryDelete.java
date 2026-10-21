@@ -17,7 +17,8 @@ public final class GalleryDelete {
             if (!visited.add(file.getAbsolutePath())) continue;
             synchronized (FootageLocks.guard()) {
                 Set<String> protectedNames = FootageLocks.protectedNames(context, file.getParentFile());
-                if (protectedNames == null || protectedNames.contains(file.getName())) {
+                if (com.kooo.evcam.storage.ActiveFootage.contains(file)
+                        || protectedNames == null || protectedNames.contains(file.getName())) {
                     kept++;
                 } else if (file.isFile() && file.delete()) {
                     deleted++;

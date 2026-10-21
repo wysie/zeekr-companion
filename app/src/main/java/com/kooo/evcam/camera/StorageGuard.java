@@ -109,7 +109,8 @@ public final class StorageGuard {
                     clips.add(new StoragePlan.Clip(file.getName(), path, file.length()));
                     byPath.put(path, file);
                     // Unreadable protection lists fail closed for that directory.
-                    if (names == null || names.contains(file.getName())) locked.add(path);
+                    if (names == null || names.contains(file.getName())
+                            || com.kooo.evcam.storage.ActiveFootage.contains(file)) locked.add(path);
                 }
             }
         }

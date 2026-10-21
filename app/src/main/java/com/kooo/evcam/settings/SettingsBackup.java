@@ -425,6 +425,8 @@ public final class SettingsBackup {
                 default:
                     throw new JSONException("unknown type " + type + " for " + key);
             }
+            if (!SettingsBackupTypes.accepts(store, key, value))
+                throw new JSONException("Wrong preference type: " + store + "/" + key);
             out.put(key, value);
         }
         return out;

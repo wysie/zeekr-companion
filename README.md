@@ -48,6 +48,18 @@ is not added to the footage. Raw developer exports retain their existing behavio
 
 Current test download: [Zeekr Companion 2.11.60-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.60-alpha.1).
 
+Unreleased audit corrections suspend GPU presentation for hidden/docked/retained
+camera views while continuing to drain their inputs, remove recording's normal
+codec-output wait, and timestamp the frame actually acquired. Transparent standby
+side windows still warm up normally. Camera settings load vendor capabilities off
+the UI thread, and quitting during Apply clears its transaction without resuming
+recording. Confirmation recreation/cancellation and nested category navigation
+also retain usable controls. Open recordings are protected from cleanup/deletion independently of
+filename ordering and the footage-lock switch; event/manual locks are rechecked
+at deletion. Settings import also rejects wrong types for known unset keys.
+No new switch is required. These changes do not establish real-car smoothness or
+storage durability; see the [codebase audit and validation](docs/codebase-audit-20261021.md).
+
 In alpha 60, the experimental 009 fit combines the earlier garage reference with matched
 flat-road features from the owner’s 21 October raw/factory captures. Held-out
 image-reference alignment improves for all four cameras, including the front;

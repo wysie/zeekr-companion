@@ -3,7 +3,6 @@ package com.kooo.evcam.settings;
 import android.content.Context;
 import android.graphics.ImageFormat;
 import android.hardware.camera2.CameraCharacteristics;
-import android.hardware.camera2.CameraManager;
 import android.hardware.camera2.params.StreamConfigurationMap;
 import android.os.Bundle;
 import android.util.Size;
@@ -83,7 +82,7 @@ public class ProfileEditorFragment extends Fragment {
 
     private ProfileStore store;
     Profile profile;
-    private CameraManager cameraManager;
+    private int factsGeneration;
     private LinearLayout presetRow;
     private LinearLayout cameraRow;
     private LinearLayout detailBox;
@@ -100,7 +99,6 @@ public class ProfileEditorFragment extends Fragment {
         store = new ProfileStore(context);
         profile = store.current();
         normaliseProfile();
-        cameraManager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
         if (savedInstanceState != null) {
             selectedRole = savedInstanceState.getString(STATE_ROLE);
             selectedLane = savedInstanceState.getInt(STATE_LANE);
@@ -162,6 +160,10 @@ public class ProfileEditorFragment extends Fragment {
         view.findViewById(R.id.editor_open_lanes).setOnClickListener(v -> openLanes());
         view.findViewById(R.id.editor_reset).setOnClickListener(v -> confirmReset());
         refresh();
+        final int generation = ++factsGeneration;
+        CameraSettingsFacts.load(requireContext(), () -> {
+            if (generation == factsGeneration && isAdded() && getView() != null) refresh();
+        });
     }
 
     /**
@@ -227,6 +229,7 @@ public class ProfileEditorFragment extends Fragment {
 
     @Override
     public void onDestroyView() {
+        factsGeneration++;
         super.onDestroyView();
         // 进摆位时这一页被换下去，view 摧了人还在。不放手的话，
         // 持的就是一棵已经死了的控件树，而且 refresh() 会往里面白写
@@ -844,12 +847,12 @@ public class ProfileEditorFragment extends Fragment {
     private List<int[]> declaredPreviewSizes(String role) {
         List<int[]> out = new ArrayList<>();
         String cameraId = cameraIdFor(role);
-        if (cameraId == null || cameraManager == null) {
+        CameraCharacteristics facts = com.kooo.evcam.camera.CameraCapabilities.characteristics(cameraId);
+        if (facts == null) {
             return out;
         }
         try {
-            StreamConfigurationMap map = cameraManager.getCameraCharacteristics(cameraId)
-                    .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+            StreamConfigurationMap map = facts.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             if (map == null) {
                 return out;
             }
@@ -1050,12 +1053,12 @@ public class ProfileEditorFragment extends Fragment {
     private List<int[]> declaredSizes(String role) {
         List<int[]> out = new ArrayList<>();
         String cameraId = cameraIdFor(role);
-        if (cameraId == null || cameraManager == null) {
+        CameraCharacteristics facts = com.kooo.evcam.camera.CameraCapabilities.characteristics(cameraId);
+        if (facts == null) {
             return out;
         }
         try {
-            StreamConfigurationMap map = cameraManager.getCameraCharacteristics(cameraId)
-                    .get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
+            StreamConfigurationMap map = facts.get(CameraCharacteristics.SCALER_STREAM_CONFIGURATION_MAP);
             if (map == null) {
                 return out;
             }

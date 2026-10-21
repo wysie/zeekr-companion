@@ -367,7 +367,9 @@ public class MainPageControlsAndroidTest {
                 }
                 onView(withId(R.id.btn_preview_layout)).perform(click());
                 for(int label:new int[]{R.string.home_layout_auto,R.string.home_layout_equal,R.string.home_layout_stacked})
-                    onView(withText(label)).check(androidx.test.espresso.assertion.ViewAssertions.matches(isCompletelyDisplayed()));
+                    // Four full-width presets intentionally put layout controls below the fold.
+                    onView(withText(label)).perform(androidx.test.espresso.action.ViewActions.scrollTo())
+                            .check(androidx.test.espresso.assertion.ViewAssertions.matches(isCompletelyDisplayed()));
                 capture(mode==AppCompatDelegate.MODE_NIGHT_NO?"main-light-preview":"main-dark-preview");
                 androidx.test.espresso.Espresso.pressBack();
                 onView(withId(R.id.btn_main_windows)).perform(click());

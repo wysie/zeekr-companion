@@ -18,6 +18,8 @@ import java.util.*;
 
 /** One ordinary source page and picker shared by Settings, Developer and the stream editor. */
 public class CameraSourcesFragment extends PreferenceFragmentCompat {
+    private static java.lang.ref.WeakReference<androidx.appcompat.app.AlertDialog> activePicker = new java.lang.ref.WeakReference<>(null);
+    private int factsGeneration;
     @Override public void onCreatePreferences(@Nullable Bundle state, @Nullable String rootKey) {
         Context context = requireContext();
         PreferenceScreen screen = getPreferenceManager().createPreferenceScreen(context);
@@ -49,7 +51,12 @@ public class CameraSourcesFragment extends PreferenceFragmentCompat {
     }
     @Override public void onViewCreated(@NonNull View view, @Nullable Bundle state) {
         super.onViewCreated(view, state); PreferenceRows.styleList(this, 28, 16);
+        int generation = ++factsGeneration;
+        CameraSettingsFacts.load(requireContext(), () -> {
+            if (generation == factsGeneration && isAdded() && getView() != null) refresh();
+        });
     }
+    @Override public void onDestroyView() { factsGeneration++; super.onDestroyView(); }
     private void refresh() {
         if (getContext() == null) return;
         AppConfig config = new AppConfig(requireContext());
@@ -75,12 +82,12 @@ public class CameraSourcesFragment extends PreferenceFragmentCompat {
     static void saved(Context context) { Toast.makeText(context, R.string.msg_mapping_saved, Toast.LENGTH_LONG).show(); }
 
     static void pick(Context context, String role, Profile profile, Runnable changed) {
+        androidx.appcompat.app.AlertDialog existing = activePicker.get();
+        if (existing != null && existing.isShowing() && ownerAlive(existing.getContext())
+                && owner(existing.getContext()) == owner(context)) return;
         AppConfig config = new AppConfig(context);
         Set<String> choices = new LinkedHashSet<>();
-        try {
-            android.hardware.camera2.CameraManager manager = (android.hardware.camera2.CameraManager)context.getSystemService(Context.CAMERA_SERVICE);
-            if (manager != null) Collections.addAll(choices, manager.getCameraIdList());
-        } catch (Exception ignored) { /* Retain configured/discovered IDs while a camera is held. */ }
+        Collections.addAll(choices, com.kooo.evcam.camera.CameraCapabilities.advertisedIds());
         choices.addAll(context.getSharedPreferences("camera_discovery", 0).getStringSet("captured_ids", Collections.emptySet()));
         if (config.is009CameraMappingEnabled()) Collections.addAll(choices, "0", "1", "2", "3");
         String detected = config.getDetectedSurroundId(); if (detected != null) choices.add(detected);
@@ -90,14 +97,17 @@ public class CameraSourcesFragment extends PreferenceFragmentCompat {
             String resolved = ProfileSizes.cameraIdFor(context, candidate); if (resolved != null) choices.add(resolved);
         }
         List<String> ids = new ArrayList<>(choices);
-        String[] labels = new String[ids.size() + 2]; labels[0] = context.getString(R.string.opt_camera_auto);
-        labels[1] = context.getString(R.string.record_source_unassigned);
-        for (int i = 0; i < ids.size(); i++) labels[i + 2] = context.getString(R.string.opt_camera_id, ids.get(i));
+        List<String> labels = new ArrayList<>();
+        labels.add(context.getString(R.string.opt_camera_auto));
+        labels.add(context.getString(R.string.record_source_unassigned));
+        for (String id : ids) labels.add(context.getString(R.string.opt_camera_id, id));
+        android.widget.ArrayAdapter<String> adapter = new android.widget.ArrayAdapter<>(context,
+                androidx.appcompat.R.layout.select_dialog_singlechoice_material, labels);
         String old = config.getSourceCameraId(role);
         int[] selected = {old == null ? 0 : old.isEmpty() ? 1 : Math.max(0, ids.indexOf(old) + 2)};
-        CamDialogs.show(new MaterialAlertDialogBuilder(context, R.style.Theme_Cam_MaterialAlertDialog)
+        androidx.appcompat.app.AlertDialog picker = CamDialogs.show(new MaterialAlertDialogBuilder(context, R.style.Theme_Cam_MaterialAlertDialog)
                 .setTitle(context.getString(R.string.record_source_pick, roleLabel(context, role)))
-                .setSingleChoiceItems(labels, selected[0], (dialog, which) -> selected[0] = which)
+                .setSingleChoiceItems(adapter, selected[0], (dialog, which) -> selected[0] = which)
                 .setPositiveButton(R.string.action_ok, (dialog, which) -> {
                     String picked = selected[0] == 0 ? null : selected[0] == 1 ? "" : ids.get(selected[0] - 2);
                     String resolved = picked == null ? ProfileSizes.automaticCameraIdFor(context, role) : picked;
@@ -121,5 +131,27 @@ public class CameraSourcesFragment extends PreferenceFragmentCompat {
                     }
                     changed.run(); saved(context);
                 }).setNegativeButton(R.string.action_cancel, null));
+        activePicker = new java.lang.ref.WeakReference<>(picker);
+        // Keep one window and stable choice indexes. Cancel can never race a second dialog.
+        // Existing/manual/009 choices stay usable even while the vendor service is blocked.
+        CameraSettingsFacts.load(context, () -> {
+            if (!picker.isShowing() || !ownerAlive(context)) return;
+            for (String id : com.kooo.evcam.camera.CameraCapabilities.advertisedIds()) if (!ids.contains(id)) {
+                ids.add(id);
+                adapter.add(context.getString(R.string.opt_camera_id, id));
+            }
+        });
+    }
+
+    private static boolean ownerAlive(Context context) {
+        context = owner(context);
+        return !(context instanceof android.app.Activity)
+                || (!((android.app.Activity) context).isFinishing() && !((android.app.Activity) context).isDestroyed());
+    }
+
+    private static Context owner(Context context) {
+        while (context instanceof android.content.ContextWrapper && !(context instanceof android.app.Activity))
+            context = ((android.content.ContextWrapper) context).getBaseContext();
+        return context;
     }
 }

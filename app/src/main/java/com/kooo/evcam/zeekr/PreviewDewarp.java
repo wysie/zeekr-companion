@@ -39,6 +39,19 @@ public final class PreviewDewarp {
     // Drawing must never wait for the camera thread's bounded GL startup/teardown lock.
     private static final java.util.concurrent.CopyOnWriteArrayList<WeakReference<FisheyeGlPipe>> RAW_PIPES
             = new java.util.concurrent.CopyOnWriteArrayList<>();
+    // Separate from LOCK: UI visibility never waits for GL startup/teardown. Remember
+    // hidden state before asynchronous camera setup has registered the output's pipe.
+    private static final java.util.Map<SurfaceTexture, Boolean> SUSPENDED_OUTPUTS = new java.util.WeakHashMap<>();
+
+    public static void setPresentationActive(SurfaceTexture output, boolean active) {
+        if (output == null) return;
+        synchronized (SUSPENDED_OUTPUTS) {
+            if (active) SUSPENDED_OUTPUTS.remove(output);
+            else SUSPENDED_OUTPUTS.put(output, Boolean.TRUE);
+            FisheyeGlPipe current = rawPipeFor(output);
+            if (current != null) current.setPresentationActive(active);
+        }
+    }
     static FisheyeGlPipe rawPipeFor(TextureView view) {
         return view == null ? null : rawPipeFor(view.getSurfaceTexture());
     }
@@ -54,7 +67,10 @@ public final class PreviewDewarp {
         RAW_PIPES.removeIf(reference -> {
             FisheyeGlPipe previous = reference.get(); return previous == null || !previous.isAlive();
         });
-        RAW_PIPES.add(new WeakReference<>(value));
+        synchronized (SUSPENDED_OUTPUTS) {
+            RAW_PIPES.add(new WeakReference<>(value));
+            value.setPresentationActive(!SUSPENDED_OUTPUTS.containsKey(value.output()));
+        }
     }
 
     /** Existing mirror/side output only. Off leaves its original direct surface untouched. */

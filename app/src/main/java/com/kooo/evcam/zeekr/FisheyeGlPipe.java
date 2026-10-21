@@ -171,6 +171,7 @@ public final class FisheyeGlPipe {
     private volatile Correction correction = new Correction(false, 0f, 1f);
     private volatile boolean released;
     private volatile boolean outputBroken;
+    private volatile boolean presentationActive = true;
     private volatile Runnable onReleased;
 
     private EGLDisplay display = EGL14.EGL_NO_DISPLAY;
@@ -194,6 +195,7 @@ public final class FisheyeGlPipe {
     /** Normal strip/video output keeps source detail regardless of TextureView layout size. */
     private volatile Size normalOutputSize;
     private volatile int renderedWidth, renderedHeight;
+    private volatile long presentedFrames;
     private volatile String renderedMode = "not drawn";
     private volatile BirdEyeGlRequest birdEyeRequest;
     private BirdEyeGlRenderer birdEyeRenderer;
@@ -317,6 +319,17 @@ public final class FisheyeGlPipe {
         return !released && !outputBroken;
     }
 
+    /** Retained/hidden consumers keep their camera input, but need no output render or swap. */
+    void setPresentationActive(boolean active) {
+        if (presentationActive == active) return;
+        presentationActive = active;
+        // Resume from the latest acquired input; its original freshness is preserved.
+        if (active && !released) handler.post(this::drawLatest);
+    }
+
+    /** Successful primary swaps, independent of when TextureView acquires an older queued buffer. */
+    long presentationCount() { return presentedFrames; }
+
     /**
      * 四格换个位置（例如画面下面带着行驶信息条，四格只占上面一部分）。任何线程都能调，下一帧生效。
      */
@@ -394,7 +407,9 @@ public final class FisheyeGlPipe {
     public String describeOutput() {
         Size target = normalOutputSize;
         return "input=" + inputWidth + "x" + inputHeight + " normal=" + target
-                + " rendered=" + renderedWidth + "x" + renderedHeight + " mode=" + renderedMode;
+                + " rendered=" + renderedWidth + "x" + renderedHeight + " mode=" + renderedMode
+                + " presentation=" + (presentationActive ? "active" : "suspended")
+                + " swaps=" + presentedFrames;
     }
 
     /** 收掉。任何线程都能调；在别的线程上调会等它收完（最多 1 秒），免得新管线接不上同一块输出。 */
@@ -532,6 +547,9 @@ public final class FisheyeGlPipe {
             return;
         }
         drawSideTap();
+        // Settings taps independently consume the same input. Hiding the primary view must
+        // not hide their output or stop updateTexImage/source freshness above.
+        if (!presentationActive) return;
         BirdEyeGlRequest request = birdEyeRequest;
         if (birdEyeRenderer != null && (request != birdEyeRenderer.request || request.cancelled || request.failure != null)) {
             birdEyeRenderer.release(); birdEyeRenderer = null;
@@ -602,7 +620,9 @@ public final class FisheyeGlPipe {
             if (request != null) request.failure = "GPU output timestamp unavailable";
             if (projectedSide) side.frames.failure = "GPU output timestamp unavailable";
         }
-        if (!EGL14.eglSwapBuffers(display, surface)) {
+        boolean presented = EGL14.eglSwapBuffers(display, surface);
+        if (presented) presentedFrames++;
+        if (!presented) {
             outputBroken = true;
             AppLog.w(TAG, name + " 画不上屏幕了 0x" + Integer.toHexString(EGL14.eglGetError())
                     + "，之后只取帧不画");

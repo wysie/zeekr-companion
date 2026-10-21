@@ -76,12 +76,36 @@ public class CameraSourcesAndroidTest {
   assertEquals(profile,new ProfileStore(target).current().toMap().toString());assertNull(config.getStoredSlotMap(config.getCarModel()));
   assertFalse(config.isAutoStartRecording());
  }
- private CameraSourcesFragment open(SettingsShellFragment shell,boolean developer) {
-  shell.showSection(developer?"screen_developer":"screen_recording");shell.getChildFragmentManager().executePendingTransactions();
-  SettingsPreferenceFragment page=(SettingsPreferenceFragment)shell.getChildFragmentManager().findFragmentById(R.id.settings_detail);
-  Preference link=page.findPreference(developer?"pref_camera_mapping":"pref_camera_sources");assertNotNull(link);
-  link.getOnPreferenceClickListener().onPreferenceClick(link);shell.getChildFragmentManager().executePendingTransactions();
-  return (CameraSourcesFragment)shell.getChildFragmentManager().findFragmentById(R.id.settings_detail);
+ private CameraSourcesFragment open(ActivityScenario<MainActivity> scenario,SettingsShellFragment[] host,boolean developer) {
+  scenario.onActivity(a->{host[0].showSection(developer?"screen_developer":"screen_recording");host[0].getChildFragmentManager().executePendingTransactions();});
+  boolean[] ready={false};long end=android.os.SystemClock.elapsedRealtime()+5000;
+  do {
+   scenario.onActivity(a->{androidx.fragment.app.Fragment page=host[0].getChildFragmentManager().findFragmentById(R.id.settings_detail);ready[0]=page instanceof SettingsPreferenceFragment&&page.isResumed();});
+   if(!ready[0])android.os.SystemClock.sleep(30);
+  }while(!ready[0]&&android.os.SystemClock.elapsedRealtime()<end);
+  assertTrue("Category must be displayed before opening its source link",ready[0]);
+  CameraSourcesFragment[] result={null};
+  scenario.onActivity(a->{
+   SettingsPreferenceFragment page=(SettingsPreferenceFragment)host[0].getChildFragmentManager().findFragmentById(R.id.settings_detail);
+   Preference link=page.findPreference(developer?"pref_camera_mapping":"pref_camera_sources");assertNotNull(link);
+   link.getOnPreferenceClickListener().onPreferenceClick(link);host[0].getChildFragmentManager().executePendingTransactions();
+   result[0]=(CameraSourcesFragment)host[0].getChildFragmentManager().findFragmentById(R.id.settings_detail);
+  });
+  awaitResumed(scenario,host,result);
+  return result[0];
+ }
+ private void awaitResumed(ActivityScenario<MainActivity> scenario,SettingsShellFragment[] host,CameraSourcesFragment[] sources) {
+  boolean[] resumed={false};String[] state={""};long end=android.os.SystemClock.elapsedRealtime()+5000;
+  do {
+   scenario.onActivity(a->{
+    sources[0]=(CameraSourcesFragment)host[0].getChildFragmentManager().findFragmentById(R.id.settings_detail);
+    resumed[0]=sources[0]!=null&&sources[0].isResumed();
+    state[0]="activity="+a.getLifecycle().getCurrentState()+", shell="+host[0].getLifecycle().getCurrentState()
+     +", source="+(sources[0]==null?"null":sources[0].getLifecycle().getCurrentState());
+   });
+   if(!resumed[0])android.os.SystemClock.sleep(30);
+  }while(!resumed[0]&&android.os.SystemClock.elapsedRealtime()<end);
+  assertTrue("Source page must be interactive before programmatic navigation: "+state[0],resumed[0]);
  }
  @Test public void ordinaryAndDeveloperEntriesSharePickerAndResetWithCancel() {
   DeveloperMode.setEnabled(target,true);config.setDetectedSurroundId("5");config.setSourceCameraId("composite","8");
@@ -90,22 +114,34 @@ public class CameraSourcesAndroidTest {
    scenario.onActivity(activity->{SettingsShellFragment shell=new SettingsShellFragment();host[0]=shell;
     activity.findViewById(R.id.fragment_container).setVisibility(View.VISIBLE);
     activity.getSupportFragmentManager().beginTransaction().replace(R.id.fragment_container,shell).commitNow();shell.getChildFragmentManager().executePendingTransactions();
-    sources[0]=open(shell,false);assertNull(sources[0].findPreference("cabin2"));Preference surround=sources[0].findPreference("composite");assertTrue(surround.getSummary().toString().contains("8"));
-    surround.getOnPreferenceClickListener().onPreferenceClick(surround);
    });
+   sources[0]=open(scenario,host,false);
+   assertNull(sources[0].findPreference("cabin2"));assertTrue(sources[0].findPreference("composite").getSummary().toString().contains("8"));
+   scenario.onActivity(a->{Preference row=sources[0].findPreference("composite");row.getOnPreferenceClickListener().onPreferenceClick(row);});
    onView(withText(R.string.opt_camera_auto)).perform(click());onView(withText(R.string.action_cancel)).perform(click());assertEquals("8",config.getSourceCameraId("composite"));
    scenario.onActivity(a->{Preference row=sources[0].findPreference("composite");row.getOnPreferenceClickListener().onPreferenceClick(row);});
    onView(withText(R.string.opt_camera_auto)).perform(click());onView(withText(R.string.action_ok)).perform(click());assertNull(config.getSourceCameraId("composite"));
-   scenario.onActivity(a->{sources[0]=open(host[0],true);assertTrue(sources[0].findPreference("composite").getSummary().toString().contains("5"));
-    config.setSourceCameraId("manual","9");Preference reset=sources[0].findPreference("reset_sources");reset.getOnPreferenceClickListener().onPreferenceClick(reset);});
+   sources[0]=open(scenario,host,true);
+   scenario.onActivity(a->{
+    assertEquals("Category selection removes the previous recording editor history",1,host[0].getChildFragmentManager().getBackStackEntryCount());
+    assertEquals("screen_developer",host[0].currentSection());
+   });
+   assertTrue(sources[0].findPreference("composite").getSummary().toString().contains("5"));
+   scenario.onActivity(a->{config.setSourceCameraId("manual","9");Preference reset=sources[0].findPreference("reset_sources");reset.getOnPreferenceClickListener().onPreferenceClick(reset);});
    onView(withText(R.string.action_cancel)).perform(click());assertEquals("9",config.getSourceCameraId("manual"));
-   InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+   awaitResumed(scenario,host,sources);
    scenario.onActivity(a->{
     sources[0]=(CameraSourcesFragment)host[0].getChildFragmentManager().findFragmentById(R.id.settings_detail);
     assertTrue(sources[0].isResumed());
     Preference reset=sources[0].findPreference("reset_sources");reset.getOnPreferenceClickListener().onPreferenceClick(reset);
    });
    onView(withText(R.string.action_ok)).perform(click());assertNull(config.getSourceCameraId("manual"));assertEquals("5",ProfileSizes.cameraIdFor(target,"composite"));
+   scenario.onActivity(a->{
+    host[0].getChildFragmentManager().popBackStackImmediate();
+    assertEquals(0,host[0].getChildFragmentManager().getBackStackEntryCount());
+    assertTrue(host[0].getChildFragmentManager().findFragmentById(R.id.settings_detail) instanceof SettingsPreferenceFragment);
+    assertEquals("Back returns to Developer, not the abandoned recording category", "screen_developer",host[0].currentSection());
+   });
   }
  }
 }
