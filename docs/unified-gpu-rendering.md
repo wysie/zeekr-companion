@@ -206,3 +206,8 @@ Validation:
   the buffer fix; no full UI-suite pass is claimed.
 - All 1,531 JVM tests pass, lint has zero errors, and debug, instrumentation and
   signed release builds pass. This fix was not published as a new release.
+
+Subsequently published in **2.11.59-alpha.1** (version code 342), 2026-10-21.
+The tag contains `e5e8a99f`; alpha 58 did not contain it. Tagged CI and the public
+APK verification are recorded in [the alpha 59 publication record](blind-quality-comparison.md#alpha-59-publication--2026-10-21).
+Owner confirmation on the vehicle remains pending.
