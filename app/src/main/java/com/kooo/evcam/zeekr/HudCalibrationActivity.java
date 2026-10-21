@@ -19,7 +19,7 @@ import com.kooo.evcam.ui.WrappingActionRow;
 import com.google.android.material.button.MaterialButton;
 import org.json.JSONObject;
 
-/** Main-display controls for a temporary square on the normal detected HUD. */
+/** Main-display square controls and explicit, viewport-bound horizontal HUD calibration. */
 public final class HudCalibrationActivity extends AppCompatActivity {
     private final Handler main = new Handler(Looper.getMainLooper());
     private HudCalibrationSession session;
@@ -27,6 +27,12 @@ public final class HudCalibrationActivity extends AppCompatActivity {
     private Button start, stop;
     private LinearLayout controls;
     private SeekBar horizontal, vertical, size;
+    private SeekBar margin;
+    private TextView boundaries, marginLabel;
+    private Button setLeft, setRight, saveBounds, resetBounds;
+    private JSONObject draftFrame;
+    private Integer draftLeft, draftRight;
+    private int draftMargin = HudSafeArea.DEFAULT_MARGIN;
     private boolean syncing;
     private int step = 1;
     private final Runnable timeout = () -> stopTest(R.string.hud_test_timeout);
@@ -47,10 +53,36 @@ public final class HudCalibrationActivity extends AppCompatActivity {
         stop = button(actions, R.string.hud_test_stop, () -> stopTest(R.string.hud_test_stopped));
         button(actions, R.string.hud_test_back, this::finish);
         position = text(page, R.string.hud_test_idle, R.style.TextAppearance_Cam_SettingsBody);
+        result = text(page, R.string.hud_test_idle, R.style.TextAppearance_Cam_SettingsBody);
+        result.setText(""); result.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
         ScrollView scroll = new ScrollView(this); page.addView(scroll, new LinearLayout.LayoutParams(-1, 0, 1));
         LinearLayout body = new LinearLayout(this); body.setOrientation(LinearLayout.VERTICAL); scroll.addView(body);
+        text(body, R.string.hud_safe_title, R.style.TextAppearance_Cam_SettingsTitle);
+        text(body, R.string.hud_safe_help, R.style.TextAppearance_Cam_SettingsBody);
+        boundaries = text(body, R.string.hud_safe_none, R.style.TextAppearance_Cam_SettingsBody);
+        boundaries.setAccessibilityLiveRegion(View.ACCESSIBILITY_LIVE_REGION_POLITE);
+        horizontal = slider(body, R.string.hud_test_x);
+        WrappingActionRow edges = row(body);
+        setLeft = button(edges, R.string.hud_safe_set_left, () -> setBoundary(false));
+        setRight = button(edges, R.string.hud_safe_set_right, () -> setBoundary(true));
+        marginLabel = text(body, R.string.hud_safe_margin, R.style.TextAppearance_Cam_SettingsBody);
+        margin = new SeekBar(this); margin.setMax(5);
+        margin.setContentDescription(getString(R.string.hud_safe_margin_label));
+        margin.setMinimumHeight((int)(48 * getResources().getDisplayMetrics().density));
+        body.addView(margin, new LinearLayout.LayoutParams(-1, -2));
+        margin.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override public void onProgressChanged(SeekBar bar, int value, boolean user) {
+                if (!user) return;
+                draftMargin = value; touch(); updateCalibration();
+            }
+            @Override public void onStartTrackingTouch(SeekBar bar) { touch(); }
+            @Override public void onStopTrackingTouch(SeekBar bar) { }
+        });
+        WrappingActionRow calibrationActions = row(body);
+        saveBounds = button(calibrationActions, R.string.hud_safe_save, this::saveCalibration);
+        resetBounds = button(calibrationActions, R.string.hud_safe_reset, this::resetCalibration);
+        text(body, R.string.hud_safe_adjust, R.style.TextAppearance_Cam_SettingsTitle);
         controls = new LinearLayout(this); controls.setOrientation(LinearLayout.VERTICAL); body.addView(controls);
-        horizontal = slider(controls, R.string.hud_test_x);
         vertical = slider(controls, R.string.hud_test_y);
         size = slider(controls, R.string.hud_test_size);
         WrappingActionRow moves = row(controls);
@@ -73,7 +105,7 @@ public final class HudCalibrationActivity extends AppCompatActivity {
         observe(observations, R.string.hud_test_clip_top, "top_cut_off");
         observe(observations, R.string.hud_test_clip_bottom, "bottom_cut_off");
         observe(observations, R.string.hud_test_not_seen, "not_seen");
-        result = text(body, R.string.hud_test_log_help, R.style.TextAppearance_Cam_SettingsBody);
+        text(body, R.string.hud_test_log_help, R.style.TextAppearance_Cam_SettingsBody);
         button(row(body), R.string.hud_test_diagnostics,
                 () -> startActivity(new Intent(this, DiagnosticsActivity.class)));
         ScreenState.addListener(screen); update();
@@ -83,6 +115,7 @@ public final class HudCalibrationActivity extends AppCompatActivity {
         Display display = SideViewHudPanel.find(this);
         if (display == null) { result.setText(R.string.hud_test_no_display); return; }
         try {
+            draftFrame = null; draftLeft = null; draftRight = null; draftMargin = HudSafeArea.DEFAULT_MARGIN;
             session = new HudCalibrationSession(this, display, this::update, () -> {
                 session = null; main.removeCallbacks(timeout); update();
             });
@@ -90,6 +123,74 @@ public final class HudCalibrationActivity extends AppCompatActivity {
         } catch (RuntimeException e) {
             session = null; update(); result.setText(getString(R.string.hud_test_failed, e.getClass().getSimpleName()));
         }
+    }
+    private void setBoundary(boolean right) {
+        if (session == null) return;
+        try {
+            session.observation("boundary_selection"); // Refuse a position not yet drawn on the actual HUD.
+            if (session.x < 0 || session.y < 0 || session.x + session.size > session.marker.getWidth()
+                    || session.y + session.size > session.marker.getHeight()) {
+                result.setText(R.string.hud_safe_inside); return;
+            }
+            JSONObject frame = HudSafeArea.frame(session.display, session.marker);
+            if (!HudSafeArea.matches(draftFrame, frame)) { update(); return; }
+            if (right) draftRight = session.x + session.size; else draftLeft = session.x;
+            touch(); updateCalibration(); result.setText(right ? R.string.hud_safe_right_set : R.string.hud_safe_left_set);
+        } catch (Exception notReady) { result.setText(R.string.hud_test_not_ready); }
+    }
+    private void saveCalibration() {
+        if (session == null || draftLeft == null || draftRight == null) return;
+        try {
+            JSONObject observation = session.observation("safe_area_saved");
+            JSONObject frame = HudSafeArea.frame(session.display, session.marker);
+            if (!HudSafeArea.matches(draftFrame, frame)) throw new IllegalStateException("Viewport changed");
+            JSONObject record = HudSafeArea.record(frame, draftLeft, draftRight, draftMargin);
+            if (!HudSafeArea.save(this, record)) { result.setText(R.string.hud_safe_save_failed); return; }
+            HudCalibrationLog.save(this, observation.put("safe_area", record));
+            stopTest(R.string.hud_safe_saved);
+            SideViewPopupService.hudCalibrationChanged();
+        } catch (Exception invalid) { result.setText(R.string.hud_safe_invalid); }
+    }
+    private void resetCalibration() {
+        if (!HudSafeArea.reset(this)) { result.setText(R.string.hud_safe_save_failed); return; }
+        draftFrame = null; draftLeft = null; draftRight = null; draftMargin = HudSafeArea.DEFAULT_MARGIN;
+        SideViewPopupService.hudCalibrationChanged(); updateCalibration();
+        result.setText(R.string.hud_safe_reset_done); touch();
+    }
+    private void updateCalibration() {
+        if (boundaries == null) return;
+        JSONObject saved = HudSafeArea.read(this), frame = null;
+        try { if (session != null) frame = HudSafeArea.frame(session.display, session.marker); }
+        catch (Exception unmeasured) { /* Controls remain unavailable until the Presentation is measured. */ }
+        boolean ready = frame != null;
+        if (ready && !HudSafeArea.matches(draftFrame, frame)) {
+            draftFrame = frame; draftLeft = null; draftRight = null; draftMargin = HudSafeArea.DEFAULT_MARGIN;
+            if (HudSafeArea.matches(saved, frame)) {
+                draftLeft = saved.optInt("left"); draftRight = saved.optInt("right");
+                draftMargin = saved.optInt("margin_percent", HudSafeArea.DEFAULT_MARGIN);
+            }
+        }
+        boolean valid = false;
+        String summary;
+        if (ready) {
+            summary = getString(R.string.hud_safe_draft,
+                    draftLeft == null ? getString(R.string.hud_safe_not_set) : draftLeft.toString(),
+                    draftRight == null ? getString(R.string.hud_safe_not_set) : draftRight.toString());
+            if (draftLeft != null && draftRight != null) {
+                try {
+                    HudPanelPlacement.safeInterval(frame.optInt("viewport_width"), draftLeft, draftRight, draftMargin);
+                    valid = true;
+                } catch (IllegalArgumentException invalid) { summary += "\n" + getString(R.string.hud_safe_invalid); }
+            }
+            if (saved != null && !HudSafeArea.matches(saved, frame)) summary += "\n" + getString(R.string.hud_safe_mismatch);
+        } else if (saved != null) {
+            summary = getString(R.string.hud_safe_stored, saved.optInt("left"), saved.optInt("right"),
+                    saved.optInt("margin_percent"), saved.optInt("viewport_width"), saved.optInt("viewport_height"));
+        } else summary = getString(R.string.hud_safe_none);
+        boundaries.setText(summary);
+        setLeft.setEnabled(ready); setRight.setEnabled(ready); margin.setEnabled(ready); horizontal.setEnabled(ready);
+        saveBounds.setEnabled(ready && valid); resetBounds.setEnabled(HudSafeArea.hasSaved(this));
+        margin.setProgress(draftMargin); marginLabel.setText(getString(R.string.hud_safe_margin, draftMargin));
     }
     private void stopTest(int reason) {
         main.removeCallbacks(timeout);
@@ -139,6 +240,7 @@ public final class HudCalibrationActivity extends AppCompatActivity {
         boolean active = session != null;
         start.setEnabled(!active); stop.setEnabled(active);
         enable(controls, active && session.marker.getWidth() > 0 && session.marker.getHeight() > 0);
+        updateCalibration();
         if (!active) { position.setText(R.string.hud_test_idle); return; }
         int w = session.marker.getWidth(), h = session.marker.getHeight();
         position.setText(getString(R.string.hud_test_position, session.display.getDisplayId(), w, h,

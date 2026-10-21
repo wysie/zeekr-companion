@@ -11,6 +11,7 @@ outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
 | --- | --- |
+| `feature/hud-safe-area-calibration` | Explicit HUD horizontal boundaries, safety margin and matching viewport fit, with independent reset and unchanged camera picture/recording settings |
 | `feature/blind-quality-comparison` | Explicit same-frame native side/popup-render comparison export, renderer-state metadata and Picture-page save/share controls |
 | `fix/surround-preview-buffer-size` | Reproduce native strip-detail loss after pane resize; retain GPU output dimensions and restore direct preview buffers without camera rebuild |
 | `feature/hud-visible-area-test` | Temporary movable public-HUD square and bounded durable manual edge observations in Diagnostics, preserving recording intent and saved framing |

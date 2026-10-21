@@ -451,3 +451,14 @@ Send comparison to phone and Copy file location expose the completed file. The
 footer scrolls within a 180dp cap to retain preview space. Typography, neutral
 outlined actions and colours follow the incumbent settings theme. The latest
 completed path is local export state, separate from vehicle settings backups.
+
+### HUD visibility calibration, 2026-10-21
+
+Extend the square tool with a horizontal calibration group using the same regular
+type and wrapping native actions. The horizontal slider stays beside Set left/Set
+right; selected values and the safety margin precede explicit Save/Reset actions.
+Start/Stop/Back, measured position and live save/error feedback stay above the scroll
+area. Secondary vertical/size/nudge/colour and observation controls remain reachable
+below. Saved limits and temporary observations are distinct, with no automatic save
+on leave. Labels/arrows use final fitted panel dimensions rather than being scaled
+as part of the camera image. Keep the incumbent day/night palettes.

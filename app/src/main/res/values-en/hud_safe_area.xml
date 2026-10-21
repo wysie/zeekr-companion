@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hud_safe_title">Calibrate horizontal area</string>
+    <string name="hud_safe_help">Sit normally while parked. Keep the whole square comfortably visible with small head movements. Set left using its left edge, then set right using its right edge. Save applies both limits to the HUD camera panel, labels and arrow. Existing position and trim still control factory-graphic clearance; vertical visibility is unchanged.</string>
+    <string name="hud_safe_none">No calibration saved. Normal HUD placement is used until you set both boundaries and save.</string>
+    <string name="hud_safe_set_left">Set left boundary</string>
+    <string name="hud_safe_set_right">Set right boundary</string>
+    <string name="hud_safe_margin_label">Safety margin</string>
+    <string name="hud_safe_margin">Safety margin: %1$d%% of HUD width at each edge</string>
+    <string name="hud_safe_save">Save calibration</string>
+    <string name="hud_safe_reset">Reset calibration</string>
+    <string name="hud_safe_adjust">Adjust square</string>
+    <string name="hud_safe_inside">Move the whole square inside the HUD display before setting a boundary.</string>
+    <string name="hud_safe_left_set">Left boundary selected at the square’s left edge. Set the other boundary, check head movement, then save.</string>
+    <string name="hud_safe_right_set">Right boundary selected at the square’s right edge. Set the other boundary, check head movement, then save.</string>
+    <string name="hud_safe_save_failed">Could not save calibration. Previous calibration is retained. Try again.</string>
+    <string name="hud_safe_saved">Calibration saved and applied to this HUD viewport. Square stopped. Camera picture settings are retained.</string>
+    <string name="hud_safe_invalid">Set left before right and leave at least 96 px between them after the safety margin. Move the square or reduce the margin.</string>
+    <string name="hud_safe_reset_done">Calibration removed. Normal HUD placement restored; picture settings and observation logs retained.</string>
+    <string name="hud_safe_draft">Selected boundaries · Left: %1$s px · Right: %2$s px\nOnly Save calibration applies these limits.</string>
+    <string name="hud_safe_not_set">not set</string>
+    <string name="hud_safe_mismatch">Saved calibration belongs to a different HUD viewport and is not applied here. Set both boundaries again.</string>
+    <string name="hud_safe_stored">Saved · Left %1$d px · Right %2$d px · margin %3$d%%\nApplies only to the matching HUD and %4$d × %5$d px viewport. Start the square to check or adjust.</string>
+</resources>

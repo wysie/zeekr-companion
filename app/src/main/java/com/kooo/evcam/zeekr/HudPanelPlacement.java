@@ -98,4 +98,31 @@ public final class HudPanelPlacement {
         return new Crop(new Rect(panel.left + boundsOffset, panel.top, panel.width - removed, panel.height),
                 panel.width, pictureOffset);
     }
+
+    /** Explicit optical-safe horizontal interval; no calibration means callers keep the old placement. */
+    public static int[] safeInterval(int viewportWidth, int left, int right, int marginPercent) {
+        if (viewportWidth <= 0 || left < 0 || right > viewportWidth || right <= left
+                || marginPercent < 0 || marginPercent > 5)
+            throw new IllegalArgumentException("Invalid HUD boundaries");
+        int margin = Math.round(viewportWidth * marginPercent / 100f);
+        if (right - left - 2 * margin < 2 * MIN_SIZE_PX)
+            throw new IllegalArgumentException("HUD boundaries too close");
+        return new int[]{left + margin, right - margin};
+    }
+
+    /** Fit the already body-trimmed panel, preserving its source crop and aspect, then clamp placement. */
+    public static Crop fitHorizontal(Crop crop, int safeLeft, int safeRight, int hudHeight, int verticalPercent) {
+        int available = safeRight - safeLeft;
+        if (safeLeft < 0 || available < 2 * MIN_SIZE_PX || hudHeight <= 0)
+            throw new IllegalArgumentException("Missing safe HUD interval");
+        Rect old = crop.bounds;
+        float scale = Math.min(1f, available / (float) old.width);
+        int width = Math.min(available, Math.max(1, Math.round(old.width * scale)));
+        int height = Math.max(1, Math.round(old.height * scale));
+        int left = Math.max(safeLeft, Math.min(safeRight - width, old.left));
+        int top = scale == 1f ? old.top
+                : Math.round(Math.max(0, hudHeight - height) * clampPercent(verticalPercent) / 100f);
+        return new Crop(new Rect(left, top, width, height),
+                Math.max(width, Math.round(crop.pictureWidth * scale)), Math.round(crop.pictureOffsetX * scale));
+    }
 }

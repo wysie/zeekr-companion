@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Add saved HUD left/right visibility calibration with adjustable safety margins, proportionally fitted camera panels and labels, viewport matching and a separate Reset calibration action.
+
 ## [2.11.59-alpha.1] - 2026-10-21
 
 - Preserve native surround-preview detail after pane resizes and retained-view reattachment without requiring Apply changes.

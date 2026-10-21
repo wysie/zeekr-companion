@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="hud_safe_title">Tentukur kawasan mendatar</string>
+    <string name="hud_safe_help">Duduk seperti biasa semasa diparkir. Pastikan seluruh petak masih kelihatan dengan pergerakan kepala kecil. Tetapkan sempadan kiri menggunakan tepi kiri petak, kemudian sempadan kanan menggunakan tepi kanannya. Simpan untuk mengehadkan panel kamera HUD, label dan anak panah. Kedudukan dan pemangkasan sedia ada masih mengawal jarak daripada grafik kilang; kawasan menegak tidak berubah.</string>
+    <string name="hud_safe_none">Tiada penentukuran disimpan. Kedudukan HUD biasa digunakan sehingga kedua-dua sempadan ditetapkan dan disimpan.</string>
+    <string name="hud_safe_set_left">Tetapkan sempadan kiri</string>
+    <string name="hud_safe_set_right">Tetapkan sempadan kanan</string>
+    <string name="hud_safe_margin_label">Jidar keselamatan</string>
+    <string name="hud_safe_margin">Jidar keselamatan: %1$d%% lebar HUD pada setiap tepi</string>
+    <string name="hud_safe_save">Simpan penentukuran</string>
+    <string name="hud_safe_reset">Tetap semula penentukuran</string>
+    <string name="hud_safe_adjust">Laraskan petak</string>
+    <string name="hud_safe_inside">Gerakkan seluruh petak ke dalam paparan HUD sebelum menetapkan sempadan.</string>
+    <string name="hud_safe_left_set">Tepi kiri petak dipilih sebagai sempadan kiri. Tetapkan sempadan satu lagi, periksa pergerakan kepala, kemudian simpan.</string>
+    <string name="hud_safe_right_set">Tepi kanan petak dipilih sebagai sempadan kanan. Tetapkan sempadan satu lagi, periksa pergerakan kepala, kemudian simpan.</string>
+    <string name="hud_safe_save_failed">Penentukuran tidak dapat disimpan. Penentukuran terdahulu dikekalkan. Cuba lagi.</string>
+    <string name="hud_safe_saved">Penentukuran disimpan dan digunakan pada viewport HUD ini. Petak dihentikan. Tetapan gambar kamera dikekalkan.</string>
+    <string name="hud_safe_invalid">Sempadan kiri mesti sebelum kanan dengan sekurang-kurangnya 96 px selepas jidar keselamatan. Gerakkan petak atau kurangkan jidar.</string>
+    <string name="hud_safe_reset_done">Penentukuran dibuang. Kedudukan HUD biasa dipulihkan; tetapan gambar dan log pemerhatian dikekalkan.</string>
+    <string name="hud_safe_draft">Sempadan dipilih · Kiri: %1$s px · Kanan: %2$s px\nHad ini hanya digunakan selepas Simpan penentukuran.</string>
+    <string name="hud_safe_not_set">belum ditetapkan</string>
+    <string name="hud_safe_mismatch">Penentukuran tersimpan milik viewport HUD berbeza dan tidak digunakan di sini. Tetapkan semula kedua-dua sempadan.</string>
+    <string name="hud_safe_stored">Disimpan · Kiri %1$d px · Kanan %2$d px · jidar %3$d%%\nHanya untuk HUD sepadan dan viewport %4$d × %5$d px. Mulakan petak untuk memeriksa atau melaraskan.</string>
+</resources>

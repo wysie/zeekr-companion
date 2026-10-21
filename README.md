@@ -474,13 +474,34 @@ Under **HUD picture**, **Follow popup picture settings** defaults on for unconfi
 
 Height (30–100%), shape (width/height, 100–300%), road-edge trim (0–60%), horizontal/vertical position, opacity (20–100%), contrast, night brightness and edge fade always stay HUD-only, in either mode. The 009 layout defaults to 50% height, square shape, horizontal 94% (right), vertical 50%, and Follow indicator side off, so either camera appears on the right. Its layout is saved independently from the previous generic/7X layout (74% height, horizontal 6%). **HUD road-edge trim** is under Blind spot camera → HUD → Position & size. It starts at 25% on the recognised 009 display, including upgrades without a saved crop; generic/7X HUDs keep 0%. It prioritizes the car-body edge of the displayed camera picture: mirrored Left trims from the left; mirrored Right trims from the right. Mirroring off reverses these edges. This follows the camera side and HUD picture mirroring, independently of fixed/follow-indicator window placement. The visible panel still shrinks away from the HUD centre while retaining its outer placement, height and original picture scale. Both cameras keep equal visible widths. HUD direction labels sit at the bottom of the retained car-body edge (mirrored Left at bottom-right, mirrored Right at bottom-left); labels and arrows are drawn after cropping/upscaling inside the visible window. Set 0% to restore the full picture; this setting and its reset are independent of popup picture following. Existing position, shape, aim and recording settings are retained. The 25% starting value reduces the footprint; physical projector masking and changing factory graphics still need an in-car check. HUD windows have no touch controls. Reset restores Screen output, follow-popup mode and picture/layout defaults while retaining the main feature switch and shared popup labels.
 
-**HUD visible-area test** under Blind spot camera → HUD → Position & size projects a
+**HUD visibility calibration** under Blind spot camera → HUD → Position & size projects a
 200px red square onto the same detected public HUD. From the main screen, adjust
 its size and position, nudge by 1 or 10 logical pixels, or select Red/Cyan/White.
 The square can cross Android's reported edges; L/R/T/B identify its image edges.
+To calibrate, sit normally while parked and keep the whole square comfortably
+visible through small head movements. **Set left boundary** records the square's
+left edge; **Set right boundary** records its right edge. **Save calibration**
+applies both limits with a default 2% of viewport-width margin at each edge
+(adjustable 0–5%). The visible HUD camera panel is moved inward, or proportionally
+shrunk if necessary, without adding another camera crop. Body-edge trim is retained
+proportionally, and labels/arrows are drawn at the final visible size. Both cameras
+use the same usable interval, for either renderer and fixed/follow-indicator mode.
+No calibration is enabled by default. Selecting boundaries alone changes nothing;
+leaving, stopping or restarting the square abandons unsaved selections.
+
+Calibration is matched to the public HUD name/flags, display dimensions and exact
+measured content dimensions/origin; it is ignored on a mismatch, which the square
+controls report. These public attributes are not a hardware serial identity.
+**Reset calibration** removes only these limits, restoring normal placement and
+retaining picture, position, trim, output, recording and observation choices.
+The saved record is included in settings backups and Diagnostics. It constrains
+horizontal app placement; it cannot enlarge the optical viewing range, calibrate
+vertical visibility or detect factory graphics. Existing position/trim controls
+still handle factory-graphic clearance. Physical fit requires an owner check.
+
 While parked, save **Fully visible** just before an edge disappears, then save
 **Left/Right/Top/Bottom cut off** (or **Not visible**). Repeat at different heights
-to investigate a shaped optical boundary or factory graphics. Only these explicit
+to investigate a shaped optical boundary or factory graphics. These explicit
 observations are saved, with timestamps, session/display details, actual measured
 viewport/origin, marker rectangle, logical visible intersection and current HUD
 placement/mirroring. The latest 128 survive closing the app and appear in
