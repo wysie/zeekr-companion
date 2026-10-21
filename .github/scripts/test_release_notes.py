@@ -1,5 +1,6 @@
 from pathlib import Path
 import os
+import re
 import tempfile
 import unittest
 from release_notes import changelog_section, translated_sections
@@ -11,7 +12,14 @@ class ReleaseNotesTranslationTest(unittest.TestCase):
         old = Path.cwd()
         try:
             os.chdir(root)
-            for version in ['Unreleased'] + ['2.11.' + str(n) + '-alpha.1' for n in range(56, 61)]:
+            # Follow authored sections as Unreleased is promoted into each new release.
+            versions = re.findall(r'^## \[([^]]+)\]', Path('CHANGELOG.ms.md').read_text(encoding='utf-8'), re.M)
+            chinese = re.findall(r'^## \[([^]]+)\]', Path('CHANGELOG.zh-CN.md').read_text(encoding='utf-8'), re.M)
+            self.assertEqual(versions, chinese)
+            self.assertGreaterEqual(len(versions), 6)
+            for version in versions:
+                if version == 'Unreleased' and not changelog_section(version):
+                    continue
                 with self.subTest(version=version):
                     english = changelog_section(version)
                     blocks = translated_sections(version)
