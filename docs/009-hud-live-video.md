@@ -247,7 +247,7 @@ ordinary observation buttons still only log, without applying bounds.
 This is horizontal visibility calibration, not optical eye tracking or an automatic
 factory-graphic mask. It cannot enlarge the eyebox or guarantee visibility when
 leaning outside the tested position. Vertical placement and factory-graphic clearance
-still use the existing HUD position/trim settings. No new release is published here.
+still use the existing HUD position/trim settings. Included in 2.11.60-alpha.1.
 
 Validation: 1,543 JVM tests pass (including eight safe-interval/fitting cases),
 lint reports zero errors, and signed release, debug and instrumentation APKs build.

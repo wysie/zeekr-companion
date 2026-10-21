@@ -204,4 +204,4 @@ behavior, CPU rendering and persisted profile/manual-value selection. Production
 Java renders of both new raw captures and the retained garage capture were
 inspected; same-source before/after comparisons use identical framing and artwork.
 Owner verification of actual vehicle alignment remains pending. This revision is
-unreleased.
+included in 2.11.60-alpha.1.
