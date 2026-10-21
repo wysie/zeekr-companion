@@ -82,3 +82,22 @@ the selected backend and same-frame provenance. Separate GL tests exercise the
 GPU path against the actual live side shader. Synthetic images establish capture
 correctness, not vehicle optical quality; owner capture and on-car cadence checks
 remain pending. This feature is unreleased.
+
+## Alpha 59 publication — 2026-10-21
+
+Published in [2.11.59-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.59-alpha.1),
+version code 342, at commit `4d3683c96587de00ae86e0878f82f1004735b4f6`.
+The tag contains both this comparison feature and the native surround-preview
+buffer fix (`e5e8a99f`). Local release checks pass 1,535 JVM tests, zero lint
+errors, signed release packaging and all three packaging tests; the 31 focused
+native checks above cover the unchanged implementation before the version bump.
+Tagged CI run `39543581443` passed build and draft publication. Generated notes
+were reviewed before publishing as a pre-release with Latest disabled.
+
+The public 24,220,358-byte APK was downloaded and matches its checksum:
+`3581dd6f9b90feded080f42163b0b5c6d2a952ba3fffaf81b2c040927a098b60`.
+Its Android application ID remains `io.github.dts88.zeekrshortcut` and signing
+certificate SHA-256 remains
+`a40da80a59d170caa950cf15c18c454d47a39b26989d8b640ecd745ba71bf5dc`.
+Vehicle confirmation of restored surround detail and blind-picture captures is
+still pending; publication does not establish a car image-quality result.
