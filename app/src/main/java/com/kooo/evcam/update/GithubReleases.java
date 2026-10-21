@@ -140,6 +140,11 @@ public final class GithubReleases {
      */
     public static Release fetchLatest(UpdateChannel channel, String currentVersion)
             throws IOException {
+        return fetchLatest(channel, currentVersion, "en", "");
+    }
+
+    public static Release fetchLatest(UpdateChannel channel, String currentVersion,
+            String languageTag, String originalLanguageNotice) throws IOException {
         String body = getText(LIST_URL);
         Release best = null;
         List<Release> newer = new ArrayList<>();
@@ -183,7 +188,7 @@ public final class GithubReleases {
         for (Release release : newer) {
             entries.add(new ReleaseNotes.Entry(release.tagName, release.body));
         }
-        return best.withNotes(ReleaseNotes.combine(entries));
+        return best.withNotes(ReleaseNotes.combine(entries, languageTag, originalLanguageNotice));
     }
 
     /** 挑出这个版本里的 APK 附件；没有就返回 null。 */

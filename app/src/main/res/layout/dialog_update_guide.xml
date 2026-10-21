@@ -1,10 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!--
-  检查更新的安装提醒（update/UpdateInstallGuide）：一张说明图 + 「知道了，开始下载」。
-
-  和超级后视镜指南同一种样子：窗口铺满、底下压暗，图片居中。点图片外面不关 ——
-  这一页挡在下载前面，点空了就等于没下载，用户只会以为按钮没反应。返回键可以取消。
--->
+<!-- Localized scrollable installer reminder. Back cancels; confirmation starts download. -->
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
@@ -16,12 +11,11 @@
         android:gravity="center_horizontal"
         android:orientation="vertical">
 
-        <ImageView
+        <com.kooo.evcam.ui.LocalizedGuidePage
             android:id="@+id/guide_image"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:contentDescription="@string/upd_guide_image"
-            android:scaleType="fitXY" />
+            />
 
         <com.google.android.material.button.MaterialButton
             android:id="@+id/guide_done"

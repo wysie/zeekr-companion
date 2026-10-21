@@ -21,12 +21,12 @@ APP_NAME = "Zeekr Companion"
 REPO = "https://github.com/wysie/zeekr-shortcut-car"
 
 
-def changelog_section(version):
+def changelog_section(version, path="CHANGELOG.md"):
     """Return the body of the '## [<version>]' section, or None."""
-    path = "CHANGELOG.md"
     if not os.path.exists(path):
         return None
-    text = io.open(path, encoding="utf-8").read()
+    with io.open(path, encoding="utf-8") as source:
+        text = source.read()
     lines = text.split("\n")
 
     start = None
@@ -51,6 +51,22 @@ def promote_headings(section):
     """### in CHANGELOG.md (so the section parser keeps them) become ## in the release."""
     return "\n".join("## " + line[4:] if line.startswith("### ") else line
                      for line in section.split("\n"))
+
+
+def translated_sections(version):
+    """Authored change notes only; no online translation or translated safety claims."""
+    blocks = []
+    for language, label, heading in [
+            ("ms", "Bahasa Melayu", "Perubahan"),
+            ("zh-CN", "简体中文", "更新内容")]:
+        section = changelog_section(version, "CHANGELOG." + language + ".md")
+        if not section:
+            raise ValueError("Missing " + language + " changelog for " + version)
+        blocks.append("<details>\n<summary>" + label + "</summary>\n\n"
+                      "<!-- companion-notes:" + language + " -->\n"
+                      "## " + APP_NAME + " " + version + "\n\n## " + heading + "\n\n"
+                      + promote_headings(section) + "\n<!-- /companion-notes -->\n</details>")
+    return "<!-- companion-translations -->\n" + "\n\n".join(blocks)
 
 
 def main():
@@ -113,6 +129,7 @@ def main():
     out.append("Released under **GPL-3.0**, based on "
                "[EVCam](https://github.com/suyunkai/EVCam) by suyunkai.")
     out.append("")
+    out.append(translated_sections(version))
     sys.stdout.write("\n".join(out) + "\n")
 
 

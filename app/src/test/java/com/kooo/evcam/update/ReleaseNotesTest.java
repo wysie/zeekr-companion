@@ -162,4 +162,28 @@ public class ReleaseNotesTest {
         int labels = text.split("\\[1\\.").length - 1;
         assertEquals(ReleaseNotes.MAX_VERSIONS, labels);
     }
+    @Test public void authoredTranslationsUseAppLanguageAndNeverMixLanguages() {
+        String body = "## Companion 1\n## What changed\n- Original English\n"
+                + "<!-- companion-translations -->\n<details>\n"
+                + "<!-- companion-notes:ms -->\n## Companion 1\n## Perubahan\n- Imej lebih jelas\n<!-- /companion-notes -->\n</details>\n"
+                + "<details>\n<!-- companion-notes:zh-CN -->\n## Companion 1\n## 更新内容\n- 更清晰的画面\n<!-- /companion-notes -->\n</details>";
+        String ms = ReleaseNotes.localizedSummary(body, "ms-MY", "Fallback");
+        assertTrue(ms.contains("Imej lebih jelas"));
+        assertFalse(ms.contains("Original English"));
+        assertFalse(ms.contains("更清晰"));
+        assertFalse(ms.contains("Fallback"));
+        assertEquals("更新内容\n• 更清晰的画面", ReleaseNotes.localizedSummary(body, "zh-CN", "Fallback"));
+        assertEquals("What changed\n• Original English", ReleaseNotes.summarise(body));
+    }
+
+    @Test public void historicalOrEmptyTranslationsHaveAnHonestFallback() {
+        String body = "## Companion 1\n## What changed\n- Original English";
+        String expected = "Nota asal bahasa Inggeris\n\nWhat changed\n• Original English";
+        assertEquals(expected, ReleaseNotes.localizedSummary(body, "ms", "Nota asal bahasa Inggeris"));
+        assertEquals(expected, ReleaseNotes.localizedSummary(body
+                + "\n<!-- companion-notes:ms -->\n<!-- /companion-notes -->", "ms", "Nota asal bahasa Inggeris"));
+        assertEquals("", ReleaseNotes.localizedSummary(null, "ms", "Notice"));
+        assertEquals("", ReleaseNotes.localizedSummary("", "zh-CN", "Notice"));
+        assertFalse(ReleaseNotes.localizedSummary(body, "en", "Notice").contains("Notice"));
+    }
 }

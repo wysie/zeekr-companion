@@ -54,11 +54,15 @@ public final class UpdateFlow {
         AlertDialog checking = message(activity,
                 activity.getString(R.string.upd_checking), false);
         final UpdateChannel channel = new com.kooo.evcam.AppConfig(activity).getUpdateChannel();
+        android.content.Context localized = com.kooo.evcam.settings.Languages.localized(activity);
+        final String languageTag = localized.getResources().getConfiguration().getLocales().get(0).toLanguageTag();
+        final String originalLanguageNotice = localized.getString(R.string.upd_notes_original_language);
         new Thread(() -> {
             GithubReleases.Release release = null;
             String error = null;
             try {
-                release = GithubReleases.fetchLatest(channel, currentVersion(activity));
+                release = GithubReleases.fetchLatest(channel, currentVersion(activity),
+                        languageTag, originalLanguageNotice);
             } catch (Exception e) {
                 AppLog.w(TAG, "检查更新失败", e);
                 error = failureText(activity, e,

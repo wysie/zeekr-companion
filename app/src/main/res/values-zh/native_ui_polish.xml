@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="utf-8"?>
-<resources>
-    <string name="gallery_item_locked">已锁定</string>
-    <string name="gallery_item_not_selected">未选中</string>
-    <string name="player_empty_recordings">未找到录像</string>
-    <string name="player_empty_recordings_help">请录制片段或连接包含录像的存储设备。</string>
-</resources>

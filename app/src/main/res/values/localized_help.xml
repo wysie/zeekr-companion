@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="zh">
+    <string name="guide_controls_title">控制超级后视镜窗口</string>
+    <string name="guide_controls_body">拖动窗口左右边缘可移动窗口。在中央滑动可切换摄像头或调整取景；双指缩放可改变窗口大小。\n\n使用角落的按钮放大或关闭窗口。若在设置中启用了按钮模式，请使用摄像头按钮代替左右滑动。</string>
+    <string name="guide_cameras_title">左右滑动切换摄像头</string>
+    <string name="guide_cameras_body">在中央向右滑动：后 → 左 → 前 → 右 → 后；向左滑动则反向切换。\n\n选择“仅前后”后会跳过侧面画面。后视画面采用镜像显示，如同后视镜。</string>
+    <string name="guide_framing_title">调整可见画面</string>
+    <string name="guide_framing_body">宽而扁的窗口会裁切显示画面，而不会拉伸图像。在中央向下拖动可看到更多上方画面；向上拖动可看到更多下方画面。\n\n接近正方形的窗口已经显示了大部分画面，可移动的范围可能很小。</string>
+    <string name="guide_docking_title">收起到屏幕边缘</string>
+    <string name="guide_docking_body">拖动窗口边缘，直到一半以上的窗口移出屏幕后松手。屏幕边缘会留下小条；点击或向内拖动即可恢复窗口。\n\n窗口只要完全位于屏幕内，即使靠近边缘也不会自动收起。</string>
+    <string name="guide_resize_title">缩放窗口而不拉伸画面</string>
+    <string name="guide_resize_body">双指张开放大窗口，捏合缩小窗口，窗口比例保持不变。缩放时同时移动两根手指，可一起调整位置。\n\n如需改变窗口比例，请在设置中分别调整宽度和高度。较扁的窗口会裁切画面，而不会拉伸图像。</string>
+    <string name="guide_install_title">安装完成后，请点击返回</string>
+    <string name="guide_install_body">按照系统安装程序的提示操作。安装完成后，请点击左上角的“返回”，不要点击中央的“打开”。\n\n部分车机点击“打开”后，安装程序可能卡住并影响下一次更新。请返回桌面，再从桌面打开 Zeekr Companion。\n\n点击下方确认按钮后才开始下载。现在按返回键可取消。</string>
+    <string name="upd_notes_original_language">旧版本的更新说明仅提供英文。</string>
+    <string name="upd_notes_heading">更新内容</string>
+</resources>

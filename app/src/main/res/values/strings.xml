@@ -74,7 +74,7 @@
     <string name="set_rearview_reset_summary">恢复窗口、取景、校正、相机选择和操作方式，包括与侧视弹窗共用的角标；切回后视并保留当前开关状态</string>
     <string name="set_rearview_guide_title">使用指南</string>
     <string name="set_rearview_guide_summary">手势区域、切换画面、调整取景、贴边隐藏、调整窗口大小</string>
-    <string name="rearview_guide_hint">左右滑动翻页 · 点击图片外关闭</string>
+    <string name="rearview_guide_hint">左右滑动翻页 · 点击页面外关闭</string>
     <string name="mirror_paused_tap">画面已停止 · 点击恢复</string>
     <string name="mirror_resume_busy">摄像头被占用，暂时无法打开</string>
     <string name="mirror_resume_failed">无法打开摄像头：%1$s</string>
@@ -82,7 +82,7 @@
       贴边收起后那条窄边上的字。三个语言都是同一串英文：那里只有 72px 宽，
       放的是应用在车上的「标记」而不是一句话，换成别的语言反而认不出来了。
     -->
-    <string name="mirror_dock_label">Super mirror</string>
+    <string name="mirror_dock_label">超级后视镜</string>
     <string name="rearview_guide_page">使用指南第 %1$d 张，共 %2$d 张</string>
     <string name="set_floating_alpha_title">按钮透明度</string>
     <string name="set_recording_floating_summary">悬浮显示录制状态；点击、双击和长按的操作在下方设置</string>
@@ -290,7 +290,7 @@
     <string name="vi_v_screen_on">亮屏</string>
     <string name="set_language_title">语言 / Language</string>
     <string name="lang_auto">跟随系统</string>
-    <string name="lang_zh">中文</string>
+    <string name="lang_zh">简体中文</string>
     <string name="lang_en">English</string>
     <string name="lang_ms">Bahasa Melayu</string>
 
@@ -1363,7 +1363,7 @@
     <string name="settings_restore_failed">恢复失败，原有设置已保留。</string>
     <string name="side_upscaling_category">GPU 画质</string>
     <string name="side_upscaling_title">图像放大</string>
-    <string name="side_upscaling_bilinear">双线性（当前方式）</string>
+    <string name="side_upscaling_bilinear">双线性（默认）</string>
     <string name="side_upscaling_soft">双三次柔和</string>
     <string name="side_upscaling_sharp">双三次清晰</string>
     <string name="side_sharpening_title">锐化 (%)</string>

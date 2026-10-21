@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="guide_controls_title">Control the Super mirror window</string>
+    <string name="guide_controls_body">Drag either side edge to move the window. Swipe in the middle to change the camera or adjust framing. Pinch with two fingers to resize.\n\nThe corner controls expand or close the window. If Button mode is enabled in Settings, use its camera controls instead of horizontal swipes.</string>
+    <string name="guide_cameras_title">Swipe to change camera</string>
+    <string name="guide_cameras_body">Swipe right in the middle: Rear → Left → Front → Right → Rear. Swipe left to go the other way.\n\nThe Front and Rear only option skips the side views. The rear picture is mirrored, like a rear-view mirror.</string>
+    <string name="guide_framing_title">Adjust the visible picture</string>
+    <string name="guide_framing_body">A wide, shallow window shows a strip of the picture without stretching it. Drag down in the middle to see more of the top; drag up to see more of the bottom.\n\nA nearly square window already shows most of the picture, so there may be little room to move it.</string>
+    <string name="guide_docking_title">Hide at the screen edge</string>
+    <string name="guide_docking_body">Drag a side edge until more than half the window is off screen, then release. A small strip remains; tap it or pull it back to restore the window.\n\nA window that stays fully on screen does not hide automatically, even when it is close to the edge.</string>
+    <string name="guide_resize_title">Resize without stretching</string>
+    <string name="guide_resize_body">Spread two fingers to enlarge the window; pinch to make it smaller. Its shape stays the same. Move both fingers together to reposition it while resizing.\n\nTo change the shape, adjust width and height separately in Settings. A flatter window crops the picture instead of stretching it.</string>
+    <string name="guide_install_title">After installing, tap Back</string>
+    <string name="guide_install_body">Follow the system installer prompts. When installation finishes, tap Back at the top left instead of Open in the middle.\n\nOn affected head units, tapping Open can leave the installer stuck and interfere with the next update. Return to the launcher and open Zeekr Companion there.\n\nDownloading starts only after you confirm below. Press Back now to cancel.</string>
+    <string name="upd_notes_original_language">Older release notes are available in English.</string>
+    <string name="upd_notes_heading">What changed</string>
+</resources>

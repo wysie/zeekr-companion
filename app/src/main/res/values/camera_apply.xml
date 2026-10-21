@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools" tools:locale="zh">
     <string name="camera_apply_action">应用更改</string>
     <string name="camera_apply_retry">重试</string>
     <string name="camera_apply_title">应用相机更改？</string>

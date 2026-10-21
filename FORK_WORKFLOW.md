@@ -11,6 +11,7 @@ outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
 | --- | --- |
+| `fix/complete-localization-20261021` | Complete trilingual About/help, consistent Malay and Simplified Chinese, app-locale release notes and exhaustive resource validation |
 | `fix/codebase-audit-20261021` | Whole-codebase audit corrections for hidden GPU work, recorder timing/drain, UI camera queries, Apply cancellation, active footage, locks/deletion and typed restore |
 | `fix/009-ground-alignment` | Joint garage/road 009 projection fit with held-out reference, coverage and CPU/GPU regressions; retained Manual calibration |
 | `feature/hud-safe-area-calibration` | Explicit HUD horizontal boundaries, safety margin and matching viewport fit, with independent reset and unchanged camera picture/recording settings |

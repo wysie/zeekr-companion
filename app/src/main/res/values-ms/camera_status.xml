@@ -12,7 +12,7 @@
     <string name="camera_state_recovering">Menyambung semula kamera</string>
     <string name="camera_state_stopped">Pemulihan automatik berhenti; menunggu kamera tersedia atau sesi baharu</string>
     <string name="camera_state_paused">Kamera dijeda atau tidak tersedia dalam keadaan aplikasi/skrin semasa</string>
-    <string name="camera_state_not_active">Sumber tiada dalam saluran aktif; semak pemetaan dan buka semula untuk menggunakan perubahan</string>
+    <string name="camera_state_not_active">Sumber tiada dalam saluran aktif; semak pemetaan dan ketik Gunakan perubahan</string>
     <string name="camera_state_unassigned">Tidak ditetapkan</string>
     <string name="camera_preview_live">Pratonton langsung</string>
     <string name="camera_preview_waiting">Menunggu pratonton</string>
