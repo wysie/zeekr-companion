@@ -1,11 +1,11 @@
 package com.kooo.evcam.zeekr;
 
 /** Empirical ray-to-reference-plane fit, not measured lens intrinsics or distance calibration.
- * The 009 profile was fitted from the owner's raw/factory image pairs. It is opt-in.
+ * The 009 profile is fitted from the owner's raw/factory image pairs across garage and road scenes.
  * No scene pixels are embedded: every output is sampled from the current live buffer.
  */
 public final class BirdEyeImageFit {
-    public static final String PROFILE = "009-image-fit-20261016";
+    public static final String PROFILE = "009-image-fit-20261021";
     // Wider view of observed rays, not a new metric calibration. Keep a bounded extent.
     public static final double DEFAULT_MARGIN = 3, MAX_MARGIN = 3;
     final int role;
@@ -72,11 +72,12 @@ public final class BirdEyeImageFit {
     }
 
     // Lens normalisation: estimated equidistant 190°, centre .5/.5. Reference
-    // footprint: 5.2×2 visual units. Coefficients do not establish metric accuracy.
+    // footprint: 5.2×2 visual units. Joint fit gives both reference captures equal total weight.
+    // Road hold-outs and an earlier capture are excluded; coefficients are not metric calibration.
     private static final double[][] MATRICES = {
-        {1.524746493108509, -0.005208178299783897, -0.006325936440197357, 0.01830193446779125, 5.381663307617981, 3.680939150957493, 0.009184350089327125, 2.358644490690996, 1},
-        {-1.966167145981322, 0.04532711640949655, 0.02867818252229461, 0.04614078714071514, -4.21384985859972, -3.896487569061321, -0.04045835000852071, 2.051786238483615, 1},
-        {-0.06859749417753332, 0.01213937866995913, -2.328204872037626, 1.999132909003765, 1.149917278552485, 0.8826836717310127, 0.02115174743226117, 1.229318478437866, 1},
-        {0.02163463993162737, 0.1062122183403377, 2.34253581098979, -1.985361573959905, 1.219060398330053, 0.9597291093504084, -0.005024891604802594, 1.293869553358916, 1},
+        {1.5254024391451004, -0.048682602245399186, -0.007325653854474614, -0.057994796150342809, 5.319867618336013, 3.6648127411732316, -0.020911064763847333, 2.3188986539967753, 1},
+        {-1.9662220090775444, 0.028666604533514519, 0.019595646018705573, 0.079598350688436403, -4.3731061716348902, -3.8398318921949595, -0.03055299452120263, 2.0196257523839285, 1},
+        {-0.079912569988391136, -0.13698222964854179, -2.3109384025310074, 1.9781421752667734, 1.4684235800625989, 0.91708777414831655, 0.029820622907050457, 1.3511628813203185, 1},
+        {0.030100166157953693, -0.016715738376757956, 2.3934385136757408, -1.9900610879632386, 1.2433798513851375, 0.95578984775538245, -0.0042948239060715942, 1.3079046899199696, 1},
     };
 }

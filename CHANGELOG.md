@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Refine the experimental 009 360° ground alignment against matched garage and road references, shared by CPU/GPU while preserving Manual tuning and saved framing.
+
 - Add saved HUD left/right visibility calibration with adjustable safety margins, proportionally fitted camera panels and labels, viewport matching and a separate Reset calibration action.
 
 ## [2.11.59-alpha.1] - 2026-10-21

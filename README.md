@@ -48,10 +48,13 @@ is not added to the footage. Raw developer exports retain their existing behavio
 
 Current test download: [Zeekr Companion 2.11.59-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.59-alpha.1).
 
-360° front alignment is still under vehicle review. A detailed native CPU/GPU
-comparison found matching projection on the test emulator; this does not establish
-factory alignment or rule out vehicle-specific rendering issues. See the
-[front-alignment investigation](docs/gpu-360-renderer.md#front-alignment-report--2026-10-21).
+On unreleased `main`, the experimental 009 fit combines the earlier garage reference with matched
+flat-road features from the owner’s 21 October raw/factory captures. Held-out
+image-reference alignment improves for all four cameras, including the front;
+CPU/GPU share the correction. Existing Automatic/009 selection uses the revised
+fit without a reset; saved Manual tuning, sources and framing stay intact.
+Residual joins/raised-object distortion remain, and on-car confirmation is pending.
+See the [alignment evidence and limits](docs/009-image-fit.md#roadground-alignment-refinement--21-october).
 For in-app delivery, select **Updates → Update channel → Alpha**; Beta and Stable
 channels deliberately exclude this release. It retains the application ID and
 signing certificate for an in-place update. New behavior still needs on-car testing.
