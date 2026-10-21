@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hud_test_title">HUD visible-area test</string>
-    <string name="hud_test_summary">Move a coloured square on the HUD and log where its edges disappear.</string>
-    <string name="hud_test_help">While parked, start the square and move it towards each edge. Save Fully visible just before an edge disappears, then save the cut-off side. Repeat at different heights. L/R mark image edges, not vehicle sides. Stops when you leave or after 3 minutes without input.</string>
+    <string name="hud_test_title">HUD visibility calibration</string>
+    <string name="hud_test_summary">Set and save visible left/right boundaries, or record visibility observations.</string>
+    <string name="hud_test_help">Start the square while parked, then use Adjust square to move it. L/R mark image edges, not vehicle sides. The square stops when you leave or after 3 minutes without input.</string>
     <string name="hud_test_start">Start square</string>
     <string name="hud_test_stop">Stop square</string>
     <string name="hud_test_back">Back</string>
-    <string name="hud_test_idle">Square stopped. Camera framing and saved HUD settings stay unchanged.</string>
+    <string name="hud_test_idle">Square stopped. Start again to check or adjust boundaries.</string>
     <string name="hud_test_x">Horizontal position</string>
     <string name="hud_test_y">Vertical position</string>
     <string name="hud_test_size">Square size</string>
@@ -26,7 +26,7 @@
     <string name="hud_test_clip_top">Top cut off</string>
     <string name="hud_test_clip_bottom">Bottom cut off</string>
     <string name="hud_test_not_seen">Not visible</string>
-    <string name="hud_test_log_help">The latest 128 observations survive closing the app and are included in Diagnostics exports. Android cannot see optical clipping or factory graphics. The test does not apply new camera bounds.</string>
+    <string name="hud_test_log_help">The latest 128 observations survive closing the app and are included in Diagnostics. Observation buttons only log what you see; Save calibration applies the horizontal limits. Android cannot detect optical clipping or factory graphics.</string>
     <string name="hud_test_diagnostics">Open Diagnostics to export</string>
     <string name="hud_test_timeout">Square stopped after 3 minutes without input. Saved observations are retained.</string>
     <string name="hud_test_stopped">Square stopped. Saved observations are retained.</string>

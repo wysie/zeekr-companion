@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hud_test_title">HUD 可见范围测试</string>
-    <string name="hud_test_summary">在 HUD 上移动彩色方块，记录边缘从何处开始被遮挡。</string>
-    <string name="hud_test_help">停车后启动方块并将其移向各个边缘。在边缘即将消失前保存“完整可见”，然后保存被遮挡的一侧。在不同高度重复测试。L/R 表示图像边缘，并非车辆左右。离开页面或 3 分钟无操作后自动停止。</string>
+    <string name="hud_test_title">HUD 可见范围校准</string>
+    <string name="hud_test_summary">设定并保存可见的左右边界，或记录可见范围观察。</string>
+    <string name="hud_test_help">停车后启动方块，通过“调整方块”移动位置。L/R 表示图像边缘，并非车辆左右。离开页面或 3 分钟无操作后方块自动停止。</string>
     <string name="hud_test_start">启动方块</string>
     <string name="hud_test_stop">停止方块</string>
     <string name="hud_test_back">返回</string>
-    <string name="hud_test_idle">方块已停止。相机取景和已保存的 HUD 设置保持不变。</string>
+    <string name="hud_test_idle">方块已停止。再次启动以检查或调整边界。</string>
     <string name="hud_test_x">水平位置</string>
     <string name="hud_test_y">垂直位置</string>
     <string name="hud_test_size">方块大小</string>
@@ -26,7 +26,7 @@
     <string name="hud_test_clip_top">顶部被遮挡</string>
     <string name="hud_test_clip_bottom">底部被遮挡</string>
     <string name="hud_test_not_seen">不可见</string>
-    <string name="hud_test_log_help">最近 128 条观察记录会在关闭应用后保留，并包含在诊断导出中。Android 无法检测光学裁切或原厂图形的遮挡。本测试不会应用新的相机边界。</string>
+    <string name="hud_test_log_help">最近 128 条观察记录会在关闭应用后保留，并包含在诊断中。观察按钮仅记录所见情况；“保存校准”才会应用水平边界。Android 无法检测光学遮挡或原厂图形。</string>
     <string name="hud_test_diagnostics">打开诊断以导出</string>
     <string name="hud_test_timeout">3 分钟无操作，方块已停止。观察记录已保留。</string>
     <string name="hud_test_stopped">方块已停止。观察记录已保留。</string>

@@ -210,3 +210,60 @@ This interpretation is consistent with the HUD eyebox described in
 [Texas Instruments' HUD optical guidance](https://www.ti.com/lit/an/dlpa073a/dlpa073a.pdf),
 sections 4.4 and Figure 8. That general optical reference does not establish the
 009's projector design or its exact viewing limits.
+
+### Saved horizontal calibration — 2026-10-21
+
+The existing visible-area square tool now appears as HUD visibility calibration.
+Start the square, set its left edge as the left boundary and its right edge as the
+right boundary, check small natural head movements, then Save calibration. The
+whole square must be drawn inside the logical HUD viewport before either boundary
+can be selected. Boundaries remain a draft until Save; stopping/leaving/recreation
+does not apply them. A new session reloads saved limits only when its viewport
+matches. The default margin is 2% of HUD content width at each horizontal edge,
+adjustable from 0–5%. Reversed/outside limits or a usable span under 96px are refused.
+Saving stops the temporary marker and refreshes existing HUD placement immediately.
+
+Placement first computes the existing HUD geometry and body-aware trim. A saved
+usable interval then clamps that visible panel horizontally; if the panel is too
+wide, the full camera picture, body-edge trim offset and visible bounds scale
+together. No extra slice of camera content is discarded. The final panel extent
+drives direction labels and arrows on GPU and Canvas. It retains fixed/follow-side
+behavior and equal side-camera sizes. No camera input, projection tuning, recording
+intent, output selection or profile setting is rewritten or automatically applied.
+The existing texture/producer stays attached while its displayed geometry changes.
+
+The single saved JSON record is in `app_config/hud_safe_area_calibration`, so it is
+included in normal settings backups and Diagnostics. It matches public display
+name/flags, reported display dimensions and exact measured Presentation content
+dimensions/origin; a mismatch or invalid record keeps normal placement instead.
+These public attributes do not distinguish physically different HUDs that report
+identical attributes. The controls report a saved-viewport mismatch when the square
+is started there. Reset calibration removes only this record, including malformed
+records; picture/layout values and the separate observation log survive. The runtime
+HUD layout diagnostic includes the applied horizontal interval or its absent/mismatched
+state. Saving adds an explicit `safe_area_saved` observation with the calibration;
+ordinary observation buttons still only log, without applying bounds.
+
+This is horizontal visibility calibration, not optical eye tracking or an automatic
+factory-graphic mask. It cannot enlarge the eyebox or guarantee visibility when
+leaning outside the tested position. Vertical placement and factory-graphic clearance
+still use the existing HUD position/trim settings. No new release is published here.
+
+Validation: 1,543 JVM tests pass (including eight safe-interval/fitting cases),
+lint reports zero errors, and signed release, debug and instrumentation APKs build.
+Twenty-five focused native tests pass across the new calibration flow, existing
+square/log lifecycle, HUD window/picture settings, both popup renderers and two
+recording-isolation cases. The new UI test presses the actual boundary/save/reset
+controls, verifies persistence and settings-backup inclusion, and proves unsaved
+changes are discarded across recreation without rewriting picture settings.
+Invalid records and all matched viewport-identity fields are checked independently.
+
+A public 1280×640 ImageReader display with synthetic native 1280×5140 input verifies
+both side panels inside a narrow calibrated interval, body-crop proportions and
+complete final-resolution labels/arrows on GPU All and Canvas. Reset restores the
+old size with the same input SurfaceTexture; a smaller measured viewport ignores
+the saved calibration. Light/dark 2560×1600 native control captures were inspected,
+then confirmed after moving horizontal adjustment next to boundary selection and
+keeping live feedback above the scroll area. These are Android behavior checks;
+physical visibility, eye-position tolerance and factory-graphic clearance remain
+for the owner to check on the vehicle. No universal safe HUD limits are claimed.

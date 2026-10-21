@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <string name="hud_test_title">Ujian kawasan HUD yang kelihatan</string>
-    <string name="hud_test_summary">Gerakkan petak berwarna pada HUD dan rekod tempat tepinya hilang.</string>
-    <string name="hud_test_help">Semasa diparkir, mulakan petak dan gerakkannya ke setiap tepi. Simpan Kelihatan sepenuhnya sebelum tepi hilang, kemudian simpan sisi yang terpotong. Ulang pada ketinggian berbeza. L/R menandakan tepi imej, bukan sisi kenderaan. Berhenti apabila anda keluar atau selepas 3 minit tanpa input.</string>
+    <string name="hud_test_title">Penentukuran kawasan HUD</string>
+    <string name="hud_test_summary">Tetapkan dan simpan sempadan kiri/kanan yang kelihatan, atau rekod pemerhatian.</string>
+    <string name="hud_test_help">Mulakan petak semasa diparkir, kemudian gunakan Laraskan petak untuk menggerakkannya. L/R menandakan tepi imej, bukan sisi kenderaan. Petak berhenti apabila anda keluar atau selepas 3 minit tanpa input.</string>
     <string name="hud_test_start">Mulakan petak</string>
     <string name="hud_test_stop">Hentikan petak</string>
     <string name="hud_test_back">Kembali</string>
-    <string name="hud_test_idle">Petak dihentikan. Bingkai kamera dan tetapan HUD yang disimpan kekal.</string>
+    <string name="hud_test_idle">Petak dihentikan. Mulakan semula untuk memeriksa atau melaraskan sempadan.</string>
     <string name="hud_test_x">Kedudukan mendatar</string>
     <string name="hud_test_y">Kedudukan menegak</string>
     <string name="hud_test_size">Saiz petak</string>
@@ -26,7 +26,7 @@
     <string name="hud_test_clip_top">Atas terpotong</string>
     <string name="hud_test_clip_bottom">Bawah terpotong</string>
     <string name="hud_test_not_seen">Tidak kelihatan</string>
-    <string name="hud_test_log_help">128 pemerhatian terkini kekal selepas aplikasi ditutup dan disertakan dalam eksport Diagnostik. Android tidak dapat melihat pemotongan optik atau grafik kilang. Ujian ini tidak menggunakan sempadan kamera baharu.</string>
+    <string name="hud_test_log_help">128 pemerhatian terkini disimpan selepas aplikasi ditutup dan disertakan dalam Diagnostik. Butang pemerhatian hanya merekod perkara yang dilihat; Simpan penentukuran menggunakan had mendatar. Android tidak dapat mengesan pemotongan optik atau grafik kilang.</string>
     <string name="hud_test_diagnostics">Buka Diagnostik untuk eksport</string>
     <string name="hud_test_timeout">Petak dihentikan selepas 3 minit tanpa input. Pemerhatian yang disimpan dikekalkan.</string>
     <string name="hud_test_stopped">Petak dihentikan. Pemerhatian yang disimpan dikekalkan.</string>

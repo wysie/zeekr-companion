@@ -280,6 +280,59 @@ public class SidePopupStartupAndroidTest {
         }
     }
 
+    @Test public void calibratedHudFitsBothSidesAndCompleteBadgesWithoutReplacingTheProducer() throws Exception {
+        for(boolean gpu:new boolean[]{false,true}) try(Fixture f=new Fixture(1280,5140,true)) {
+            if(gpu){f.enableGpu();f.config.setGpuRenderingMode("all");}else f.config.setGpuRenderingMode("off");
+            f.config.setHudSideFollowSignal(true);f.config.setHudSideLeftPercent(0);
+            f.config.setSidePopupStraighten(true);f.config.setSidePopupYaw(40);f.config.setSidePopupMirrored(true);
+            HudSafeArea.reset(f.view.getContext());
+            main(()->{f.view.applyConfig();f.view.show(LaneCycle.LEFT);f.view.setIndicatorDisplay(null);});
+            for(int n=0;n<12;n++){f.frame(0xff203050);SystemClock.sleep(40);}
+            SurfaceTexture original=f.texture.get();
+            java.util.concurrent.atomic.AtomicReference<org.json.JSONObject> record=new java.util.concurrent.atomic.AtomicReference<>();
+            main(()->{try{
+                record.set(HudSafeArea.record(HudSafeArea.frame(f.hudDisplay.getDisplay(),(android.view.View)f.view.getParent()),500,780,2));
+            }catch(Exception e){throw new AssertionError(e);}});
+            assertTrue(HudSafeArea.save(f.view.getContext(),record.get()));
+            for(int lane:new int[]{LaneCycle.LEFT,LaneCycle.RIGHT}) {
+                main(()->{f.view.applyConfig();f.view.show(lane);});
+                for(int n=0;n<12;n++){f.frame(0xff203050);SystemClock.sleep(40);}
+                int[] area=new int[4];main(()->{
+                    area[0]=f.view.getLeft();area[1]=f.view.getTop();area[2]=f.view.getWidth();area[3]=f.view.getHeight();
+                    assertTrue(area[0]>=526&&area[0]+area[2]<=754);assertEquals(228,area[2]);
+                    assertEquals(gpu?"GPU":"compatibility",f.view.gpuState());
+                    assertSame(original,f.view.getTextureView().getSurfaceTexture());
+                    assertEquals("Keep body-aware crop proportion",.75f,area[2]/(float)f.view.cameraPictureWidth(),.01f);
+                });
+                Bitmap actual=f.hudSnapshot(),expected=Bitmap.createBitmap(area[2],area[3],Bitmap.Config.ARGB_8888);
+                try{
+                    android.graphics.Canvas canvas=new android.graphics.Canvas(expected);
+                    new CameraLabel(f.view.getContext(),false).drawBottom(canvas,lane,area[2],area[3],lane==LaneCycle.LEFT);
+                    new SideTurnArrow(f.view.getContext(),false).draw(canvas,lane,null,area[2],area[3],false);
+                    int white=0,whiteMatch=0,green=0,greenMatch=0;
+                    for(int y=0;y<area[3];y++)for(int x=0;x<area[2];x++){
+                        int e=expected.getPixel(x,y),a=actual.getPixel(area[0]+x,area[1]+y);
+                        if(Color.alpha(e)>240&&Color.red(e)>210&&Color.green(e)>210&&Color.blue(e)>210){
+                            white++;if(Color.red(a)>190&&Color.green(a)>190&&Color.blue(a)>190)whiteMatch++;
+                        }
+                        if(Color.green(e)>Color.red(e)+60&&Color.green(e)>Color.blue(e)+60){
+                            green++;if(Color.green(a)>Color.red(a)+40&&Color.green(a)>Color.blue(a)+40)greenMatch++;
+                        }
+                    }
+                    assertTrue("Calibrated label complete",white>20&&whiteMatch>white*.95);
+                    assertTrue("Calibrated arrow complete",green>20&&greenMatch>green*.95);
+                }finally{actual.recycle();expected.recycle();}
+            }
+            assertTrue(HudSafeArea.reset(f.view.getContext()));main(f.view::applyConfig);SystemClock.sleep(180);
+            main(()->{assertEquals(240,f.view.getWidth());assertSame(original,f.view.getTextureView().getSurfaceTexture());});
+            assertTrue(HudSafeArea.save(f.view.getContext(),record.get()));
+            main(()->((android.view.View)f.view.getParent()).setLayoutParams(new android.widget.FrameLayout.LayoutParams(640,360)));
+            SystemClock.sleep(180);
+            main(()->{assertTrue(SideViewHudPanel.lastState(),SideViewHudPanel.lastState().contains("not applied"));
+                assertTrue(f.view.getLeft()>=0&&f.view.getRight()<=640);assertSame(original,f.view.getTextureView().getSurfaceTexture());});
+        }
+    }
+
     @Test public void hudBodyEdgeAndBadgesSurviveCropOnBothRenderers() throws Exception {
         for(boolean gpu:new boolean[]{false,true}) try(Fixture f=new Fixture(1280,5140,true)) {
             if(gpu){f.enableGpu();f.config.setGpuRenderingMode("all");}else f.config.setGpuRenderingMode("off");

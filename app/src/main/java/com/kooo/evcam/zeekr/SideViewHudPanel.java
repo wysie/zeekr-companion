@@ -286,6 +286,9 @@ public class SideViewHudPanel extends SideViewPopupView {
                 appConfig.getHudSideLeftPercent(), appConfig.getHudSideVerticalPercent(),
                 appConfig.isHudSideFollowSignal() && lane == LaneCycle.RIGHT);
         HudPanelPlacement.Crop crop = HudPanelPlacement.cropRoadEdge(full, width, appConfig.getHudSideInnerCropPercent(), lane, readMirrored());
+        int[] safe = HudSafeArea.interval(getContext(), display, root);
+        if (safe != null) crop = HudPanelPlacement.fitHorizontal(crop, safe[0], safe[1], height,
+                appConfig.getHudSideVerticalPercent());
         HudPanelPlacement.Rect rect = crop.bounds;
         boolean pictureChanged = uncroppedPictureWidth != crop.pictureWidth || pictureOffsetX != crop.pictureOffsetX;
         uncroppedPictureWidth = crop.pictureWidth;
@@ -303,7 +306,8 @@ public class SideViewHudPanel extends SideViewPopupView {
                 + " " + rect.width + "x" + rect.height + " layout=" + (appConfig.is009HudLayout() ? "009" : "standard")
                 + " innerCrop=" + appConfig.getHudSideInnerCropPercent() + "% picture=" + uncroppedPictureWidth
                 + " offsetX=" + pictureOffsetX + " trimEdge=" + (cameraLabelAtRight() ? "left" : "right")
-                + " lane=" + lane + " mirrored=" + readMirrored();
+                + " lane=" + lane + " mirrored=" + readMirrored()
+                + " calibratedSafeArea=" + (safe == null ? "not applied (absent/mismatched viewport)" : safe[0] + ".." + safe[1]);
     }
 
     @Override
