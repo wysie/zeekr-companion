@@ -38,7 +38,8 @@ Physical-lens sliders do not apply to an empirical transform, so its calibration
 dialog shows source selection, quality and margin instead. Switching back to
 Manual restores the saved dimensions and lens parameters. Reset calibration and
 quality clears tuning and returns to Automatic and model-dependent defaults. Diagnostics/photo sidecars name
-`009-image-fit-20261016` and record its transforms/reference units.
+`009-image-fit-20261021` and record its transforms/reference units; older captures
+name `009-image-fit-20261016`.
 
 Invalid/non-finite or singular transforms are rejected. Rays outside lens/UV
 coverage or on the wrong side of the body are not clamped into fabricated edge
@@ -138,3 +139,69 @@ wider-view alignment and factory takeover still need an on-car check. Higher
 Balanced source resolution uses 2.25 times as many input pixels; cadence and
 resolution fallback are retained. Some corner mismatch and stretching of walls
 and gates remain; narrowing blends does not recover missing geometric calibration.
+
+
+## Road/ground alignment refinement — 21 October
+
+The owner clarified that the concern is alignment against the factory view, not
+merely the visible front bodywork strip. The matched raw captures at 10:57:38 and
+10:57:46 are native 1280×5140 camera-3 composites with the same bus/kerb/road scene
+as the supplied factory/app phone photos. Four diagnostics confirm alpha 58,
+explicit 009 fit and GPU All; the runtime snapshots are outside an active DIY
+view, so they do not establish the actual renderer of the photographed frame.
+The exact old Java CPU map reproduces the app photo's ground geometry, making a
+calibration correction relevant to both rendering backends. The existence of a
+similar strip in the factory view does not establish that alignment is correct.
+
+The revised `009-image-fit-20261021` coefficients jointly constrain each camera to
+both the previous garage points and reviewed flat-road correspondences. New road
+reference features exclude the van, own bodywork, tall walls and factory controls.
+The factory phone view is approximately rectified using its vehicle-footprint
+corner markers, retaining the assumed 5.2×2 reference footprint. There are 125 prior
+training points and 137 new road training points. Each capture contributes equal
+total residual weight per camera, preventing the more numerous road points from
+replacing the previous scene. DLT initialisation is followed by weighted robust
+least-squares refinement (`soft_l1`, 0.025 reference-unit scale). The estimated
+190° equidistant lens normalisation and .5/.5 centre are unchanged.
+
+The road set has 32 points held out with deterministic seed `360 + role`, after
+10px native-feature deduplication; they are excluded from optimisation. Numeric
+held-out UV/reference coordinates are the anonymous regression fixture
+`009-road-heldout-20261021.csv`. Input media, matches, training data, fit scripts,
+hashes and comparison renders remain private under
+`artifacts/009-front-review-20261021/`; no owner images are embedded in the app or
+committed. The second raw capture is a repeat at the same location, not an
+independent environment. The earlier 91-point capture remains excluded from fit.
+
+| Camera | Held-out road points | Previous median source error | Revised median source error |
+| --- | ---: | ---: | ---: |
+| Front | 5 | 5.62 px | 1.38 px |
+| Rear | 10 | 9.34 px | 4.89 px |
+| Left | 9 | 16.42 px | 4.51 px |
+| Right | 8 | 8.27 px | 1.01 px |
+
+These are native-source image-reference residuals, not real distances or full-frame
+error bounds. Tail errors also improve on each road hold-out group. Earlier
+independent medians are 6.02/7.61/9.73/6.34px for front/rear/left/right and remain
+inside the existing <12px per-camera regression bound. The earlier right median
+is worse than the old fit's 3.61px; the prior garage training residuals also rise.
+The change trades exact fit to one photo for improved cross-scene alignment; it
+does not assert that every old scene or every pixel improves. Phone perspective,
+flat-plane assumptions, limited side references and raised objects remain limits.
+
+The profile identifier changes so Diagnostics and photo sidecars distinguish the
+new fit. Automatic-on-009 and explicit 009 selection receive it without resetting
+preferences. Manual values, model/colour, lane assignment, quality, margin,
+recording and camera-session rules are unchanged. No extra mask, fake road pixels,
+vehicle stretch or intermediate image warp is introduced. No new missing ground
+is found versus the previous fit over the tested 0.5/2/3 margins.
+
+Validation: 1,545 JVM tests pass, lint has zero errors, and debug, signed release
+and instrumentation builds pass. Twenty-two native tests pass across detailed
+CPU/GPU UV parity (including front and native 009 separators), source reassignment,
+coverage/blending, freshness/failure/retained producers, main/photo/factory-priority
+behavior, CPU rendering and persisted profile/manual-value selection. Production
+Java renders of both new raw captures and the retained garage capture were
+inspected; same-source before/after comparisons use identical framing and artwork.
+Owner verification of actual vehicle alignment remains pending. This revision is
+unreleased.

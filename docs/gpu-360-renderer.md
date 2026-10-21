@@ -83,6 +83,16 @@ or a physical windscreen/screen presentation measurement.
 
 ## Verification
 
+### Matched capture follow-up
+
+The owner subsequently confirmed 009 fit and supplied matching native raw frames.
+CPU reproduction matches the photographed app geometry. The experimental 009
+reference transforms are now jointly refined against prior garage and new road
+features, with the same map used by both backends. This is an alignment change,
+not a GPU-only fix; the strip being visible in both views does not resolve the
+owner's alignment concern. See the [new fit and tradeoffs](009-image-fit.md#roadground-alignment-refinement--21-october).
+
+
 ### Front-alignment report — 2026-10-21
 
 The owner supplied factory/app screen photos reporting a front-region mismatch.

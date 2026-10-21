@@ -11,6 +11,7 @@ outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
 | --- | --- |
+| `fix/009-ground-alignment` | Joint garage/road 009 projection fit with held-out reference, coverage and CPU/GPU regressions; retained Manual calibration |
 | `feature/hud-safe-area-calibration` | Explicit HUD horizontal boundaries, safety margin and matching viewport fit, with independent reset and unchanged camera picture/recording settings |
 | `feature/blind-quality-comparison` | Explicit same-frame native side/popup-render comparison export, renderer-state metadata and Picture-page save/share controls |
 | `fix/surround-preview-buffer-size` | Reproduce native strip-detail loss after pane resize; retain GPU output dimensions and restore direct preview buffers without camera rebuild |
