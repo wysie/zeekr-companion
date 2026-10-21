@@ -83,6 +83,30 @@ or a physical windscreen/screen presentation measurement.
 
 ## Verification
 
+### Front-alignment report — 2026-10-21
+
+The owner supplied factory/app screen photos reporting a front-region mismatch.
+The photos do not establish the active projection mode, backend, raw-frame pixels
+or matched acquisition time. The generic uncalibrated footer is shown for all
+profiles, so it cannot identify Manual versus the experimental 009 fit.
+
+The existing constant-lane tests checked coverage, joins and role assignment but
+could not rule out a within-lane UV warp. A new native regression uploads a known
+two-axis gradient and spatial checker pattern into a real EGL producer, then
+compares the complete CPU output against the acquired GPU output. It covers both
+256×1024 and native 1280×5140 strips, Manual/009 fit and normal/remapped roles:
+eight combinations, 38,400 output pixels each, including 10,240 front-region
+pixels. All eight pass on the disposable API32/SwiftShader emulator. None exceeds
+six intensity levels of maximum channel error; whole-image mean maximum-channel
+error ranges from 0.028 to 0.039 levels. This supports renderer geometry parity on
+that backend; it is not an on-car driver test or a calibration-accuracy result.
+
+No production mapping, owner calibration or GPU default is changed. Active
+projection selection still needs confirmation; any front-fit revision needs
+matched raw/native and factory ground features. Objects above the reference
+ground plane cannot be used as if they were flat road correspondences. Existing
+private reference fits are not automatically retuned from these phone photos.
+
 Native tests exercise real EGL external-texture input and TextureView output,
 without opening a camera. They compare complete synthetic Manual/009-fit outputs
 and swapped lane assignments against CPU geometry, exercise failure/cancellation

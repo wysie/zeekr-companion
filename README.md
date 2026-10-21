@@ -47,6 +47,11 @@ plus the version; existing footage keeps its original burned-in text. The logo i
 is not added to the footage. Raw developer exports retain their existing behavior.
 
 Current test download: [Zeekr Companion 2.11.59-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.59-alpha.1).
+
+360° front alignment is still under vehicle review. A detailed native CPU/GPU
+comparison found matching projection on the test emulator; this does not establish
+factory alignment or rule out vehicle-specific rendering issues. See the
+[front-alignment investigation](docs/gpu-360-renderer.md#front-alignment-report--2026-10-21).
 For in-app delivery, select **Updates → Update channel → Alpha**; Beta and Stable
 channels deliberately exclude this release. It retains the application ID and
 signing certificate for an in-place update. New behavior still needs on-car testing.

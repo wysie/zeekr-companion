@@ -517,6 +517,61 @@ public class BirdEyeGpuAndroidTest {
         }
     }
 
+    @Test public void detailedFrontAndWholeProjectionMatchCpuAtNative009Size() throws Exception {
+        for(int[] size:new int[][]{{256,1024},{1280,5140}}) try(Fixture f=new Fixture(false,size[0],size[1])) {
+            CompositeStreamGeometry.Plan plan=CompositeStreamGeometry.analyse("gpu-test",f.sw,f.sh);
+            int[] source=new int[f.sw*f.sh];java.util.Arrays.fill(source,Color.MAGENTA);
+            for(int lane=0;lane<4;lane++) {
+                CompositeStreamGeometry.Lane area=plan.lane(lane);
+                for(int y=0;y<area.height;y++)for(int x=0;x<area.width;x++)
+                    source[(area.y+y)*f.sw+area.x+x]=Color.rgb(20+x*210/(area.width-1),20+y*210/(area.height-1),
+                            25+lane*50+(((x/32+y/32)&1)*20));
+            }
+            Bitmap input=Bitmap.createBitmap(source,f.sw,f.sh,Bitmap.Config.ARGB_8888);
+            int program=FisheyeGlPipe.link("attribute vec2 p;varying vec2 uv;void main(){gl_Position=vec4(p,0.,1.);uv=vec2((p.x+1.)*.5,(1.-p.y)*.5);}",
+                    "precision highp float;uniform sampler2D image;varying vec2 uv;void main(){gl_FragColor=texture2D(image,uv);}");
+            int[] texture=new int[1];GLES20.glGenTextures(1,texture,0);GLES20.glActiveTexture(GLES20.GL_TEXTURE0);
+            GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,texture[0]);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,GLES20.GL_TEXTURE_MIN_FILTER,GLES20.GL_NEAREST);
+            GLES20.glTexParameteri(GLES20.GL_TEXTURE_2D,GLES20.GL_TEXTURE_MAG_FILTER,GLES20.GL_NEAREST);
+            android.opengl.GLUtils.texImage2D(GLES20.GL_TEXTURE_2D,0,input,0);input.recycle();
+            java.nio.FloatBuffer quad=java.nio.ByteBuffer.allocateDirect(8*4).order(java.nio.ByteOrder.nativeOrder()).asFloatBuffer();
+            quad.put(new float[]{-1,-1,1,-1,-1,1,1,1}).position(0);
+            int attribute=GLES20.glGetAttribLocation(program,"p");
+            try {
+                for(boolean fitted:new boolean[]{false,true})for(int[] lanes:new int[][]{{0,1,2,3},{3,2,0,1}}) {
+                    BirdEyeGlRequest request=f.install(fitted,lanes);
+                    for(int repeat=0;repeat<5;repeat++) {
+                        GLES20.glViewport(0,0,f.sw,f.sh);GLES20.glDisable(GLES20.GL_SCISSOR_TEST);GLES20.glUseProgram(program);
+                        GLES20.glActiveTexture(GLES20.GL_TEXTURE0);GLES20.glBindTexture(GLES20.GL_TEXTURE_2D,texture[0]);
+                        GLES20.glUniform1i(GLES20.glGetUniformLocation(program,"image"),0);
+                        GLES20.glEnableVertexAttribArray(attribute);GLES20.glVertexAttribPointer(attribute,2,GLES20.GL_FLOAT,false,0,quad);
+                        GLES20.glDrawArrays(GLES20.GL_TRIANGLE_STRIP,0,4);GLES20.glDisableVertexAttribArray(attribute);
+                        EGLExt.eglPresentationTimeANDROID(f.display,f.surface,System.nanoTime());assertTrue(EGL14.eglSwapBuffers(f.display,f.surface));
+                        SystemClock.sleep(65);
+                    }
+                    await("Detailed stitch acquired: "+request.failure,()->request.fresh(f.outputTimestamp,SystemClock.elapsedRealtime()));
+                    BirdEyeProjection.Calibration calibration=BirdEyeImageFit.zeekr009(lanes,3);
+                    if(!fitted)calibration=new BirdEyeProjection.Calibration(calibration.length,calibration.width,calibration.margin,calibration.cameras);
+                    int[] expected=new int[f.ow*f.oh];new BirdEyeProjection.Map(calibration,plan,f.sw,f.sh,f.ow,f.oh).render(source,expected);
+                    Bitmap actual=f.bitmap();int checked=0,bad=0,front=0,frontBad=0;long totalError=0;
+                    try {
+                        for(int y=0;y<f.oh;y++)for(int x=0;x<f.ow;x++) {
+                            int a=actual.getPixel(x,y),b=expected[y*f.ow+x];
+                            int error=Math.max(Math.abs(Color.red(a)-Color.red(b)),Math.max(Math.abs(Color.green(a)-Color.green(b)),Math.abs(Color.blue(a)-Color.blue(b))));
+                            checked++;totalError+=error;if(error>6)bad++;
+                            if(y<64){front++;if(error>6)frontBad++;}
+                        }
+                        String state="native="+f.sw+"x"+f.sh+" fitted="+fitted+" lanes="+java.util.Arrays.toString(lanes)
+                                +" bad="+bad+"/"+checked+" frontBad="+frontBad+"/"+front+" meanMaxChannel="+totalError/(double)checked;
+                        android.util.Log.i("Detailed360Parity",state);
+                        assertTrue(state,bad<checked*.01&&frontBad<front*.01&&totalError/(double)checked<1.5);
+                    }finally{actual.recycle();request.cancelled=true;f.pipe.clearBirdEye(request);}
+                }
+            }finally{GLES20.glDeleteTextures(1,texture,0);GLES20.glDeleteProgram(program);}
+        }
+    }
+
     @Test public void manualAnd009FitPreserveCompleteCameraCoverageSeamsAndMapping() throws Exception {
         try(Fixture f=new Fixture()) {
             for(boolean fit:new boolean[]{false,true}) for(int[] lanes:new int[][]{{0,1,2,3},{3,2,0,1}}) {
