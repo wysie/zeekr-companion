@@ -319,6 +319,7 @@ public class CameraManagerHolder {
      * 管线只在退出和换车型时才放。
      */
     public synchronized void release() {
+        CameraChanges.cancel();
         if (cameraManager != null) {
             cameraManager.release();
             cameraManager = null;
@@ -404,6 +405,7 @@ public class CameraManagerHolder {
                 throw new IllegalStateException("camera service not available");
             }
             ids = service.getCameraIdList();
+            CameraCapabilities.recordIds(ids);
         } catch (CameraAccessException | RuntimeException e) {
             AppLog.e(TAG, "管线：列相机失败，这一份没有相机，隔够 " + FAILED_REBUILD_GAP_MS / 1000 + " 秒之后有人要管线时重建: " + e);
             Built failed = new Built(null, null, null, String.valueOf(e), true);

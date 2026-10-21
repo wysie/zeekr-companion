@@ -2056,6 +2056,7 @@ public class MultiCameraManager {
             // 留着的那一块被接回了（平常由 takeKeptPreview 先拿回去；这里兜一下，免得调度回头把它放掉）
             kept.remove(cameraKey);
             scheduler.reclaim(cameraKey, new ChannelRules.Out(ChannelRules.Kind.PREVIEW, texture));
+            com.kooo.evcam.zeekr.PreviewDewarp.setPresentationActive(texture, true);
         }
         boolean changed = camera.declarePreview(view, texture);
         if (changed) {
@@ -2147,6 +2148,7 @@ public class MultiCameraManager {
             return false;
         }
         texture.setOnFrameAvailableListener(null);
+        com.kooo.evcam.zeekr.PreviewDewarp.setPresentationActive(texture, false);
         boolean withdrawn = camera != null && withdrawCanvas(camera, kind, texture);
         android.graphics.SurfaceTexture older = keptOf(kind).put(cameraKey, texture);
         if (older != null && older != texture) {
@@ -2214,6 +2216,7 @@ public class MultiCameraManager {
             return null;   // 调度已经放了（不会走到这里：放的时候先从表里拿掉）
         }
         AppLog.i(TAG, "Kept " + kind + " canvas for " + cameraKey + " taken back by a new view");
+        com.kooo.evcam.zeekr.PreviewDewarp.setPresentationActive(texture, true);
         return texture;
     }
 

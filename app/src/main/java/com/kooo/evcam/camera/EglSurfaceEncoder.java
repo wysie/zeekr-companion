@@ -26,6 +26,7 @@ import java.nio.FloatBuffer;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.Locale;
+import java.util.function.LongUnaryOperator;
 
 /**
  * EGL/OpenGL 渲染桥接类
@@ -265,6 +266,7 @@ public class EglSurfaceEncoder {
     private long deliveredFrames;
     /** 真正渲染出去、进了编码器的帧数。 */
     private long renderedFrames;
+    private long lastSubmittedSourceNs = Long.MIN_VALUE;
     private long rateWindowStartNs;
 
     /** 帧率统计的窗口。5 秒足够平滑，又不至于要等很久才看到第一条。 */
@@ -476,14 +478,15 @@ public class EglSurfaceEncoder {
                 + "允许提前 " + Math.round((1 - FrameThrottle.EARLY_TOLERANCE) * 100) + "%）");
     }
 
-    public void drawFrame(long presentationTimeNs) {
+    /** Timestamp mapping runs after acquisition, so it describes these pixels, not the previous frame. */
+    public boolean drawFrame(LongUnaryOperator timestampMapper) {
         if (!isInitialized || isReleased) {
-            return;
+            return false;
         }
 
         if (inputSurfaceTexture == null) {
             AppLog.w(TAG, "Camera " + cameraId + " No input SurfaceTexture set");
-            return;
+            return false;
         }
 
         // 这个方法每来一帧就被调一次 —— 所以它的调用频率就是相机的出帧率
@@ -501,9 +504,9 @@ public class EglSurfaceEncoder {
                 makeCurrent();
                 inputSurfaceTexture.updateTexImage();
             } catch (Exception e) {
-                // 忽略
+                throw new IllegalStateException("Unable to consume throttled encoder input", e);
             }
-            return;
+            return false;
         }
 
         // 性能优化：跳帧控制（当启用时，每3帧渲染1次）
@@ -515,9 +518,9 @@ public class EglSurfaceEncoder {
                     makeCurrent();
                     inputSurfaceTexture.updateTexImage();
                 } catch (Exception e) {
-                    // 忽略
+                    throw new IllegalStateException("Unable to consume skipped encoder input", e);
                 }
-                return;
+                return false;
             }
             frameSkipCounter = 0;
         }
@@ -528,11 +531,14 @@ public class EglSurfaceEncoder {
 
             // 更新纹理（需要在正确的 EGL context 中）
             inputSurfaceTexture.updateTexImage();
+            long sourceTimestampNs = inputSurfaceTexture.getTimestamp();
+            // Frame-available callbacks can coalesce. Never encode the same latched pixels twice.
+            if (sourceTimestampNs <= lastSubmittedSourceNs) return false;
+            long presentationTimeNs = timestampMapper.applyAsLong(sourceTimestampNs);
             inputSurfaceTexture.getTransformMatrix(texMatrix);
             toNormalView(texMatrix);
             // 节流由 throttle 记账，这个字段只留给日志/诊断看「上一帧什么时候画的」
             lastFrameTimeNs = currentTimeNs;
-            renderedFrames++;   // 过了节流这一关，这一帧才真的进编码器
 
             // 画面的视口：有信息条时让出下面那一条
             GLES20.glViewport(0, barHeight, width, contentHeight);
@@ -562,11 +568,19 @@ public class EglSurfaceEncoder {
             drawInfoBar();
 
             // 设置呈现时间戳并交换缓冲区
-            EGLExt.eglPresentationTimeANDROID(eglDisplay, eglSurface, presentationTimeNs);
-            EGL14.eglSwapBuffers(eglDisplay, eglSurface);
+            if (!EGLExt.eglPresentationTimeANDROID(eglDisplay, eglSurface, presentationTimeNs)
+                    || !EGL14.eglSwapBuffers(eglDisplay, eglSurface)) {
+                throw new IllegalStateException("Encoder EGL submission failed: 0x"
+                        + Integer.toHexString(EGL14.eglGetError()));
+            }
+            renderedFrames++;
+            lastSubmittedSourceNs = sourceTimestampNs;
+            return true;
 
         } catch (Exception e) {
-            AppLog.e(TAG, "Camera " + cameraId + " Error drawing frame", e);
+            // A skipped frame is healthy; a failed submission is not. The recorder's
+            // callback marks the encoder unhealthy and schedules its existing recovery.
+            throw new IllegalStateException("Camera " + cameraId + " Error drawing frame", e);
         }
     }
 

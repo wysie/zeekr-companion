@@ -163,6 +163,7 @@ public final class VideoRecorder {
         final MediaRecorder recorder;
         final Surface surface;
         final String path;
+        final com.kooo.evcam.storage.ActiveFootage.Lease protection;
         /** 名字是共用的分段名字；false = 这一趟的第一段，按备好那一刻起的（和别的路错开着）。 */
         final boolean shared;
         boolean started;
@@ -174,10 +175,12 @@ public final class VideoRecorder {
         /** 最后一次长了的时刻（uptime）。 */
         long grewAt;
 
-        Segment(MediaRecorder recorder, Surface surface, String path, boolean shared) {
+        Segment(MediaRecorder recorder, Surface surface, String path, boolean shared,
+                com.kooo.evcam.storage.ActiveFootage.Lease protection) {
             this.recorder = recorder;
             this.surface = surface;
             this.path = path;
+            this.protection = protection;
             this.shared = shared;
         }
     }
@@ -646,6 +649,8 @@ public final class VideoRecorder {
     /** 配好、prepare 一个 MediaRecorder，写到 {@code path}。prepare 时文件就建出来了；配不起来的放掉、删掉文件。 */
     private Segment openSegment(String path, boolean shared) throws IOException {
         MediaRecorder recorder = new MediaRecorder();
+        com.kooo.evcam.storage.ActiveFootage.Lease protection =
+                com.kooo.evcam.storage.ActiveFootage.acquire(new File(path));
         try {
             recorder.setOnInfoListener((mr, what, extra) ->
                     AppLog.d(TAG, "Camera " + cameraId + " MediaRecorder info what=" + what + ", extra=" + extra));
@@ -664,9 +669,9 @@ public final class VideoRecorder {
                 throw new IOException("MediaRecorder has no input surface after prepare");
             }
             handedOut.add(surface);
-            return new Segment(recorder, surface, path, shared);
+            return new Segment(recorder, surface, path, shared, protection);
         } catch (IOException | RuntimeException e) {
-            releaseQuietly(recorder);
+            if (releaseQuietly(recorder)) protection.close();
             deleteQuietly(path);
             throw e;
         }
@@ -688,12 +693,16 @@ public final class VideoRecorder {
         }
         releaseSegment(seg);
         File file = new File(seg.path);
+        if (com.kooo.evcam.storage.ActiveFootage.contains(file)) {
+            AppLog.w(TAG, "Camera " + cameraId + " retaining file with uncertain MediaRecorder release: " + seg.path);
+            return null;
+        }
         if (!file.exists()) {
             return null;
         }
         long size = file.length();
         if (!sealed || size < MIN_VALID_FILE_SIZE) {
-            if (file.delete()) {
+            if (com.kooo.evcam.storage.ActiveFootage.deleteIfClosed(file)) {
                 deleted.add(file.getName());
             }
             AppLog.w(TAG, "Camera " + cameraId + " deleted unusable file " + seg.path + " (" + size + " bytes, sealed="
@@ -714,7 +723,7 @@ public final class VideoRecorder {
      * 相机层认得出它是死输出，调度马上摘 —— 停下的 MediaRecorder 不再取帧，留在会话里会让那一路整条重复请求停下。
      */
     private void releaseSegment(Segment seg) {
-        releaseQuietly(seg.recorder);
+        if (releaseQuietly(seg.recorder)) seg.protection.close();
         releaseQuietly(seg.surface);
         handedOut.remove(seg.surface);
     }
@@ -727,7 +736,7 @@ public final class VideoRecorder {
         }
     }
 
-    private void releaseQuietly(MediaRecorder recorder) {
+    private boolean releaseQuietly(MediaRecorder recorder) {
         try {
             recorder.reset();
         } catch (RuntimeException e) {
@@ -735,8 +744,10 @@ public final class VideoRecorder {
         }
         try {
             recorder.release();
+            return true;
         } catch (RuntimeException e) {
             AppLog.w(TAG, "Camera " + cameraId + " MediaRecorder.release() failed: " + e.getMessage());
+            return false;
         }
     }
 
@@ -792,7 +803,7 @@ public final class VideoRecorder {
 
     private static void deleteQuietly(String path) {
         File file = new File(path);
-        if (file.exists() && !file.delete()) {
+        if (file.exists() && !com.kooo.evcam.storage.ActiveFootage.deleteIfClosed(file)) {
             AppLog.w(TAG, "Could not delete " + path);
         }
     }

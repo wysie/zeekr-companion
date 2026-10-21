@@ -728,27 +728,17 @@ public class CodecVideoRecorder {
                                 return;
                             }
 
-                            // 获取绝对时间戳（系统启动以来的纳秒）
-                            long absoluteTimestampNs = surfaceTexture.getTimestamp();
-                            
-                            // 计算相对时间戳（以第一帧为基准）
-                            // 注意：firstFrameTimestampNs 在录制器的一辈子里不重置（分段切换、停放、重新备好都不清）
-                            // 因为 eglPresentationTimeANDROID 需要单调递增的时间戳
-                            // 否则 GraphicBufferSource 会拒绝帧
-                            if (firstFrameTimestampNs < 0) {
-                                firstFrameTimestampNs = absoluteTimestampNs;
-                                AppLog.d(TAG, "Camera " + cameraId + " First frame timestamp: " + absoluteTimestampNs + " ns");
-                            }
-                            long relativeTimestampNs = absoluteTimestampNs - firstFrameTimestampNs;
-
-                            // 直接渲染帧到编码器（使用相对时间戳）
+                            // Acquire before reading the camera timestamp: getTimestamp() before
+                            // updateTexImage() identifies the previously acquired pixels.
                             if (eglEncoder != null && eglEncoder.isInitialized()) {
                                 long drawStart = StallWatch.now();
-                                eglEncoder.drawFrame(relativeTimestampNs);
+                                boolean submitted = eglEncoder.drawFrame(this::relativeFrameTimestamp);
                                 StallWatch.noteOp(encoderBeat, cameraId, "draw", drawStart);
-                                recordedFrameCount++;
-                                framesThisEncoder++;
-                                framesSinceLastDrain++;
+                                if (submitted) {
+                                    recordedFrameCount++;
+                                    framesThisEncoder++;
+                                    framesSinceLastDrain++;
+                                }
                             }
 
                             // 自适应 drain 控制：根据时间间隔决定是否 drain
@@ -759,7 +749,7 @@ public class CodecVideoRecorder {
                             if (currentTimeMs - lastDrainTimeMs >= currentDrainIntervalMs || framesSinceLastDrain >= 10) {
                                 // 从编码器取出输出、拷出来排给写入线程
                                 long drainStart = StallWatch.now();
-                                boolean hadOutput = drainEncoderWithResult(false);
+                                boolean hadOutput = drainEncoder(false);
                                 StallWatch.noteOp(encoderBeat, cameraId, "drain", drainStart);
                                 lastDrainTimeMs = currentTimeMs;
                                 framesSinceLastDrain = 0;
@@ -1068,7 +1058,10 @@ public class CodecVideoRecorder {
         }
 
         synchronized (recordedFilePaths) {
-            stoppedFiles = new ArrayList<>(recordedFilePaths);
+            List<String> closedFiles = new ArrayList<>();
+            for (String path : recordedFilePaths)
+                if (!com.kooo.evcam.storage.ActiveFootage.contains(new File(path))) closedFiles.add(path);
+            stoppedFiles = closedFiles;
             recordedFilePaths.clear();
         }
         return true;
@@ -1862,20 +1855,27 @@ public class CodecVideoRecorder {
      */
     private void createMuxer(String filePath) throws IOException {
         closeMuxerFile();
-        RandomAccessFile file = new RandomAccessFile(filePath, "rw");
+        com.kooo.evcam.storage.ActiveFootage.Lease protection =
+                com.kooo.evcam.storage.ActiveFootage.acquire(new File(filePath));
+        RandomAccessFile file;
+        try { file = new RandomAccessFile(filePath, "rw"); }
+        catch (IOException | RuntimeException error) { protection.close(); throw error; }
         try {
             file.setLength(0);
             muxer = new MediaMuxer(file.getFD(), MediaMuxer.OutputFormat.MUXER_OUTPUT_MPEG_4);
         } catch (IOException | RuntimeException e) {
             try {
                 file.close();
+                protection.close();
             } catch (IOException ignored) {
                 // 开都没开成，关不上也无所谓
             }
-            new File(filePath).delete();
+            com.kooo.evcam.storage.ActiveFootage.deleteIfClosed(new File(filePath));
             throw e;
         }
         muxerFile = file;
+        muxerProtection = protection;
+        muxerReleaseFailed = false;
         videoTrackIndex = -1;
         muxerStarted = false;
         lastWrittenPtsUs = -1L;
@@ -1898,168 +1898,52 @@ public class CodecVideoRecorder {
      *   以前也只取 8 帧，最后几帧和结束标记会被截掉；现在编码线程不碰盘，等得起
      * - 捕获 IllegalStateException 并标记编码器不健康
      */
-    private void drainEncoder(boolean endOfStream) {
-        if (encoder == null) {
-            return;
-        }
-
-        // 优化：使用零超时非阻塞模式，快速检查是否有输出
-        final int TIMEOUT_USEC = endOfStream ? 10000 : 0;  // 结束状态等待，正常状态非阻塞
-        // 期限按开机时长（不含深睡）算：和停录那几步一样，睡过去的那一段不算等了
-        final long eosDeadlineMs = SystemClock.uptimeMillis() + EOS_DRAIN_MS;
-        int processedFrames = 0;  // 本次 drain 已处理帧数
-
+    private boolean drainEncoder(boolean endOfStream) {
+        if (encoder == null) return false;
+        boolean[] sawEnd = endOfStream ? new boolean[1] : null;
         try {
-            while (endOfStream || processedFrames < DRAIN_BATCH_SIZE) {  // 平时批量处理限制；结束流取到底
-                if (endOfStream && SystemClock.uptimeMillis() >= eosDeadlineMs) {
-                    AppLog.w(TAG, "Camera " + cameraId + " encoder gave no end of stream within "
-                            + EOS_DRAIN_MS + "ms, " + processedFrames + " frames drained");
-                    break;
-                }
-                int outputBufferIndex;
-                try {
-                    outputBufferIndex = encoder.dequeueOutputBuffer(bufferInfo, TIMEOUT_USEC);
-                } catch (IllegalStateException e) {
-                    // 编码器处于无效状态，标记为不健康
-                    if (encoderHealthy) {
-                        AppLog.e(TAG, "Camera " + cameraId + " Encoder in invalid state during dequeueOutputBuffer", e);
-                        noteTrouble("dequeue", e);
-                    }
-                    encoderHealthy = false;
-                    return;
-                }
-
-                if (outputBufferIndex == MediaCodec.INFO_TRY_AGAIN_LATER) {
-                    if (!endOfStream) {
-                        break;  // 没有数据了，快速返回
-                    }
-                    // 结束流：最后一帧和结束标记还没出来，接着等（到期限为止）
-                } else if (outputBufferIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-                    // 输出格式变化：交给写入线程添加视频轨道
-                    if (formatSeen) {
-                        AppLog.w(TAG, "Camera " + cameraId + " Format changed twice");
-                    } else {
-                        onEncoderFormat(encoder.getOutputFormat());
-                    }
-                } else if (outputBufferIndex >= 0) {
-                    ByteBuffer encodedData = encoder.getOutputBuffer(outputBufferIndex);
-
-                    if (encodedData == null) {
-                        AppLog.e(TAG, "Camera " + cameraId + " Encoder output buffer " + outputBufferIndex + " was null");
-                    } else if (skipAsSample(bufferInfo.flags)) {
-                        // 单独的参数集，开轨时已随输出格式交给 muxer（见 skipAsSample）
-                        bufferInfo.size = 0;
-                    }
-
-                    if (bufferInfo.size != 0) {
-                        if (!formatSeen) {
-                            AppLog.e(TAG, "Camera " + cameraId + " Encoder gave data before its output format");
-                        } else {
-                            // 拷出来排给写入线程，缓冲区下面马上还给编码器
-                            queueSample(encodedData, bufferInfo);
-
-                            processedFrames++;  // 增加已处理帧计数
+            boolean hadOutput = CodecOutputDrain.run(endOfStream, DRAIN_BATCH_SIZE, EOS_DRAIN_MS,
+                    SystemClock::uptimeMillis, timeout -> encoder.dequeueOutputBuffer(bufferInfo, timeout),
+                    () -> {
+                        if (formatSeen) AppLog.w(TAG, "Camera " + cameraId + " Format changed twice");
+                        else onEncoderFormat(encoder.getOutputFormat());
+                    }, index -> {
+                        try {
+                            ByteBuffer data = encoder.getOutputBuffer(index);
+                            if (data == null) {
+                                AppLog.e(TAG, "Camera " + cameraId + " Encoder output buffer " + index + " was null");
+                            } else if (bufferInfo.size != 0 && !skipAsSample(bufferInfo.flags)) {
+                                if (formatSeen) queueSample(data, bufferInfo);
+                                else AppLog.e(TAG, "Camera " + cameraId + " Encoder gave data before its output format");
+                            }
+                            boolean ended = (bufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0;
+                            if (sawEnd != null) sawEnd[0] = ended;
+                            return ended;
+                        } finally {
+                            // Return every dequeued buffer even when copying/queuing fails.
+                            encoder.releaseOutputBuffer(index, false);
                         }
-                    }
-
-                    try {
-                        encoder.releaseOutputBuffer(outputBufferIndex, false);
-                    } catch (IllegalStateException e) {
-                        if (encoderHealthy) {
-                            AppLog.e(TAG, "Camera " + cameraId + " Encoder in invalid state during releaseOutputBuffer", e);
-                            noteTrouble("release-output", e);
-                        }
-                        encoderHealthy = false;
-                        return;
-                    }
-
-                    if ((bufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
-                        break;  // 流结束
-                    }
-                }
-            }
+                    });
+            if (sawEnd != null && !sawEnd[0]) AppLog.w(TAG, "Camera " + cameraId
+                    + " encoder gave no end of stream within " + EOS_DRAIN_MS + "ms");
+            return hadOutput;
         } catch (Exception e) {
             if (encoderHealthy) {
-                AppLog.e(TAG, "Camera " + cameraId + " Unexpected error in drainEncoder", e);
+                AppLog.e(TAG, "Camera " + cameraId + " Error draining encoder", e);
                 noteTrouble("drain", e);
             }
             encoderHealthy = false;
+            return false;
         }
     }
 
-    /**
-     * 排空编码器输出（带返回值）
-     * @param endOfStream 是否结束流
-     * @return 是否有输出数据
-     */
-    private boolean drainEncoderWithResult(boolean endOfStream) {
-        if (encoder == null) {
-            return false;
+    /** One lifetime-wide origin, retained across stop/rearm and segment encoder replacements. */
+    private long relativeFrameTimestamp(long acquiredTimestampNs) {
+        if (firstFrameTimestampNs < 0) {
+            firstFrameTimestampNs = acquiredTimestampNs;
+            AppLog.d(TAG, "Camera " + cameraId + " First acquired frame timestamp: " + acquiredTimestampNs + " ns");
         }
-
-        final int TIMEOUT_USEC = 10000;
-        boolean gotOutput = false;
-
-        try {
-            while (true) {
-                int outputBufferIndex;
-                try {
-                    outputBufferIndex = encoder.dequeueOutputBuffer(bufferInfo, TIMEOUT_USEC);
-                } catch (IllegalStateException e) {
-                    if (encoderHealthy) {
-                        AppLog.e(TAG, "Camera " + cameraId + " Encoder in invalid state during dequeueOutputBuffer", e);
-                        noteTrouble("dequeue", e);
-                    }
-                    encoderHealthy = false;
-                    return false;
-                }
-
-                if (outputBufferIndex == MediaCodec.INFO_TRY_AGAIN_LATER) {
-                    if (!endOfStream) {
-                        break;
-                    }
-                } else if (outputBufferIndex == MediaCodec.INFO_OUTPUT_FORMAT_CHANGED) {
-                    if (!formatSeen) {
-                        onEncoderFormat(encoder.getOutputFormat());
-                    }
-                    gotOutput = true;
-                } else if (outputBufferIndex >= 0) {
-                    ByteBuffer encodedData = encoder.getOutputBuffer(outputBufferIndex);
-
-                    if (encodedData != null && bufferInfo.size != 0) {
-                        if (formatSeen) {
-                            // 拷出来排给写入线程，缓冲区下面马上还给编码器
-                            queueSample(encodedData, bufferInfo);
-
-                            gotOutput = true;
-                        }
-                    }
-
-                    try {
-                        encoder.releaseOutputBuffer(outputBufferIndex, false);
-                    } catch (IllegalStateException e) {
-                        if (encoderHealthy) {
-                            AppLog.e(TAG, "Camera " + cameraId + " Encoder in invalid state during releaseOutputBuffer", e);
-                            noteTrouble("release-output", e);
-                        }
-                        encoderHealthy = false;
-                        return gotOutput;
-                    }
-
-                    if ((bufferInfo.flags & MediaCodec.BUFFER_FLAG_END_OF_STREAM) != 0) {
-                        break;
-                    }
-                }
-            }
-        } catch (Exception e) {
-            if (encoderHealthy) {
-                AppLog.e(TAG, "Camera " + cameraId + " Error in drainEncoderWithResult", e);
-                noteTrouble("drain", e);
-            }
-            encoderHealthy = false;
-        }
-
-        return gotOutput;
+        return acquiredTimestampNs - firstFrameTimestampNs;
     }
 
     /**
@@ -2404,6 +2288,9 @@ public class CodecVideoRecorder {
     private volatile boolean muxerStarted;
     /** muxer 写的那个文件，我们自己开的：muxer 内部 dup 了描述符，这一份留着 fsync。 */
     private RandomAccessFile muxerFile;
+    /** Owned by the writer, not released merely because the caller times out. */
+    private com.kooo.evcam.storage.ActiveFootage.Lease muxerProtection;
+    private boolean muxerReleaseFailed;
     /** 这个文件本来叫什么（开文件那条命令给的）：换盘时没有可补写的，新盘上用同一个名字。 */
     private String writerFileName;
     /** 这个文件的轨道格式（开轨那条命令给的）：换盘补写、抢救都用它开轨。收文件时清掉。放弃等写入线程时抢救线程也读。 */
@@ -3099,9 +2986,13 @@ public class CodecVideoRecorder {
             if (completed == null) {
                 return;  // 这个文件没开成：没有可验证、可报的（以前这里会把上一个文件再报一遍）
             }
+            if (com.kooo.evcam.storage.ActiveFootage.contains(new File(completed))) {
+                AppLog.w(TAG, "Camera " + cameraId + " retaining file with uncertain writer release: " + completed);
+                return; // Do not announce it as closed to relay transfer or validation.
+            }
             if (!started) {
                 // 开了、一直没开轨（开录之后一帧都没编出来就叫停了）：是个空文件。删掉，不报
-                if (new File(completed).delete()) {
+                if (com.kooo.evcam.storage.ActiveFootage.deleteIfClosed(new File(completed))) {
                     recordedFilePaths.remove(completed);
                     AppLog.d(TAG, "Camera " + cameraId + " removed never-started file " + completed);
                 }
@@ -3217,6 +3108,7 @@ public class CodecVideoRecorder {
             try {
                 muxer.release();
             } catch (Exception e) {
+                muxerReleaseFailed = true;
                 AppLog.w(TAG, "Camera " + cameraId + " Error releasing muxer: " + e.getMessage());
             }
             muxer = null;
@@ -3240,6 +3132,7 @@ public class CodecVideoRecorder {
             try {
                 muxer.release();
             } catch (Exception ignored) {
+                muxerReleaseFailed = true;
                 // 作废的东西释放不掉也没什么可做的
             }
             muxer = null;
@@ -3252,9 +3145,13 @@ public class CodecVideoRecorder {
     private void closeMuxerFile() {
         RandomAccessFile file = muxerFile;
         muxerFile = null;
+        com.kooo.evcam.storage.ActiveFootage.Lease protection = muxerProtection;
+        muxerProtection = null;
         if (file != null) {
             try {
                 file.close();
+                // A native release failure may still own its duplicated descriptor: fail closed.
+                if (!muxerReleaseFailed && protection != null) protection.close();
             } catch (IOException e) {
                 AppLog.w(TAG, "Camera " + cameraId + " Error closing muxer file: " + e.getMessage());
             }
@@ -3334,7 +3231,11 @@ public class CodecVideoRecorder {
             throw new IOException("cannot create " + dir);
         }
         String path = pathNamedAt(dir, wallClockOf(samples.get(0)));
-        RandomAccessFile file = new RandomAccessFile(path, "rw");
+        com.kooo.evcam.storage.ActiveFootage.Lease protection =
+                com.kooo.evcam.storage.ActiveFootage.acquire(new File(path));
+        RandomAccessFile file;
+        try { file = new RandomAccessFile(path, "rw"); }
+        catch (IOException | RuntimeException error) { protection.close(); throw error; }
         MediaMuxer rescue = null;
         boolean ok = false;
         try {
@@ -3347,20 +3248,23 @@ public class CodecVideoRecorder {
             file.getFD().sync();
             ok = true;
         } finally {
+            boolean nativeClosed = true;
             if (rescue != null) {
                 try {
                     rescue.release();
                 } catch (RuntimeException ignored) {
+                    nativeClosed = false;
                     // 释放失败不影响结果
                 }
             }
             try {
                 file.close();
+                if (nativeClosed) protection.close();
             } catch (IOException ignored) {
                 // 同上
             }
             if (!ok) {
-                new File(path).delete();
+                com.kooo.evcam.storage.ActiveFootage.deleteIfClosed(new File(path));
             }
         }
         recordedFilePaths.add(path);
@@ -3789,7 +3693,7 @@ public class CodecVideoRecorder {
         }
 
         File file = new File(filePath);
-        if (!file.exists()) {
+        if (com.kooo.evcam.storage.ActiveFootage.contains(file) || !file.exists()) {
             return null;
         }
 
@@ -3797,8 +3701,7 @@ public class CodecVideoRecorder {
 
         if (fileSize < MIN_VALID_FILE_SIZE) {
             AppLog.w(TAG, "Camera " + cameraId + " Video file too small: " + filePath + " (" + fileSize + " bytes). Deleting...");
-            file.delete();
-            return file.getName();
+            return com.kooo.evcam.storage.ActiveFootage.deleteIfClosed(file) ? file.getName() : null;
         } else {
             AppLog.d(TAG, "Camera " + cameraId + " Video file validated: " + filePath + " (" + (fileSize / 1024) + " KB)");
             return null;

@@ -49,6 +49,7 @@ public class SettingsShellFragment extends Fragment implements
     static final String DEFAULT_SECTION = "screen_recording";
     /** 开发者选项那一段：没打开时不显示（左栏也没有这一行）。 */
     static final String DEVELOPER_SECTION = "screen_developer";
+    private static final String CATEGORY_TAG = "settings.category";
 
     private SlidingPaneLayout slidingPane;
     private com.google.android.material.button.MaterialButton navButton;
@@ -143,6 +144,13 @@ public class SettingsShellFragment extends Fragment implements
         // Otherwise Storage can retain the editor title/back arrow and Back resurrects that editor.
         androidx.fragment.app.FragmentManager manager = getChildFragmentManager();
         if (manager.getBackStackEntryCount() > 0) {
+            Fragment nested = manager.findFragmentById(R.id.settings_detail);
+            Fragment category = manager.findFragmentByTag(CATEGORY_TAG);
+            // A category click abandons this history instead of returning to it. Do not
+            // start a Z-axis return on the category that is immediately replaced by Y.
+            // Normal Back still uses the return/reenter animations installed by openDetail.
+            if (nested != null) nested.setReturnTransition(null);
+            if (category != null) category.setReenterTransition(null);
             manager.popBackStackImmediate(null, androidx.fragment.app.FragmentManager.POP_BACK_STACK_INCLUSIVE);
         }
         boolean down = order < 0 || order >= currentOrder;
@@ -161,7 +169,7 @@ public class SettingsShellFragment extends Fragment implements
         }
         getChildFragmentManager().beginTransaction()
                 .setReorderingAllowed(true)
-                .replace(R.id.settings_detail, next)
+                .replace(R.id.settings_detail, next, CATEGORY_TAG)
                 .commit();
         // 左栏跟着把选中块挪过去（第一次进来时它还没建好，建的时候会来问 currentSection）
         Fragment headers = getChildFragmentManager().findFragmentById(R.id.settings_headers);

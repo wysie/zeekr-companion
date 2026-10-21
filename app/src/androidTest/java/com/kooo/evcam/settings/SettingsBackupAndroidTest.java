@@ -119,6 +119,25 @@ public class SettingsBackupAndroidTest extends MainPageControlsAndroidTest {
         SettingsBackup.restoreOnStartup(app);assertEquals(64,prefs("bird_eye_window").getInt("completed_size",0));
         assertFalse(SettingsBackup.recovery(app).exists());
     }
+    @Test public void wrongTypesForAbsentKnownKeysAreRejectedBeforeStartupCanCommitThem() throws Exception {
+        String[][] cases = {{"app_config","interface_theme"},{"app_config","video_storage_limit_gb"},
+                {"profiles","current"},{"bird_eye_calibration","camera_2_pitch"},
+                {"bird_eye_window","size"},{"bird_eye_appearance","vehicle_colour"}};
+        for (String[] item : cases) {
+            assertTrue(prefs(item[0]).edit().remove(item[1]).commit());
+            JSONObject root = SettingsBackup.snapshot(app), before = root.getJSONObject("stores");
+            JSONObject invalid = new JSONObject(root.toString());
+            invalid.getJSONObject("stores").getJSONObject(item[0]).put(item[1],
+                    new JSONObject().put("type","boolean").put("value",true));
+            SettingsBackup.Backup backup = SettingsBackup.read(app,write(invalid));
+            assertEquals(item[0]+"/"+item[1],SettingsBackup.Backup.Status.UNREADABLE,backup.status);
+            assertFalse(SettingsBackup.apply(app,backup)); assertStores(before);
+            // A pending snapshot written by an older version is checked again before replacement.
+            Files.write(SettingsBackup.pending(app).toPath(),invalid.toString().getBytes(StandardCharsets.UTF_8));
+            SettingsBackup.restoreOnStartup(app); assertStores(before);
+            assertEquals("failed",SettingsBackup.lastRestoreResult(app));
+        }
+    }
     @Test public void exportNeverOverwritesAndDiagnosticsCarryEveryStoreWithoutTruncation() throws Exception {
         String detail=String.join("",Collections.nCopies(200,"x"));prefs("bird_eye_calibration").edit().putString("detail",detail).commit();
         File first=export(),second=export();assertNotEquals(first,second);

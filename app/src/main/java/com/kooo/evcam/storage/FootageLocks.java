@@ -65,7 +65,7 @@ public final class FootageLocks {
     private static final String AUTO_HEADER =
             "# Zeekr Shortcut: footage locked automatically (hard braking). Released oldest first when over the cap.";
 
-    private static final Object GUARD = new Object();
+    private static final Object GUARD = ActiveFootage.guard();
     private static final ExecutorService IO = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r, "FootageLocks");
         thread.setDaemon(true);
@@ -210,8 +210,10 @@ public final class FootageLocks {
             boolean ok = !groups.isEmpty();
             synchronized (GUARD) {
                 for (Map.Entry<File, List<String>> group : groups.entrySet()) {
-                    boolean saved = update(group.getKey(), group.getValue(), locked);
-                    if (saved) updateList(group.getKey(), AUTO_FILE_NAME, AUTO_HEADER, group.getValue(), false);
+                    // Remove automatic ownership first. Failure cannot report a manual lock that
+                    // the next braking-budget pass is still allowed to release.
+                    boolean saved = updateList(group.getKey(), AUTO_FILE_NAME, AUTO_HEADER,
+                            group.getValue(), false) && update(group.getKey(), group.getValue(), locked);
                     ok &= saved;
                 }
             }
@@ -259,11 +261,9 @@ public final class FootageLocks {
         IO.execute(() -> {
             boolean ok;
             synchronized (GUARD) {
-                ok = update(dir, copy, locked);
-                if (ok) {
-                    // 人锁的 / 人解的：不再算「自动锁的」
-                    updateList(dir, AUTO_FILE_NAME, AUTO_HEADER, copy, false);
-                }
+                // An interrupted second write retains protection with user ownership.
+                ok = updateList(dir, AUTO_FILE_NAME, AUTO_HEADER, copy, false)
+                        && update(dir, copy, locked);
             }
             com.kooo.evcam.blackbox.BlackBox.noteImportant((locked ? "锁定影像：锁上 " : "锁定影像：解开 ")
                     + copy.size() + " 个文件" + (ok ? "" : "（没写进去）") + " " + copy);

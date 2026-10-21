@@ -96,4 +96,39 @@ public class ManualRecordingLockAndroidTest extends MainPageControlsAndroidTest 
         await(() -> locked(Collections.singleton(later)),LockWindow.AFTER_MS + LockWindow.SECOND_PASS_DELAY_MS + 5000);
         assertFalse(FootageLocks.readAuto(directory).contains(later));
     }
+
+    @Test public void flashPromotesAnExistingBrakeLockOutsideTheAutomaticBudget() throws Exception {
+        long moment = System.currentTimeMillis(); String first = clip(moment - 1000, "surround");
+        CountDownLatch automatic = new CountDownLatch(1);
+        FootageLocks.lockAuto(directory, Collections.singleton(first), Collections.singleton(first), Long.MAX_VALUE,
+                ok -> { assertTrue(ok); automatic.countDown(); });
+        assertTrue(automatic.await(5, TimeUnit.SECONDS));
+        config.setFlashLockEnabled(true);
+        AutoLock.get().recordingStarted(app, null); InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        java.lang.reflect.Method request = AutoLock.class.getDeclaredMethod("lockAround", Context.class, long.class, AutoLock.Source.class);
+        request.setAccessible(true); main(() -> {
+            try { request.invoke(AutoLock.get(), app, moment, AutoLock.Source.FLASH); }
+            catch (Exception error) { throw new AssertionError(error); }
+        });
+        await(() -> locked(Collections.singleton(first)) && !FootageLocks.readAuto(directory).contains(first), 5000);
+        String later = clip(moment + 120000, "surround"); CountDownLatch budget = new CountDownLatch(1);
+        FootageLocks.lockAuto(directory, Collections.singleton(later), Collections.singleton(later), 0,
+                ok -> { assertTrue(ok); budget.countDown(); });
+        assertTrue(budget.await(5, TimeUnit.SECONDS));
+        assertTrue("Later budget enforcement cannot release an explicit flash request", locked(Collections.singleton(first)));
+    }
+
+    @Test public void manualPromotionReportsFailureWhenAutomaticOwnershipCannotBeRead() throws Exception {
+        long moment = System.currentTimeMillis(); String first = clip(moment - 1000, "surround");
+        CountDownLatch automatic = new CountDownLatch(1);
+        FootageLocks.lockAuto(directory, Collections.singleton(first), Collections.singleton(first), Long.MAX_VALUE,
+                ok -> automatic.countDown());
+        assertTrue(automatic.await(5, TimeUnit.SECONDS));
+        File metadata = new File(directory, FootageLocks.AUTO_FILE_NAME);
+        try (java.io.RandomAccessFile corrupt = new java.io.RandomAccessFile(metadata, "rw")) { corrupt.setLength(2L * 1024 * 1024 + 1); }
+        CountDownLatch result = new CountDownLatch(1); boolean[] success = {true};
+        FootageLocks.set(directory, Collections.singleton(first), true, ok -> { success[0] = ok; result.countDown(); });
+        assertTrue(result.await(5, TimeUnit.SECONDS)); assertFalse("Cannot claim promotion while auto ownership remains unknown", success[0]);
+        assertTrue("Existing protection is preserved on failure", locked(Collections.singleton(first)));
+    }
 }

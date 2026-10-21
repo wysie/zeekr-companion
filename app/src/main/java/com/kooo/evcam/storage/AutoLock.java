@@ -306,8 +306,16 @@ public final class AutoLock implements Telemetry.Listener {
                 Set<String> existing = new TreeSet<>(names);
                 existing.retainAll(listed);
                 alreadyLocked += existing.size();
-                // A manual press upgrades automatic brake locks to user-owned locks too.
-                if (source != Source.BUTTON) names.removeAll(listed);
+                // Both explicit requests (button and flash) upgrade brake locks to user-owned
+                // protection outside the automatic budget, even when already in locked.txt.
+                if (source == Source.BRAKE) names.removeAll(listed);
+                else if (source == Source.FLASH) {
+                    Set<String> automatic = FootageLocks.readAuto(entry.getKey());
+                    if (automatic != null) {
+                        Set<String> userOwned = new TreeSet<>(listed); userOwned.removeAll(automatic);
+                        names.removeAll(userOwned); // Repeated flashes do not reannounce existing user locks.
+                    }
+                }
             }
             if (names.isEmpty()) {
                 continue;

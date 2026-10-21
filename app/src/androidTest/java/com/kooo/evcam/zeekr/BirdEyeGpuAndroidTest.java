@@ -145,6 +145,29 @@ public class BirdEyeGpuAndroidTest {
             AtomicReference<Bitmap> image=new AtomicReference<>(); main(() -> image.set(view.getBitmap(ow,oh)));
             assertNotNull(image.get()); return image.get();
         }
+        void onGl(Runnable work) throws Exception {
+            java.lang.reflect.Field field=FisheyeGlPipe.class.getDeclaredField("handler");field.setAccessible(true);
+            android.os.Handler handler=(android.os.Handler)field.get(pipe);
+            java.util.concurrent.CountDownLatch done=new java.util.concurrent.CountDownLatch(1);
+            AtomicReference<Throwable> failure=new AtomicReference<>();
+            assertTrue(handler.post(()->{try{work.run();}catch(Throwable error){failure.set(error);}finally{done.countDown();}}));
+            assertTrue("GL thread reached suspension fence",done.await(5,java.util.concurrent.TimeUnit.SECONDS));
+            assertNull("GL fence action failed: "+failure.get(),failure.get());
+        }
+        long acquiredTimestamp() throws Exception {
+            java.lang.reflect.Field field=FisheyeGlPipe.class.getDeclaredField("input");field.setAccessible(true);
+            SurfaceTexture input=(SurfaceTexture)field.get(pipe);
+            java.util.concurrent.atomic.AtomicLong timestamp=new java.util.concurrent.atomic.AtomicLong();
+            onGl(()->timestamp.set(input.getTimestamp()));return timestamp.get();
+        }
+        void awaitAcquiredTimestamp(long expected) throws Exception {
+            long until=SystemClock.uptimeMillis()+5000;
+            long actual=acquiredTimestamp();
+            while(actual!=expected && SystemClock.uptimeMillis()<until) {
+                SystemClock.sleep(10);actual=acquiredTimestamp();
+            }
+            assertEquals("Hidden pipeline acquires the latest producer frame",expected,actual);
+        }
         BirdEyeGlRequest install(boolean fitted, int[] lanes) {
             StreamLayoutTable.setCompositeCameraId("gpu-test");
             CompositeStreamGeometry.Plan plan=CompositeStreamGeometry.analyse("gpu-test",sw,sh);
@@ -222,6 +245,60 @@ public class BirdEyeGpuAndroidTest {
             await("Video pane resized",()->f.view.getWidth()==600 && f.view.getHeight()==360);
             for(int i=0;i<4;i++){f.patternFrame();SystemClock.sleep(65);}
             assertTrue(f.pipe.describeOutput(),f.pipe.describeOutput().contains("rendered=512x2048 mode=strip/video"));
+        }
+    }
+    @Test public void suspendedOutputDrainsLatestInputAndResumesNativeSizeWithoutReplacingProducer() throws Exception {
+        try (Fixture f = new Fixture(false,1280,5140,true)) {
+            Surface producer = f.producer;
+            SurfaceTexture output = f.output.get();
+            // TextureView's first layer/buffer allocation can race the initial swap.
+            // Establish the same live warm-up used by the other native GPU fixtures.
+            for (int i=0;i<4;i++) { f.frame(); SystemClock.sleep(65); }
+            await("Initial raw output acquired", () -> f.pipe.rawOutputReady(f.outputTimestamp));
+            PreviewDewarp.setPresentationActive(output, false);
+            f.onGl(()->{}); // Finish any swap already in flight before snapshotting production work.
+            long hiddenSwaps = f.pipe.presentationCount();
+            main(() -> {
+                WindowManager.LayoutParams p = (WindowManager.LayoutParams) f.root.getLayoutParams();
+                p.width = 600; p.height = 320; f.windows.updateViewLayout(f.root,p);
+            });
+            await("Hidden output resized", () -> f.view.getWidth() == 600 && f.view.getHeight() == 320);
+            long latest = 0;
+            for (int i=0;i<12;i++) { latest=f.frame(); SystemClock.sleep(40); }
+            f.awaitAcquiredTimestamp(latest);
+            assertEquals("Hidden retained output performs no further swaps",hiddenSwaps,f.pipe.presentationCount());
+            assertTrue(f.pipe.describeOutput(),f.pipe.describeOutput().contains("presentation=suspended"));
+            final long newest = latest;
+            // No new producer frame: resuming must use the latest frame drained while hidden.
+            PreviewDewarp.setPresentationActive(output, true);
+            f.onGl(()->{});
+            assertTrue("Resume swaps a new primary output: "+f.pipe.describeOutput(),f.pipe.presentationCount()>hiddenSwaps);
+            assertTrue("Resume publishes the exact latest input timestamp",f.pipe.rawOutputReady(newest));
+            // Real windows request layout/drawing when revealed or reattached. Do the same
+            // for this otherwise-idle bare TextureView after its hidden resize.
+            main(f.view::invalidate);
+            try {
+                await("Resume presents latest input, not the old retained buffer", () -> output.getTimestamp() == newest);
+            } catch (AssertionError failure) {
+                throw new AssertionError("Expected source="+newest+" acquired="+output.getTimestamp()
+                        +" callbackObserved="+f.outputTimestamp
+                        +" "+f.pipe.describeOutput(),failure);
+            }
+            assertTrue(f.pipe.describeOutput(),f.pipe.describeOutput().contains("rendered=1280x5140"));
+            assertSame(producer,f.producer); assertSame(output,f.output.get()); assertTrue(producer.isValid());
+        }
+    }
+    @Test public void suspendedProjectionCannotMakeAStoppedSourceFreshOnResume() throws Exception {
+        try (Fixture f = new Fixture()) {
+            BirdEyeGlRequest request=f.install(true,new int[]{0,1,2,3}); f.fresh(request);
+            f.pipe.setPresentationActive(false);
+            for(int i=0;i<4;i++){f.frame();SystemClock.sleep(50);}
+            SystemClock.sleep(CameraFrameFreshness.LIMIT_MS+100);
+            long previous=f.outputTimestamp;
+            f.pipe.setPresentationActive(true);
+            await("Resume redraws retained input",()->f.outputTimestamp!=previous);
+            assertFalse("Resumption must not renew source freshness",request.fresh(f.outputTimestamp,SystemClock.elapsedRealtime()));
+            f.fresh(request);
         }
     }
     private void restorePreferences(android.content.SharedPreferences preferences,java.util.Map<String,?> values) {
@@ -474,6 +551,18 @@ public class BirdEyeGpuAndroidTest {
             main(f.mirror::clearSideView);
             for(int i=0;i<8;i++){f.frame();SystemClock.sleep(40);}
             assertEquals("GPU",f.mirror.gpuState());assertSame(producer,f.producer);assertTrue(producer.isValid());
+            main(()->f.mirror.setHiddenForSidePopup(true));
+            f.onGl(()->{});
+            long coveredSwaps=f.pipe.presentationCount();
+            long coveredTimestamp=f.outputTimestamp;
+            for(int i=0;i<8;i++){f.frame();SystemClock.sleep(40);}
+            f.onGl(()->{});
+            assertEquals("Covered Super mirror stops GPU presentation",coveredSwaps,f.pipe.presentationCount());
+            assertTrue(f.pipe.describeOutput(),f.pipe.describeOutput().contains("presentation=suspended"));
+            main(()->f.mirror.setHiddenForSidePopup(false));
+            for(int i=0;i<4;i++){f.frame();SystemClock.sleep(40);}
+            assertNotEquals("Uncovering resumes the retained mirror",coveredTimestamp,f.outputTimestamp);
+            assertSame(producer,f.producer);assertTrue(producer.isValid());
         } finally {
             android.content.SharedPreferences.Editor edit=prefs.edit().clear();
             for(java.util.Map.Entry<String,?> e:saved.entrySet()){
@@ -507,11 +596,16 @@ public class BirdEyeGpuAndroidTest {
                     CompositeStreamGeometry.Lane l=plan.lane(lane);lanes[lane*4]=l.u0;lanes[lane*4+1]=l.v0;lanes[lane*4+2]=l.u1-l.u0;lanes[lane*4+3]=l.v1-l.v0;
                 }
                 f.pipe.setLanes(lanes);f.pipe.setCorrection(true,140,FisheyeProjection.PROJECTION_RECTILINEAR);
+                f.pipe.setPresentationActive(false);
+                f.onGl(()->{});
+                long hiddenMainSwaps=f.pipe.presentationCount();
                 f.pipe.setSideTap(output.get(),request);
                 for(int i=0;i<4;i++){f.patternFrame();SystemClock.sleep(55);}
                 await("Shared settings shader acquires raw source",()->request.frames.fresh(stamp.get(),SystemClock.elapsedRealtime()));
                 AtomicReference<Bitmap> result=new AtomicReference<>();main(()->result.set(target.get().getBitmap()));
                 assertNotNull(result.get());assertSidePattern(result.get(),LaneCycle.RIGHT,framing::sourcePoint);
+                f.onGl(()->{});
+                assertEquals("Active settings tap does not wake hidden main output",hiddenMainSwaps,f.pipe.presentationCount());
                 f.pipe.clearSideTap(request);assertTrue(f.producer.isValid());assertTrue(request.frames.cancelled);
             } finally {main(()->f.windows.removeViewImmediate(target.get()));}
         }

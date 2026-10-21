@@ -114,12 +114,19 @@ public class RearViewMirrorView extends ViewGroup {
 
     private void applySidePopupVisibility() {
         setAlpha(hiddenForSidePopup ? SideViewPopupView.IDLE_ALPHA : 1f);
+        syncGpuPresentation();
         if (params == null) return;
         params.alpha = hiddenForSidePopup ? 0f : 1f;
         if (hiddenForSidePopup) params.flags |= WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
         else params.flags &= ~WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE;
     }
     private boolean attached;
+
+    /** The camera input keeps draining while docked/covered; only GPU presentation sleeps. */
+    void syncGpuPresentation() {
+        PreviewDewarp.setPresentationActive(textureView.getSurfaceTexture(),
+                attached && !docked && !hiddenForSidePopup);
+    }
 
     /** 合成流的真实尺寸决定拆分几何，不能用缓冲区尺寸（HAL 可能给个压扁的提示值）。 */
     private CompositeStreamGeometry.Plan plan;
@@ -308,6 +315,7 @@ public class RearViewMirrorView extends ViewGroup {
             refreshWindowControls();
             // 上次就是贴边收起来的：画布一开始就不可见，和贴边那一刻一样（见 syncDockState）
             textureView.setVisibility(docked ? View.INVISIBLE : View.VISIBLE);
+            syncGpuPresentation();
             idleHandler.postDelayed(idleTick, IDLE_TICK_MS);
         } catch (Exception e) {
             AppLog.e(TAG, "后视镜窗口添加失败", e);
@@ -382,6 +390,7 @@ public class RearViewMirrorView extends ViewGroup {
             params.x = Math.max(0, Math.min(screenWidth() - params.width, params.x));
             docked = false;
             textureView.setVisibility(View.VISIBLE);
+            syncGpuPresentation();
             clearFrames();
             applyLayout();
             if (dockListener != null) {
@@ -422,6 +431,7 @@ public class RearViewMirrorView extends ViewGroup {
         refreshWindowControls();
         invalidateOutline();
         textureView.setVisibility(docked ? View.INVISIBLE : View.VISIBLE);
+        syncGpuPresentation();
         applyLayout();
         if (dockChanged && dockListener != null) {
             dockListener.onDockChanged(docked);
@@ -553,6 +563,7 @@ public class RearViewMirrorView extends ViewGroup {
         }
         // 状态先改好再改可见：设回可见时 TextureView 会叫重画，那一次 dispatchDraw 要按「放回来」画
         textureView.setVisibility(docked ? View.INVISIBLE : View.VISIBLE);
+        syncGpuPresentation();
         AppLog.i(TAG, docked ? "后视镜贴边收起：画布设为不可见，不再逐帧画" : "后视镜放回来：画布设回可见，接着画");
         invalidate();
         if (dockListener != null) {
@@ -690,6 +701,7 @@ public class RearViewMirrorView extends ViewGroup {
     }
 
     @Override protected void onDetachedFromWindow() {
+        PreviewDewarp.setPresentationActive(textureView.getSurfaceTexture(), false);
         gpuPicture.release();
         removeCallbacks(refitSideExpansion);
         super.onDetachedFromWindow();

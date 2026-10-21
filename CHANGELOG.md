@@ -9,6 +9,12 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Stop hidden/docked GPU camera outputs from rendering while retaining their live input and session.
+- Remove recording callback waits, use acquired-frame timestamps and count only successful submissions.
+- Keep camera capability queries off the settings UI thread and cancel pending Apply cleanly when quitting.
+- Protect open recordings and newly locked footage from cleanup/playback deletion; keep explicit flash locks outside the braking budget.
+- Reject incorrectly typed known settings during import, including keys absent on the receiving installation.
+
 ## [2.11.60-alpha.1] - 2026-10-21
 
 - Refine the experimental 009 360° ground alignment against matched garage and road references, shared by CPU/GPU while preserving Manual tuning and saved framing.

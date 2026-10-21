@@ -19,6 +19,16 @@ import java.util.Set;
  */
 public class StoragePlanTest {
 
+    @Test public void explicitOpenPathSurvivesClockRollbackAndBecomesEligibleOnlyAfterClose() {
+        long gb = 1024L * 1024 * 1024;
+        String open = "20261020_100000_surround.mp4", future = "20261021_100000_surround.mp4";
+        List<StoragePlan.Clip> clips = Arrays.asList(new StoragePlan.Clip(open, gb), new StoragePlan.Clip(future, gb));
+        StoragePlan.Decision active = StoragePlan.decide(clips, java.util.Collections.singleton(open), 2 * gb, 100 * gb, gb);
+        assertFalse(active.toDelete.contains(open));
+        StoragePlan.Decision closed = StoragePlan.decide(clips, 2 * gb, 100 * gb, gb);
+        assertEquals(java.util.Collections.singletonList(open), closed.toDelete);
+    }
+
     private static final long MB = 1024L * 1024L;
     private static final long GB = 1024L * MB;
 

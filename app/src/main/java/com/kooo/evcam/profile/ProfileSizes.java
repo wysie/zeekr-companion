@@ -209,9 +209,14 @@ public final class ProfileSizes {
         if (config.is009CameraMappingEnabled())
             return CameraProfile.ROLE_CABIN_1.equals(role) ? "2" : null;
         try {
-            CameraManager manager =
-                    (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
-            String[] ids = manager.getCameraIdList();
+            String[] ids;
+            if (android.os.Looper.myLooper() == android.os.Looper.getMainLooper()) {
+                ids = com.kooo.evcam.camera.CameraCapabilities.advertisedIds();
+            } else {
+                CameraManager manager = (CameraManager) context.getSystemService(Context.CAMERA_SERVICE);
+                ids = manager.getCameraIdList();
+                com.kooo.evcam.camera.CameraCapabilities.recordIds(ids);
+            }
             if (CameraProfile.ROLE_COMPOSITE.equals(role)) {
                 return composite != null ? composite : (ids.length > 0 ? ids[0] : null);
             }
