@@ -61,11 +61,11 @@ The app-name watermark on new recordings and normal photos uses **Zeekr Companio
 plus the version; existing footage keeps its original burned-in text. The logo itself
 is not added to the footage. Raw developer exports retain their existing behavior.
 
-Current test download: [Zeekr Companion 2.11.60-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.60-alpha.1).
+Current test download: [Zeekr Companion 2.11.61-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.61-alpha.1).
 
-Unreleased audit corrections suspend GPU presentation for hidden/docked/retained
-camera views while continuing to drain their inputs, remove recording's normal
-codec-output wait, and timestamp the frame actually acquired. Transparent standby
+Alpha 61 includes the completed translations and audit corrections. It suspends GPU presentation for hidden/docked/retained
+camera views while continuing to drain their inputs, removes recording's normal
+codec-output wait, and timestamps the frame actually acquired. Transparent standby
 side windows still warm up normally. Camera settings load vendor capabilities off
 the UI thread, and quitting during Apply clears its transaction without resuming
 recording. Confirmation recreation/cancellation and nested category navigation

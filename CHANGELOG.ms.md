@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [2.11.61-alpha.1] - 2026-10-22
+
 - Hentikan rendering output kamera GPU yang tersembunyi atau disorok di tepi sambil mengekalkan input dan sesinya.
 - Buang penantian dalam panggilan balik rakaman, gunakan cap masa bingkai yang benar-benar diperoleh dan kira hanya penyerahan yang berjaya.
 - Jalankan pertanyaan keupayaan kamera di luar bebenang UI Tetapan dan batalkan perubahan kamera yang belum selesai apabila keluar.
