@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+- Asingkan pemilikan fail perakam daripada imbasan USB, metadata kunci dan pemadaman yang perlahan. Semak semula rakaman aktif atau dikunci sebelum pemadaman; kira semula pelan secara terhad apabila perlindungan berubah.
+- Tampung sehingga enam saat rakaman yang telah dikodkan semasa gangguan USB singkat, dalam had memori sedia ada. Kekalkan pengesahan penulisan dan had masa berhenti, serta beri lebih masa untuk mengunci fail rakaman yang muncul lewat.
+
 ## [2.11.61-alpha.1] - 2026-10-22
 
 - Hentikan rendering output kamera GPU yang tersembunyi atau disorok di tepi sambil mengekalkan input dan sesinya.

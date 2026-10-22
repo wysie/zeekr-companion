@@ -54,12 +54,12 @@ final class SampleRing {
     /** 排队的加上写过留着的，最多占这么多内存。环视四宫格 2560×2560 HEVC 实测每分钟 58 MB，够一分钟。 */
     static final long MAX_BYTES = 64L * 1024 * 1024;
 
-    /**
-     * 排队最多排这么久的画面（项目所有者 2026-10-08：约 3 秒）。
-     * U 盘刷写缓存实测一次卡 0.3–1.05 秒，3 秒兜得住；再长就不是「一阵慢」，是盘跟不上，排多少都没用。
+    /** Bounded write backlog. Owner logs on 22 October show recoverable 5.2-second USB
+     * flushes; the old three-second window dropped frames before those flushes returned.
+     * Byte caps and the total retained-memory cap remain independent and unchanged.
      */
-    static final long QUEUE_MS = 3_000L;
-    /** 排队字节上限的下限：码率很低的那几路（座舱）由画面时长（3 秒）说了算，字节不先卡住。 */
+    static final long QUEUE_MS = 6_000L;
+    /** Low-bitrate channels use the time bound rather than hitting the byte floor first. */
     static final long QUEUE_MIN_BYTES = 4L * 1024 * 1024;
     /** 排队字节上限的上限：加上写过留着的最近 15 秒，也在 {@link #MAX_BYTES} 以内。 */
     static final long QUEUE_MAX_BYTES = 24L * 1024 * 1024;
@@ -77,7 +77,7 @@ final class SampleRing {
 
     /**
      * 排队的字节上限：{@link #QUEUE_MS} 的画面按目标码率算，乘 {@link #QUEUE_HEADROOM}，
-     * 夹在 {@link #QUEUE_MIN_BYTES} 和 {@link #QUEUE_MAX_BYTES} 之间。码率「高」的环视（24 Mbps）是 18 MB。
+     * 夹在 {@link #QUEUE_MIN_BYTES} 和 {@link #QUEUE_MAX_BYTES} 之间。码率「高」的环视（24 Mbps）受 24 MiB 字节上限限制。
      */
     static long queueBytesFor(long bitrateBps) {
         long bytes = Math.max(0L, bitrateBps) / 8L * QUEUE_MS / 1000L * QUEUE_HEADROOM;

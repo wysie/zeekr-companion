@@ -121,14 +121,14 @@ public class LockWindowTest {
 
     /**
      * 第二遍什么时候锁：窗口结束之后，晚切的那一路换文件（最多晚 11 秒）、写入线程排着队再卡一次才把文件建好
-     * （最多再晚 6 秒），再留 1 秒。少等了，t 之后开始的那一段第二遍时还不在盘上，就漏了。
+     * （队列、收尾预算和宽限合计 16 秒），再留 1 秒。少等了，t 之后开始的那一段第二遍时还不在盘上，就漏了。
      */
     @Test
     public void theSecondPassWaitsUntilTheLatestFileIsOnDisk() {
         assertEquals(11 * SEC, LockWindow.SLACK_MS);
-        assertEquals(6 * SEC, CodecVideoRecorder.MAX_FILE_LAG_MS);
+        assertEquals(16 * SEC, CodecVideoRecorder.MAX_FILE_LAG_MS);
         assertEquals(LockWindow.SLACK_MS + CodecVideoRecorder.MAX_FILE_LAG_MS + SEC, LockWindow.SECOND_PASS_DELAY_MS);
-        assertEquals(18 * SEC, LockWindow.SECOND_PASS_DELAY_MS);
+        assertEquals(28 * SEC, LockWindow.SECOND_PASS_DELAY_MS);
     }
 
     // ================================================================= 各路分段长度不一样

@@ -57,7 +57,7 @@ public final class LockWindow {
     /**
      * 第二遍锁定在窗口结束之后再等多久（{@link AutoLock}）：t 之后才开始的那一段要先在盘上。
      * 名字落在窗口里的那一段，晚切的那一路最多晚 {@link #SLACK_MS} 才换文件；文件由写入线程建，
-     * 它排着队、再卡一次，最多还要晚 {@link CodecVideoRecorder#MAX_FILE_LAG_MS}；再留 1 秒。一共 18 秒。
+     * 它排着队、再卡一次，最多还要晚 {@link CodecVideoRecorder#MAX_FILE_LAG_MS}；再留 1 秒。该延迟随写入队列与收尾预算一起计算。
      */
     public static final long SECOND_PASS_DELAY_MS = SLACK_MS + CodecVideoRecorder.MAX_FILE_LAG_MS + 1_000L;
     /**

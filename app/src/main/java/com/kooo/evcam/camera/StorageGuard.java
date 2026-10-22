@@ -89,18 +89,15 @@ public final class StorageGuard {
      *                     「正在删除最旧的录像」这类提示挂在这里，什么都不删时就不会弹
      */
     private static StoragePlan.Decision enforce(Context context, File videoDir, Runnable beforeDelete) {
-        // 读锁定清单、决定、删，整段拿着：中间有人锁上的文件不会正好在这一轮的删除名单里
-        synchronized (com.kooo.evcam.storage.FootageLocks.guard()) {
-            return enforceLocked(context, videoDir, beforeDelete);
-        }
-    }
-
-    private static StoragePlan.Decision enforceLocked(Context context, File videoDir, Runnable beforeDelete) {
+        // Inventory/statfs can take seconds on USB. Never hold a shared guard while scanning.
         List<StoragePlan.Clip> clips = new ArrayList<>();
         java.util.Map<String, File> byPath = new java.util.LinkedHashMap<>();
         Set<String> locked = new HashSet<>();
         for (File dir : com.kooo.evcam.storage.StorageLayout.videoDirectoriesFor(videoDir)) {
-            Set<String> names = com.kooo.evcam.storage.FootageLocks.protectedNames(context, dir);
+            Set<String> names;
+            synchronized (com.kooo.evcam.storage.FootageLocks.guard()) {
+                names = com.kooo.evcam.storage.FootageLocks.protectedNames(context, dir);
+            }
             File[] files = dir.listFiles();
             if (files == null) continue;
             for (File file : files) {
@@ -139,28 +136,52 @@ public final class StorageGuard {
                 MAIN.post(beforeDelete);
             }
             int deleted = 0;
-            java.util.Map<File, List<String>> gone = new java.util.LinkedHashMap<>();
-            for (String name : decision.toDelete) {
-                File file = byPath.get(name);
-                if (file == null) continue;
-                if (file.delete()) {
-                    deleted++;
-                    List<String> group = gone.get(file.getParentFile());
-                    if (group == null) {
-                        group = new ArrayList<>();
-                        gone.put(file.getParentFile(), group);
+            long deletedBytes = 0;
+            StoragePlan.Decision pending = decision;
+            while (pending.verdict == StoragePlan.Verdict.DELETE) {
+                for (String path : pending.toDelete) {
+                    File file = byPath.get(path);
+                    if (file == null) continue;
+                    // Lock edits serialize with the final check/unlink, not the directory scan.
+                    synchronized (com.kooo.evcam.storage.FootageLocks.guard()) {
+                        Set<String> current = com.kooo.evcam.storage.FootageLocks.protectedNames(
+                                context, file.getParentFile());
+                        if (current == null || current.contains(file.getName())) {
+                            locked.add(path);
+                            continue;
+                        }
+                        com.kooo.evcam.storage.ActiveFootage.DeleteResult result =
+                                com.kooo.evcam.storage.ActiveFootage.deleteClosed(file);
+                        if (result == com.kooo.evcam.storage.ActiveFootage.DeleteResult.DELETED) {
+                            deleted++;
+                            for (StoragePlan.Clip clip : clips) {
+                                if (clip.key.equals(path)) { deletedBytes += clip.bytes; break; }
+                            }
+                            byPath.remove(path);
+                            // Forget before another lock edit can reuse this filename.
+                            com.kooo.evcam.storage.FootageLocks.forget(file.getParentFile(),
+                                    java.util.Collections.singletonList(file.getName()));
+                        } else if (result == com.kooo.evcam.storage.ActiveFootage.DeleteResult.FAILED
+                                && !file.exists()) {
+                            byPath.remove(path); // Another cleanup already removed it.
+                        } else {
+                            locked.add(path); // Newly active or failed: never retry it in this sweep.
+                            AppLog.w(TAG, "未删除（使用中或存储失败）: " + path);
+                        }
                     }
-                    group.add(file.getName());
-                } else {
-                    AppLog.w(TAG, "删不掉: " + name);
                 }
+                // A newly protected file may invalidate the plan. Replan the remaining snapshot
+                // rather than claiming space was freed or deleting a newly locked/open file.
+                clips.removeIf(clip -> !byPath.containsKey(clip.key));
+                long remainingFree = freeBytes(videoDir);
+                pending = StoragePlan.decide(clips, locked, capBytes,
+                        remainingFree < 0 ? Long.MAX_VALUE : remainingFree, segment);
+                // Every pass removes or protects at least one candidate, so retries are finite.
             }
-            // 开关关着时锁定的也会被删：删掉的从清单里拿掉
-            for (java.util.Map.Entry<File, List<String>> group : gone.entrySet()) {
-                com.kooo.evcam.storage.FootageLocks.forget(group.getKey(), group.getValue());
-            }
-            AppLog.i(TAG, "删掉最旧的录像 " + deleted + "/" + decision.toDelete.size()
-                    + " 个，约 " + StorageHelper.formatSize(decision.deleteBytes));
+            AppLog.i(TAG, "删掉最旧的录像 " + deleted
+                    + " 个，约 " + StorageHelper.formatSize(deletedBytes)
+                    + "，复核结果 " + pending.verdict);
+            if (pending.verdict == StoragePlan.Verdict.FULL) return pending;
         }
         return decision;
     }

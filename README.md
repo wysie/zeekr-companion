@@ -75,6 +75,19 @@ at deletion. Settings import also rejects wrong types for known unset keys.
 No new switch is required. These changes do not establish real-car smoothness or
 storage durability; see the [codebase audit and validation](docs/codebase-audit-20261021.md).
 
+Unreleased storage-stall fixes separate recorder file ownership from USB directory
+scans, persistent lock metadata and slow deletion. Cleanup inventories files outside
+the lock-edit guard, then rechecks current locks and active writers before unlinking;
+failed or newly protected candidates trigger bounded replanning. A deletion reserves
+only its own path, so unrelated recorder close/open operations remain responsive.
+The encoded write queue can now absorb up to **six seconds** of media, subject to
+the existing **24 MiB queue** and **64 MiB total retained-data cap per recorder**.
+Periodic and final flushes, the shared stop deadline and your saved recording quality
+are retained. The delayed event-lock pass allows for the longer write backlog.
+Sustained slow/disconnected storage can still cause frame dropping or bounded stop/
+rescue; these fixes cannot make a USB device flush faster. See the
+[regression evidence and remaining limits](docs/storage-contention-20261022.md).
+
 In alpha 60, the experimental 009 fit combines the earlier garage reference with matched
 flat-road features from the owner’s 21 October raw/factory captures. Held-out
 image-reference alignment improves for all four cameras, including the front;

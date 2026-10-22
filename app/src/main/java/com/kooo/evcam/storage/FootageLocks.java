@@ -39,7 +39,7 @@ import java.util.concurrent.Executors;
  *
  * <ul>
  *   <li>改清单（{@link #set}）在自己的线程上写：先写临时文件再改名，拔盘也不会写坏一半。</li>
- *   <li>自动清理「读清单 → 决定 → 删」整段拿着 {@link #guard()}，中间没人改得了清单 ——
+ *   <li>自动清理在删除前重新核对清单并拿着 {@link #guard()}，中间没人改得了清单 ——
  *       否则刚锁上的文件可能正好在这一轮的删除名单里。</li>
  *   <li>开关关着时清理不看清单（{@link #protectedNames} 给空集合），清单本身留着，重新打开恢复保护；
  *       被删掉的文件从清单里拿掉（{@link #forget}）。</li>
@@ -65,7 +65,8 @@ public final class FootageLocks {
     private static final String AUTO_HEADER =
             "# Zeekr Shortcut: footage locked automatically (hard braking). Released oldest first when over the cap.";
 
-    private static final Object GUARD = ActiveFootage.guard();
+    // Slow persistent metadata I/O must never hold the recorder ownership monitor.
+    private static final Object GUARD = new Object();
     private static final ExecutorService IO = Executors.newSingleThreadExecutor(r -> {
         Thread thread = new Thread(r, "FootageLocks");
         thread.setDaemon(true);
@@ -241,7 +242,7 @@ public final class FootageLocks {
         return groups;
     }
 
-    /** 自动清理「读清单 → 决定 → 删」整段拿着它。 */
+    /** 自动清理在删除前重新核对清单并拿着它。 */
     public static Object guard() {
         return GUARD;
     }

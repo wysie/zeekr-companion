@@ -648,9 +648,11 @@ public final class VideoRecorder {
 
     /** 配好、prepare 一个 MediaRecorder，写到 {@code path}。prepare 时文件就建出来了；配不起来的放掉、删掉文件。 */
     private Segment openSegment(String path, boolean shared) throws IOException {
-        MediaRecorder recorder = new MediaRecorder();
         com.kooo.evcam.storage.ActiveFootage.Lease protection =
                 com.kooo.evcam.storage.ActiveFootage.acquire(new File(path));
+        MediaRecorder recorder;
+        try { recorder = new MediaRecorder(); }
+        catch (RuntimeException error) { protection.close(); throw error; }
         try {
             recorder.setOnInfoListener((mr, what, extra) ->
                     AppLog.d(TAG, "Camera " + cameraId + " MediaRecorder info what=" + what + ", extra=" + extra));

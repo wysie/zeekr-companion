@@ -9,6 +9,9 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Keep recorder ownership independent of slow USB inventory, lock metadata and deletion; recheck active/locked footage before cleanup and playback deletion, with bounded replanning when protection changes.
+- Buffer up to six seconds of encoded footage through short USB stalls within the existing memory caps; retain flush/stop safeguards and allow late-file recording locks more time to catch up.
+
 ## [2.11.61-alpha.1] - 2026-10-22
 
 - Complete Malay About/help, standardize Simplified Chinese and Malay terminology, localize update notes by app language and validate coverage/format arguments across every resource file.
