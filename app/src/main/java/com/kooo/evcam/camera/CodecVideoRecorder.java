@@ -1057,13 +1057,15 @@ public class CodecVideoRecorder {
             }
         }
 
+        List<String> stoppedCandidates;
         synchronized (recordedFilePaths) {
-            List<String> closedFiles = new ArrayList<>();
-            for (String path : recordedFilePaths)
-                if (!com.kooo.evcam.storage.ActiveFootage.contains(new File(path))) closedFiles.add(path);
-            stoppedFiles = closedFiles;
+            stoppedCandidates = new ArrayList<>(recordedFilePaths);
             recordedFilePaths.clear();
         }
+        List<String> closedFiles = new ArrayList<>();
+        for (String path : stoppedCandidates)
+            if (!com.kooo.evcam.storage.ActiveFootage.contains(new File(path))) closedFiles.add(path);
+        stoppedFiles = closedFiles;
         return true;
     }
 
@@ -2230,7 +2232,7 @@ public class CodecVideoRecorder {
      * （{@code MultiCameraManager} 停录分两步：先每一路都叫停，再一起等）。按开机时长（不含深睡）算，
      * 和协调器的收拾期限、等待用的计时是同一个钟。协调器等收拾最多 20 秒（{@code RecordingLifecycle.STOP_DEADLINE_MS}），
      * 这里连同 {@link #STOP_GRACE_MS} 最多用一半，另一半留给停放录制器（放编码器，最多 {@link #ENCODER_WAIT_MS}）。
-     * 排队最多 3 秒的画面，盘还在动的话 9 秒写得完；到点还没收好（盘多半没了），不再等（{@link #abandonWriter}）。
+     * 写入队列有界；收尾仍共用 9 秒期限，到点还没收好就不再等（{@link #abandonWriter}）。
      */
     public static final long STOP_BUDGET_MS = 9_000L;
     /** 释放时等写入线程收尾、退出最多多久（和别的线程一样）。停录时已经等到放弃过的不再等。 */
@@ -2242,10 +2244,10 @@ public class CodecVideoRecorder {
     public static final long STOP_GRACE_MS = WRITER_JOIN_MS;
     /**
      * 写入线程最多比编码线程晚多久把一个文件开出来、写完：排队最多 {@code SampleRing.QUEUE_MS} 的画面，
-     * 再卡一次写 / 收文件最多 {@link StallRules#WRITER_STALL_MS}（再久卡顿监测就算它卡住了）。
+     * 再留出完整的写入收尾预算和宽限。卡顿告警阈值不是文件操作的最长耗时。
      * 闪远光自动锁定的第二遍要多等这么久，晚建好的那个文件才在盘上（{@code LockWindow.SECOND_PASS_DELAY_MS}）。
      */
-    public static final long MAX_FILE_LAG_MS = SampleRing.QUEUE_MS + StallRules.WRITER_STALL_MS;
+    public static final long MAX_FILE_LAG_MS = SampleRing.QUEUE_MS + STOP_BUDGET_MS + STOP_GRACE_MS;
 
     private HandlerThread writerThread;
     private volatile Handler writerHandler;

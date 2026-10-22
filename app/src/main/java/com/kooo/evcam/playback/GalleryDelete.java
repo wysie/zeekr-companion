@@ -20,11 +20,13 @@ public final class GalleryDelete {
                 if (com.kooo.evcam.storage.ActiveFootage.contains(file)
                         || protectedNames == null || protectedNames.contains(file.getName())) {
                     kept++;
-                } else if (file.isFile() && file.delete()) {
-                    deleted++;
-                } else if (file.exists()) {
-                    failed++;
-                }
+                } else if (file.isFile()) {
+                    com.kooo.evcam.storage.ActiveFootage.DeleteResult result =
+                            com.kooo.evcam.storage.ActiveFootage.deleteClosed(file);
+                    if (result == com.kooo.evcam.storage.ActiveFootage.DeleteResult.DELETED) deleted++;
+                    else if (result == com.kooo.evcam.storage.ActiveFootage.DeleteResult.BUSY) kept++;
+                    else if (file.exists()) failed++;
+                } else if (file.exists()) failed++;
             }
         }
         return new int[]{deleted, kept, failed};

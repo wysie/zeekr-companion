@@ -183,7 +183,7 @@ public class SampleRingTest {
     // ================================================================= 排队：多长、多少字节算满
 
     @Test
-    public void queueIsFullAtThreeSecondsOfMedia() {
+    public void queueIsFullAtItsBoundedMediaDuration() {
         SampleRing ring = new SampleRing();
         offer(ring, 0, true, 10);
         offer(ring, SEC, false, 10);
@@ -194,8 +194,8 @@ public class SampleRingTest {
         assertEquals(SampleRing.QUEUE_MS, ring.queuedMs());
         assertFalse(ring.hasRoom());
         // 写入线程写走最老的一个，又有空位了
-        writeHead(ring, 4 * SEC);
-        assertEquals(2 * SEC, ring.queuedMs());
+        writeHead(ring, SampleRing.QUEUE_MS + SEC);
+        assertEquals(SampleRing.QUEUE_MS - SEC, ring.queuedMs());
         assertTrue(ring.hasRoom());
     }
 
@@ -228,9 +228,9 @@ public class SampleRingTest {
 
     @Test
     public void queueByteCapFollowsTheBitrate() {
-        // 码率「高」的环视：24 Mbps × 3 秒 × 2 倍余量
-        assertEquals(18_000_000L, SampleRing.queueBytesFor(24_000_000));
-        // 座舱那种低码率：落到下限，由 3 秒的画面说了算
+        // High-bitrate surround remains clamped to the unchanged byte ceiling.
+        assertEquals(SampleRing.QUEUE_MAX_BYTES, SampleRing.queueBytesFor(24_000_000));
+        // Low-bitrate cabin: floor plus the bounded media duration.
         assertEquals(SampleRing.QUEUE_MIN_BYTES, SampleRing.queueBytesFor(2_000_000));
         assertEquals(SampleRing.QUEUE_MIN_BYTES, SampleRing.queueBytesFor(0));
         assertEquals(SampleRing.QUEUE_MIN_BYTES, SampleRing.queueBytesFor(-1));
@@ -625,13 +625,13 @@ public class SampleRingTest {
         offer(ring, SEC, false, 50);
         // 450 字节、1 秒：两个都不过一半
         assertTrue(ring.isDrained());
-        offer(ring, 2 * SEC, false, 10);
-        // 460 字节没过一半，画面 2 秒过了 3 秒的一半
+        offer(ring, SampleRing.QUEUE_MS / 2 + SEC, false, 10);
+        // Below half the byte cap, but over half the media-duration cap.
         assertFalse(ring.isDrained());
         writeHead(ring, 2 * SEC);
         writeHead(ring, 2 * SEC);
         assertTrue(ring.isDrained());
-        offer(ring, 2 * SEC + 33, false, 600);
+        offer(ring, SampleRing.QUEUE_MS / 2 + SEC + 33, false, 600);
         // 字节过了一半
         assertFalse(ring.isDrained());
     }
@@ -673,5 +673,39 @@ public class SampleRingTest {
         // 新的一次录像：第一段照样马上记
         bp.dropped(30, 3_000, 1);
         assertNotNull(bp.admitted(40, true));
+    }
+    @Test public void observedFivePointTwoSecondFlushCanRecoverWithoutDroppingEncodedFrames() {
+        SampleRing ring = new SampleRing();
+        ring.setQueueCapBytes(SampleRing.queueBytesFor(24_000_000));
+        List<SampleRing.Sample> queued = new ArrayList<>();
+        ring.offerCommand("open");
+        // Replay a 30 fps / 24 Mbps source while its writer is blocked for 5.2 seconds.
+        for (int frame = 0; frame <= 156; frame++) {
+            assertTrue("Observed flush must fit before admission drops frames", ring.hasRoom());
+            queued.add(offer(ring, frame * SEC / 30, frame % 90 == 0, 100_000));
+        }
+        ring.offerCommand("close");
+        assertEquals(5200, ring.queuedMs());
+        assertEquals("open", ring.peek()); ring.done(ring.peek());
+        for (SampleRing.Sample sample : queued) {
+            assertSame("Recovery preserves every sample in order", sample, ring.peek());
+            ring.written(sample, 5300);
+        }
+        assertEquals("close", ring.peek()); ring.done(ring.peek());
+        assertTrue(ring.hasRoom()); assertEquals(0, ring.queuedSamples());
+        assertEquals("Unsynced samples are still available for rescue", queued.size(), ring.keptSnapshot().size());
+    }
+
+    @Test public void longerStorageStallStillHitsABoundedQueue() {
+        SampleRing ring = new SampleRing();
+        ring.setQueueCapBytes(SampleRing.queueBytesFor(24_000_000));
+        int admitted = 0;
+        while (ring.hasRoom()) {
+            offer(ring, admitted * SEC / 30, admitted % 90 == 0, 100_000);
+            assertTrue("Sustained failure must remain bounded", ++admitted < 250);
+        }
+        assertEquals(6000, ring.queuedMs());
+        assertTrue(ring.queuedBytes() <= SampleRing.QUEUE_MAX_BYTES);
+        assertTrue(ring.queuedBytes() < SampleRing.MAX_BYTES);
     }
 }

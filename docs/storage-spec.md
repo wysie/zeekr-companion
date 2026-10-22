@@ -37,7 +37,7 @@ U 盘上可能有用户自己的东西。清理只认本应用写出来的文件
   提示「锁定的影像占满了空间，请在回放里解锁一些」（`StoragePlan` 的 `lockedFull`，停录原因 `STORAGE_LOCKED`）。
   锁到腾不出空间就停录，不另设锁定空间的上限（项目所有者定）。
 - **清单读不出来时，这一轮自动清理一个都不删**（宁可空间不够停录，也不误删锁定的），黑匣子记一笔。
-- **自动清理「读清单 → 决定 → 删」整段拿着同一把锁**（`FootageLocks.guard()`），锁定 / 解锁的写入也拿着它：
+- **录像清理扫描在锁外执行，删除前重新读清单并拿着元数据锁**（`FootageLocks.guard()`），锁定 / 解锁的写入也拿着它：
   刚锁上的文件不会正好在这一轮的删除名单里。
 - **回放里删除碰到锁定的**：锁定的留下、其余照删，提示「保留了 N 个已锁定的」（视频按条删、多选删，照片多选删）。
 - **关掉开关**：回放里的锁定按钮收起，自动清理和回放删除都不再跳过锁定的，下面的自动锁定也不起作用；
@@ -76,9 +76,9 @@ U 盘上可能有用户自己的东西。清理只认本应用写出来的文件
     没有下一个文件，或者下一个隔得更远（停过录、很久以后才又录），结束 = 开始 + 分段时长。两种结束都再多算 11 秒
     （共用时间戳的 10 秒 + 截掉的 1 秒）。碰到 = 开始 ≤ 窗口结束、结束 ≥ 窗口开始，两头都算。
     宁可多锁一段，也别漏一段（`LockWindow`，纯函数，有单元测试）。
-  - **锁两遍**：t 那一刻锁盘上已经有的；t + 10 秒再过 18 秒再锁一遍，接住 t 之后才开始的那一段 —— 名字落在窗口里的那一段，
-    晚切的那一路最多晚 11 秒才换文件；文件由录制器的写入线程建，它排着队（最多 3 秒的画面）、再卡一次（最多 3 秒），
-    最多还要晚 6 秒才在盘上；再留 1 秒（这时停了录也照样补）。一个公式：`LockWindow.SECOND_PASS_DELAY_MS`
+  - **锁两遍**：t 那一刻锁盘上已经有的；t + 10 秒再过 28 秒再锁一遍，接住 t 之后才开始的那一段 —— 名字落在窗口里的那一段，
+    晚切的那一路最多晚 11 秒才换文件；文件由录制器的写入线程建，它排着队（最多 6 秒的画面）、再预留 9 秒收尾预算和 1 秒宽限，
+    保守计为最多再晚 16 秒才在盘上；再留 1 秒（这时停了录也照样补）。一个公式：`LockWindow.SECOND_PASS_DELAY_MS`
     = 共用时间戳 + 截掉的 1 秒 + `CodecVideoRecorder.MAX_FILE_LAG_MS` + 1 秒。两遍都先看开关，都在同一个线程上（`AutoLock`）。
   - **录像在哪**：U 盘录像目录；录制器换过盘时新盘上那个（锁进那个盘的清单）；中转写入时录像先在内部缓存里、写完才搬到
     开录时定下的目标目录，缓存里的按文件名锁进**那个目录**的清单（搬过去名字不变），不是锁定那一刻的录像目录 ——
@@ -128,3 +128,29 @@ New public files live under ZeekrShortcutApp/Videos, Photos and Logs. Legacy med
 stays in its existing EVCam directories and is included in playback, accounting and
 cleanup. Protection lists stay with their own directory; full paths distinguish
 matching filenames. No startup migration is performed. See app-storage-folders.md.
+
+
+## 22 October 2026: slow-storage ownership and backlog
+
+The recorder ownership registry has a private monitor, independent of the durable
+footage-lock metadata guard. Alias resolution, USB inventory/statfs, metadata edits
+and unlink operations do not hold that registry monitor. Cleanup and playback
+recheck durable locks under the metadata guard, then atomically reserve a closed
+path for deletion. A writer colliding with that exact in-progress unlink is refused
+rather than waiting indefinitely or opening a file which can be unlinked. Other
+paths remain independent. Uncertain/abandoned writers retain their original leases.
+
+Video inventory runs outside the metadata guard. Final lock/open-file checks protect
+files whose state changed during scanning. Skipped or failed candidates are retained
+and excluded from retries in the same sweep; the remaining snapshot is replanned,
+returning FULL if it cannot meet the space policy. Metadata forgetting stays atomic
+with the successful delete, so a subsequent lock edit cannot be erased by stale cleanup.
+
+The 22 October owner log contains a 5,184 ms USB sync, exceeding the old three-second
+write queue. The media-duration ceiling is now six seconds, with the existing byte
+ceilings (24 MiB queued / 64 MiB total per recorder), keyframe/rescue rules and fsync
+policy retained. Short pauses can be buffered; sustained slow storage remains bounded.
+The late-file allowance is queue duration plus stop budget plus stop grace (16 seconds),
+so the second event-lock pass waits 28 seconds after its ten-second forward window.
+Neither an indefinitely blocked native operation nor unlimited lossless recording is
+guaranteed by these budgets. Stop still uses its existing deadline and rescue policy.
