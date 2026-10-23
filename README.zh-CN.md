@@ -4,6 +4,9 @@
 
 为极氪车机提供相机录制、实时相机窗口和车辆工具。
 
+[应用截图（浅色与深色主题）](README.md#screenshots)：实际 Android 应用界面，已去除系统栏；
+相机画面为 AI 生成的模拟场景，设置值仅作示例。截图中的界面语言为英语。
+
 新标签采用 `vX.Y.Z-alpha.N`、`vX.Y.Z-beta.N` 或 `vX.Y.Z`；alpha 和 beta 在 GitHub 标记为预发布。应用 ID、签名及 `ZeekrShortcutApp` 存储目录保持兼容。
 
 Zeekr Companion 是 wysie 维护的个人定制分支，基于 [dts88 的极氪即刻（Zeekr Shortcut）](https://github.com/dts88/zeekr-shortcut-car)，
