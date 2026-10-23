@@ -57,3 +57,12 @@ or prove on-car blind-popup/HUD/GPU smoothness. High bitrate, Unlimited FPS and
 concurrent USB research logging remain additional load in the supplied session.
 Real-car validation is still needed; no resolution/FPS/bitrate or GPU preference
 was silently reduced to make the tests pass.
+
+## Publication
+
+Published in [v2.11.62-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.62-alpha.1), version code 345.
+Tag `dbae67bd88f963fd1ca8bfb44884627bd8e7786c` includes implementation
+`98b81176` and main integration `29a280d5`. The combined release passes 1,564
+JVM tests, zero-error lint, five packaging/note checks and signed assembly.
+Downloaded public APK/signature/checksum verification adds no vehicle-performance
+claim; the physical USB and smoothness limits above still apply.

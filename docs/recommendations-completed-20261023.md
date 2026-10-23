@@ -87,3 +87,13 @@ Owner logs/photos and private artifacts were not published. No upstream comment,
 new PR, signing/package change, source-mirror movement, Companion audio/cabin/UI
 import or new release was made. Emulator checks do not establish 009/7X vehicle
 behavior or physical storage/HUD performance.
+
+## Subsequent publication
+
+The owner subsequently requested a release. [v2.11.62-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.62-alpha.1) at
+`dbae67bd88f963fd1ca8bfb44884627bd8e7786c` contains the Companion camera
+lifecycle adaptation and storage fixes. Tag ancestry, the CI and public APK,
+unchanged signing/application identity, version code 345 and all three release-note
+languages were verified. This does not publish the separate upstream-only combined
+validation branch or establish on-car performance. See the source integration ledger
+for the checksum and release validation record.
