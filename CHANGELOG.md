@@ -9,6 +9,11 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Reuse unchanged Canvas correction geometry and skip duplicate GPU preview inputs while preserving framing, source resolution and explicit redraws.
+- Keep recorder frame resources owned by queued encoder teardown after a timeout.
+- Isolate overlapping update downloads and verify the completed APK before installation.
+- Improve website mobile reading, screenshot zoom and keyboard navigation; bring installation and first-recording guidance forward in the README.
+
 - Rename the repository to wysie/zeekr-companion, update project/update links and move the public website to wysie.github.io/zeekr-companion/.
 
 ## [3.0.0-alpha.1] - 2026-10-23

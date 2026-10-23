@@ -704,7 +704,7 @@ public class SideViewPopupView extends ViewGroup {
                     plan, lane, RearViewGeometry.Viewport.full());
             mesh.prepare(SideViewFraming.meshDivisions(width, height),
                     r.laneOffsetX * width, r.laneOffsetY * height,
-                    r.laneScaleX * width, r.laneScaleY * height, turnedMap);
+                    r.laneScaleX * width, r.laneScaleY * height, turnedMap, framing.revision());
             if (autoFit) mesh.draw(canvas, 0f, 0f, width, height, paintTexture);
             else mesh.drawClippedToLane(canvas, 0f, 0f, width, height, paintTexture);
         } else {

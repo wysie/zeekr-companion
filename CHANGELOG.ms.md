@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+- Guna semula geometri pembetulan Canvas yang tidak berubah dan langkau input pratonton GPU pendua sambil mengekalkan pembingkaian, resolusi sumber dan lukisan semula yang diminta.
+- Kekalkan sumber bingkai perakam di bawah tugas penutupan pengekod walaupun penantian tamat.
+- Asingkan fail muat turun kemas kini serentak dan sahkan APK yang telah disimpan sebelum pemasangan.
+- Perbaiki teks mudah alih, zum tangkapan skrin dan navigasi papan kekunci laman web; dahulukan panduan pemasangan dan rakaman pertama dalam README.
+
 - Namakan semula repositori kepada wysie/zeekr-companion, kemas kini pautan projek dan kemas kini aplikasi, serta pindahkan laman web awam ke wysie.github.io/zeekr-companion/.
 
 ## [3.0.0-alpha.1] - 2026-10-23

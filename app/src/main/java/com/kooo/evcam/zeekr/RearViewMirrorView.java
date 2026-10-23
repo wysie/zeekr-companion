@@ -1401,7 +1401,7 @@ public class RearViewMirrorView extends ViewGroup {
                     plan, lane, RearViewGeometry.Viewport.full());
             mesh.prepare(SideViewFraming.meshDivisions(width, height),
                     r.laneOffsetX * width, r.laneOffsetY * height,
-                    r.laneScaleX * width, r.laneScaleY * height, sideMap);
+                    r.laneScaleX * width, r.laneScaleY * height, sideMap, sideFraming.revision());
             if (autoFit) mesh.draw(canvas, 0f, 0f, width, height, paintTexture);
             else mesh.drawClippedToLane(canvas, 0f, 0f, width, height, paintTexture);
             return;
