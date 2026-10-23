@@ -5,7 +5,7 @@ Captured on **24 October 2026**, using the production UI at `d3a2bfcd`
 it adds no demo mode, camera simulation or generated image assets to the app APK.
 
 There are **26 screenshots: 13 screens in light and dark themes**. The
-[README gallery](../../README.md#screenshots) shows the main screen, side menu,
+[Screenshot gallery](gallery.md) shows the main screen, side menu,
 preview chooser, recording, storage, Super mirror, blind spot camera, HUD,
 360° camera, floating button, interface, system and GPU settings. These are
 initial scroll positions, not stitched images of entire scrolling pages.

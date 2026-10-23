@@ -3,8 +3,8 @@
 Public showcase: **https://wysie.github.io/zeekr-companion/**
 
 The website belongs to the app repository. Native HTML, CSS and JavaScript
-provide a theme switch, 13-screen gallery, full-size image dialog, feature
-overview, installation guide, release download link, FAQs and upstream credits.
+provide one 13-screen preview with a native screen selector, a theme switch,
+full-size image dialog, brief feature summary, installation steps and credits.
 There are no accounts, analytics, forms or external runtime dependencies.
 
 ## Source and assets
@@ -39,6 +39,9 @@ node --check website/theme-init.js
 python3 .github/scripts/build_website.py
 python3 -m http.server 4173 --directory _site --bind 127.0.0.1
 ```
+
+Before publishing, check desktop and mobile layouts in both themes, screen
+selection, Enlarge / Actual size, Escape-to-close and keyboard focus.
 
 The build validates local assets, image alt attributes, anchors and unique IDs.
 It accepts only a new or empty output directory, preventing accidental deletion

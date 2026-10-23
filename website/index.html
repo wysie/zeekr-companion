@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width,initial-scale=1" />
     <meta
       name="description"
-      content="Meet Zeekr Companion, an independent app for ZEEKR head units. Camera recording, live camera windows and controls that fit your setup."
+      content="Camera recording, turn-signal side views and camera windows for ZEEKR head units. Download Zeekr Companion and browse the app."
     />
     <meta name="theme-color" content="#f1f2ef" />
     <meta name="referrer" content="strict-origin-when-cross-origin" />
@@ -16,11 +16,11 @@
     <meta property="og:type" content="website" />
     <meta
       property="og:title"
-      content="Zeekr Companion | Your ZEEKR. Your way."
+      content="Zeekr Companion — Camera tools for your ZEEKR"
     />
     <meta
       property="og:description"
-      content="An independent companion for your head unit. Explore camera recording, live camera windows and a setup that feels like yours."
+      content="Record selected cameras, open live camera windows and choose your preview. See the app and get installation instructions."
     />
     <meta
       property="og:url"
@@ -31,7 +31,7 @@
       content="https://wysie.github.io/zeekr-companion/assets/screenshots/main-light-1600.webp"
     />
     <meta name="twitter:card" content="summary_large_image" />
-    <title>Zeekr Companion | Your ZEEKR. Your way.</title>
+    <title>Zeekr Companion — Camera tools for your ZEEKR</title>
     <link
       rel="canonical"
       href="https://wysie.github.io/zeekr-companion/"
@@ -51,636 +51,106 @@
   <body>
     <a class="skip-link" href="#main">Skip to content</a>
     <header class="site-header">
-      <div class="nav-wrap">
-        <a class="brand" href="#" aria-label="Zeekr Companion home"
-          ><img
-            src="assets/companion-icon.svg"
-            alt=""
-            width="38"
-            height="38"
-          /><span>Zeekr Companion</span></a
-        >
-        <button
-          class="menu-toggle quiet-button"
-          id="menu-toggle"
-          aria-controls="main-nav"
-          aria-expanded="false"
-        >
-          Menu
-        </button>
-        <nav class="main-nav" id="main-nav" aria-label="Main navigation">
-          <a href="#explore">Explore</a><a href="#features">Features</a
-          ><a href="#install">Get the app</a>
-          <a
-            href="https://github.com/wysie/zeekr-companion"
-            target="_blank"
-            rel="noopener noreferrer"
-            >GitHub ↗</a
-          >
+      <div class="container nav-wrap">
+        <a class="brand" href="#" aria-label="Zeekr Companion home">
+          <img src="assets/companion-icon.svg" alt="" width="34" height="34" />
+          <span>Zeekr Companion</span>
+        </a>
+        <nav aria-label="Main navigation">
+          <a href="#explore">Screenshots</a>
+          <a href="#install">Install</a>
+          <a href="https://github.com/wysie/zeekr-companion">GitHub</a>
         </nav>
-        <button
-          class="theme-toggle quiet-button"
-          id="theme-toggle"
-          aria-label="Dark view: switch to dark theme"
-        >
-          Dark view
-        </button>
+        <button class="quiet-button" id="theme-toggle" hidden>Dark theme</button>
       </div>
     </header>
-    <main id="main">
-      <section class="hero container" aria-labelledby="hero-title">
+    <main id="main" class="container">
+      <section class="hero" aria-labelledby="hero-title">
         <div class="hero-intro">
-          <div>
-            <h1 id="hero-title">Your ZEEKR.<br /><span>Your way.</span></h1>
-          </div>
+          <h1 id="hero-title">Camera tools<br />for your ZEEKR.</h1>
           <div class="hero-summary">
-            <p>
-              Camera recording, live camera views and thoughtful controls for
-              your ZEEKR head unit.
-            </p>
-            <div class="hero-actions">
-              <a class="button primary" href="#install"
-                >Get Companion <span aria-hidden="true">↗</span></a
-              ><a class="text-link" href="#explore"
-                >Explore the app <span aria-hidden="true">↓</span></a
-              >
+            <p>Record your cameras, open live side views and choose what stays on screen.</p>
+            <div class="actions">
+              <a class="primary-button" href="https://github.com/wysie/zeekr-companion/releases/tag/v3.0.0-alpha.1">Download APK</a>
+              <a class="text-link" href="#install">How to install</a>
             </div>
+            <p class="release-note">3.0.0-alpha.1 · Android head unit app</p>
           </div>
         </div>
-        <figure class="hero-figure">
-          <div class="headunit">
-            <picture
-              ><source
-                id="hero-dark-source"
-                media="(prefers-color-scheme: dark)"
-                srcset="
-                  assets/screenshots/main-dark-800.webp   800w,
-                  assets/screenshots/main-dark-1600.webp 1600w
-                "
-                sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1100px) 70vw, 1240px" />
-              <img
-                id="hero-image"
-                sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1100px) 70vw, 1240px"
-                srcset="
-                  assets/screenshots/main-light-800.webp   800w,
-                  assets/screenshots/main-light-1600.webp 1600w
-                "
-                src="assets/screenshots/main-light-1600.webp"
-                alt="Zeekr Companion main screen with four surround panes, front and rear road cameras, and recording controls. Camera imagery is simulated."
-                width="1600"
-                height="895"
-                fetchpriority="high"
-            /></picture>
+        <div class="app-preview" id="explore">
+          <div class="preview-toolbar">
+            <div class="screen-picker">
+              <label for="screen-select">Screen</label>
+              <select id="screen-select" aria-label="Screen" disabled>
+                <option value="main">Main screen</option>
+                <option value="menu">Side menu</option>
+                <option value="preview-layout">Preview &amp; layout</option>
+                <option value="recording">Recording &amp; photos</option>
+                <option value="storage">Storage</option>
+                <option value="super-mirror">Super mirror</option>
+                <option value="blind-camera">Blind spot camera</option>
+                <option value="hud">HUD</option>
+                <option value="360-camera">360° camera</option>
+                <option value="floating-button">Floating button</option>
+                <option value="interface">Interface</option>
+                <option value="system">System</option>
+                <option value="gpu-processing">GPU processing</option>
+              </select>
+            </div>
+            <button class="quiet-button" id="zoom-screen" disabled>Enlarge</button>
           </div>
-          <figcaption>
-            <span>The actual app, made to feel at home.</span
-            ><span>Simulated camera scenes · Android system bars excluded</span>
-          </figcaption>
-        </figure>
-        <div class="intro-strip">
-          <p>Camera recording</p>
-          <p>Live camera windows</p>
-          <p>English · Bahasa Melayu · 简体中文</p>
+          <div class="screen-panel" id="screen-panel" aria-label="App screenshot" aria-busy="false">
+            <picture>
+              <source id="gallery-dark-source" media="(prefers-color-scheme: dark)" srcset="assets/screenshots/main-dark-800.webp 800w, assets/screenshots/main-dark-1600.webp 1600w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1279px) calc(100vw - 80px), 1200px" />
+              <img id="gallery-image" src="assets/screenshots/main-light-1600.webp" srcset="assets/screenshots/main-light-800.webp 800w, assets/screenshots/main-light-1600.webp 1600w" sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1279px) calc(100vw - 80px), 1200px" alt="Zeekr Companion main screen in light theme, with simulated camera scenes." width="2560" height="1432" fetchpriority="high" />
+            </picture>
+          </div>
+          <p id="gallery-error" role="alert" hidden>The screenshot could not load. <button class="text-link" id="retry-image">Try again</button></p>
+          <p id="screen-description" role="status">Surround, front and rear previews with recording controls.</p>
+          <p class="screenshot-note">Actual app screens · Simulated camera scenes · Example settings</p>
+          <noscript><p>Enable JavaScript to switch screens and themes, or <a href="https://github.com/wysie/zeekr-companion/blob/main/docs/screenshots/gallery.md">browse all screenshots</a>.</p></noscript>
         </div>
       </section>
-
-      <section
-        class="explore-section section-pad"
-        id="explore"
-        aria-labelledby="explore-title"
-      >
-        <div class="container">
-          <div class="section-heading">
-            <h2 id="explore-title">Take a look around.</h2>
-            <p>
-              A familiar layout. Your camera choices. The details, within reach.
-            </p>
-          </div>
-          <div class="explorer">
-            <div class="explorer-sidebar">
-              <div
-                class="screen-tabs"
-                role="tablist"
-                aria-label="App screens"
-                aria-orientation="vertical"
-              >
-                <button
-                  role="tab"
-                  id="tab-main"
-                  aria-selected="true"
-                  aria-controls="screen-panel"
-                  data-screen="main"
-                >
-                  Main screen <span aria-hidden="true">↗</span>
-                </button>
-                <button
-                  role="tab"
-                  id="tab-preview-layout"
-                  aria-selected="false"
-                  aria-controls="screen-panel"
-                  data-screen="preview-layout"
-                  tabindex="-1"
-                >
-                  Preview & layout <span aria-hidden="true">↗</span>
-                </button>
-                <button
-                  role="tab"
-                  id="tab-menu"
-                  aria-selected="false"
-                  aria-controls="screen-panel"
-                  data-screen="menu"
-                  tabindex="-1"
-                >
-                  Side menu <span aria-hidden="true">↗</span>
-                </button>
-                <button
-                  role="tab"
-                  id="tab-recording"
-                  aria-selected="false"
-                  aria-controls="screen-panel"
-                  data-screen="recording"
-                  tabindex="-1"
-                >
-                  Recording & photos <span aria-hidden="true">↗</span>
-                </button>
-                <button
-                  role="tab"
-                  id="tab-blind-camera"
-                  aria-selected="false"
-                  aria-controls="screen-panel"
-                  data-screen="blind-camera"
-                  tabindex="-1"
-                >
-                  Blind spot camera <span aria-hidden="true">↗</span>
-                </button>
-                <button
-                  role="tab"
-                  id="tab-hud"
-                  aria-selected="false"
-                  aria-controls="screen-panel"
-                  data-screen="hud"
-                  tabindex="-1"
-                >
-                  HUD <span aria-hidden="true">↗</span>
-                </button>
-                <button
-                  role="tab"
-                  id="tab-360-camera"
-                  aria-selected="false"
-                  aria-controls="screen-panel"
-                  data-screen="360-camera"
-                  tabindex="-1"
-                >
-                  360° camera <span aria-hidden="true">↗</span>
-                </button>
-                <button
-                  role="tab"
-                  id="tab-floating-button"
-                  aria-selected="false"
-                  aria-controls="screen-panel"
-                  data-screen="floating-button"
-                  tabindex="-1"
-                >
-                  Floating button <span aria-hidden="true">↗</span>
-                </button>
-                <button
-                  role="tab"
-                  id="tab-storage"
-                  aria-selected="false"
-                  aria-controls="screen-panel"
-                  data-screen="storage"
-                  tabindex="-1"
-                >
-                  Storage <span aria-hidden="true">↗</span>
-                </button>
-                <button
-                  role="tab"
-                  id="tab-interface"
-                  aria-selected="false"
-                  aria-controls="screen-panel"
-                  data-screen="interface"
-                  tabindex="-1"
-                >
-                  Interface <span aria-hidden="true">↗</span>
-                </button>
-                <button
-                  role="tab"
-                  id="tab-system"
-                  aria-selected="false"
-                  aria-controls="screen-panel"
-                  data-screen="system"
-                  tabindex="-1"
-                >
-                  System <span aria-hidden="true">↗</span>
-                </button>
-                <button
-                  role="tab"
-                  id="tab-gpu-processing"
-                  aria-selected="false"
-                  aria-controls="screen-panel"
-                  data-screen="gpu-processing"
-                  tabindex="-1"
-                >
-                  GPU processing <span aria-hidden="true">↗</span>
-                </button>
-                <button
-                  role="tab"
-                  id="tab-super-mirror"
-                  aria-selected="false"
-                  aria-controls="screen-panel"
-                  data-screen="super-mirror"
-                  tabindex="-1"
-                >
-                  Super mirror <span aria-hidden="true">↗</span>
-                </button>
-              </div>
-            </div>
-            <div
-              class="screen-panel"
-              id="screen-panel"
-              role="tabpanel"
-              aria-labelledby="tab-main"
-              tabindex="0"
-            >
-              <div class="screen-frame">
-                <picture
-                  ><source
-                    id="gallery-dark-source"
-                    media="(prefers-color-scheme: dark)"
-                    srcset="
-                      assets/screenshots/main-dark-800.webp   800w,
-                      assets/screenshots/main-dark-1600.webp 1600w
-                    "
-                    sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1100px) 70vw, 1240px" />
-                  <img
-                    id="gallery-image"
-                    sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1100px) 70vw, 1240px"
-                    srcset="
-                      assets/screenshots/main-light-800.webp   800w,
-                      assets/screenshots/main-light-1600.webp 1600w
-                    "
-                    src="assets/screenshots/main-light-1600.webp"
-                    width="1600"
-                    height="895"
-                    loading="lazy"
-                    alt="Main screen in Zeekr Companion. Camera scenes are simulated."
-                /></picture>
-              </div>
-              <div class="screen-toolbar">
-                <span id="screen-name">Main screen</span
-                ><button class="text-link" id="zoom-screen">
-                  View full size <span aria-hidden="true">↗</span>
-                </button>
-              </div>
-              <p
-                class="screen-description"
-                id="screen-description"
-                aria-live="polite"
-              >
-                Keep surround, front and rear views together, with recording and
-                photo controls along the bottom.
-              </p>
-              <p class="gallery-error" id="gallery-error" role="alert" hidden>
-                That screenshot could not load.
-                <button class="text-link" id="retry-image">Try again</button>
-              </p>
-              <p class="screen-note">
-                Actual app screens with example settings. Camera scenes are
-                simulated. Use the theme switch to compare light and dark.
-              </p>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section
-        class="features-section container section-pad"
-        id="features"
-        aria-labelledby="features-title"
-      >
-        <div class="features-lead">
-          <h2 id="features-title">A useful companion.<br />On your terms.</h2>
-          <p>Choose what to record, what to see and how to reach it.</p>
-          <a
-            class="text-link"
-            href="https://github.com/wysie/zeekr-companion#what-it-does"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Read the full feature guide ↗</a
-          >
-        </div>
-        <div class="feature-list">
+      <section class="features" id="features" aria-labelledby="features-title">
+        <h2 id="features-title">What’s included</h2>
+        <div class="feature-grid">
           <article>
-            <h3>Record the views you choose.</h3>
-            <p>
-              Select recording sources and quality, capture photos, and save to
-              USB. Internal storage and relay write require Developer mode.
-            </p>
-            <a href="#explore" data-explore="recording">Recording & photos ↗</a>
+            <h3>Recording &amp; playback</h3>
+            <p>Choose recording sources and quality. Save to USB, lock clips, browse footage and send it to your phone.</p>
           </article>
           <article>
-            <h3>Keep a camera close.</h3>
-            <p>
-              Use Super mirror for a floating camera view, or show a side camera
-              when you use the turn signal.
-            </p>
-            <a href="#explore" data-explore="blind-camera">Camera windows ↗</a>
+            <h3>Camera windows</h3>
+            <p>Super mirror, turn-signal side views, supported HUD output and an experimental stitched 360° view.</p>
           </article>
           <article>
-            <h3>Keep the moments that matter.</h3>
-            <p>
-              Lock the current recording and reach recording, photos or camera
-              windows from the floating button.
-            </p>
-            <a href="#explore" data-explore="floating-button"
-              >Floating controls ↗</a
-            >
-          </article>
-          <article>
-            <h3>Make the setup yours.</h3>
-            <p>
-              Pick a theme and language, configure GPU processing, and export or
-              restore your preferences.
-            </p>
-            <a href="#explore" data-explore="system">System & preferences ↗</a>
+            <h3>Your setup</h3>
+            <p>Independent preview layouts, light and dark themes, three languages, floating-button actions and settings backup.</p>
           </article>
         </div>
+        <a class="text-link" href="https://github.com/wysie/zeekr-companion/blob/main/docs/user-guide.md">Read the user guide</a>
       </section>
-
-      <section
-        class="perspective-section section-pad"
-        aria-labelledby="perspective-title"
-      >
-        <div class="container perspective-grid">
-          <div class="perspective-copy">
-            <span class="status-label">Experimental feature</span>
-            <h2 id="perspective-title">An extra perspective.</h2>
-            <p>
-              The DIY 360° view combines the four surround feeds with adjustable
-              calibration.
-            </p>
-            <p class="muted">
-              Alignment and distances remain approximate. This is separate from
-              the factory stitched view; factory camera use takes priority.
-            </p>
-            <a
-              class="text-link"
-              href="https://github.com/wysie/zeekr-companion/blob/main/docs/009-image-fit.md"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Read about the 009 image fit ↗</a
-            >
-          </div>
-          <figure class="perspective-figure">
-            <picture
-              ><source
-                id="perspective-dark-source"
-                media="(prefers-color-scheme: dark)"
-                srcset="
-                  assets/screenshots/360-camera-dark-800.webp   800w,
-                  assets/screenshots/360-camera-dark-1600.webp 1600w
-                "
-                sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1100px) 70vw, 1240px" />
-              <img
-                id="perspective-image"
-                sizes="(max-width: 767px) calc(100vw - 40px), (max-width: 1100px) 70vw, 1240px"
-                srcset="
-                  assets/screenshots/360-camera-light-800.webp   800w,
-                  assets/screenshots/360-camera-light-1600.webp 1600w
-                "
-                src="assets/screenshots/360-camera-light-1600.webp"
-                width="1600"
-                height="895"
-                loading="lazy"
-                alt="360° camera settings in Zeekr Companion, including the experimental feature explanation and popup controls."
-            /></picture>
-            <figcaption>
-              360° camera settings. Vehicle calibration needs on-car checks.
-            </figcaption>
-          </figure>
+      <section class="install" id="install" aria-labelledby="install-title">
+        <div class="install-intro">
+          <h2 id="install-title">Install on your head unit</h2>
+          <p>Developed primarily on a ZEEKR 009. Other model and firmware combinations may behave differently.</p>
+          <a class="text-link" href="https://github.com/wysie/zeekr-companion/releases/tag/v3.0.0-alpha.1">Release notes · 3.0.0-alpha.1</a>
         </div>
+        <ol class="install-steps">
+          <li><h3>Download and sideload</h3><p>Get the APK from Releases and install through App Lab. When it finishes, press <strong>Back</strong>, then launch Companion separately. The installer’s Open button can leave it stuck.</p></li>
+          <li><h3>Choose cameras and storage</h3><p>While parked, check Recording &amp; photos in Settings and choose a USB drive under Storage. Tap Apply changes if shown.</p></li>
+          <li><h3>Try a short recording</h3><p>Record manually, then check Videos. Automatic recording starts off. For alpha updates, choose Updates → Update channel → Alpha.</p></li>
+        </ol>
       </section>
-
-      <section
-        class="install-section container section-pad"
-        id="install"
-        aria-labelledby="install-title"
-      >
-        <div class="install-top">
-          <h2 id="install-title">Ready to make it yours?</h2>
-          <p>
-            For owners comfortable sideloading apps onto their ZEEKR head unit.
-          </p>
-        </div>
-        <div class="install-grid">
-          <div class="release-card">
-            <img
-              src="assets/companion-icon.svg"
-              alt=""
-              width="70"
-              height="70"
-            />
-            <div>
-              <p class="release-label">Current alpha release</p>
-              <h3>Zeekr Companion</h3>
-              <p class="release-version">3.0.0-alpha.1 · Android APK</p>
-            </div>
-            <a
-              class="button primary"
-              href="https://github.com/wysie/zeekr-companion/releases/tag/v3.0.0-alpha.1"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Download on GitHub <span aria-hidden="true">↗</span></a
-            >
-            <p class="release-footnote">
-              Review the release notes and download the APK asset. The release
-              page also includes its SHA-256 checksum.
-            </p>
-          </div>
-          <ol class="install-steps">
-            <li>
-              <span class="step-index" aria-hidden="true">1</span>
-              <div>
-                <h3>Check your setup.</h3>
-                <p>
-                  Primarily developed and tested on the owner's ZEEKR 009. Other
-                  models and firmware are not confirmed compatible.
-                </p>
-              </div>
-            </li>
-            <li>
-              <span class="step-index" aria-hidden="true">2</span>
-              <div>
-                <h3>Install through App Lab.</h3>
-                <p>
-                  Download the APK and sideload it using your head unit's App
-                  Lab. You will need an existing sideloading setup.
-                </p>
-              </div>
-            </li>
-            <li>
-              <span class="step-index" aria-hidden="true">3</span>
-              <div>
-                <h3>Tap Back after installing.</h3>
-                <p>
-                  Use Back at the top left of the installer, rather than Open.
-                  Then launch Companion and check the camera sources while
-                  parked.
-                </p>
-              </div>
-            </li>
-            <li>
-              <span class="step-index" aria-hidden="true">4</span>
-              <div>
-                <h3>Make your first recording.</h3>
-                <p>
-                  Select a usable USB destination under Storage, check Recording
-                  &amp; photos, and apply any pending camera changes. Start recording,
-                  stop it, then open Videos to confirm the clip plays.
-                  Automatic recording starts off.
-                </p>
-              </div>
-            </li>
-          </ol>
-        </div>
-        <p class="install-notice">
-          Unofficial, experimental software with limited vehicle testing. It
-          does not replace the factory dash cam, reversing camera or blind-spot
-          monitor. Set it up while parked.
-          <a
-            href="https://github.com/wysie/zeekr-companion#install"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Read the installation notes ↗</a
-          >
-        </p>
-      </section>
-
-      <section
-        class="faq-section container section-pad"
-        aria-labelledby="faq-title"
-      >
-        <div class="faq-intro">
-          <h2 id="faq-title">A few things to know.</h2>
-          <p>The project is open. So are its limitations.</p>
-          <a
-            class="text-link"
-            href="https://github.com/wysie/zeekr-companion/issues"
-            target="_blank"
-            rel="noopener noreferrer"
-            >Questions or feedback? GitHub issues ↗</a
-          >
-        </div>
-        <div class="faq-list">
-          <details>
-            <summary>
-              Is this an official ZEEKR app?<span aria-hidden="true">+</span>
-            </summary>
-            <p>
-              No. Zeekr Companion is an independent project maintained by wysie.
-              It is not affiliated with, approved by or endorsed by ZEEKR.
-            </p>
-          </details>
-          <details>
-            <summary>
-              Will it work on my model?<span aria-hidden="true">+</span>
-            </summary>
-            <p>
-              This fork is primarily developed for the owner's ZEEKR 009. Camera
-              access and behavior depend on the head unit and firmware.
-              Compatibility with other models is not established. Review the
-              documentation before installing.
-            </p>
-          </details>
-          <details>
-            <summary>
-              What triggers the blind spot camera?<span aria-hidden="true"
-                >+</span
-              >
-            </summary>
-            <p>
-              The side camera responds to turn signals. The main-screen view
-              uses your configured speed threshold; HUD output has no app speed
-              threshold. Camera access still yields to factory ownership. It does
-              not detect obstacles or replace the factory blind-spot warning
-              system.
-            </p>
-          </details>
-          <details>
-            <summary>
-              Can I update an existing installation?<span aria-hidden="true"
-                >+</span
-              >
-            </summary>
-            <p>
-              Companion retains the existing Android package ID and signing
-              identity for compatible in-place updates. Export a settings backup
-              before testing. Alpha updates require selecting the Alpha channel
-              under Updates.
-            </p>
-          </details>
-          <details>
-            <summary>
-              Why is the download an alpha?<span aria-hidden="true">+</span>
-            </summary>
-            <p>
-              This is an actively developed personal fork. Automated checks and
-              builds are part of development, but vehicle testing is limited.
-              Read the release notes for the current changes and known
-              limitations.
-            </p>
-          </details>
-        </div>
-      </section>
+      <aside class="limits" aria-labelledby="limits-title">
+        <h2 id="limits-title">Before using it</h2>
+        <p>This personal fork is experimental, with limited vehicle testing. Factory cameras take priority. Side views follow the turn signal, not obstacle detection; DIY 360° alignment is approximate. Configure while parked and keep using the factory safety systems.</p>
+      </aside>
     </main>
-    <footer class="site-footer">
-      <div class="container footer-grid">
-        <div>
-          <a class="brand" href="#"
-            ><img
-              src="assets/companion-icon.svg"
-              alt=""
-              width="34"
-              height="34"
-            /><span>Zeekr Companion</span></a
-          >
-          <p>An independent companion for your head unit.</p>
-        </div>
-        <div class="credits">
-          <p>
-            Created by
-            <a
-              href="https://github.com/wysie"
-              target="_blank"
-              rel="noopener noreferrer"
-              >wysie</a
-            >. A fork of
-            <a
-              href="https://github.com/dts88/zeekr-shortcut-car"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Zeekr Shortcut by dts88</a
-            >.
-          </p>
-          <div class="footer-links">
-            <a
-              href="https://github.com/wysie/zeekr-companion"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Source code ↗</a
-            ><a
-              href="https://github.com/wysie/zeekr-companion/blob/main/NOTICE.md"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Credits & licenses ↗</a
-            ><a
-              href="https://github.com/wysie/zeekr-companion/blob/main/docs/screenshots/README.md"
-              target="_blank"
-              rel="noopener noreferrer"
-              >Screenshot notes ↗</a
-            >
-          </div>
-        </div>
+    <footer class="site-footer container">
+      <p>Created by <a href="https://github.com/wysie">wysie</a>. A fork of <a href="https://github.com/dts88/zeekr-shortcut-car">Zeekr Shortcut by dts88</a>.</p>
+      <div class="footer-links">
+        <a href="https://github.com/wysie/zeekr-companion/blob/main/NOTICE.md">Credits &amp; licenses</a>
+        <a href="https://github.com/wysie/zeekr-companion/blob/main/docs/screenshots/README.md">Screenshot notes</a>
       </div>
     </footer>
     <dialog
@@ -699,7 +169,7 @@
       </div>
       <div class="dialog-image-wrap" id="dialog-image-wrap" tabindex="0"
         role="region" aria-label="Screenshot. Choose Actual size, then scroll to inspect details.">
-        <img id="dialog-image" alt="" width="2560" height="1432" />
+        <img id="dialog-image" alt="" width="2560" height="1432" hidden />
       </div>
       <p id="dialog-status" role="status" hidden></p>
       <p>
