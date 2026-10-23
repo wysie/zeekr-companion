@@ -61,7 +61,7 @@ The app-name watermark on new recordings and normal photos uses **Zeekr Companio
 plus the version; existing footage keeps its original burned-in text. The logo itself
 is not added to the footage. Raw developer exports retain their existing behavior.
 
-Current test download: [Zeekr Companion 2.11.61-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.61-alpha.1).
+Current test download: [Zeekr Companion 2.11.62-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.62-alpha.1).
 
 Alpha 61 includes the completed translations and audit corrections. It suspends GPU presentation for hidden/docked/retained
 camera views while continuing to drain their inputs, removes recording's normal
@@ -75,7 +75,7 @@ at deletion. Settings import also rejects wrong types for known unset keys.
 No new switch is required. These changes do not establish real-car smoothness or
 storage durability; see the [codebase audit and validation](docs/codebase-audit-20261021.md).
 
-Unreleased storage-stall fixes separate recorder file ownership from USB directory
+Alpha 62 storage-stall fixes separate recorder file ownership from USB directory
 scans, persistent lock metadata and slow deletion. Cleanup inventories files outside
 the lock-edit guard, then rechecks current locks and active writers before unlinking;
 failed or newly protected candidates trigger bounded replanning. A deletion reserves
@@ -233,7 +233,7 @@ interruption; timing on the 009 remains unverified. Diagnostics now include cabi
 coupling, persisted camera history and capture-failure/buffer-loss details. `upstream-main` tracks that unmodified source; personal
 release numbers remain independent of upstream.
 
-**Unreleased camera lifecycle fixes:** camera surfaces remain owned until device
+**Alpha 62 camera lifecycle fixes:** camera surfaces remain owned until device
 closure completes. If a recording session rejects Super mirror's optional output,
 it stays withdrawn until you reopen/resume it, undock it, turn the screen on or
 replace the camera pipeline; the watchdog no longer repeatedly adds it back.
