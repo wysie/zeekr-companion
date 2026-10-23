@@ -39,9 +39,9 @@ android {
         // -beta，而且<b>不会延续到下一版</b>——上一版是 beta 不是下一版也是 beta
         // 的理由。检查更新遵循用户选择的 Stable / Beta / Alpha 渠道；
         // 测试版本必须保留正确的后缀和 GitHub Pre-release 标记。
-        versionCode = 344
+        versionCode = 345
         // Zeekr Companion keeps its own version sequence with machine-readable channel suffixes.
-        versionName = "2.11.61-alpha.1"
+        versionName = "2.11.62-alpha.1"
 
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
