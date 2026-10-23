@@ -82,6 +82,10 @@ public class RearViewMirrorService extends Service {
      * onSurfaceTextureUpdated（2026-10-11，§7.7）。
      */
     private boolean restoreBufferOnFrame;
+    // A configuration-refused output stays withdrawn through watchdog ticks. Explicit
+    // resume, screen-on, undocking or a different pipeline permits another attempt.
+    private MultiCameraManager refusedManager;
+    private SurfaceTexture refusedTexture;
     private int retryCount;
     private Runnable retryRunnable;
     private Runnable watchdog;
@@ -322,6 +326,7 @@ public class RearViewMirrorService extends Service {
     }
 
     private void showMirror() {
+        clearRefusal();
         if (mirrorView != null && mirrorView.isShowing()) {
             return;
         }
@@ -503,6 +508,7 @@ public class RearViewMirrorService extends Service {
             scheduleRetry(surfaceTexture);
             return;
         }
+        if (refusalBlocks(manager, surfaceTexture)) return;
         retryCount = 0;
         if (camera != boundCamera || surfaceTexture != boundTexture) {
             // 换了一路相机（换车型，管线重建了）或者换了一块画布（新窗口）：先从原来那里撤回，再在这里声明
@@ -518,7 +524,8 @@ public class RearViewMirrorService extends Service {
             mirrorView.setSourceSize(previewSize);
             sourceSize = previewSize;
         }
-        boolean declared = camera.declareMirror(surfaceTexture);
+        boolean declared = camera.declareMirror(surfaceTexture,
+                why -> onMirrorDropped(camera, surfaceTexture, why));
         CameraNeeds needs = CameraNeeds.current();
         boolean claimed = !needs.isHeld(CameraNeeds.Holder.MIRROR);
         needs.claim(CameraNeeds.Holder.MIRROR);
@@ -576,6 +583,30 @@ public class RearViewMirrorService extends Service {
      * <p>贴边收起、屏幕黑着时不登记，本来就是故意的，别把它又登记回去。深睡醒来亮屏广播不来的那种，
      * ScreenState 自己每两秒问一次系统，亮了会叫 onScreenOn 登记回来。</p>
      */
+    /** A failed optional mirror output must not repeatedly disrupt recording sessions. */
+    private void onMirrorDropped(SingleCamera camera, SurfaceTexture texture, SingleCamera.Drop why) {
+        if (camera != boundCamera || texture != boundTexture
+                || why != SingleCamera.Drop.CONFIG_FAILED) return;
+        refusedManager = boundManager;
+        refusedTexture = texture;
+        cancelRetry();
+        com.kooo.evcam.blackbox.BlackBox.noteImportant(
+                "Super mirror output refused; waiting for resume, screen-on or a new pipeline");
+        withdrawOutput();
+    }
+
+    private boolean refusalBlocks(MultiCameraManager manager, SurfaceTexture texture) {
+        if (refusedManager == null) return false;
+        if (refusedManager == manager && refusedTexture == texture) return true;
+        clearRefusal();
+        return false;
+    }
+
+    private void clearRefusal() {
+        refusedManager = null;
+        refusedTexture = null;
+    }
+
     private void ensureStillBound() {
         if (mirrorView == null || !mirrorView.isShowing()) {
             return;
@@ -652,6 +683,7 @@ public class RearViewMirrorService extends Service {
      *                         画面回不来就得说出为什么（相机被占着、还是别的）
      */
     private void rebindNow(boolean explainIfItFails) {
+        clearRefusal();
         if (explainIfItFails && com.kooo.evcam.screen.ScreenState.dark()) {
             // 人点了，那就是人回来了：记下来的还黑着，就是亮屏还没被察觉。让 ScreenState 现在就问 —— 安卓那一半现问，
             // 车辆说黑着的让车辆信号当场读一遍；真亮了它会照亮屏的顺序走一遍，其中就有这里的 onScreenOn

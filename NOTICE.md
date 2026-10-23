@@ -240,3 +240,13 @@ backup/parser, native export/import flow and diagnostics snapshot are retained w
 Companion-specific stores and file identity, strict version parsing, staged startup
 application and durable multi-store rollback/recovery. The original author and
 co-author attribution are retained. This is not an import of the entire upstream tree.
+
+## dts88 camera lifecycle follow-ups — 2026-10-23
+
+Surface ownership through device closure, rejected mirror-output handling and
+lane-specific recovery are selectively adapted from dts88 commits
+[`fc04167c`](https://github.com/dts88/zeekr-shortcut-car/commit/fc04167c276e5eedbc059ded62aed405f3840d6c)
+and [`be614c00`](https://github.com/dts88/zeekr-shortcut-car/commit/be614c008c39d2fb780ceda79c6cb590d0a0354f).
+The Companion adaptation retains its popup/HUD/360 output kinds, developer probe,
+independent recording/preview choices and existing GPU path. Holder-change
+collection is synchronized so notifications arriving during a round remain queued.

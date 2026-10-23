@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Retain camera surfaces until device close completes, stop repeated rejected Super mirror output retries and restrict recovery to affected cameras; preserve failure notifications for blind popup, HUD and 360° outputs.
+
 - Keep recorder ownership independent of slow USB inventory, lock metadata and deletion; recheck active/locked footage before cleanup and playback deletion, with bounded replanning when protection changes.
 - Buffer up to six seconds of encoded footage through short USB stalls within the existing memory caps; retain flush/stop safeguards and allow late-file recording locks more time to catch up.
 

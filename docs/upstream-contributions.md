@@ -3,7 +3,19 @@
 This index tracks outgoing PRs. Incoming source reviews, imports, adaptations and
 exclusions are tracked in the [source integration ledger](source-integration-ledger.md).
 
-Latest status review (**2026-10-20**, upstream `eb7d5732`): **17 open, 3 merged,
+Latest status review (**2026-10-23**, upstream `a8d9d5a5`): **11 open,
+3 merged, 10 closed**. No new merged wysie PR. Open #34/#37/#44 are mergeable;
+#29/#32/#47/#50/#51/#52/#53/#54 conflict with current main. All eleven submitted
+heads have passing GitHub builds; that does not establish compatibility with the
+new base. Newly observed closures: #30/#36/#45/#46/#48/#49. #36's core idea was
+reimplemented in #67; other closures explain upstream layout, gesture, font and
+theme choices. Upstream's new alpha-update switch overlaps #51, which needs a
+scope review before refresh. No PR heads, descriptions or comments changed.
+See [current findings, maintainer comments and recommendations](source-review-20261023.md).
+
+## Previous status review — 2026-10-20
+
+Status review (**2026-10-20**, upstream `eb7d5732`): **17 open, 3 merged,
 4 closed**. #17/#28/#38 are merged (#28/#38 through maintainer #58/#59).
 #19 remains closed in favour of adapted #41/#43. #31 is now closed in favour of
 merged #62; #33/#35 were declined for storage-retention/repair-space policy reasons.
