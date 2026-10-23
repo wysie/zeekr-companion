@@ -1,6 +1,6 @@
 # Zeekr Companion website
 
-Public showcase: **https://wysie.github.io/zeekr-shortcut-car/**
+Public showcase: **https://wysie.github.io/zeekr-companion/**
 
 The website belongs to the app repository. Native HTML, CSS and JavaScript
 provide a theme switch, 13-screen gallery, full-size image dialog, feature

@@ -246,10 +246,10 @@ HUD GPU/direct transitions, mirror normal/side switching, shared settings taps,
 pre-fix HUD transition regression fails at the premature All → Custom renderer
 change; the same test passes with the applied policy.
 
-Published in [2.11.64-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.64-alpha.1),
+Published in [2.11.64-alpha.1](https://github.com/wysie/zeekr-companion/releases/tag/v2.11.64-alpha.1),
 version code 347. Verified tag `e4b96c25596fabde470dcbac7845a3bb99cd0212`
 contains policy correction `edde5d57` and alpha 63 ownership recovery `2804dbb6`.
-Tag CI [39930344057](https://github.com/wysie/zeekr-shortcut-car/actions/runs/39930344057)
+Tag CI [39930344057](https://github.com/wysie/zeekr-companion/actions/runs/39930344057)
 passes. Downloaded draft and public APK/checksum, unchanged signing/application
 identity and all three note languages are verified. APK size is 23,359,870 bytes;
 SHA-256/GitHub digest is `9cc6029017a0e8b1a704b3c63232f5bbf78f0070145bebb7cabe6c96f70ffd66`.

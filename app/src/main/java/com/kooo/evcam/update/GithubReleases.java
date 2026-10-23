@@ -65,12 +65,12 @@ public final class GithubReleases {
     private static final String TAG = "GithubReleases";
 
     private static final String OWNER = "wysie";
-    private static final String REPO = "zeekr-shortcut-car";
+    private static final String REPO = "zeekr-companion";
     private static final String LIST_URL =
             "https://api.github.com/repos/" + OWNER + "/" + REPO + "/releases?per_page=20";
 
     /** GitHub 要求带 User-Agent，不带会直接 403。 */
-    private static final String USER_AGENT = "ZeekrShortcut-UpdateCheck";
+    private static final String USER_AGENT = "ZeekrCompanion-UpdateCheck";
 
     private static final int CONNECT_TIMEOUT_MS = 10000;
     private static final int READ_TIMEOUT_MS = 20000;

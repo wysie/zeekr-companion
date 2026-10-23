@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Namakan semula repositori kepada wysie/zeekr-companion, kemas kini pautan projek dan kemas kini aplikasi, serta pindahkan laman web awam ke wysie.github.io/zeekr-companion/.
+
 ## [3.0.0-alpha.1] - 2026-10-23
 
 - Mulakan siri alfa Zeekr Companion 3.0 dengan pembetulan kamera, rakaman dan GPU daripada 2.11.64-alpha.1.

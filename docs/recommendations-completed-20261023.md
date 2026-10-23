@@ -8,7 +8,7 @@ release was requested or published in this follow-up.
 
 Selected dts88 #65 (`fc04167c`) and #66 (`be614c00`) changes are adapted in
 `062c3ea2` and merged/pushed through `3d0d8e3a17d5f283bb328260569af8f27d94e6d7`.
-[Main CI 39922297118](https://github.com/wysie/zeekr-shortcut-car/actions/runs/39922297118)
+[Main CI 39922297118](https://github.com/wysie/zeekr-companion/actions/runs/39922297118)
 passed. Source authorship is retained, with Companion adaptation credit in the
 commit and NOTICE. [Detailed scope](camera-lifecycle-followups-20261023.md).
 
@@ -90,7 +90,7 @@ behavior or physical storage/HUD performance.
 
 ## Subsequent publication
 
-The owner subsequently requested a release. [v2.11.62-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.62-alpha.1) at
+The owner subsequently requested a release. [v2.11.62-alpha.1](https://github.com/wysie/zeekr-companion/releases/tag/v2.11.62-alpha.1) at
 `dbae67bd88f963fd1ca8bfb44884627bd8e7786c` contains the Companion camera
 lifecycle adaptation and storage fixes. Tag ancestry, the CI and public APK,
 unchanged signing/application identity, version code 345 and all three release-note

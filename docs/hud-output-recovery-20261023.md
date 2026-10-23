@@ -44,10 +44,10 @@ native-output or GPU stall with the binding still intact.
 
 ## Publication
 
-Published as [2.11.63-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.63-alpha.1),
+Published as [2.11.63-alpha.1](https://github.com/wysie/zeekr-companion/releases/tag/v2.11.63-alpha.1),
 Android version code 346. Tag `25735a3c16911cb2543aa7330171700a408d0c3b`
 contains implementation `2804dbb6`; tag CI
-[39928957601](https://github.com/wysie/zeekr-shortcut-car/actions/runs/39928957601)
+[39928957601](https://github.com/wysie/zeekr-companion/actions/runs/39928957601)
 passed. All 20 combined native checks pass, including the seven new HUD cases.
 Downloaded draft and public APKs match their checksum/GitHub digest, retain the
 existing signing/application identity and have matching trilingual release notes.

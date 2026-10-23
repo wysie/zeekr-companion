@@ -85,7 +85,7 @@ remain pending. This feature is unreleased.
 
 ## Alpha 59 publication — 2026-10-21
 
-Published in [2.11.59-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.59-alpha.1),
+Published in [2.11.59-alpha.1](https://github.com/wysie/zeekr-companion/releases/tag/v2.11.59-alpha.1),
 version code 342, at commit `4d3683c96587de00ae86e0878f82f1004735b4f6`.
 The tag contains both this comparison feature and the native surround-preview
 buffer fix (`e5e8a99f`). Local release checks pass 1,535 JVM tests, zero lint

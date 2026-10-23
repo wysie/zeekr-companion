@@ -25,7 +25,7 @@ is made as a side effect of this review.
 ## Adopted port and validation
 
 Selected follow-ups are in Companion commit
-[`06f0bf42`](https://github.com/wysie/zeekr-shortcut-car/commit/06f0bf4260a9dd76d9e4555d423bad294f4950d2).
+[`06f0bf42`](https://github.com/wysie/zeekr-companion/commit/06f0bf4260a9dd76d9e4555d423bad294f4950d2).
 The port retains dts88 authorship and source links, with wysie’s adaptations
 co-attributed. Original source commits are
 [`319fef9c`](https://github.com/dts88/zeekr-shortcut-car/commit/319fef9c5b64a77d5c5f90f2a00ee50358677b39)

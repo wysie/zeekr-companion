@@ -34,7 +34,7 @@ Experimental, unofficial software. Not affiliated with, approved by, or endorsed
 
 Maintained by **wysie**, primarily for personal use. Based on [Zeekr Shortcut by dts88](https://github.com/dts88/zeekr-shortcut-car), with credited features from [CAMCORDER by FerixzTanz](https://github.com/FerixzTanz/CAMCORDER).
 
-For the original, more thoroughly tested version, use [dts88’s releases](https://github.com/dts88/zeekr-shortcut-car/releases). Report Zeekr Companion issues in [this repository](https://github.com/wysie/zeekr-shortcut-car/issues).
+For the original, more thoroughly tested version, use [dts88’s releases](https://github.com/dts88/zeekr-shortcut-car/releases). Report Zeekr Companion issues in [this repository](https://github.com/wysie/zeekr-companion/issues).
 
 Released under **GPL-3.0**, based on [EVCam](https://github.com/suyunkai/EVCam) by suyunkai.
 

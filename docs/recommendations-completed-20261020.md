@@ -2,7 +2,7 @@
 
 The owner authorized the [review recommendations](source-review-20261020.md).
 All three work items are complete. They were subsequently published in
-[2.11.55-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.55-alpha.1)
+[2.11.55-alpha.1](https://github.com/wysie/zeekr-companion/releases/tag/v2.11.55-alpha.1)
 at the owner's request; tag `98d5c57f` includes both feature integrations.
 
 ## Existing upstream PRs

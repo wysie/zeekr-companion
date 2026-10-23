@@ -192,8 +192,8 @@ No physical-car colour matching or new downloadable release is claimed here.
 
 Published **Zeekr Companion 2.11.58-alpha.1**, versionCode **341**, from tag
 `v2.11.58-alpha.1` at `c85a900e560061ba71477ffb1a43dbdfc9f534d8`.
-[Release](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.58-alpha.1)
-and [tag workflow](https://github.com/wysie/zeekr-shortcut-car/actions/runs/39423542570)
+[Release](https://github.com/wysie/zeekr-companion/releases/tag/v2.11.58-alpha.1)
+and [tag workflow](https://github.com/wysie/zeekr-companion/actions/runs/39423542570)
 were checked after publication. GitHub Pre-release is on and Latest is off.
 
 This release contains the shared recording red/live floating-theme fix, softer

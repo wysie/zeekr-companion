@@ -60,7 +60,7 @@ was silently reduced to make the tests pass.
 
 ## Publication
 
-Published in [v2.11.62-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.62-alpha.1), version code 345.
+Published in [v2.11.62-alpha.1](https://github.com/wysie/zeekr-companion/releases/tag/v2.11.62-alpha.1), version code 345.
 Tag `dbae67bd88f963fd1ca8bfb44884627bd8e7786c` includes implementation
 `98b81176` and main integration `29a280d5`. The combined release passes 1,564
 JVM tests, zero-error lint, five packaging/note checks and signed assembly.

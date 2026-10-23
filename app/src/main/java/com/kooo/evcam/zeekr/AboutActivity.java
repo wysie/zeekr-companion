@@ -27,7 +27,7 @@ public class AboutActivity extends AppCompatActivity {
 
     public static final String EVCAM_URL = "https://github.com/suyunkai/EVCam";
     public static final String GPL_URL = "https://www.gnu.org/licenses/gpl-3.0.html";
-    public static final String PROJECT_URL = "https://github.com/wysie/zeekr-shortcut-car";
+    public static final String PROJECT_URL = "https://github.com/wysie/zeekr-companion";
     public static final String UPSTREAM_URL = "https://github.com/dts88/zeekr-shortcut-car";
     public static final String FERIX_URL = "https://github.com/FerixzTanz/CAMCORDER";
 

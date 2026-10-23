@@ -18,7 +18,7 @@ import re
 import sys
 
 APP_NAME = "Zeekr Companion"
-REPO = "https://github.com/wysie/zeekr-shortcut-car"
+REPO = "https://github.com/wysie/zeekr-companion"
 
 
 def changelog_section(version, path="CHANGELOG.md"):
