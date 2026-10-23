@@ -109,3 +109,13 @@ checks pass at the intended 2560×1600 viewport; an initial run exposed a leftov
 1920×1080 emulator override that hid unrelated controls, then passed after reset.
 The four affected import/export/UI cases are rerun after final translated wording.
 These checks make no vehicle-performance claim.
+
+Published as [3.0.0-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v3.0.0-alpha.1),
+version code 348, tag `1ee321431748723ca642da216ce13324d1769a2a` including
+transition/compatibility commit `cc03ccd1`. Tag CI
+[39931968564](https://github.com/wysie/zeekr-shortcut-car/actions/runs/39931968564)
+passes. Downloaded draft/public APKs verify the retained application/signing
+identity, exact version, checksum/GitHub digest and all three note languages.
+APK size 23,359,902 bytes; SHA-256
+`aad9aa15d133a4d367cdd2b5950e76e35217d1c38275b3d836ea734ef048aad1`.
+Published Pre-release with Latest off. The final four native import/UI reruns pass.
