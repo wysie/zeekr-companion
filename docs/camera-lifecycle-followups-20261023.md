@@ -26,7 +26,7 @@ GPU processing, encoding settings and existing window gestures are retained.
 
 Implementation `062c3ea2`, integrated in main `3d0d8e3a`; main CI
 [39922297118](https://github.com/wysie/zeekr-shortcut-car/actions/runs/39922297118)
-passed. No release contains this follow-up yet.
+passed. Subsequently published in [v2.11.62-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.62-alpha.1); tag `dbae67bd` includes both the adaptation and main integration.
 
 Validation: 1,564 JVM tests; debug, release and instrumentation assembly; zero-error
 Android lint; five packaging/release-note tests. Twelve native Android checks cover
