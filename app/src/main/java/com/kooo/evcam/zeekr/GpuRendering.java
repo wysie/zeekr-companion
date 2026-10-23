@@ -11,6 +11,22 @@ public final class GpuRendering {
     public static boolean enabled(String mode, boolean selected) {
         return "all".equals(mode) || ("custom".equals(mode) && selected);
     }
+    /** Live camera views must switch together with their producer at Apply, not at Save. */
+    public static boolean applied(android.content.Context context, String feature) {
+        com.kooo.evcam.camera.MultiCameraManager manager =
+                com.kooo.evcam.camera.CameraManagerHolder.getInstance().getCameraManager();
+        com.kooo.evcam.camera.CameraSessionOptions options = manager == null ? null : manager.getSessionOptions();
+        if (options != null) {
+            switch (feature) {
+                case "preview": return options.gpuPreview;
+                case "360": return options.gpu360;
+                case "side": return options.gpuSide;
+                case "mirror": return options.gpuMirror;
+            }
+        }
+        // Standalone previews before pipeline creation and playback retain their normal defaults.
+        return new com.kooo.evcam.AppConfig(context).isGpuFeatureEnabled(feature);
+    }
     public static String preference(String feature) {
         switch(feature) {
             case "preview": return "pref_gpu_preview";

@@ -18,6 +18,32 @@ import static org.junit.Assert.*;
 /** Isolated emulator policy/Settings checks, with original preferences restored by the fixture. */
 public class GpuRenderingAndroidTest extends MainPageControlsAndroidTest {
     private android.content.Context target(){return InstrumentationRegistry.getInstrumentation().getTargetContext();}
+    @Test public void liveViewsUseAppliedGpuChoicesWhileSettingsAndPlaybackUseSavedChoices() throws Exception {
+        AppConfig config=new AppConfig(target());
+        config.setGpuRenderingMode("off");
+        MultiCameraManager manager=new MultiCameraManager(target());
+        manager.setSessionOptions(CameraSessionOptions.read(target()));
+        java.lang.reflect.Field field=CameraManagerHolder.class.getDeclaredField("cameraManager");field.setAccessible(true);
+        Object previous=field.get(CameraManagerHolder.getInstance());
+        try {
+            field.set(CameraManagerHolder.getInstance(),manager);
+            config.setGpuRenderingMode("all");
+            for(String feature:new String[]{"preview","360","side","mirror"}) {
+                assertTrue(config.isGpuFeatureEnabled(feature));
+                assertFalse("Pending "+feature+" must leave the live pipeline unchanged",GpuRendering.applied(target(),feature));
+            }
+            assertTrue("Playback uses saved policy on its next open",GpuRendering.applied(target(),"playback"));
+            CameraSessionOptions captured=CameraSessionOptions.read(target());
+            config.setGpuRenderingMode("custom");
+            for(String feature:GpuRendering.FEATURES)config.setGpuFeature(feature,false);
+            manager.setSessionOptions(captured);
+            for(String feature:new String[]{"preview","360","side","mirror"}) {
+                assertFalse(config.isGpuFeatureEnabled(feature));
+                assertTrue("Later edits must remain pending after captured Apply",GpuRendering.applied(target(),feature));
+            }
+            assertFalse(GpuRendering.applied(target(),"playback"));
+        } finally {field.set(CameraManagerHolder.getInstance(),previous);manager.release();}
+    }
     @Test public void blindSamplingChoicesPersistWithoutChangingFramingOrCameraTopology() throws Exception {
         AppConfig config=new AppConfig(target());config.setGpuRenderingMode("all");
         assertEquals("bilinear",config.getSideUpscaling());assertEquals(0,config.getSideSharpening());

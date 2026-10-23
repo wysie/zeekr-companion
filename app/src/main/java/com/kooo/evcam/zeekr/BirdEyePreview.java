@@ -59,7 +59,7 @@ final class BirdEyePreview {
     private BirdEyeGlRequest gpuRequest;
     private String gpuFallback = "none";
     private long lastGpuSeen;
-    private boolean gpuEnabled() { return appConfig.isGpuBirdEye(); }
+    private boolean gpuEnabled() { return GpuRendering.applied(owner.getContext(),"360"); }
     private boolean gpuFresh() {
         return gpuRequest != null && texture != null && texture.isAvailable() && texture.getSurfaceTexture() != null
                 && gpuRequest.fresh(texture.getSurfaceTexture().getTimestamp(), SystemClock.elapsedRealtime());

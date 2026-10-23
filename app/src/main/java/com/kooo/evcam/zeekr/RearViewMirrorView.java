@@ -739,7 +739,7 @@ public class RearViewMirrorView extends ViewGroup {
         } else projected=new SideGpuPicture(plan,laneIndex,viewport(),fisheyeCorrection?1:0,fovDegrees,0,0,0,
                 LaneCycle.isMirrored(laneIndex),width,height);
         boolean gpu=gpuPicture.prepare(textureView,PreviewDewarp.rawPipeFor(textureView),projected,width,height,
-                sideView.active()?appConfig.isGpuSide():appConfig.isGpuMirror());
+                GpuRendering.applied(getContext(),sideView.active()?"side":"mirror"));
         if(gpu) {
             drawTextureOnce(canvas);frozen=!gpuPicture.fresh(textureView);
             if(frozen)drawFrozenHint(canvas,width,height);

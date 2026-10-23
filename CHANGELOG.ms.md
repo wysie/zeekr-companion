@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Kekalkan pilihan GPU HUD/tetingkap timbul, Cermin super, 360° dan pratonton tetapan mengikut konfigurasi kamera yang telah digunakan. Perubahan Semua/Tersuai/Matikan menunggu Guna perubahan supaya pemapar dan output kamera bertukar bersama.
+
 ## [2.11.63-alpha.1] - 2026-10-23
 
 - Pulihkan sambungan kamera HUD yang terputus semasa lampu isyarat membelok masih menyala; kekalkan tempoh menunggu selepas penolakan dan penutup tiada gambar langsung sehingga bingkai baharu diterima.
