@@ -211,3 +211,37 @@ Subsequently published in **2.11.59-alpha.1** (version code 342), 2026-10-21.
 The tag contains `e5e8a99f`; alpha 58 did not contain it. Tagged CI and the public
 APK verification are recorded in [the alpha 59 publication record](blind-quality-comparison.md#alpha-59-publication--2026-10-21).
 Owner confirmation on the vehicle remains pending.
+
+## Saved and applied policy — 23 October 2026
+
+The owner narrowed the HUD problem to changing All ↔ Custom, rather than steady
+GPU-on versus GPU-off use. A native regression against alpha 63 confirms that
+a saved All → Custom change could switch the live HUD shader immediately, while
+its camera output retained the previous pipeline's GPU topology. The documented
+Apply boundary was therefore inconsistent across producer and consumer. This
+reproduces the policy mismatch, not a physical-HUD failure on the emulator.
+
+Live side popup/HUD, normal/side Super mirror, 360° and settings picture/comparison
+now read the GPU choices captured in the current manager's session options. Saved
+settings still update immediately in the controls and participate in the existing
+pending/Apply check. All → Custom with identical effective camera choices needs
+no rebuild; differing choices wait for Apply. Playback retains its next-open saved
+policy. Picture tuning, sampling and sharpening remain live. There is no automatic
+camera rebuild or new preference, and later edits remain pending after an Apply
+snapshot was captured. Standalone views before pipeline creation use saved defaults.
+
+Native coverage repeats All/Custom/Off edits on a live synthetic HUD while retaining
+the same renderer/texture; then closes the synthetic camera producer, releases GL
+and replaces the manager as production Apply does. Both GPU → compatibility and
+compatibility → GPU resume without another indicator cycle. Policy tests cover all
+four camera GPU choices, playback independence and changes saved after capture.
+The alpha 63 binding-recovery checks remain in place. On-car confirmation of the
+reported warning remains necessary.
+
+Validation for this correction: 1,564 JVM tests, 28 native Android checks in one
+process, debug/release/instrumentation builds, zero-error lint and five packaging
+checks. Native checks include settings policy/migration/pending controls, actual
+HUD GPU/direct transitions, mirror normal/side switching, shared settings taps,
+360°/photo/frozen-source handling and retained-texture Apply shutdown. The
+pre-fix HUD transition regression fails at the premature All → Custom renderer
+change; the same test passes with the applied policy.

@@ -210,7 +210,7 @@ public final class SideSettingsPreview extends LinearLayout {
         plan = CompositeStreamGeometry.analyse(camera.getCameraId(), size.getWidth(), size.getHeight());
         FisheyeGlPipe shared = PreviewDewarp.rawPipeFor(source);
         if (gpuSample.failed() && settingsSource != null) failedGpuSource = settingsSource;
-        if (config.isGpuSide() && shared != null && shared.isAlive() && shared != failedGpuSource) {
+        if (GpuRendering.applied(getContext(),"side") && shared != null && shared.isAlive() && shared != failedGpuSource) {
             settingsSource = shared; sample = null;
             picture.invalidate(); refreshGpuStatus(); return;
         }
@@ -282,7 +282,7 @@ public final class SideSettingsPreview extends LinearLayout {
         }
         try {
             FisheyeGlPipe shared=PreviewDewarp.rawPipeFor(source);
-            SideQualitySpec spec=SideQualitySpec.create(activity,plan,lane,config.isGpuSide()&&shared!=null&&shared.isAlive());
+            SideQualitySpec spec=SideQualitySpec.create(activity,plan,lane,GpuRendering.applied(getContext(),"side")&&shared!=null&&shared.isAlive());
             captureStatus.setText(R.string.side_quality_working);capture.setEnabled(false);
             qualityRequest=SideQualityCapture.start(activity,source,spec,freshness.changedAt(),(file,error) -> {
                 qualityRequest=null;capture.setEnabled(running&&!hidden);
@@ -341,7 +341,7 @@ public final class SideSettingsPreview extends LinearLayout {
         void attachGpuTexture() { if(gpuTexture.getParent()==null)addView(gpuTexture,new FrameLayout.LayoutParams(-1,-1)); }
         void detachGpuTexture() { gpuSample.release();removeView(gpuTexture); }
         @Override protected void dispatchDraw(Canvas canvas) {
-            if(settingsSource!=null && plan!=null && config.isGpuSide()) {
+            if(settingsSource!=null && plan!=null && GpuRendering.applied(getContext(),"side")) {
                 int width=getWidth(),height=getHeight();
                 if(width>0 && height>0){
                     boolean straighten=config.isSidePopupStraighten();int rotation=config.getSidePopupRotation(lane);

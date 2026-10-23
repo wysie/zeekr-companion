@@ -207,6 +207,77 @@ public class HudOutputRecoveryAndroidTest {
             }
         }
     }
+    @Test public void gpuAllCustomRoundTripsKeepTheAppliedHudRendererUntilApply() {
+        try(Fixture f=new Fixture()) {
+            android.content.SharedPreferences prefs=f.context.getSharedPreferences("app_config",0);
+            boolean hadSide=prefs.contains(GpuRendering.key("side"));
+            boolean side=prefs.getBoolean(GpuRendering.key("side"),false);
+            f.config.setGpuRenderingMode("custom"); f.config.setGpuFeature("side",false);
+            f.config.setGpuRenderingMode("all");
+            main(()->{f.manager.setSessionOptions(CameraSessionOptions.read(f.context)); f.panel().applyConfig();});
+            try(Producer p=new Producer(f,true)) {
+                p.frames(); assertEquals("GPU",f.panel().gpuState());
+                SurfaceTexture texture=f.texture();
+                for(String mode:new String[]{"custom","all","off","custom","all"}) {
+                    main(()->f.config.setGpuRenderingMode(mode));
+                    p.frames();
+                    assertEquals("Saved "+mode+" must not change the renderer before Apply","GPU",f.panel().gpuState());
+                    assertEquals(SideViewHudPanel.COVER_NONE,f.panel().cover());
+                    assertSame(texture,f.texture());
+                }
+            } finally {
+                if(hadSide) prefs.edit().putBoolean(GpuRendering.key("side"),side).commit();
+                else prefs.edit().remove(GpuRendering.key("side")).commit();
+            }
+        }
+    }
+    @Test public void hudGpuModeApplyHandsOverTheProducerWithoutAnotherIndicatorCycle() {
+        try(Fixture f=new Fixture()) {
+            android.content.SharedPreferences prefs=f.context.getSharedPreferences("app_config",0);
+            boolean hadSide=prefs.contains(GpuRendering.key("side"));
+            boolean side=prefs.getBoolean(GpuRendering.key("side"),false);
+            try {
+                f.config.setGpuRenderingMode("all");
+                main(()->f.manager.setSessionOptions(CameraSessionOptions.read(f.context)));
+                SurfaceTexture texture=f.texture();
+                boolean gpu=true;
+                for(String nextMode:new String[]{"custom","all","off","all"}) {
+                    CameraSessionOptions requested;
+                    try(Producer p=new Producer(f,gpu)) {
+                        p.frames();
+                        assertEquals(gpu?"GPU":"compatibility",f.panel().gpuState());
+                        f.config.setGpuFeature("side",false);
+                        f.config.setGpuRenderingMode(nextMode);
+                        requested=CameraSessionOptions.read(f.context);
+                        p.frames();
+                        assertEquals("Renderer stays applied until producer shutdown",gpu?"GPU":"compatibility",f.panel().gpuState());
+                    }
+                    // Production Apply waits for native camera closure before releasing GL.
+                    // This fixture's synthetic producer is now closed; no HAL is opened.
+                    PreviewDewarp.releaseAll();
+                    CameraSessionOptions applied=requested;
+                    main(()->{
+                        Manager next=new Manager(f.context); next.setSessionOptions(applied);
+                        f.manager.release(); f.manager=next;
+                        try {field(CameraManagerHolder.class,"cameraManager").set(CameraManagerHolder.getInstance(),next);}
+                        catch(Exception e) {throw new AssertionError(e);}
+                    });
+                    await("HUD binds the applied replacement",()->f.boundCamera()==f.manager.camera);
+                    gpu=applied.gpuSide;
+                    assertSame("HUD window texture remains attached",texture,f.texture());
+                }
+                try(Producer p=new Producer(f,gpu)) {
+                    p.frames();
+                    assertEquals("GPU",f.panel().gpuState());
+                    assertEquals(SideViewHudPanel.COVER_NONE,f.panel().cover());
+                }
+            } finally {
+                PreviewDewarp.releaseAll();
+                if(hadSide) prefs.edit().putBoolean(GpuRendering.key("side"),side).commit();
+                else prefs.edit().remove(GpuRendering.key("side")).commit();
+            }
+        }
+    }
     @Test public void recoveryDoesNotRepeatedlyRedeclareHealthyOrRejectedOutputs() {
         try(Fixture f=new Fixture()) {
             Camera camera=f.manager.camera;

@@ -53,3 +53,12 @@ Downloaded draft and public APKs match their checksum/GitHub digest, retain the
 existing signing/application identity and have matching trilingual release notes.
 SHA-256: `f3e1fb931a63daa92135f0b5785eaf1db50b2f50ff52410490cd9c388000ae01`.
 This is an alpha with Latest off; on-car confirmation remains pending.
+
+## Subsequent owner trigger clarification
+
+The owner subsequently identifies All ↔ Custom GPU policy changes as the trigger,
+rather than steady GPU-on/off use. Alpha 63 fixes missing camera ownership but
+does not stage every renderer's saved policy. The [saved/applied GPU policy
+correction](unified-gpu-rendering.md#saved-and-applied-policy--23-october-2026)
+addresses that separate mismatch and adds explicit transition/handover coverage.
+The original car-side interruption still has no new diagnostic log.

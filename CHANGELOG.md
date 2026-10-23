@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Keep live HUD/popup, Super mirror, 360° and settings-preview GPU choices tied to the applied camera pipeline; All/Custom/Off edits stay pending until Apply instead of switching the renderer underneath a live output.
+
 ## [2.11.63-alpha.1] - 2026-10-23
 
 - Recover lost HUD camera bindings while the indicator stays on, preserving refusal cooldowns and the no-live-picture cover until frames actually resume.

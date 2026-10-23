@@ -2281,8 +2281,10 @@ public class MultiCameraManager {
         initCameras(ids, views);
     }
 
-    private CameraSessionOptions sessionOptions;
+    private volatile CameraSessionOptions sessionOptions;
     public void setSessionOptions(CameraSessionOptions options) { sessionOptions = options; }
+    /** The live rendering policy belongs to this pipeline, not pending saved preferences. */
+    public CameraSessionOptions getSessionOptions() { return sessionOptions; }
 
     public void initCameras(Map<String, String> ids, Map<String, TextureView> views) {
         cameras.clear();
