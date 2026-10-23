@@ -187,12 +187,6 @@ button:active,
   gap: 80px;
   margin-bottom: 50px;
 }
-.eyebrow {
-  font-size: 14px;
-  font-weight: 500;
-  color: var(--muted);
-  margin-bottom: 22px;
-}
 h1 {
   font-size: clamp(58px, 6.6vw, 94px);
   line-height: 0.99;
@@ -813,10 +807,6 @@ h3 {
   .hero-intro {
     display: block;
     margin-bottom: 32px;
-  }
-  .eyebrow {
-    font-size: 12px;
-    margin-bottom: 20px;
   }
   h1 {
     font-size: clamp(52px, 11vw, 78px);
