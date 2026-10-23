@@ -61,7 +61,7 @@ The app-name watermark on new recordings and normal photos uses **Zeekr Companio
 plus the version; existing footage keeps its original burned-in text. The logo itself
 is not added to the footage. Raw developer exports retain their existing behavior.
 
-Current test download: [Zeekr Companion 2.11.63-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.63-alpha.1).
+Current test download: [Zeekr Companion 2.11.64-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.64-alpha.1).
 
 Alpha 61 includes the completed translations and audit corrections. It suspends GPU presentation for hidden/docked/retained
 camera views while continuing to drain their inputs, removes recording's normal

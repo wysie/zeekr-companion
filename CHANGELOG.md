@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+## [2.11.64-alpha.1] - 2026-10-23
+
 - Keep live HUD/popup, Super mirror, 360° and settings-preview GPU choices tied to the applied camera pipeline; All/Custom/Off edits stay pending until Apply instead of switching the renderer underneath a live output.
 
 ## [2.11.63-alpha.1] - 2026-10-23

@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [2.11.64-alpha.1] - 2026-10-23
+
 - Kekalkan pilihan GPU HUD/tetingkap timbul, Cermin super, 360° dan pratonton tetapan mengikut konfigurasi kamera yang telah digunakan. Perubahan Semua/Tersuai/Matikan menunggu Guna perubahan supaya pemapar dan output kamera bertukar bersama.
 
 ## [2.11.63-alpha.1] - 2026-10-23
