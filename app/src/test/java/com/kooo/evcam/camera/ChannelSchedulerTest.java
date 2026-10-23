@@ -56,6 +56,8 @@ public class ChannelSchedulerTest {
     private final List<String> told = new ArrayList<>();
     /** 交给相机步骤统计的每一条（Journal.recorded）。 */
     private final List<ChannelScheduler.StepRecord> records = new ArrayList<>();
+    /** 调度告诉录像那一侧「谁要它」变了的那几路（Recording.onLaneWantersChanged）。 */
+    private final List<String> wantersChanged = new ArrayList<>();
     /** 关座舱时环视那几行（Journal.coupling）。 */
     private final List<ChannelScheduler.Coupling> couplings = new ArrayList<>();
     private final FakePort surround = new FakePort("2");
@@ -1225,6 +1227,32 @@ public class ChannelSchedulerTest {
         s.onOutputDropped("2", recS, SingleCamera.Drop.CONFIG_FAILED);
         s.onOutputDropped("2", pvS, SingleCamera.Drop.RELEASED);
         assertEquals(Arrays.asList("RECORD CONFIG_FAILED"), surround.drops);
+    }
+
+    @Test public void firstOverlayNotificationDoesNotReplayExistingPreviewClaim() {
+        // Preview was already held when a pipeline was constructed / before its listener attached.
+        host.holders.add(Holder.PREVIEW);
+        settle();
+        wantersChanged.clear();
+        claim(Holder.SIDE_HUD);
+        settle();
+        assertEquals(Arrays.asList(SUR), wantersChanged);
+        wantersChanged.clear();
+        drop(Holder.SIDE_HUD);
+        claim(Holder.SIDE_HUD); // Release/reclaim in one coalesced round must still be noticed.
+        settle();
+        assertEquals(Arrays.asList(SUR), wantersChanged);
+    }
+
+    @Test
+    public void configurationDropsReachEveryAuxiliaryOwnerButNotPreview() {
+        settle();
+        for (Kind kind : Arrays.asList(Kind.MIRROR, Kind.SIDE_POPUP, Kind.SIDE_HUD, Kind.BIRD_EYE)) {
+            s.onOutputDropped("2", new Out(kind, new Object()), SingleCamera.Drop.CONFIG_FAILED);
+        }
+        s.onOutputDropped("2", pvS, SingleCamera.Drop.CONFIG_FAILED);
+        assertEquals(Arrays.asList("MIRROR CONFIG_FAILED", "SIDE_POPUP CONFIG_FAILED",
+                "SIDE_HUD CONFIG_FAILED", "BIRD_EYE CONFIG_FAILED"), surround.drops);
     }
 
     // ================================================================= 告诉录像那一侧（大纲 §2 阶段 5）
@@ -3044,6 +3072,11 @@ public class ChannelSchedulerTest {
         }
 
         @Override
+        public boolean stillCarries(Out out) {
+            return sessionOutputs().carries(out);
+        }
+
+        @Override
         public Set<Out> declaredOutputs() {
             return new LinkedHashSet<>(declared);
         }
@@ -3283,6 +3316,11 @@ public class ChannelSchedulerTest {
         @Override
         public void onLaneConditionChanged(String key) {
             told.add("condition " + key + " " + s.condition(key));
+        }
+
+        @Override
+        public void onLaneWantersChanged(String key) {
+            wantersChanged.add(key);
         }
     }
 

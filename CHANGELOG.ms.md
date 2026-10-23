@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Kekalkan permukaan kamera sehingga peranti selesai ditutup, hentikan percubaan berulang output Cermin super yang ditolak dan hadkan pemulihan kepada kamera terjejas; kekalkan pemberitahuan kegagalan untuk tetingkap timbul titik buta, HUD dan output 360°.
+
 - Asingkan pemilikan fail perakam daripada imbasan USB, metadata kunci dan pemadaman yang perlahan. Semak semula rakaman aktif atau dikunci sebelum pemadaman; kira semula pelan secara terhad apabila perlindungan berubah.
 - Tampung sehingga enam saat rakaman yang telah dikodkan semasa gangguan USB singkat, dalam had memori sedia ada. Kekalkan pengesahan penulisan dan had masa berhenti, serta beri lebih masa untuk mengunci fail rakaman yang muncul lewat.
 

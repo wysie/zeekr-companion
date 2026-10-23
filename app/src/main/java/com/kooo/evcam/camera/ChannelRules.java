@@ -371,8 +371,8 @@ public final class ChannelRules {
         final Set<CameraNeeds.Holder> holders = EnumSet.noneOf(CameraNeeds.Holder.class);
         /** 录像计划里的那几路（MultiCameraManager.recordingPlan 的 key）。 */
         final Set<String> recordPlan = new LinkedHashSet<>();
-        /** 登记表每变一次（含停了再开录）调度在 CameraNeeds 的监听里 +1：几次变化并成一轮也认得出「变过」。 */
-        int needsVersion;
+        /** Holder changes since the previous round, including release/reclaim in one round. */
+        final Set<CameraNeeds.Holder> changed = EnumSet.noneOf(CameraNeeds.Holder.class);
         /** Temporary exclusive developer lease: close usual feeds without changing their claims. */
         boolean developerProbe;
         /**
@@ -413,8 +413,6 @@ public final class ChannelRules {
 
         // ---- 账 ----
 
-        /** 上一轮看到的 {@link #needsVersion}。 */
-        int seenNeedsVersion;
         /**
          * 开不起来判成「现在用不了相机」、要等主界面回到前台的时刻；0 = 没有。主界面回到前台才清（{@link ChannelRules#mainCameForward}）。
          * 只在判的时候主界面不在前、出事以后它也没回到过前台时记（{@link ChannelRules#applyVerdict}）。
@@ -667,6 +665,11 @@ public final class ChannelRules {
             RELEASED,
             /** 停手的一路解除停手、从头救。 */
             STOP_LIFTED,
+            /**
+             * 这一路「谁要它」变了：要它的登记方上一轮以来登记、放开过（{@link #wantersChanged}）。录像那一侧据此再试会话带不上
+             * 录像输出、在等的那一路 —— 和解除停手同一个解锁。
+             */
+            WANTERS_CHANGED,
             /** 连着救 3 次没用，歇 60 秒。 */
             GAVE_UP,
             /** 救了 3 轮没用，停手。 */
@@ -675,7 +678,7 @@ public final class ChannelRules {
 
         /** 解除停手是因为什么。 */
         enum Cause {
-            /** 登记表变了（项目所有者 2026-10-10）。 */
+            /** 要它的登记方变了（项目所有者 2026-10-10；2026-10-20 起只算要这一路的登记方，{@link #wantersChanged}）。 */
             NEEDS_CHANGED,
             /** 亮屏（项目所有者 2026-10-11，§7.4）。 */
             SCREEN_ON,
@@ -868,8 +871,9 @@ public final class ChannelRules {
      */
     static List<Event> settle(World w) {
         List<Event> events = new ArrayList<>();
-        boolean needsChanged = w.needsVersion != w.seenNeedsVersion;
-        w.seenNeedsVersion = w.needsVersion;
+        Set<CameraNeeds.Holder> changed = EnumSet.noneOf(CameraNeeds.Holder.class);
+        changed.addAll(w.changed);
+        w.changed.clear();
         for (Lane lane : w.lanes) {
             if (!wantsKind(w, lane, Kind.RECORD)) {
                 lane.recordWantedSince = 0;
@@ -881,7 +885,7 @@ public final class ChannelRules {
         recognize(w, events);
         judgeDue(w, events);
         release(w, events);
-        liftStops(w, needsChanged, events);
+        liftStops(w, changed, events);
         clearLadders(w);
         return events;
     }
@@ -1099,19 +1103,26 @@ public final class ChannelRules {
     }
 
     /**
-     * 停手的一路什么时候从头救：登记表变了（项目所有者 2026-10-10）；相机服务在停手以后报它「空闲」、或者停手以后亮过屏
-     * （2026-10-11，§7.4 —— 录像开着时 RECORDING 一直登记着，登记表不会自己变，只等它的话，各路都停手之后录像会一直等下去）。
-     * 关着的那一路交给救援（第一次救就是第 1 次），开着没画面的照 8 秒的规矩救。没人要了的不在这里报：
-     * 梯子照「不再需要画面」归零（{@link #clearLadders}），以后有人要了从头开。
+     * 停手的一路什么时候从头救：要它的登记方变了（项目所有者 2026-10-10；2026-10-20 起只看要这一路的，{@link #wantersChanged}）；
+     * 相机服务在停手以后报它「空闲」、或者停手以后亮过屏（2026-10-11，§7.4 —— 录像开着时 RECORDING 一直登记着，登记表不会自己变，
+     * 只等它的话，各路都停手之后录像会一直等下去）。关着的那一路交给救援（第一次救就是第 1 次），开着没画面的照 8 秒的规矩救。
+     * 没人要了的不在这里报：梯子照「不再需要画面」归零（{@link #clearLadders}），以后有人要了从头开。
+     *
+     * <p>要它的登记方变了的每一路（不管停没停手）另报一件 {@link Event.Type#WANTERS_CHANGED}：录像那一侧照同一个解锁再试。</p>
      */
-    private static void liftStops(World w, boolean needsChanged, List<Event> events) {
+    private static void liftStops(World w, Set<CameraNeeds.Holder> changed, List<Event> events) {
+        List<String> concerned = new ArrayList<>();
         for (Lane lane : w.lanes) {
+            boolean wantersChanged = wantersChanged(w, lane, changed);
+            if (wantersChanged) {
+                concerned.add(lane.key);
+            }
             if (!lane.ladder.stopped() || !wanted(w, lane)) {
                 continue;
             }
             Event.Cause cause;
             boolean lifted;
-            if (needsChanged) {
+            if (wantersChanged) {
                 cause = Event.Cause.NEEDS_CHANGED;
                 lifted = lane.ladder.registerChanged();
             } else if (w.screenOnAt > lane.stoppedAt) {
@@ -1132,6 +1143,23 @@ public final class ChannelRules {
             event.cause = cause;
             events.add(event);
         }
+        if (!concerned.isEmpty()) {
+            events.add(new Event(Event.Type.WANTERS_CHANGED, concerned));
+        }
+    }
+
+    /**
+     * 这一路「谁要它」变了：上一轮以来登记、放开过的登记方（{@link World#changed}）里有要它的（{@link #holderWants}，
+     * 不管此刻登没登记着 —— 停了再开录并成一轮也算）。盲区画面只要环视：挂 D 挡、R 挡时它登记、放开，只算环视变了，
+     * 停手的座舱不为它重开（2026-10-20 审查，车主批；以前登记表一变，所有停手的路都解除）。
+     */
+    static boolean wantersChanged(World w, Lane lane, Set<CameraNeeds.Holder> changed) {
+        for (CameraNeeds.Holder holder : changed) {
+            if (holderWants(w, lane, holder)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

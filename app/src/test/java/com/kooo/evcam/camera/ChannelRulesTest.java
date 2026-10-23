@@ -685,7 +685,6 @@ public class ChannelRulesTest {
         streaming(front, recF);
         assertEquals(Move.IDLE, round().move);
         Set<Holder> holders = EnumSet.copyOf(w.holders);
-        int needsVersion = w.needsVersion;
 
         w.screenOn = false;   // 黑满 30 秒
         Decision d = round();
@@ -724,7 +723,6 @@ public class ChannelRulesTest {
 
         assertEquals(3, done.size());
         assertEquals("登记表没动", holders, w.holders);
-        assertEquals(needsVersion, w.needsVersion);
         assertEquals("救援梯子一次都没算", 0, surround.ladder.attempts());
         assertFalse(surround.lostForRescue);
         assertNull(surround.mark);
@@ -799,7 +797,7 @@ public class ChannelRulesTest {
         drop(Holder.PREVIEW);
         assertEquals(Move.IDLE, round().move);
         Set<Holder> holders = EnumSet.copyOf(w.holders);
-        int needsVersion = w.needsVersion;
+        Set<Holder> changed = EnumSet.copyOf(w.changed);
 
         at(ChannelRules.HOLD_MS);
         Decision d = round();
@@ -821,7 +819,7 @@ public class ChannelRulesTest {
         assertEquals(Move.IDLE, round().move);
         assertEquals(set(optional, recS), surround.session);
         assertEquals(holders, w.holders);
-        assertEquals(needsVersion, w.needsVersion);
+        assertEquals(changed, w.changed);
         assertEquals(0, surround.ladder.attempts());
     }
 
@@ -2187,6 +2185,20 @@ public class ChannelRulesTest {
         assertEquals(0, surround.ladder.attempts());
     }
 
+    @Test public void allForkOverlayChangesLeaveUnrelatedRoadAndCabinStopsAlone() {
+        Lane road = new Lane("roadfront", "9");
+        for (Holder holder : Arrays.asList(Holder.SIDE_POPUP, Holder.SIDE_HUD, Holder.BIRD_EYE, Holder.MIRROR)) {
+            Set<Holder> changed = EnumSet.of(holder);
+            assertTrue(ChannelRules.wantersChanged(w, surround, changed));
+            assertFalse(ChannelRules.wantersChanged(w, front, changed));
+            assertFalse(ChannelRules.wantersChanged(w, rear, changed));
+            assertFalse(ChannelRules.wantersChanged(w, road, changed));
+        }
+        w.recordPlan.add(road.key);
+        assertTrue(ChannelRules.wantersChanged(w, road, EnumSet.of(Holder.RECORDING)));
+        assertFalse(ChannelRules.wantersChanged(w, surround, EnumSet.of(Holder.RECORDING)));
+    }
+
     /** 登记表变了，停手的那一路从头救（项目所有者 2026-10-10）。 */
     @Test
     public void aRegisterChangeLiftsAStop() {
@@ -2207,6 +2219,37 @@ public class ChannelRulesTest {
         assertEquals(Move.RESCUE, d.move);
         assertEquals(Rescue.REOPEN, d.rescue);
         assertEquals(1, d.attempt);
+    }
+
+    /**
+     * 只给「谁要它」变了的那一路解除停手（2026-10-20 审查，车主批）：盲区画面只要环视，它登记、放开不解除停手的座舱；
+     * 主界面重新登记预览，要它的座舱解除。停了再开录并成一轮也算变了。
+     */
+    @Test
+    public void onlyAChangeAmongItsOwnWantersLiftsAStop() {
+        claim(Holder.PREVIEW);
+        rear.declared.add(pvR);
+        round();
+        stopLadder(rear);
+        at(1_000);
+        round();
+        assertEquals(Condition.GAVE_UP, ChannelRules.condition(rear));
+
+        claim(Holder.SIDE_POPUP);
+        round();
+        assertNull("盲区画面不要座舱：不解除", event(Event.Type.STOP_LIFTED));
+        drop(Holder.SIDE_POPUP);
+        round();
+        assertNull(event(Event.Type.STOP_LIFTED));
+        assertEquals(Condition.GAVE_UP, ChannelRules.condition(rear));
+
+        drop(Holder.PREVIEW);
+        claim(Holder.PREVIEW);   // 放开又登记，并成一轮
+        round();
+        Event lifted = event(Event.Type.STOP_LIFTED);
+        assertNotNull("要它的预览变过：解除", lifted);
+        assertEquals(Collections.singletonList(REAR), lifted.keys);
+        assertEquals(Event.Cause.NEEDS_CHANGED, lifted.cause);
     }
 
     /** §7.4（项目所有者 2026-10-11）：停手之后，相机服务报它「空闲」、或者亮屏，也解除停手、从头救。 */
@@ -2701,13 +2744,13 @@ public class ChannelRulesTest {
 
     private void claim(Holder holder) {
         if (w.holders.add(holder)) {
-            w.needsVersion++;
+            w.changed.add(holder);
         }
     }
 
     private void drop(Holder holder) {
         if (w.holders.remove(holder)) {
-            w.needsVersion++;
+            w.changed.add(holder);
         }
     }
 

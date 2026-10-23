@@ -1589,8 +1589,11 @@ public class SingleCamera {
     /**
      * 声明超级后视镜的画布：以 SurfaceTexture 作身份，一个 SurfaceTexture 只建一个 Surface（建会话时在相机线程上建）。
      * 贴边、放回都不算变化 —— 画面只要活着就留在会话里。
+     *
+     * @param onDropped 相机层丢了它（录像中会话配不上时它在 JPEG 之后让路）时告诉谁（调度在主线程上派发）：超级镜子收到后撤回，
+     *                  调度就不会一直想把它加回去、一次次重建这一路的会话（2026-10-20 审查，车主批；同盲区画面）
      */
-    public boolean declareMirror(SurfaceTexture texture) {
+    public boolean declareMirror(SurfaceTexture texture, RecordDropped onDropped) {
         if (texture == null) {
             return false;
         }
@@ -1599,7 +1602,7 @@ public class SingleCamera {
         synchronized (outputLock) {
             changed = declaredMirror == null || !declaredMirror.out.equals(out);
             if (changed) {
-                declaredMirror = new Declared(out, null, null, null);
+                declaredMirror = new Declared(out, null, null, onDropped);
             }
         }
         if (changed) {
@@ -1756,13 +1759,14 @@ public class SingleCamera {
         return changed;
     }
 
-    /** Notify the declared recorder or side-popup owner when its output is dropped. */
+    /** Notify the matching recorder or auxiliary-output owner, retaining all fork output kinds. */
     public RecordDropped dropListener(ChannelRules.Out out) {
         synchronized (outputLock) {
-            Declared current = out.kind == ChannelRules.Kind.SIDE_POPUP
-                    ? declaredSidePopup : out.kind == ChannelRules.Kind.SIDE_HUD ? declaredSideHud
-                    : out.kind == ChannelRules.Kind.BIRD_EYE ? declaredBirdEye : declaredRecord;
-            return current != null && current.out.equals(out) ? current.onDropped : null;
+            for (Declared current : new Declared[]{declaredRecord, declaredMirror,
+                    declaredSidePopup, declaredSideHud, declaredBirdEye}) {
+                if (current != null && current.out.equals(out)) return current.onDropped;
+            }
+            return null;
         }
     }
 
@@ -2841,6 +2845,23 @@ public class SingleCamera {
             isSessionClosing = false;
             rebuildQueued = false;
             sessionGeneration++;
+        }
+    }
+
+    /**
+     * 这一样输出此刻还挂在这台相机上：眼下的会话带着它，或者会话已经没了（关相机、丢了、重开、重建）而设备还没关完 ——
+     * {@link #carried} 设备没了才清（{@link #forgetCarried}），关会话、关设备那几百毫秒到十几秒里相机还在往它写。
+     * 画布要被系统收走时据此判断交给谁放（ChannelScheduler.sessionCarries）。哪个线程都能调。
+     */
+    public boolean stillCarries(ChannelRules.Out out) {
+        if (out == null) {
+            return false;
+        }
+        if (sessionSnapshot.carries(out)) {
+            return true;
+        }
+        synchronized (outputLock) {
+            return carried.containsKey(out);
         }
     }
 

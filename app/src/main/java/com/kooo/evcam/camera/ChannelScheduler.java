@@ -14,7 +14,6 @@ import java.util.Set;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicLong;
 import java.util.concurrent.atomic.AtomicReference;
 import java.util.function.Consumer;
@@ -160,6 +159,12 @@ public final class ChannelScheduler {
         /** 眼下这份会话的快照：输出、代号、配好的时刻（调度的钟）。 */
         SingleCamera.SessionOutputs sessionOutputs();
 
+        /**
+         * 这一样输出此刻还挂在这一路相机上：眼下的会话带着它，或者会话、设备已经开始关、还没关完（相机还在往它写）。
+         * 关一开始会话快照就清了，关会话、关设备还要几百毫秒到十几秒（{@link #sessionCarries}）。
+         */
+        boolean stillCarries(ChannelRules.Out out);
+
         /** 已声明、消费者还活着的输出。 */
         Set<ChannelRules.Out> declaredOutputs();
 
@@ -293,6 +298,12 @@ public final class ChannelScheduler {
          * 补建录制器 —— 熄屏时不为它建）。
          */
         void onLaneConditionChanged(String key);
+
+        /**
+         * 这一路「谁要它」变了（{@link ChannelRules#wantersChanged}）：会话连着几次带不上录像输出、在等的那一路这时再试 ——
+         * 和解除停手同一个解锁。
+         */
+        void onLaneWantersChanged(String key);
     }
 
     /** 一路的相机为什么走了（{@link Recording#onLaneCameraGone}）。 */
@@ -316,6 +327,10 @@ public final class ChannelScheduler {
 
         @Override
         public void onLaneConditionChanged(String key) {
+        }
+
+        @Override
+        public void onLaneWantersChanged(String key) {
         }
     };
 
@@ -1355,8 +1370,9 @@ public final class ChannelScheduler {
     private final Runnable roundTask = this::round;
     private final Runnable timerTask = this::wake;
 
-    /** 登记表的监听叫过来、登记表真的变了的次数（哪个线程都能加；每一轮收走）。 */
-    private final AtomicInteger needsChanges = new AtomicInteger();
+    /** 登记表的监听叫过来、登记、放开过的登记方（哪个线程都能加；每一轮收走，交给 {@link ChannelRules.World#changed}）。 */
+    private final Object needsChangeLock = new Object();
+    private final Set<CameraNeeds.Holder> changedHolders = EnumSet.noneOf(CameraNeeds.Holder.class);
     /** 监听上一次看到的登记表：车机要睡那一项变了也会叫，但那不算「登记表变了」（不解除停手）。 */
     private final AtomicReference<Set<CameraNeeds.Holder>> notifiedHolders =
             new AtomicReference<>(EnumSet.noneOf(CameraNeeds.Holder.class));
@@ -1468,6 +1484,7 @@ public final class ChannelScheduler {
         this.clock = Objects.requireNonNull(clock);
         this.poster = Objects.requireNonNull(poster);
         this.host = Objects.requireNonNull(host);
+        notifiedHolders.set(copyOf(host.holders()));
         this.journal = Objects.requireNonNull(journal);
         LIVE.add(this);
     }
@@ -1541,10 +1558,10 @@ public final class ChannelScheduler {
      * 熄屏那一刻协调器写下它，紧接着 ScreenOffRecording 就要读「关完没有」，不能等 post 出去的那一轮。
      */
     void onNeedsChanged() {
-        Set<CameraNeeds.Holder> now = host.holders();
-        Set<CameraNeeds.Holder> before = notifiedHolders.getAndSet(now);
-        if (!now.equals(before)) {
-            needsChanges.incrementAndGet();
+        synchronized (needsChangeLock) {
+            Set<CameraNeeds.Holder> now = host.holders();
+            Set<CameraNeeds.Holder> before = notifiedHolders.getAndSet(now);
+            changedHolders.addAll(symmetricDifference(before, now));
         }
         if (host.headUnitSleeps()) {
             long at = clock.now();
@@ -1609,12 +1626,17 @@ public final class ChannelScheduler {
     }
 
     /**
-     * 这一路此刻的会话里带着 {@code out} 吗（调度还没停）。画布要被系统收走时，管线据此找会话里还带着它的那一份调度去交
-     * （MultiCameraManager.ownerOf：退出、换车型时放了的那一份管线，它的调度还在按次序关）。
+     * 这一路相机此刻还带着 {@code out} 吗（调度还没停）：会话里带着，或者那一次关还没关完（{@link CameraPort#stillCarries}）。
+     * 画布要被系统收走时，管线据此找还带着它的那一份调度去交（MultiCameraManager.ownerOf：退出、换车型、为超级镜子重建时
+     * 放了的那一份管线，它的调度还在按次序关）。
+     *
+     * <p>以前只看会话快照（2026-10-20 审查，车主批）：关环视一开始快照就清了，可相机线程上关会话、关设备还要几百毫秒到十几秒，
+     * 这期间退出或者重建，主界面、超级镜子、盲区画面的画布在关完之前就被放掉 —— 正是「会话里的画布只由调度放」（2.11.4 R1）要防的。
+     * 现在算到关完：交给那一份调度，它照「离开会话、手上没有在途的一步」再放（{@link #releaseHandedOver}）。</p>
      */
     boolean sessionCarries(String key, ChannelRules.Out out) {
         CameraPort port = ports.get(key);
-        return !stopped && port != null && out != null && port.sessionOutputs().carries(out);
+        return !stopped && port != null && out != null && port.stillCarries(out);
     }
 
     /**
@@ -1767,10 +1789,24 @@ public final class ChannelScheduler {
             return;
         }
         CameraPort port = ports.get(lane.key);
-        if (port != null && out != null && out.kind == ChannelRules.Kind.RECORD) {
+        if (port != null && out != null
+                && (out.kind == ChannelRules.Kind.RECORD || out.kind == ChannelRules.Kind.MIRROR
+                || out.kind == ChannelRules.Kind.SIDE_POPUP || out.kind == ChannelRules.Kind.SIDE_HUD
+                || out.kind == ChannelRules.Kind.BIRD_EYE)) {
             port.dropped(out, why);
         }
         wake();
+    }
+
+    /** {@code a}、{@code b} 只在一边的那几个登记方。 */
+    private static Set<CameraNeeds.Holder> symmetricDifference(Set<CameraNeeds.Holder> a, Set<CameraNeeds.Holder> b) {
+        Set<CameraNeeds.Holder> diff = EnumSet.noneOf(CameraNeeds.Holder.class);
+        for (CameraNeeds.Holder holder : CameraNeeds.Holder.values()) {
+            if (a.contains(holder) != b.contains(holder)) {
+                diff.add(holder);
+            }
+        }
+        return diff;
     }
 
     /** 回调要用的那一路；调度停了、不认识这台相机是 null。顺手对一下钟。 */
@@ -1909,13 +1945,15 @@ public final class ChannelScheduler {
 
     private void refresh(long now) {
         long offset = host.elapsedNow() - now;
-        Set<CameraNeeds.Holder> holders = host.holders();
-        int changes = needsChanges.getAndSet(0);
-        if (changes > 0) {
-            w.needsVersion += changes;
-        } else if (!w.holders.equals(holders)) {
-            w.needsVersion++;
+        Set<CameraNeeds.Holder> holders;
+        synchronized (needsChangeLock) {
+            holders = host.holders();
+            w.changed.addAll(changedHolders);
+            w.changed.addAll(symmetricDifference(notifiedHolders.getAndSet(holders), holders));
+            changedHolders.clear();
         }
+        // 没经过监听的变化（监听还没挂上时）也认
+        w.changed.addAll(symmetricDifference(w.holders, holders));
         w.holders.clear();
         w.holders.addAll(holders);
         w.recordPlan.clear();
@@ -1950,7 +1988,8 @@ public final class ChannelScheduler {
         }
         if (w.developerProbe != host.developerProbe()) {
             w.developerProbe = host.developerProbe();
-            w.needsVersion++;
+            // The exclusive probe changes access to every channel.
+            w.changed.addAll(EnumSet.allOf(CameraNeeds.Holder.class));
         }
         w.exitSince = exitAt;
         // 自己也在为退出、车机要睡关：不等另一份 —— 关不用谁放行。等的话两份同时在关时（换车型后紧接着退出）互相等，
@@ -2455,6 +2494,11 @@ public final class ChannelScheduler {
                 }
                 case STOP_LIFTED:
                     journal.stopLifted(event.keys.get(0), event.cause, copyOf(w.holders));
+                    break;
+                case WANTERS_CHANGED:
+                    for (String key : event.keys) {
+                        recording.onLaneWantersChanged(key);
+                    }
                     break;
                 case GAVE_UP:
                     journal.gaveUp(event.keys.get(0));

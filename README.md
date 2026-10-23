@@ -233,6 +233,16 @@ interruption; timing on the 009 remains unverified. Diagnostics now include cabi
 coupling, persisted camera history and capture-failure/buffer-loss details. `upstream-main` tracks that unmodified source; personal
 release numbers remain independent of upstream.
 
+**Unreleased camera lifecycle fixes:** camera surfaces remain owned until device
+closure completes. If a recording session rejects Super mirror's optional output,
+it stays withdrawn until you reopen/resume it, undock it, turn the screen on or
+replace the camera pipeline; the watchdog no longer repeatedly adds it back.
+Recovery following a consumer change is limited to cameras that consumer uses.
+Blind popup, HUD and 360° output owners also receive configuration-failure
+notifications. Saved camera/preview choices, GPU processing, recording quality and
+normal window gestures remain unchanged. These are software regressions tested
+in an emulator; on-car contention and timing still need checking.
+
 ## Additions in this fork
 
 - **Settings backup (2.11.55-alpha.1):** **Settings → System → Settings backup** exports and restores Companion preferences, profiles, source/vehicle choices, GPU options, 360° calibration, illustration colours and window settings. Files are saved beside diagnostics and accept same-major Companion backups. Import confirms, stops recording and exits; reopening applies the backup before services start. Durable rollback protects restores across the five preference stores. Developer access, permissions, detected hardware and current recording intent stay local. Backups contain saved text such as plate stamps, but no footage or external artwork files. Diagnostics include the same full settings snapshot. See [restore behavior and verification](docs/settings-backup.md).
