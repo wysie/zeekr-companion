@@ -106,6 +106,19 @@ public class SettingsBackupAndroidTest extends MainPageControlsAndroidTest {
         SettingsBackup.Backup bad=SettingsBackup.read(app,truncated);
         assertEquals(SettingsBackup.Backup.Status.UNREADABLE,bad.status);assertFalse(SettingsBackup.apply(app,bad));assertStores(expected);
     }
+    @Test public void companion211BackupStillRestoresAfterTheCompanion3VersionChange() throws Exception {
+        AppConfig config=new AppConfig(app);config.setGpuRenderingMode("custom");config.setGpuFeature("side",true);
+        config.setSidePopupYaw(43);
+        JSONObject snapshot=SettingsBackup.snapshot(app);
+        JSONObject expected=snapshot.getJSONObject("stores");
+        snapshot.put("app_version","2.11.64-alpha.1");
+        SettingsBackup.Backup backup=SettingsBackup.read(app,write(snapshot));
+        assertEquals(SettingsBackup.Backup.Status.OK,backup.status);
+        config.setSidePopupYaw(20);config.setGpuFeature("side",false);
+        SettingsBackup.stage(app,backup);SettingsBackup.restoreOnStartup(app);
+        assertStores(expected);assertEquals(43,new AppConfig(app).getSidePopupYaw());
+        assertTrue(new AppConfig(app).isGpuSide());
+    }
     @Test public void interruptedRestoreRecoversAllStoresAndCommittedJournalDoesNotUndoSuccess() throws Exception {
         File file=export();SettingsBackup.Backup before=SettingsBackup.read(app,file);
         java.lang.reflect.Method method=SettingsBackup.class.getDeclaredMethod("journal",Context.class);method.setAccessible(true);

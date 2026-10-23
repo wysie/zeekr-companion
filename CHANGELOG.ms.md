@@ -2,6 +2,11 @@
 
 ## [Unreleased]
 
+## [3.0.0-alpha.1] - 2026-10-23
+
+- Mulakan siri alfa Zeekr Companion 3.0 dengan pembetulan kamera, rakaman dan GPU daripada 2.11.64-alpha.1.
+- Kekalkan import sandaran tetapan Companion 2.11 yang sepadan format dalam 3.0, dengan ID aplikasi dan identiti tandatangan sedia ada.
+
 ## [2.11.64-alpha.1] - 2026-10-23
 
 - Kekalkan pilihan GPU HUD/tetingkap timbul, Cermin super, 360° dan pratonton tetapan mengikut konfigurasi kamera yang telah digunakan. Perubahan Semua/Tersuai/Matikan menunggu Guna perubahan supaya pemapar dan output kamera bertukar bersama.

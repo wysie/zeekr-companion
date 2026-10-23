@@ -9,6 +9,11 @@ commit message, not here.
 
 ## [Unreleased]
 
+## [3.0.0-alpha.1] - 2026-10-23
+
+- Start the Zeekr Companion 3.0 alpha series with the camera, recording and GPU fixes from 2.11.64-alpha.1.
+- Keep importing matching-format Companion 2.11 settings backups in 3.0, with the existing application ID and signing identity.
+
 ## [2.11.64-alpha.1] - 2026-10-23
 
 - Keep live HUD/popup, Super mirror, 360° and settings-preview GPU choices tied to the applied camera pipeline; All/Custom/Off edits stay pending until Apply instead of switching the renderer underneath a live output.
