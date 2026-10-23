@@ -41,3 +41,15 @@ This fixes the demonstrated recovery gap; emulator results do not identify the
 original car-side interruption or establish physical HUD smoothness. If it recurs,
 a new drive/diagnostic report is needed to distinguish a lost binding from a
 native-output or GPU stall with the binding still intact.
+
+## Publication
+
+Published as [2.11.63-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v2.11.63-alpha.1),
+Android version code 346. Tag `25735a3c16911cb2543aa7330171700a408d0c3b`
+contains implementation `2804dbb6`; tag CI
+[39928957601](https://github.com/wysie/zeekr-shortcut-car/actions/runs/39928957601)
+passed. All 20 combined native checks pass, including the seven new HUD cases.
+Downloaded draft and public APKs match their checksum/GitHub digest, retain the
+existing signing/application identity and have matching trilingual release notes.
+SHA-256: `f3e1fb931a63daa92135f0b5785eaf1db50b2f50ff52410490cd9c388000ae01`.
+This is an alpha with Latest off; on-car confirmation remains pending.
