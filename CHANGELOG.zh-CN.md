@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- 将仓库更名为 wysie/zeekr-companion，更新项目及应用更新链接，并将展示网站迁至 wysie.github.io/zeekr-companion/。
+
 ## [3.0.0-alpha.1] - 2026-10-23
 
 - 开启 Zeekr Companion 3.0 Alpha 系列，包含 2.11.64-alpha.1 的相机、录制和 GPU 修复。

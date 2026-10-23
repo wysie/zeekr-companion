@@ -35,7 +35,7 @@
     ],
     storage: [
       "Storage",
-      "Select USB or internal storage, configure retention budgets and choose whether to use relay write.",
+      "Choose a USB destination and retention budgets. Internal storage and relay write require Developer mode.",
     ],
     interface: [
       "Interface",
@@ -195,15 +195,32 @@
     .querySelectorAll("a")
     .forEach((link) => link.addEventListener("click", () => setMenu(false)));
   document.addEventListener("keydown", (event) => {
-    if (event.key === "Escape") setMenu(false);
+    if (event.key === "Escape" && menu.classList.contains("open")) {
+      const restoreFocus = menu.contains(document.activeElement);
+      setMenu(false);
+      if (restoreFocus) $("menu-toggle").focus();
+    }
   });
   document.addEventListener("click", (event) => {
     if (!event.target.closest(".nav-wrap")) setMenu(false);
   });
   const dialog = $("image-dialog");
+  const zoom = $("image-zoom");
+  const imageWrap = $("dialog-image-wrap");
+  zoom.addEventListener("click", () => {
+    const enlarged = !imageWrap.classList.contains("actual-size");
+    imageWrap.classList.toggle("actual-size", enlarged);
+    zoom.setAttribute("aria-pressed", String(enlarged));
+    zoom.textContent = enlarged ? "Fit image" : "Actual size";
+  });
   let dialogRequest = 0;
   $("zoom-screen").addEventListener("click", async () => {
     const ticket = ++dialogRequest;
+    imageWrap.classList.remove("actual-size");
+    imageWrap.scrollLeft = imageWrap.scrollTop = 0;
+    zoom.disabled = true;
+    zoom.setAttribute("aria-pressed", "false");
+    zoom.textContent = "Actual size";
     $("dialog-title").textContent = screens[currentScreen][0] + " · " + theme;
     $("dialog-image").alt =
       screens[currentScreen][0] +
@@ -220,6 +237,7 @@
       if (!dialog.open || ticket !== dialogRequest) return;
       $("dialog-image").src = full.src;
       $("dialog-image").hidden = false;
+      zoom.disabled = false;
       $("dialog-status").hidden = true;
     } catch {
       if (dialog.open && ticket === dialogRequest)

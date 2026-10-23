@@ -1,5 +1,9 @@
 # Recording startup blocked by a pending preview
 
+This is a historical diagnosis of 2.11.52. Current builds use **Apply changes**
+for pending camera routes; quitting/reopening is the workaround for the older
+build described here. See [current Apply behavior](apply-camera-changes.md).
+
 ## Owner evidence, 2026-10-19
 
 The supplied drive export identifies the installed app as **2.11.52-alpha.1**.

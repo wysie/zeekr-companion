@@ -184,7 +184,7 @@ exterior IDs stay unassigned rather than inheriting 009 assumptions on a 7X.
 
 Each head passed its own JVM suite, debug/test/release assembly, release lint and
 relevant native tests before submission. The combined
-[review branch](https://github.com/wysie/zeekr-shortcut-car/tree/review/upstream-pr-round2-20261018)
+[review branch](https://github.com/wysie/zeekr-companion/tree/review/upstream-pr-round2-20261018)
 at `42ac97d766756dba7f1613f8cc5a1eb3a33ed1fc` passed 1,180 JVM tests and 29
 relevant API 32 native regressions in one process, plus all builds and release lint.
 The unchanged template instrumentation test has an incorrect historical application-ID

@@ -4,7 +4,7 @@
 
 为极氪车机提供相机录制、实时相机窗口和车辆工具。
 
-[应用展示网站](https://wysie.github.io/zeekr-shortcut-car/)由本仓库通过 GitHub Pages 部署，
+[应用展示网站](https://wysie.github.io/zeekr-companion/)由本仓库通过 GitHub Pages 部署，
 源码位于 [`website/`](website/README.md)。
 
 [应用截图（浅色与深色主题）](README.md#screenshots)：实际 Android 应用界面，已去除系统栏；
@@ -21,7 +21,7 @@ Zeekr Companion 是 wysie 维护的个人定制分支，基于 [dts88 的极氪�
 **Zeekr Companion** 名称与双 C 标志；[矢量图与配色](docs/branding/README.md) 随源码提供。
 新的 APK 文件名为 `ZeekrCompanion-<版本号>.apk`。Android 应用 ID 仍为
 `io.github.dts88.zeekrshortcut`，签名、设置和 `ZeekrShortcutApp` 存储目录保持兼容。
-仓库与更新来源仍为 [wysie/zeekr-shortcut-car](https://github.com/wysie/zeekr-shortcut-car)。
+仓库与更新来源现为 [wysie/zeekr-companion](https://github.com/wysie/zeekr-companion)。
 新录像和普通照片中的应用名水印使用 Zeekr Companion，旧文件中的文字不会改变。
 
 特别感谢 [FerixzTanz（Felix Tan）](https://github.com/FerixzTanz)：侧视功能基于他的
@@ -35,11 +35,11 @@ Zeekr Companion 是 wysie 维护的个人定制分支，基于 [dts88 的极氪�
 本分支新增转向侧视窗、超级后视镜临时替换、可选摄像头标签与重置功能，并移植了
 [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER) 的手机分享修复与诊断、
 只读车辆信号扫描、转向箭头、急刹录像锁定、自选最长 10 分钟片段导出、上下车自动录制，
-以及夜间配色和悬浮录制按钮样式。急刹锁定和上下车自动录制默认开启，可在存储和录像设置中关闭；
+以及夜间配色和悬浮录制按钮样式。急刹锁定默认开启。在“录像与照片”中，“上车时开始录制”默认关闭，“离车时停止录制”默认开启；
 信号扫描需要手动开启开发者选项。新增功能仍需在 009 上验证；扫描并不等于障碍物检测或原厂 360 图像接口。
 具体设置与来源见 [英文说明](README.md) 和 [移植记录](docs/ferix-feature-ports.md)。
 
-新增仅停车校准时手动开启的 **DIY 360 试验视图**：车辆接口连接且明确报告P档时，在主相机画面点击 **360°** 显示俯视地面拼接，长按按钮校准或全部重置。默认安装参数是估计值，非009实测标定；并非原厂360图像接口。详见 [设置与限制](docs/diy-360-view.md)。
+新增手动开启的 **DIY 360 试验视图**：车辆接口连接时，可在主画面打开 **360° 视图**。应用没有仅限 P 档或车速门槛；倒车和原厂相机优先级仍然生效。请停车后再调整校准。自动 009 图像拟合和手动校准均为试验功能，不能当作原厂标定或距离测量；并非原厂 360 图像接口。详见 [设置与限制](docs/diy-360-view.md)。
 
 相机安全审查后，超级后视镜、侧视弹窗和HUD在纹理时间戳500毫秒未推进时遮住旧画面（每100毫秒检查）；新增的防护仍需实车验证。详见 [审查记录](docs/camera-safety-review.md)。
 
@@ -103,9 +103,9 @@ Zeekr Companion 是 wysie 维护的个人定制分支，基于 [dts88 的极氪�
 **开始之前**：你需要事先知道怎么通过 App Lab 把应用侧载到车机上，本页不介绍这一步。
 
 - **原项目版本：** [dts88 的发布页](https://github.com/dts88/zeekr-shortcut-car/releases)。
-- **Zeekr Companion：** [Zeekr Companion 发布页](https://github.com/wysie/zeekr-shortcut-car/releases)。
+- **Zeekr Companion：** [Zeekr Companion 发布页](https://github.com/wysie/zeekr-companion/releases)。
   新的完整 APK 从 `main` 构建，发布标签指向对应的源代码提交。
-  在「设置 → 检查更新 → 更新通道」选择 Alpha，即可接收 Alpha、Beta 和正式版；没有此选项的旧版仍需手动安装 Alpha。
+  在「设置 → 更新 → 更新通道」选择 Alpha，即可接收 Alpha、Beta 和正式版；没有此选项的旧版仍需手动安装 Alpha。
 
 在发布页下载 `ZeekrCompanion-<版本号>.apk`，通过 App Lab 侧载安装。安装完成后请点左上角「返回」，
 不要点「打开」，否则车机安装器会卡住，之后的安装或更新会失败。
@@ -113,8 +113,8 @@ Zeekr Companion 是 wysie 维护的个人定制分支，基于 [dts88 的极氪�
 自行构建需要 JDK 17+ 与 Android SDK（compileSdk 36）：
 
 ```bash
-git clone --branch main https://github.com/wysie/zeekr-shortcut-car.git
-cd zeekr-shortcut-car
+git clone --branch main https://github.com/wysie/zeekr-companion.git
+cd zeekr-companion
 bash ./gradlew assembleRelease
 ```
 
@@ -133,11 +133,11 @@ bash ./gradlew assembleRelease
 
 ## 已知限制
 
-- **只针对极氪 7X 设计**。只有被认出是合成流的那一路才拆分；车机没有提供合成流时，一路都不拆。
+- **本分支主要在车主的极氪 009 上开发和测试**；上游最初面向 7X。相机访问取决于车型和固件，其他组合的兼容性尚未确认。只有识别出的合成流才拆分。
 - **原厂功能优先**：原厂 360° 环视、倒车影像、泊车相机可能随时收回相机资源。
-- **开机自启、启动自动录制默认都关着**。熄屏后只录制环视，亮屏后前后座舱恢复录制；未开启哨兵模式时，车机休眠（下车几分钟后）就停止录制。
+- **开机自启、启动自动录制、上车自动录制默认关闭**。熄屏后是否继续录制取决于录制设置和车辆状态；只有录制计划中的环视可继续，座舱相机在 30 秒后释放。车机休眠时停止录制，除非配置的保活策略能够维持运行；不能保证整夜录制。
 - **环视画面的裁剪暂时停用**。
-- **实车验证仍在进行**：自动化测试只覆盖纯逻辑部分，首次使用请在静止车辆上测试。
+- **实车验证仍在进行**：JVM 和原生 Android 模拟器测试覆盖逻辑及部分渲染、生命周期行为，不代表实车兼容性、帧率或 USB 性能，首次使用请在静止车辆上测试。
 
 ---
 
@@ -172,4 +172,4 @@ bash ./gradlew assembleRelease
 
 ### Zeekr Companion 更新通道
 
-设置 → 检查更新 → 更新通道可选择：正式版（仅正式版）、Beta（Beta 和正式版）或 Alpha（Alpha、Beta 和正式版）。新安装默认正式版；升级保留旧版 Beta 开关及既有安装的默认开启行为。Alpha 需要主动选择，不会根据已安装版本自动启用。只在点击检查更新时查询，并且只提供较新的版本。旧版应用尚无此选项时，Alpha 仍需手动安装。
+设置 → 更新 → 更新通道可选择：正式版（仅正式版）、Beta（Beta 和正式版）或 Alpha（Alpha、Beta 和正式版）。新安装默认正式版；升级保留旧版 Beta 开关及既有安装的默认开启行为。Alpha 需要主动选择，不会根据已安装版本自动启用。只在点击检查更新时查询，并且只提供较新的版本。旧版应用尚无此选项时，Alpha 仍需手动安装。

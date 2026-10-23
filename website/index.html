@@ -24,17 +24,17 @@
     />
     <meta
       property="og:url"
-      content="https://wysie.github.io/zeekr-shortcut-car/"
+      content="https://wysie.github.io/zeekr-companion/"
     />
     <meta
       property="og:image"
-      content="https://wysie.github.io/zeekr-shortcut-car/assets/screenshots/main-light-1600.webp"
+      content="https://wysie.github.io/zeekr-companion/assets/screenshots/main-light-1600.webp"
     />
     <meta name="twitter:card" content="summary_large_image" />
     <title>Zeekr Companion | Your ZEEKR. Your way.</title>
     <link
       rel="canonical"
-      href="https://wysie.github.io/zeekr-shortcut-car/"
+      href="https://wysie.github.io/zeekr-companion/"
     />
     <link rel="icon" type="image/svg+xml" href="assets/companion-icon.svg" />
     <link
@@ -72,7 +72,7 @@
           <a href="#explore">Explore</a><a href="#features">Features</a
           ><a href="#install">Get the app</a>
           <a
-            href="https://github.com/wysie/zeekr-shortcut-car"
+            href="https://github.com/wysie/zeekr-companion"
             target="_blank"
             rel="noopener noreferrer"
             >GitHub ↗</a
@@ -364,7 +364,7 @@
           <p>Choose what to record, what to see and how to reach it.</p>
           <a
             class="text-link"
-            href="https://github.com/wysie/zeekr-shortcut-car#what-it-does"
+            href="https://github.com/wysie/zeekr-companion#what-it-does"
             target="_blank"
             rel="noopener noreferrer"
             >Read the full feature guide ↗</a
@@ -375,7 +375,7 @@
             <h3>Record the views you choose.</h3>
             <p>
               Select recording sources and quality, capture photos, and save to
-              USB or internal storage.
+              USB. Internal storage and relay write require Developer mode.
             </p>
             <a href="#explore" data-explore="recording">Recording & photos ↗</a>
           </article>
@@ -426,7 +426,7 @@
             </p>
             <a
               class="text-link"
-              href="https://github.com/wysie/zeekr-shortcut-car/blob/main/docs/009-image-fit.md"
+              href="https://github.com/wysie/zeekr-companion/blob/main/docs/009-image-fit.md"
               target="_blank"
               rel="noopener noreferrer"
               >Read about the 009 image fit ↗</a
@@ -488,7 +488,7 @@
             </div>
             <a
               class="button primary"
-              href="https://github.com/wysie/zeekr-shortcut-car/releases/tag/v3.0.0-alpha.1"
+              href="https://github.com/wysie/zeekr-companion/releases/tag/v3.0.0-alpha.1"
               target="_blank"
               rel="noopener noreferrer"
               >Download on GitHub <span aria-hidden="true">↗</span></a
@@ -530,6 +530,18 @@
                 </p>
               </div>
             </li>
+            <li>
+              <span class="step-index" aria-hidden="true">4</span>
+              <div>
+                <h3>Make your first recording.</h3>
+                <p>
+                  Select a usable USB destination under Storage, check Recording
+                  &amp; photos, and apply any pending camera changes. Start recording,
+                  stop it, then open Videos to confirm the clip plays.
+                  Automatic recording starts off.
+                </p>
+              </div>
+            </li>
           </ol>
         </div>
         <p class="install-notice">
@@ -537,7 +549,7 @@
           does not replace the factory dash cam, reversing camera or blind-spot
           monitor. Set it up while parked.
           <a
-            href="https://github.com/wysie/zeekr-shortcut-car#install"
+            href="https://github.com/wysie/zeekr-companion#install"
             target="_blank"
             rel="noopener noreferrer"
             >Read the installation notes ↗</a
@@ -554,7 +566,7 @@
           <p>The project is open. So are its limitations.</p>
           <a
             class="text-link"
-            href="https://github.com/wysie/zeekr-shortcut-car/issues"
+            href="https://github.com/wysie/zeekr-companion/issues"
             target="_blank"
             rel="noopener noreferrer"
             >Questions or feedback? GitHub issues ↗</a
@@ -588,8 +600,9 @@
               >
             </summary>
             <p>
-              The side camera responds to turn signals, subject to the
-              configured speed threshold and factory camera priority. It does
+              The side camera responds to turn signals. The main-screen view
+              uses your configured speed threshold; HUD output has no app speed
+              threshold. Camera access still yields to factory ownership. It does
               not detect obstacles or replace the factory blind-spot warning
               system.
             </p>
@@ -636,7 +649,7 @@
         </div>
         <div class="credits">
           <p>
-            Maintained by
+            Created by
             <a
               href="https://github.com/wysie"
               target="_blank"
@@ -648,34 +661,21 @@
               target="_blank"
               rel="noopener noreferrer"
               >Zeekr Shortcut by dts88</a
-            >, built on
-            <a
-              href="https://github.com/suyunkai/EVCam"
-              target="_blank"
-              rel="noopener noreferrer"
-              >EVCam</a
-            >
-            with contributions from
-            <a
-              href="https://github.com/FerixzTanz/CAMCORDER"
-              target="_blank"
-              rel="noopener noreferrer"
-              >FerixzTanz / CAMCORDER</a
             >.
           </p>
           <div class="footer-links">
             <a
-              href="https://github.com/wysie/zeekr-shortcut-car"
+              href="https://github.com/wysie/zeekr-companion"
               target="_blank"
               rel="noopener noreferrer"
               >Source code ↗</a
             ><a
-              href="https://github.com/wysie/zeekr-shortcut-car/blob/main/NOTICE.md"
+              href="https://github.com/wysie/zeekr-companion/blob/main/NOTICE.md"
               target="_blank"
               rel="noopener noreferrer"
               >Credits & licenses ↗</a
             ><a
-              href="https://github.com/wysie/zeekr-shortcut-car/blob/main/docs/screenshots/README.md"
+              href="https://github.com/wysie/zeekr-companion/blob/main/docs/screenshots/README.md"
               target="_blank"
               rel="noopener noreferrer"
               >Screenshot notes ↗</a
@@ -691,11 +691,15 @@
     >
       <div class="dialog-toolbar">
         <h2 id="dialog-title">Main screen</h2>
+        <button class="quiet-button" id="image-zoom" aria-pressed="false" disabled>
+          Actual size
+        </button>
         <button class="quiet-button" id="close-dialog" autofocus>
           Close <span aria-hidden="true">×</span>
         </button>
       </div>
-      <div class="dialog-image-wrap">
+      <div class="dialog-image-wrap" id="dialog-image-wrap" tabindex="0"
+        role="region" aria-label="Screenshot. Choose Actual size, then scroll to inspect details.">
         <img id="dialog-image" alt="" width="2560" height="1432" />
       </div>
       <p id="dialog-status" role="status" hidden></p>

@@ -4,13 +4,13 @@
 
 Camera recording, live camera windows and vehicle utilities for ZEEKR head units.
 
-[**Explore the app website**](https://wysie.github.io/zeekr-shortcut-car/) · [Screenshots](#screenshots) · [Downloads](https://github.com/wysie/zeekr-shortcut-car/releases)
+[**Explore the app website**](https://wysie.github.io/zeekr-companion/) · [Screenshots](#screenshots) · [Downloads](https://github.com/wysie/zeekr-companion/releases)
 
 The public showcase is hosted on GitHub Pages from this repository's
 [`website/` source](website/README.md), with automatic deployment when its source
 or screenshot assets change on `main`.
 
-**Zeekr Companion** is maintained by [wysie](https://github.com/wysie/zeekr-shortcut-car)
+**Zeekr Companion** is maintained by [wysie](https://github.com/wysie/zeekr-companion)
 and is a fork of [Zeekr Shortcut by dts88](https://github.com/dts88/zeekr-shortcut-car).
 I primarily use and test it on my ZEEKR 009. Credit for the original Zeekr application goes
 to dts88 and its contributors; the underlying EVCam project is by
@@ -44,9 +44,11 @@ with matching Android themed and notification icons. [Vector artwork and colours
 Downloads use `ZeekrCompanion-<version>.apk`. The Android package ID remains
 `io.github.dts88.zeekrshortcut`, with the existing signing certificate and preferences
 for in-place updates. New public files use `ZeekrCompanion`; older
-`ZeekrShortcutApp` and EVCam folders remain readable without moving their files. The repository and update
-source remain [wysie/zeekr-shortcut-car](https://github.com/wysie/zeekr-shortcut-car);
-existing download links remain valid.
+`ZeekrShortcutApp` and EVCam folders remain readable without moving their files. The repository and update source are now
+[wysie/zeekr-companion](https://github.com/wysie/zeekr-companion). GitHub redirects
+the old repository and release links; the website is now at
+[wysie.github.io/zeekr-companion/](https://wysie.github.io/zeekr-companion/).
+Old GitHub Pages URLs do not automatically redirect.
 
 The interface supports **English, Bahasa Melayu and Simplified Chinese**, including
 About & credits, the five Super mirror help pages and the installer reminder.
@@ -67,15 +69,76 @@ The app-name watermark on new recordings and normal photos uses **Zeekr Companio
 plus the version; existing footage keeps its original burned-in text. The logo itself
 is not added to the footage. Raw developer exports retain their existing behavior.
 
-Current test download: [Zeekr Companion 3.0.0-alpha.1](https://github.com/wysie/zeekr-shortcut-car/releases/tag/v3.0.0-alpha.1).
+Current test download: [Zeekr Companion 3.0.0-alpha.1](https://github.com/wysie/zeekr-companion/releases/tag/v3.0.0-alpha.1).
 
 Companion now uses its own **3.0** version series. It includes the camera, recording and GPU corrections through 2.11.64-alpha.1 and installs over the existing app. Existing settings remain in place, and matching-format Companion 2.11 backups remain importable.
+
+## Start here
+
+1. Download the APK from [Releases](https://github.com/wysie/zeekr-companion/releases)
+   and install through App Lab. When installation finishes, press **Back**, then
+   launch Companion separately.
+2. While parked, check **Settings → Recording & photos** and select a usable USB
+   destination in **Storage**. Save your choices and tap **Apply changes** if shown.
+3. Start recording manually, stop it, and open **Videos** to confirm the clip plays.
+   Automatic startup and driver-arrival recording are separate opt-in choices.
+4. For alpha updates, choose **Settings → Updates → Update channel → Alpha**.
+   Fresh installs default to Stable, even when the installed APK is an alpha.
+
+[Features](#what-it-does) · [Install and update details](#install) · [Limitations](#limitations) ·
+[Changelog](CHANGELOG.md) · [Development history](docs/development-notes.md)
+
+## Install
+
+**Before you start:** you need to know how to sideload an app onto the head unit through App Lab.
+This page does not cover that.
+
+- **Original upstream builds:** [dts88's releases](https://github.com/dts88/zeekr-shortcut-car/releases).
+- **Zeekr Companion:** download the desired APK from
+  [Zeekr Companion releases](https://github.com/wysie/zeekr-companion/releases).
+  New combined APKs are built from `main`; each release tag identifies its exact source commit.
+  In builds with **Update channel**, choose Stable, Beta or Alpha under Settings → Updates → Update channel. Stable includes stable releases only; Beta includes beta and stable; Alpha includes all three. Older builds with the beta switch still need manual alpha installation.
+
+The fork retains the original application ID and public test signing key so its
+APK can update an existing installation signed with that key. In-app update checks
+query [wysie/zeekr-companion releases](https://github.com/wysie/zeekr-companion/releases).
+The updater requires agreement between the tag and GitHub’s pre-release flag: stable tags have the flag off; alpha/beta tags have it on and must be allowed by the selected channel. Unknown and mismatched channels stay excluded. It offers the newest eligible version, never a downgrade. Fresh installs start on Stable; upgrades preserve the old beta switch, including its default-on behavior for existing installs. Alpha requires an explicit selection and is never inferred from the installed version. The setting row shows the current channel; its single-choice dialog explains the included releases. Checks still run only when you tap Check for updates. Legacy `fork-` / `personal-build-` tags and installed `-personal-alpha` versions remain comparable. The signing **private key** is public, so someone else can create
+Android-accepted updates with the same identity. It does not establish that an APK
+came from this maintainer. A private-key migration needs a separate installation/update
+plan; the existing identity is retained for compatibility. The updater now requires
+GitHub asset size and SHA-256 to match and uses HTTPS through redirects. Missing
+or JSON-null digest metadata is refused before download; the verification error
+covers both size and checksum failures. Old assets without a digest are refused
+by the in-app downloader; manual alpha installs remain unchanged. Maintainer
+follow-ups from dts88 PRs #58/#59 remove unused microphone translations and tidy
+updater validation; [review and integration decisions](docs/upstream-contribution-followups-20261019.md)
+record what was adopted from our merged contributions.
+
+Download the `ZeekrCompanion-<version>.apk` asset from the release page and sideload it through App Lab.
+When the installer finishes, tap **Back** at the top left, not **Open**. Otherwise the head unit's
+installer gets stuck and later installs or updates fail.
+
+Building it yourself needs JDK 17+ and the Android SDK (compileSdk 36):
+
+```bash
+git clone --branch main https://github.com/wysie/zeekr-companion.git
+cd zeekr-companion
+bash ./gradlew assembleRelease
+```
+
+The repo ships a public AOSP test signing key (password `android`). Override it with your own
+through `ZEEKR_KEYSTORE`, `ZEEKR_KEYSTORE_PASSWORD`, `ZEEKR_KEY_ALIAS` and `ZEEKR_KEY_PASSWORD`.
+
+
+---
 
 ## Screenshots
 
 Actual **3.0.0-alpha.1** app screens in light and dark themes, captured on an
 Android emulator without the Android system bars. Camera panes use **simulated,
-AI-generated scenes**, not vehicle footage. Settings shown are examples.
+AI-generated scenes**, not vehicle footage. The left/right surround examples look
+outward and down beside the car, rather than backward like a mirror. Settings
+shown are examples.
 
 | Main screen · Light | Main screen · Dark |
 | --- | --- |
@@ -105,189 +168,9 @@ Click any image to view it at full size.
 
 [Capture notes, simulated-image provenance and regeneration instructions](docs/screenshots/README.md).
 
-## Development notes
-
-Alpha 61 includes the completed translations and audit corrections. It suspends GPU presentation for hidden/docked/retained
-camera views while continuing to drain their inputs, removes recording's normal
-codec-output wait, and timestamps the frame actually acquired. Transparent standby
-side windows still warm up normally. Camera settings load vendor capabilities off
-the UI thread, and quitting during Apply clears its transaction without resuming
-recording. Confirmation recreation/cancellation and nested category navigation
-also retain usable controls. Open recordings are protected from cleanup/deletion independently of
-filename ordering and the footage-lock switch; event/manual locks are rechecked
-at deletion. Settings import also rejects wrong types for known unset keys.
-No new switch is required. These changes do not establish real-car smoothness or
-storage durability; see the [codebase audit and validation](docs/codebase-audit-20261021.md).
-
-Alpha 62 storage-stall fixes separate recorder file ownership from USB directory
-scans, persistent lock metadata and slow deletion. Cleanup inventories files outside
-the lock-edit guard, then rechecks current locks and active writers before unlinking;
-failed or newly protected candidates trigger bounded replanning. A deletion reserves
-only its own path, so unrelated recorder close/open operations remain responsive.
-The encoded write queue can now absorb up to **six seconds** of media, subject to
-the existing **24 MiB queue** and **64 MiB total retained-data cap per recorder**.
-Periodic and final flushes, the shared stop deadline and your saved recording quality
-are retained. The delayed event-lock pass allows for the longer write backlog.
-Sustained slow/disconnected storage can still cause frame dropping or bounded stop/
-rescue; these fixes cannot make a USB device flush faster. See the
-[regression evidence and remaining limits](docs/storage-contention-20261022.md).
-
-In alpha 60, the experimental 009 fit combines the earlier garage reference with matched
-flat-road features from the owner’s 21 October raw/factory captures. Held-out
-image-reference alignment improves for all four cameras, including the front;
-CPU/GPU share the correction. Existing Automatic/009 selection uses the revised
-fit without a reset; saved Manual tuning, sources and framing stay intact.
-Residual joins/raised-object distortion remain, and on-car confirmation is pending.
-See the [alignment evidence and limits](docs/009-image-fit.md#roadground-alignment-refinement--21-october).
-For in-app delivery, select **Updates → Update channel → Alpha**; Beta and Stable
-channels deliberately exclude this release. It retains the application ID and
-signing certificate for an in-place update. New behavior still needs on-car testing.
-
-The main screen gives the camera stage the full available width, with a small
-Companion logo/name, **Preview** selector and direct **360° view** action above it.
-Camera status, elapsed recording statistics (when enabled) and storage information
-sit outside the camera picture. Camera status is a compact text action with a
-48dp touch target and native feedback; live recording counts remain visible. The bottom dock is a flat toolbar with recording, Take photo,
-Gallery, Windows and contextual **Straighten** actions. A single divider
-separates it from the picture; individual controls have transparent backgrounds
-and native press/focus feedback. Recording keeps its red indicator and progress;
-Straighten uses orange text plus a checkmark when enabled; long-press explains that
-it affects preview/playback and leaves recorded files unchanged. These toolbar
-refinements ship in alpha 52. Dock actions keep
-normal-size wrapped labels; the saved driver-side preference puts recording on
-that side. The current toolbar refinement gives the visible utility actions equal widths across the remaining space beside the driver-side recording control, with consistent 8dp gaps and a thin separator. Hiding Straighten redistributes that space; narrower hosts retain readable labels and horizontal scrolling. Recording stays focused on its action and clip detail. Long-press recording opens **Recording
-details**, including live screen-off behavior. Settings and Minimise stay in the
-header. Minimise uses a standard horizontal minus icon: tap hides the app to the
-background; long-press quits. Quit app also remains in the menu.
-
-**Gallery** now opens the Videos tab directly; switch to Photos in the same
-gallery. There is no intermediate media chooser. Take photo and Start/Stop
-recording remain direct actions. In expanded preview, Restore brings this toolbar
-back. Main and hosted settings now use the system text size without the previous
-forced 1.2× minimum; larger accessibility text still scales normally. Settings use
-64dp minimum rows with 10dp vertical padding, retaining 16sp sidebar labels and
-growing rows for long text. Smaller secondary header/footer text leaves more room
-for cameras and settings. Waiting messages wrap and centre within each camera
-pane without cutting off their beginning. Preview states now use brief labels such
-as Camera busy or Waiting for preview, with elapsed time and a Camera status hint
-after a longer wait. Full troubleshooting explanations remain in Camera status;
-preview waiting still does not establish whether recording is working. These
-refinements ship in alpha 53.
-
-**Preview** opens a staged side panel: quick presets for **Selected recording sources**,
-**Surround · four views**, **Front + Rear** and **Surround + Front + Rear**, in that order.
-The four presets use full-width radio rows; **Other sources** offers one road source
-or cabin. These use the same saved source choice as Settings;
-preview changes never edit recording groups, source mappings or quality. Cancel,
-Back and outside dismissal do not save. A slim **Camera changes pending · Apply changes**
-banner appears above the main preview and beneath the Settings title. The selector
-continues to name the applied preview; the banner names the saved next choice.
-Equivalent source sets and source arrangements update without a pipeline rebuild.
-
-**Apply changes** rebuilds cameras inside the running app. During recording, confirm
-“Finish this clip, restart cameras and resume recording?” The current clip is saved,
-the scheduler closes the old cameras, and the pipeline and preview views are rebuilt.
-Android restores the open Settings category/editor. Recording resumes only for an
-existing recording/request, keeping its manual/automatic origin; Stop during Apply
-cancels that resume. Idle Apply stays idle. Factory priority still governs camera
-availability. Failed cleanup/setup leaves a **Retry** action and recording stopped;
-it does not claim that an unavailable vehicle feed is working.
-
-Apply covers vehicle/camera mappings, recording groups, preview source sets, native
-preview/JPEG sizes, JPEG output enablement and GPU preview/360°/blind-side/mirror
-routing. Saved changes made during Apply remain pending for the next Apply. Theme
-changes and UI recreation keep using the applied source set. Encoding FPS, bitrate,
-codec and recording size apply to the next recording; visual geometry, theme and
-arrangement controls keep their existing live behavior. Pending preview-only edits
-do not block recording with the current recording sources. Structural recording
-edits must be applied before starting with the new selection. Diagnostics distinguish
-these states. See [Apply verification and limits](docs/apply-camera-changes.md).
-All existing source choices are preserved on upgrade. **Source layout** arranges
-separate source panes. With just Surround (or another single source), the panel
-explains this and hides inactive arrangement choices; it does not rearrange the
-four views inside Surround. The saved arrangement is retained for multi-source use.
-These further clarity/toolbar changes ship in alpha 53.
-
-Settings now use the owner-approved factory-inspired styling: regular-weight labels,
-flat near-white/dark rows, small corners, neutral sidebar selection and orange outlines
-for selected segments. All sidebar entries, including About and Quit, share one
-16sp style and respect system text scaling. **Blind spot camera** has **Behavior ·
-Picture · Window · HUD** tabs; changing tabs never resets settings. Picture has a
-Left/Right live settings preview with Expand/Restore and Hide/Show controls.
-It follows the Blind-side camera rendering choice under **System → GPU image processing**.
-GPU uses a second display surface from the existing raw GL input, with the same per-pixel
-side-camera shader and no bitmap readback or extra camera output. Compatibility samples
-the existing main surround texture at up to five samples per second, retaining native
-detail for known 1280×5140, 5120×1280 and 3840×2160 feeds before correction, including
-when expanded. One reused compatibility sample is bounded to 32 MiB / 8192 pixels per
-edge. The live popup/HUD frame-rate policy and camera source mappings are unchanged.
-Choose a main preview that contains Surround and tap Apply changes if needed. The preview
-pauses for factory camera use, screen-off, lost vehicle connection or stale frames;
-in Custom mode with GPU surround correction but compatibility side rendering, enable
-Blind-side camera GPU rendering or disable Surround preview correction and apply to
-provide the raw source needed for tuning. Native camera surfaces stay attached behind opaque
-settings; hidden main fisheye/360° rendering is paused. Tuning is available with the
-automatic popup off and applies on slider release; recordings remain unchanged.
-Long explanations remain under **About picture/behavior settings**. See
-[factory-style UI behavior and validation](docs/factory-style-ui.md).
-
-
-**Interface → Driver side** keeps recording nearest the selected Left or Right side,
-retaining the saved preference. Larger system text is respected above the existing
-1.2× main-screen minimum; settings options expose their checked state and use
-higher-contrast selection colours. **Windows** names the next action (Open, Close,
-or Turn off) alongside its current state. Playback Home returns directly to live
-cameras, while Android Back returns to the gallery. An empty video library shows
-storage guidance and disables media-dependent actions; Refresh and navigation stay
-available. Gallery accessibility labels include video date/time, duration, lock and
-selection state. These refinements ship in alpha 52 and need an on-car check.
-
-The independent **Source layout** preference defaults to **Automatic** (the current
-large-surround-plus-smaller-sources arrangement). **Side by side** gives the surround
-and other-source groups equal width; **Stacked** puts those groups above/below one
-another and arranges the other sources alongside each other. With no surround,
-Side by side places the road/cabin panes horizontally and Stacked places them
-vertically; Automatic retains their original vertical arrangement. These are source-pane layouts;
-Surround keeps its existing four-view grid and saved per-lane framing. With one
-source there is nothing to split. Layout changes apply on Save without removing
-camera views, changing sources or restarting recording. Tapping a view still enlarges
-it temporarily.
-
-**Gallery** offers Videos and Photos. **Windows** shows independent Super mirror and
-360° window controls with Open/Closed/Paused state. **360° view** changes the main
-picture; the window action opens a separate manual session. **Straighten preview**
-is shown for the applied surround preview outside 360° mode; it does not straighten
-the recording. Expand preview hides header/dock while retaining camera views and
-accessible recording/status/restore controls. Back restores the controls. Expanded
-state and source layout survive Activity recreation; camera source, resolution,
-framing and recording settings are not reset by the redesign.
-
-The release linked above includes this main-screen redesign and the 360° CPU
-renderer optimization. UI verification uses a native Android emulator;
-real 009/7X feed presentation and factory-app coexistence still need on-car testing.
-See the [main-screen verification notes](docs/main-screen-validation.md) for coverage and limits.
-
-The combined fork includes upstream main through **76138b8d**, including the merged
-[camera-label PR #17](https://github.com/dts88/zeekr-shortcut-car/pull/17), label wording/master-switch refinements and the 2.11.7-beta metadata. The camera framework includes cabin
-camera recovery, serialized camera actions, scheduler-managed photos/exit and
-camera step diagnostics. Planned cabin-camera closure now briefly closes the
-surround camera first, then reopens it if still requested. Upstream reports about
-0.5–1 second of surround interruption, a new recording segment and a brief mirror
-interruption; timing on the 009 remains unverified. Diagnostics now include cabin-close
-coupling, persisted camera history and capture-failure/buffer-loss details. `upstream-main` tracks that unmodified source; personal
-release numbers remain independent of upstream.
-
-**Alpha 62 camera lifecycle fixes:** camera surfaces remain owned until device
-closure completes. If a recording session rejects Super mirror's optional output,
-it stays withdrawn until you reopen/resume it, undock it, turn the screen on or
-replace the camera pipeline; the watchdog no longer repeatedly adds it back.
-Recovery following a consumer change is limited to cameras that consumer uses.
-Blind popup, HUD and 360° output owners also receive configuration-failure
-notifications. Saved camera/preview choices, GPU processing, recording quality and
-normal window gestures remain unchanged. These are software regressions tested
-in an emulator; on-car contention and timing still need checking.
 
 ## Additions in this fork
+
 
 - **Settings backup (2.11.55-alpha.1):** **Settings → System → Settings backup** exports and restores Companion preferences, profiles, source/vehicle choices, GPU options, 360° calibration, illustration colours and window settings. Files are saved beside diagnostics and accept matching-format, same-major Companion backups; Companion 3 also accepts our 2.11 backups from alpha 55 onward. Import confirms, stops recording and exits; reopening applies the backup before services start. Durable rollback protects restores across the five preference stores. Developer access, permissions, detected hardware and current recording intent stay local. Backups contain saved text such as plate stamps, but no footage or external artwork files. Diagnostics include the same full settings snapshot. See [restore behavior and verification](docs/settings-backup.md).
 - **Manual recording lock (2.11.55-alpha.1):** Assign **Lock current recording** to Tap, Double tap or Long press under Floating button. With **Storage → Lock footage** enabled and recording active, it protects every source clip covering ten seconds before and after the press, including a delayed second pass for clip boundaries. Automatic flash/braking switches are not required; manual locks are outside the braking-only automatic budget. Existing gesture assignments stay unchanged.
@@ -392,7 +275,7 @@ provide obstacle detection or the factory stitched camera feed.
 The [blind-spot investigation](docs/blind-spot-side-view.md) records an unidentified
 ADAS signal changing near the owner's possible right-side warning on October 18;
 its side and warning/clear values remain unverified, so it does not trigger a camera.
-See [factory 360 research and the collection tool](https://github.com/wysie/zeekr-shortcut-car/tree/research/factory-360-view)
+See [factory 360 research and the collection tool](https://github.com/wysie/zeekr-companion/tree/research/factory-360-view)
 for the current investigation and the device information needed next.
 
 This fork is mainly for personal use. Automated tests and release builds are
@@ -701,49 +584,6 @@ to turn on the phone's hotspot and connect the car to it.
 
 ---
 
-## Install
-
-**Before you start:** you need to know how to sideload an app onto the head unit through App Lab.
-This page does not cover that.
-
-- **Original upstream builds:** [dts88's releases](https://github.com/dts88/zeekr-shortcut-car/releases).
-- **Zeekr Companion:** download the desired APK from
-  [Zeekr Companion releases](https://github.com/wysie/zeekr-shortcut-car/releases).
-  New combined APKs are built from `main`; each release tag identifies its exact source commit.
-  In builds with **Update channel**, choose Stable, Beta or Alpha under Settings → Check for updates. Stable includes stable releases only; Beta includes beta and stable; Alpha includes all three. Older builds with the beta switch still need manual alpha installation.
-
-The fork retains the original application ID and public test signing key so its
-APK can update an existing installation signed with that key. In-app update checks
-query [wysie/zeekr-shortcut-car releases](https://github.com/wysie/zeekr-shortcut-car/releases).
-The updater requires agreement between the tag and GitHub’s pre-release flag: stable tags have the flag off; alpha/beta tags have it on and must be allowed by the selected channel. Unknown and mismatched channels stay excluded. It offers the newest eligible version, never a downgrade. Fresh installs start on Stable; upgrades preserve the old beta switch, including its default-on behavior for existing installs. Alpha requires an explicit selection and is never inferred from the installed version. The setting row shows the current channel; its single-choice dialog explains the included releases. Checks still run only when you tap Check for updates. Legacy `fork-` / `personal-build-` tags and installed `-personal-alpha` versions remain comparable. The signing **private key** is public, so someone else can create
-Android-accepted updates with the same identity. It does not establish that an APK
-came from this maintainer. A private-key migration needs a separate installation/update
-plan; the existing identity is retained for compatibility. The updater now requires
-GitHub asset size and SHA-256 to match and uses HTTPS through redirects. Missing
-or JSON-null digest metadata is refused before download; the verification error
-covers both size and checksum failures. Old assets without a digest are refused
-by the in-app downloader; manual alpha installs remain unchanged. Maintainer
-follow-ups from dts88 PRs #58/#59 remove unused microphone translations and tidy
-updater validation; [review and integration decisions](docs/upstream-contribution-followups-20261019.md)
-record what was adopted from our merged contributions.
-
-Download the `ZeekrCompanion-<version>.apk` asset from the release page and sideload it through App Lab.
-When the installer finishes, tap **Back** at the top left, not **Open**. Otherwise the head unit's
-installer gets stuck and later installs or updates fail.
-
-Building it yourself needs JDK 17+ and the Android SDK (compileSdk 36):
-
-```bash
-git clone --branch main https://github.com/wysie/zeekr-shortcut-car.git
-cd zeekr-shortcut-car
-bash ./gradlew assembleRelease
-```
-
-The repo ships a public AOSP test signing key (password `android`). Override it with your own
-through `ZEEKR_KEYSTORE`, `ZEEKR_KEYSTORE_PASSWORD`, `ZEEKR_KEY_ALIAS` and `ZEEKR_KEY_PASSWORD`.
-
----
-
 ## Recommended
 
 **[CarPiano](https://github.com/jlunnn/CarPiano)** plays sound through the car's exterior speaker at any speed — no longer limited to Park like the factory feature. It's still early in development, but very promising.
@@ -773,16 +613,20 @@ Diagnostics**.
 
 ## Limitations
 
-- Built for the ZEEKR 7X. Only the camera recognised as the composite stream is split; a head unit
-  that does not provide one gets nothing split.
+- This fork is primarily developed and tested on the owner’s ZEEKR 009; the upstream
+  project originally targeted the 7X. Camera access depends on model and firmware. Only
+  a recognised composite camera stream is split; other streams remain separate.
 - Factory features come first: the built-in 360° view, reversing camera and parking cameras can
   reclaim a camera at any time.
-- Starting on boot and recording on launch are off by default. With the screen off, only the
-  surround view keeps recording; the cabins resume when the screen turns on. Without Sentry Mode,
-  recording stops when the head unit sleeps, a few minutes after you leave the car.
+- Starting on boot, recording on launch and driver-arrival recording are off by default.
+  Screen-off continuation depends on its recording settings and vehicle state; only the
+  planned surround source can continue while dark. Cabin cameras are released after
+  30 seconds. Recording stops when the head unit sleeps unless the configured keep-awake
+  policy can retain it; screen-off recording is not a guarantee of overnight capture.
 - Cropping a surround view is switched off for now.
-- On-vehicle validation is ongoing. Automated tests cover the pure logic only; test in a stationary
-  vehicle first.
+- On-vehicle validation is ongoing. JVM and native Android emulator tests cover logic and
+  selected rendering/lifecycle behavior; they do not establish vehicle compatibility,
+  frame rate, HUD visibility or real USB performance. Test in a stationary vehicle first.
 
 ---
 

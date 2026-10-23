@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Rename the repository to wysie/zeekr-companion, update project/update links and move the public website to wysie.github.io/zeekr-companion/.
+
 ## [3.0.0-alpha.1] - 2026-10-23
 
 - Start the Zeekr Companion 3.0 alpha series with the camera, recording and GPU fixes from 2.11.64-alpha.1.

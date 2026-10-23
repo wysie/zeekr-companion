@@ -1,6 +1,6 @@
 # App screenshots
 
-Captured on **23 October 2026**, using the production UI at `8069737d`
+Captured on **24 October 2026**, using the production UI at `d3a2bfcd`
 (Zeekr Companion **3.0.0-alpha.1**). The screenshot fixture is Android-test code;
 it adds no demo mode, camera simulation or generated image assets to the app APK.
 
@@ -66,15 +66,43 @@ WebP images can be opened individually from the README.
 ## Generated camera source
 
 Source asset: [`source/camera-atlas.png`](source/camera-atlas.png).
-Created with the built-in **image_gen** tool in **generation mode**, with no
-reference images and an opaque background. The six-tile source is fictional.
+Originally created with the built-in **image_gen** tool in **generation mode**, with no
+reference images and an opaque background; edited with the same tool on 24 October
+to correct the two side-camera perspectives. The six-tile source is fictional.
 The fixture trims two pixels from each tile boundary, packs the bumper/side
 images into a four-lane strip and sends the two road images to their own panes.
 
-Exact generation prompt:
+The side tiles represent direct, unmirrored outward/downward-facing surround
+cameras, with the car body along the lower edge. They are not backward-looking
+mirror views. The app alone applies any configured view transforms.
+
+Original generation prompt (superseded side-camera direction):
 
 ```text
 Use case: photorealistic-natural. Asset type: synthetic vehicle camera test imagery for documentation, not a UI mockup. Create ONE clean atlas of SIX equal camera images arranged in an exact 3-column by 2-row grid with no gaps, no frames and absolutely NO TEXT, numbers, watermarks or interface graphics. Overall landscape image. All six views show the same fictional clean Singapore residential street and parking area in soft daylight: pale concrete pavement, lush green trees, modern low-rise white apartments, road/parking markings, no people and no readable signs or license plates. Camera at vehicle mirror/bumper height, realistic modest wide-angle car-camera optics with detail retained and natural muted colours. Tile positions: top-left forward road view down the street; top-middle rearward road view back along the street; top-right left-side blind camera looking slightly backward alongside a pale silver-green MPV with only a sliver of its body at the right edge; bottom-left right-side blind camera looking slightly backward with a sliver of silver-green vehicle body at the left edge; bottom-middle front bumper view with pavement immediately ahead and the quiet street beyond; bottom-right rear bumper view with pavement and a parking bay behind. The atlas is only camera source pixels that will be rendered into the actual Android app; do not draw a dashboard, screen, phone, vehicle interior, app, labels, layout controls or decorative borders.
+```
+
+## Side-camera correction, 24 October 2026
+
+The original prompt incorrectly requested rearward-looking blind-camera images
+for the raw surround source. The replacement top-right (left) and bottom-left
+(right) tiles look directly beside the car, across nearby ground/kerb, with a
+narrow body edge at the bottom. This changes documentation source pixels only;
+it does not change the app's camera orientation, mirroring or projection code.
+
+Built-in image-generation edit brief (condensed; [exact prompt](source/camera-atlas-edit-prompt.txt)):
+
+```text
+Use case: precise-object-edit. Edit the fictional six-camera atlas. Preserve the
+3-column × 2-row grid and the four road/bumper views. Replace only top-right and
+bottom-left with direct, unmirrored side-surround camera views looking roughly
+90° sideways and 35° downward. Left looks toward the nearby sidewalk/kerb,
+planting and apartment frontage; right looks across adjacent road toward the
+opposite kerb. Show nearby ground and a narrow curved sliver of the silver-green
+car body across the bottom, not a tall body panel along either side. Kerbs run
+broadly horizontally. No rearward road vanishing point or mirror perspective.
+Match the fictional Singapore residential setting, soft daylight and muted colours.
+No people, readable text, plates, labels, borders or UI. Opaque background.
 ```
 
 ## Validation
