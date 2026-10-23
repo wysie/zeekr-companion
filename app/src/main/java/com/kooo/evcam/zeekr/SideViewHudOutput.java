@@ -38,8 +38,8 @@ final class SideViewHudOutput {
 
     private static final long RETRY_DELAY_MS = 500L;
     private static final int MAX_RETRY = 20;
-    /** 环视在恢复、录像在开时，过多久再试着接相机。 */
-    private static final long WAIT_FOR_CAMERA_MS = 3_000L;
+    /** Check ownership, not just incoming frames: a live popup can outlast a lost HUD binding. */
+    private static final long BINDING_CHECK_MS = 500L;
     /** 显示时多久看一次帧还来不来。 */
     private static final long STALE_TICK_MS = 100L;
     /** HUD 窗口开不起来之后，这么久之内不再试（也不算「可用」，主屏弹窗顶上）。 */
@@ -59,6 +59,8 @@ final class SideViewHudOutput {
     private boolean disposed;
     /** 交给相机的是哪一个 SurfaceTexture：放手时确认槽位还是自己的。 */
     private SurfaceTexture boundTexture;
+    private Size boundPreviewSize;
+    private boolean bindingCheckArmed;
     private int retryCount;
     private Runnable retryRunnable;
     private int lastLane = LaneCycle.LEFT;
@@ -227,6 +229,23 @@ final class SideViewHudOutput {
         }
     };
 
+    private final Runnable bindingCheck = new Runnable() {
+        @Override public void run() {
+            if (!bindingCheckArmed || disposed || panel == null || !panel.isAttached()) {
+                bindingCheckArmed = false;
+                return;
+            }
+            if (!HudCalibrationSession.active() && !ScreenState.dark()) rebindIfLost();
+            if (bindingCheckArmed) handler.postDelayed(this, BINDING_CHECK_MS);
+        }
+    };
+
+    private void startBindingCheck() {
+        if (bindingCheckArmed) return;
+        bindingCheckArmed = true;
+        handler.postDelayed(bindingCheck, BINDING_CHECK_MS);
+    }
+
     /** 同主屏弹窗：「不再备着」的倒计时只排一次，别每推一次信号就重排。 */
     private void armReadyExpiry() {
         if (readyExpiryArmed) {
@@ -303,16 +322,17 @@ final class SideViewHudOutput {
         }
         SideViewHudPanel created = new SideViewHudPanel(context, config, hud);
         created.setNight(night);
+        retryCount = 0;
         lastFrameMs = 0;   // 新窗口：上一个窗口的帧不算
         created.getTextureView().setSurfaceTextureListener(new TextureView.SurfaceTextureListener() {
             @Override
             public void onSurfaceTextureAvailable(SurfaceTexture st, int w, int h) {
-                bindCamera(st);
+                if (panel == created) bindCamera(st);
             }
 
             @Override
             public void onSurfaceTextureSizeChanged(SurfaceTexture st, int w, int h) {
-                restoreBufferSize(st);
+                if (panel == created) restoreBufferSize(st);
             }
 
             @Override
@@ -344,6 +364,8 @@ final class SideViewHudOutput {
             panel = null;
             failedUntilMs = SystemClock.uptimeMillis() + FAILED_RETRY_MS;
             AppLog.w(TAG, "HUD 窗口开不起来，这一阵不再试，主屏弹窗顶上");
+        } else {
+            startBindingCheck();
         }
     }
 
@@ -369,6 +391,8 @@ final class SideViewHudOutput {
         cancelDelayedClose();
         disarmReadyExpiry();
         cancelRetry();
+        bindingCheckArmed = false;
+        handler.removeCallbacks(bindingCheck);
         handler.removeCallbacks(staleTick);
         if (panel != null && panel.isShowing()) {
             noteIfNoFrame();
@@ -451,7 +475,8 @@ final class SideViewHudOutput {
      * 画面出口被丢弃后恢复），或者 bindCamera 重试到头放弃了 —— 那样之后每次打灯都是黑的。
      */
     private void rebindIfLost() {
-        if (panel == null || panel.getTextureView() == null) {
+        if (disposed || panel == null || !panel.isAttached()
+                || SystemClock.uptimeMillis() < failedUntilMs) {
             return;
         }
         SurfaceTexture st = panel.getTextureView().getSurfaceTexture();
@@ -459,12 +484,16 @@ final class SideViewHudOutput {
             return;   // 还没画出来：onSurfaceTextureAvailable 会去接
         }
         SingleCamera camera = boundCamera;
-        boolean lost = camera == null || boundTexture != st
+        MultiCameraManager current = CameraManagerHolder.getInstance().getCameraManager();
+        boolean lost = camera == null || boundTexture != st || boundManager != current
+                || current == null || current.isReleased()
+                || current.getCamera(CameraSlots.KEY_SURROUND) != camera
+                || !CameraNeeds.current().isHeld(CameraNeeds.Holder.SIDE_HUD)
                 || !camera.declaredOutputs().contains(new ChannelRules.Out(ChannelRules.Kind.SIDE_HUD, boundTexture));
         if (lost) {
+            // Do not bypass a pending bounded startup retry every half second.
+            if (retryRunnable != null) return;
             AppLog.i(TAG, "HUD：窗口的相机画面丢了，重新接");
-            cancelRetry();
-            retryCount = 0;
             bindCamera(st);
         }
     }
@@ -477,19 +506,30 @@ final class SideViewHudOutput {
         if (manager == null) {
             manager = CameraManagerHolder.getInstance().getOrInit(context);
         }
-        SingleCamera camera = manager != null ? manager.getCamera(CameraSlots.KEY_SURROUND) : null;
+        SingleCamera camera = manager != null && !manager.isReleased()
+                ? manager.getCamera(CameraSlots.KEY_SURROUND) : null;
         if (camera == null) {
             scheduleRetry(surfaceTexture);
             return;
         }
+        cancelRetry();
         Size previewSize = camera.getPreviewSize();
-        if (previewSize != null) {
-            panel.setSourceSize(previewSize);
+        boolean changed = boundCamera != camera || boundManager != manager || boundTexture != surfaceTexture;
+        if (changed) {
+            withdrawOutput();
+            panel.clearSourceGeometry();
+            lastFrameMs = 0;
+            firstFrameSeen = false;
+            boundCamera = camera;
+            boundManager = manager;
+            boundTexture = surfaceTexture;
+            updateCover();
         }
-        boundCamera = camera;
-        boundManager = manager;
-        boundTexture = surfaceTexture;
-        restoreBufferSize(surfaceTexture);
+        if (previewSize != null && (!previewSize.equals(boundPreviewSize) || !panel.hasGeometry())) {
+            panel.setSourceSize(previewSize);
+            boundPreviewSize = previewSize;
+        }
+        if (changed) restoreBufferSize(surfaceTexture);
         boolean wasOpen = camera.isCameraOpened();
         boolean declared = camera.declareSideHud(surfaceTexture, why -> {
             if (why != SingleCamera.Drop.CONFIG_FAILED || disposed
@@ -522,6 +562,10 @@ final class SideViewHudOutput {
     private void unbindCamera() {
         cancelRetry();
         CameraNeeds.current().release(CameraNeeds.Holder.SIDE_HUD);
+        withdrawOutput();
+    }
+
+    private void withdrawOutput() {
         if (boundCamera != null) {
             if (boundCamera.withdrawSideHud(boundTexture) && boundManager != null) {
                 boundManager.channelScheduler().wake();
@@ -530,6 +574,7 @@ final class SideViewHudOutput {
             boundManager = null;
             boundTexture = null;
         }
+        boundPreviewSize = null;
     }
 
     private void scheduleRetry(SurfaceTexture surfaceTexture) {
@@ -542,7 +587,10 @@ final class SideViewHudOutput {
         }
         retryCount++;
         cancelRetry();
-        retryRunnable = () -> bindCamera(surfaceTexture);
+        retryRunnable = () -> {
+            retryRunnable = null;
+            bindCamera(surfaceTexture);
+        };
         handler.postDelayed(retryRunnable, RETRY_DELAY_MS);
     }
 
