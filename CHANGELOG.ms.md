@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Pulihkan sambungan kamera HUD yang terputus semasa lampu isyarat membelok masih menyala; kekalkan tempoh menunggu selepas penolakan dan penutup tiada gambar langsung sehingga bingkai baharu diterima.
+
 ## [2.11.62-alpha.1] - 2026-10-23
 
 - Kekalkan permukaan kamera sehingga peranti selesai ditutup, hentikan percubaan berulang output Cermin super yang ditolak dan hadkan pemulihan kepada kamera terjejas; kekalkan pemberitahuan kegagalan untuk tetingkap timbul titik buta, HUD dan output 360°.

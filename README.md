@@ -524,6 +524,8 @@ emulator regression test confirms fine native-buffer detail survives the actual
 corrected popup path. This does not verify the optical resolution or internal
 processing of the factory camera hardware.
 
+**HUD output recovery:** while the HUD is showing or warming up, a half-second ownership check reconnects a missing HUD declaration or replaced camera pipeline without requiring another indicator off/on cycle. Healthy outputs remain untouched; configuration refusals keep their cooldown and fallback. Rebinding clears the previous pipeline’s picture state, and the warning stays until frames actually resume. This applies with GPU All and compatibility rendering; it adds no new switch and still needs confirmation on the car.
+
 **Show side view on** selects Screen (default), HUD, or Screen and HUD. Screen output still follows **Use Super mirror when active**. Automatic HUD selection needs an accessible, powered-on, public presentation display with the confirmed 009 signature (display 3, 1280×640), known 7X 1440×480 dimensions, or an explicit HUD name. An unavailable or rejected HUD falls back to the screen behavior, preserving its opening-speed threshold.
 
 The confirmed **009 display 3 at 1280×640** is detected automatically alongside the known 7X 1440×480 signature or an explicit HUD name. No extra 009 enable switch is required; old saved switch values are ignored. Private/non-presentation displays, named cluster/rear/passenger screens and ambiguous matches are excluded. An unavailable or rejected HUD falls back to the screen behavior. The observed video confirms this owner’s 009, without establishing every firmware’s mapping.

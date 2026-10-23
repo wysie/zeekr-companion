@@ -86,13 +86,16 @@ public class SidePopupLifecycleAndroidTest {
             main(()->f.manager.select(first));
             await(()->get(f.service,"boundCamera")==first);
             SurfaceTexture texture=f.view().getTextureView().getSurfaceTexture();
-            assertTrue(first.declaredOutputs().contains(new ChannelRules.Out(ChannelRules.Kind.SIDE_POPUP,texture)));
+            // Binding publishes its owner before declaring the output on the same UI turn.
+            main(()->assertTrue(first.declaredOutputs().contains(new ChannelRules.Out(ChannelRules.Kind.SIDE_POPUP,texture))));
             // Use a distinct manager instance to model actual pipeline replacement.
             AtomicReference<Manager> next=new AtomicReference<>();
             main(()->{Manager m=new Manager(f.context);m.select(new FakeCamera(f.context,"test-b"));next.set(m);f.service.manager=m;});
             await(()->get(f.service,"boundManager")==next.get());
-            assertFalse(first.declaredOutputs().contains(new ChannelRules.Out(ChannelRules.Kind.SIDE_POPUP,texture)));
-            assertTrue(next.get().selected.declaredOutputs().contains(new ChannelRules.Out(ChannelRules.Kind.SIDE_POPUP,texture)));
+            main(()->{
+                assertFalse(first.declaredOutputs().contains(new ChannelRules.Out(ChannelRules.Kind.SIDE_POPUP,texture)));
+                assertTrue(next.get().selected.declaredOutputs().contains(new ChannelRules.Out(ChannelRules.Kind.SIDE_POPUP,texture)));
+            });
             main(()->{next.get().release();f.service.manager=f.manager;});
         }
     }

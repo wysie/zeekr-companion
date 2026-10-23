@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Recover lost HUD camera bindings while the indicator stays on, preserving refusal cooldowns and the no-live-picture cover until frames actually resume.
+
 ## [2.11.62-alpha.1] - 2026-10-23
 
 - Retain camera surfaces until device close completes, stop repeated rejected Super mirror output retries and restrict recovery to affected cameras; preserve failure notifications for blind popup, HUD and 360° outputs.
