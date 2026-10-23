@@ -65,6 +65,42 @@ Current test download: [Zeekr Companion 3.0.0-alpha.1](https://github.com/wysie/
 
 Companion now uses its own **3.0** version series. It includes the camera, recording and GPU corrections through 2.11.64-alpha.1 and installs over the existing app. Existing settings remain in place, and matching-format Companion 2.11 backups remain importable.
 
+## Screenshots
+
+Actual **3.0.0-alpha.1** app screens in light and dark themes, captured on an
+Android emulator without the Android system bars. Camera panes use **simulated,
+AI-generated scenes**, not vehicle footage. Settings shown are examples.
+
+| Main screen · Light | Main screen · Dark |
+| --- | --- |
+| [![Main screen — light theme](docs/screenshots/main-light.webp)](docs/screenshots/main-light.webp) | [![Main screen — dark theme](docs/screenshots/main-dark.webp)](docs/screenshots/main-dark.webp) |
+
+<details>
+<summary>Menu, preview controls and settings — light and dark</summary>
+
+Click any image to view it at full size.
+
+| Screen | Light | Dark |
+| --- | --- | --- |
+| Side menu | [![Side menu — light theme](docs/screenshots/menu-light.webp)](docs/screenshots/menu-light.webp) | [![Side menu — dark theme](docs/screenshots/menu-dark.webp)](docs/screenshots/menu-dark.webp) |
+| Preview sources & layout | [![Preview sources & layout — light theme](docs/screenshots/preview-layout-light.webp)](docs/screenshots/preview-layout-light.webp) | [![Preview sources & layout — dark theme](docs/screenshots/preview-layout-dark.webp)](docs/screenshots/preview-layout-dark.webp) |
+| Recording & photos | [![Recording & photos — light theme](docs/screenshots/recording-light.webp)](docs/screenshots/recording-light.webp) | [![Recording & photos — dark theme](docs/screenshots/recording-dark.webp)](docs/screenshots/recording-dark.webp) |
+| Storage | [![Storage — light theme](docs/screenshots/storage-light.webp)](docs/screenshots/storage-light.webp) | [![Storage — dark theme](docs/screenshots/storage-dark.webp)](docs/screenshots/storage-dark.webp) |
+| Super mirror settings | [![Super mirror settings — light theme](docs/screenshots/super-mirror-light.webp)](docs/screenshots/super-mirror-light.webp) | [![Super mirror settings — dark theme](docs/screenshots/super-mirror-dark.webp)](docs/screenshots/super-mirror-dark.webp) |
+| Blind spot camera settings | [![Blind spot camera settings — light theme](docs/screenshots/blind-camera-light.webp)](docs/screenshots/blind-camera-light.webp) | [![Blind spot camera settings — dark theme](docs/screenshots/blind-camera-dark.webp)](docs/screenshots/blind-camera-dark.webp) |
+| HUD settings | [![HUD settings — light theme](docs/screenshots/hud-light.webp)](docs/screenshots/hud-light.webp) | [![HUD settings — dark theme](docs/screenshots/hud-dark.webp)](docs/screenshots/hud-dark.webp) |
+| 360° camera settings | [![360° camera settings — light theme](docs/screenshots/360-camera-light.webp)](docs/screenshots/360-camera-light.webp) | [![360° camera settings — dark theme](docs/screenshots/360-camera-dark.webp)](docs/screenshots/360-camera-dark.webp) |
+| Floating button actions | [![Floating button actions — light theme](docs/screenshots/floating-button-light.webp)](docs/screenshots/floating-button-light.webp) | [![Floating button actions — dark theme](docs/screenshots/floating-button-dark.webp)](docs/screenshots/floating-button-dark.webp) |
+| Interface | [![Interface — light theme](docs/screenshots/interface-light.webp)](docs/screenshots/interface-light.webp) | [![Interface — dark theme](docs/screenshots/interface-dark.webp)](docs/screenshots/interface-dark.webp) |
+| System | [![System — light theme](docs/screenshots/system-light.webp)](docs/screenshots/system-light.webp) | [![System — dark theme](docs/screenshots/system-dark.webp)](docs/screenshots/system-dark.webp) |
+| GPU image processing | [![GPU image processing — light theme](docs/screenshots/gpu-processing-light.webp)](docs/screenshots/gpu-processing-light.webp) | [![GPU image processing — dark theme](docs/screenshots/gpu-processing-dark.webp)](docs/screenshots/gpu-processing-dark.webp) |
+
+</details>
+
+[Capture notes, simulated-image provenance and regeneration instructions](docs/screenshots/README.md).
+
+## Development notes
+
 Alpha 61 includes the completed translations and audit corrections. It suspends GPU presentation for hidden/docked/retained
 camera views while continuing to drain their inputs, removes recording's normal
 codec-output wait, and timestamps the frame actually acquired. Transparent standby
