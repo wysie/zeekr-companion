@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+## [2.11.63-alpha.1] - 2026-10-23
+
 - Recover lost HUD camera bindings while the indicator stays on, preserving refusal cooldowns and the no-live-picture cover until frames actually resume.
 
 ## [2.11.62-alpha.1] - 2026-10-23
