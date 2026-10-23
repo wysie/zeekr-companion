@@ -188,6 +188,11 @@ targeting `main`; its APK artifact is
 `ZeekrCompanion-apk`. Increment `versionCode` and update `versionName` before each new
 installable release. The existing signing key preserves update compatibility.
 
+The public showcase is built from `website/` and `docs/screenshots/` in the same
+repository. `.github/workflows/pages.yml` validates website pull requests and
+publishes matching `main` changes to GitHub Pages. See `website/README.md` for
+local builds, the public address and release-link maintenance.
+
 Fetch dts88's updates into `upstream/main` and fast-forward `upstream-main`. Review
 the incoming changes against the ledger before integrating. For a complete import,
 merge the source mirror on an integration branch based on `main`; for selective

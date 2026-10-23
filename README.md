@@ -4,6 +4,12 @@
 
 Camera recording, live camera windows and vehicle utilities for ZEEKR head units.
 
+[**Explore the app website**](https://wysie.github.io/zeekr-shortcut-car/) · [Screenshots](#screenshots) · [Downloads](https://github.com/wysie/zeekr-shortcut-car/releases)
+
+The public showcase is hosted on GitHub Pages from this repository's
+[`website/` source](website/README.md), with automatic deployment when its source
+or screenshot assets change on `main`.
+
 **Zeekr Companion** is maintained by [wysie](https://github.com/wysie/zeekr-shortcut-car)
 and is a fork of [Zeekr Shortcut by dts88](https://github.com/dts88/zeekr-shortcut-car).
 I primarily use and test it on my ZEEKR 009. Credit for the original Zeekr application goes
