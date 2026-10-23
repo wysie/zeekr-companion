@@ -250,3 +250,11 @@ and [`be614c00`](https://github.com/dts88/zeekr-shortcut-car/commit/be614c008c39
 The Companion adaptation retains its popup/HUD/360 output kinds, developer probe,
 independent recording/preview choices and existing GPU path. Holder-change
 collection is synchronized so notifications arriving during a round remain queued.
+
+## Website typography
+
+The public showcase uses [Geist](https://github.com/vercel/geist-font), by Vercel
+and Basement Studio, under the SIL Open Font License 1.1. Its license is retained
+in `website/assets/fonts/OFL.txt` and distributed with the self-hosted font.
+Website screenshots and the Companion mark reuse the repository assets;
+[capture and generated-camera provenance](docs/screenshots/README.md) is retained.

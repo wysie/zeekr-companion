@@ -4,6 +4,9 @@
 
 为极氪车机提供相机录制、实时相机窗口和车辆工具。
 
+[应用展示网站](https://wysie.github.io/zeekr-shortcut-car/)由本仓库通过 GitHub Pages 部署，
+源码位于 [`website/`](website/README.md)。
+
 [应用截图（浅色与深色主题）](README.md#screenshots)：实际 Android 应用界面，已去除系统栏；
 相机画面为 AI 生成的模拟场景，设置值仅作示例。截图中的界面语言为英语。
 
