@@ -137,7 +137,7 @@
     <string name="set_settings_export_title">导出设置</string>
     <string name="set_settings_export_summary">在诊断报告目录保存 Companion 设置文件</string>
     <string name="set_settings_import_title">导入设置</string>
-    <string name="set_settings_import_summary">恢复 Companion %1$d.x 备份；应用退出后，重新打开时生效</string>
+    <string name="set_settings_import_summary">恢复兼容的 Companion 备份；应用退出后，重新打开时生效</string>
     <string name="settings_exported">已导出到：\n%1$s</string>
     <string name="settings_export_failed">无法导出设置</string>
     <string name="settings_export_failed_reason">导出设置失败：%1$s</string>
@@ -146,7 +146,7 @@
     <string name="settings_none_title">未找到设置文件</string>
     <string name="settings_none_msg">导入时从此文件夹读取导出的设置文件：%1$s。</string>
     <string name="settings_import_refused_title">无法导入</string>
-    <string name="settings_other_version_msg">此文件由版本 %1$s 导出。只能导入 %2$d.x 版本导出的设置文件。</string>
+    <string name="settings_other_version_msg">此文件由版本 %1$s 导出，与 Companion %2$d.x 不兼容。</string>
     <string name="settings_unreadable">无法读取此设置文件</string>
     <string name="settings_import_confirm_title">导入设置？</string>
     <string name="settings_import_confirm_msg">替换已保存的设置、摄像头映射、视频流配置、校准和窗口设置？录制将停止，应用将退出。重新打开 Companion 后应用备份。开发者权限和检测到的硬件保留在本机。</string>

@@ -332,10 +332,13 @@ public final class SettingsBackup {
 
     // ================================================================= 纯函数（测试直接调）
 
-    /** 文件格式相同、大版本相同才导入。认不出版本号的一律不导入。 */
+    /** Same format/major, plus the unchanged Companion 2.11 backup format on Companion 3. */
     static boolean compatible(int format, String fileVersion, String appVersion) {
         int major = VersionName.major(fileVersion);
-        return format == FORMAT && major >= 0 && major == VersionName.major(appVersion);
+        int current = VersionName.major(appVersion);
+        boolean companion211 = current == 3 && major == 2 && VersionName.minor(fileVersion) == 11
+                && VersionName.compare(fileVersion, "2.11.55-alpha.1") >= 0;
+        return format == FORMAT && major >= 0 && (major == current || companion211);
     }
 
     static boolean isSettingsFile(String name) {

@@ -1678,8 +1678,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         onClick("pref_settings_import", pref -> SettingsBackupFlow.startImport(requireActivity()));
         Preference importRow = findPreference("pref_settings_import");
         if (importRow != null) {
-            importRow.setSummary(getString(R.string.set_settings_import_summary,
-                    SettingsBackup.currentMajor(requireContext())));
+            importRow.setSummary(R.string.set_settings_import_summary);
         }
         // 系统信息（试验性）：车机能读到的车辆信号。只在这一页开着时多读浮点和定位，离开就放掉（离散信号熄屏判断一直在读）
         onClick("pref_vehicle_info", pref ->

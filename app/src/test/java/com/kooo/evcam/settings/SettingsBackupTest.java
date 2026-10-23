@@ -10,7 +10,7 @@ import com.kooo.evcam.profile.ProfileStore;
 import org.junit.Test;
 
 /**
- * 导出、导入设置的规矩（{@link SettingsBackup}，项目所有者 2026-10-19）：只认同一个大版本、同一个格式导出的文件；
+ * 导出、导入设置的规矩（{@link SettingsBackup}，项目所有者 2026-10-19）：同格式、同大版本，并显式兼容 Companion 2.11 → 3；
  * 设置里的运行状态不导出、不导入，视频流配置整份带上。
  */
 public class SettingsBackupTest {
@@ -26,6 +26,19 @@ public class SettingsBackupTest {
         assertFalse("认不出版本号不导入", SettingsBackup.compatible(format, "", "2.14.0"));
         assertFalse(SettingsBackup.compatible(format, null, "2.14.0"));
         assertFalse(SettingsBackup.compatible(format, "2.14.0", "unknown"));
+    }
+
+    @Test public void companion3ReadsExistingCompanion211BackupsWithoutOpeningOtherMajors() {
+        int format = SettingsBackup.FORMAT;
+        for (String version : new String[]{"2.11.55-alpha.1", "2.11.61-alpha.1", "2.11.64-alpha.1"}) {
+            assertTrue(version, SettingsBackup.compatible(format, version, "3.0.0-alpha.1"));
+            assertFalse("No downgrade bridge", SettingsBackup.compatible(format, "3.0.0-alpha.1", version));
+            assertFalse("Format still required", SettingsBackup.compatible(format + 1, version, "3.0.0-alpha.1"));
+        }
+        for (String version : new String[]{"2.11.54-alpha.1", "2.12.0-alpha.1", "2.14.0", "4.0.0", "2.11.bad", ""})
+            assertFalse(version, SettingsBackup.compatible(format, version, "3.0.0-alpha.1"));
+        assertTrue(SettingsBackup.compatible(format, "3.0.0-alpha.1", "3.1.0"));
+        assertFalse("Later major upgrades require an explicit bridge", SettingsBackup.compatible(format, "2.11.64-alpha.1", "4.0.0"));
     }
 
     @Test

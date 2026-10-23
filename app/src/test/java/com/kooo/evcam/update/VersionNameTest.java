@@ -191,4 +191,13 @@ public class VersionNameTest {
         for (String value : new String[]{null, "", "nightly", "02.1.0", "99999999999999.0.0"})
             assertTrue(VersionName.major(value) == -1);
     }
+    @Test public void companion3AlphaRanksAfter211AndKeepsChannelEligibility() {
+        assertTrue(VersionName.isNewer("v3.0.0-alpha.1", "2.11.64-alpha.1"));
+        assertTrue(VersionName.isEligible("v3.0.0-alpha.1", true, UpdateChannel.ALPHA));
+        assertFalse(VersionName.isEligible("v3.0.0-alpha.1", true, UpdateChannel.BETA));
+        assertFalse(VersionName.isEligible("v3.0.0-alpha.1", true, UpdateChannel.STABLE));
+        assertTrue(VersionName.minor("2.11.64-alpha.1") == 11);
+        assertTrue(VersionName.minor("3.0.0-alpha.1") == 0);
+        assertTrue(VersionName.minor("2.11.bad") == -1);
+    }
 }

@@ -96,6 +96,12 @@ public final class VersionName {
         return parts == null ? -1 : parts.core[0];
     }
 
+    /** Minor version from the same validated parser, for explicit compatibility bridges. */
+    public static int minor(String version) {
+        Parts parts = parse(version);
+        return parts == null ? -1 : parts.core[1];
+    }
+
     private static boolean beta(String suffix) {
         String lower = suffix.toLowerCase(Locale.US);
         return CHANNEL.matcher(lower).matches() && (lower.equals("beta") || lower.startsWith("beta."));

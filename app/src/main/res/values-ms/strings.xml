@@ -121,7 +121,7 @@
     <string name="set_settings_export_title">Eksport tetapan</string>
     <string name="set_settings_export_summary">Simpan fail tetapan Companion di sebelah laporan diagnostik</string>
     <string name="set_settings_import_title">Import tetapan</string>
-    <string name="set_settings_import_summary">Pulihkan sandaran Companion %1$d.x; aplikasi keluar dan menggunakannya apabila dibuka semula</string>
+    <string name="set_settings_import_summary">Pulihkan sandaran Companion yang serasi; aplikasi keluar dan menggunakannya apabila dibuka semula</string>
     <string name="settings_exported">Dieksport ke:\n%1$s</string>
     <string name="settings_export_failed">Tidak dapat mengeksport tetapan</string>
     <string name="settings_export_failed_reason">Eksport tetapan gagal: %1$s</string>
@@ -130,7 +130,7 @@
     <string name="settings_none_title">Tiada fail tetapan ditemui</string>
     <string name="settings_none_msg">Fail tetapan dibaca daripada folder ini: %1$s.</string>
     <string name="settings_import_refused_title">Tidak dapat mengimport</string>
-    <string name="settings_other_version_msg">Fail ini dieksport oleh versi %1$s. Hanya fail tetapan yang dieksport oleh versi %2$d.x boleh diimport.</string>
+    <string name="settings_other_version_msg">Fail ini dieksport oleh versi %1$s dan tidak serasi dengan Companion %2$d.x.</string>
     <string name="settings_unreadable">Tidak dapat membaca fail tetapan ini</string>
     <string name="settings_import_confirm_title">Import tetapan?</string>
     <string name="settings_import_confirm_msg">Gantikan tetapan, pemetaan kamera, profil, penentukuran dan tetapan tetingkap? Rakaman akan berhenti dan aplikasi akan keluar. Buka semula Companion untuk menggunakan sandaran. Akses pembangun dan perkakasan dikesan kekal pada unit ini.</string>

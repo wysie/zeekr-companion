@@ -29,7 +29,10 @@ stay local. Settings files contain preferences, not recordings or external artwo
 files. Saved text such as plate stamps is included. Diagnostics schema 3 includes
 the same complete settings snapshot, with no 80-character truncation.
 
-Only matching-format, same-major Companion files with this application ID import.
+Only matching-format, same-major Companion files with this application ID import,
+with one explicit bridge: Companion 3 also accepts Companion 2.11 backups from
+2.11.55-alpha.1 onward, since their five-store schema is unchanged. This does not
+allow 3.x backups on 2.x or imports from unrelated 2.x/4.x versions.
 Upstream's settings-file kind is deliberately distinct. Missing stores, malformed
 or oversized files, invalid declared types, fractional/overflowing integers and
 type changes to already-stored keys are refused before writing. Files are bounded
@@ -86,3 +89,23 @@ Local evidence: `/tmp/companion-settings-backup-build.log`,
 `/tmp/companion-{backup,import-confirm,lock-action}-{light,dark}.png` captures.
 These are temporary test files, not release assets. Vehicle storage, full USB/power
 loss durability and a physical restore on 009/7X still need vehicle testing.
+
+## Companion 3.0 numbering transition — 23 October 2026
+
+The 3.0 release keeps the application ID, signer and preference schema. An explicit
+format-1 import bridge accepts this fork's 2.11 backups beginning with the first
+settings-backup release, 2.11.55-alpha.1. Unrelated 2.x versions, earlier 2.11
+versions, wrong formats, invalid versions and 3.x-to-2.x downgrades remain outside
+that bridge. Kind, application ID, store, typed-value and bounded-file validation
+still run before any preference writes. Import summaries/rejection wording are
+updated in English, Malay and Simplified Chinese. Existing installed settings do
+not require export/import for the update.
+
+Version/update and compatibility tests cover the 2.11 → 3.0 ordering, Alpha channel
+filtering and the narrow backup bridge. The 3.0 APK restores a real typed five-store
+2.11.64-labelled backup in a disposable emulator, including GPU and framing values.
+1,566 JVM tests, builds and zero-error lint pass. Twenty-one backup/inherited UI
+checks pass at the intended 2560×1600 viewport; an initial run exposed a leftover
+1920×1080 emulator override that hid unrelated controls, then passed after reset.
+The four affected import/export/UI cases are rerun after final translated wording.
+These checks make no vehicle-performance claim.

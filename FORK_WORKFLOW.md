@@ -242,6 +242,7 @@ New combined releases use `vX.Y.Z-alpha.N`, `vX.Y.Z-beta.N` or `vX.Y.Z` tags on
 ## Zeekr Companion release naming
 
 - Display/release identity: **Zeekr Companion** in every language, without an author suffix.
+- Companion uses its own **3.0** version series starting at `v3.0.0-alpha.1`; do not continue the inherited 2.11 patch sequence or match upstream version numbers.
 - Android `versionName`: `X.Y.Z-alpha.N`, `X.Y.Z-beta.N`, or stable `X.Y.Z`; increment `versionCode` for every installable release. Keep application ID and signing identity.
 - Git tag: exactly `v` plus the built `versionName`, e.g. `v2.11.42-alpha.1`. Do not rename existing tags or assets.
 - Public APK: `ZeekrCompanion-<versionName>.apk`, plus the matching `.apk.sha256`. Stage it locally with `python3 .github/scripts/package_release.py`; CI uses that same script and rejects a tag/version mismatch. Gradle's `app-release.apk` is an intermediate build output.
