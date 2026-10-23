@@ -11,6 +11,14 @@ source-mirror fast-forwards, PR edits/comments or release in this review.
 | dts88 | `eb7d5732cf8d20f75439d78da5a76f4254f684fc` → `a8d9d5a56f2984f531ae3d4c0e5af69cf29718c0` | 89 commits including merges; current release 2.23.0-alpha |
 | Ferix | `130e7f9a1f5c2117fc9f5f03e019407b0d68281c` → `2dce2510c373d43cd850d8dc040d701311b63bb6` | Two commits: camera handover/side-yield correction and 2.14.3 release |
 
+The owner subsequently authorized the recommendations. The follow-up also
+reviews late System-settings PR #96 (`bc7df64d0ffc14b49cebfd116c8628918e9410c3`)
+and release `91a4282e75b39364685389a2ce5e73e43301832f` (2.24.0-alpha): one
+backup row, Vehicle signals naming and revised boot copy remain UX references,
+not Companion runtime imports. See [completed adaptations, PR refreshes and
+validation](recommendations-completed-20261023.md). The original snapshot below
+retains its pre-authorization decisions.
+
 ## Incoming decisions
 
 | Source | Decision and Companion comparison |

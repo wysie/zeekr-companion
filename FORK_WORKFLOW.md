@@ -11,6 +11,8 @@ outgoing PRs; neither index substitutes for the other.
 
 | Branch | Purpose |
 | --- | --- |
+| `integration/upstream-camera-lifecycle-20261023` | Selective dts88 surface ownership, mirror refusal and per-lane recovery adaptations; preserves fork outputs, Apply and GPU settings |
+| `review/upstream-refresh-20261023` | Local upstream-only combined validation of all eleven open contributions against 2.24.0-alpha; separate from Companion main |
 | `fix/nonblocking-recording-storage-ownership` | Nonblocking active-file ownership, atomic path deletion, live cleanup rechecks and bounded buffering for observed USB stalls |
 | `fix/complete-localization-20261021` | Complete trilingual About/help, consistent Malay and Simplified Chinese, app-locale release notes and exhaustive resource validation |
 | `fix/codebase-audit-20261021` | Whole-codebase audit corrections for hidden GPU work, recorder timing/drain, UI camera queries, Apply cancellation, active footage, locks/deletion and typed restore |

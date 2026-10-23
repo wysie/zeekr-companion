@@ -24,7 +24,11 @@ merge, audio capture, signing migration or source UI replacement.
 Saved camera mappings, independent preview/recording selection, Apply semantics,
 GPU processing, encoding settings and existing window gestures are retained.
 
-Validation: full JVM suite; debug, release and instrumentation assembly; zero-error
+Implementation `062c3ea2`, integrated in main `3d0d8e3a`; main CI
+[39922297118](https://github.com/wysie/zeekr-shortcut-car/actions/runs/39922297118)
+passed. No release contains this follow-up yet.
+
+Validation: 1,564 JVM tests; debug, release and instrumentation assembly; zero-error
 Android lint; five packaging/release-note tests. Twelve native Android checks cover
 actual carried SurfaceTexture ownership after session clearing, independent output
 listeners, mirror refusal identity/resume, popup lifecycle and mirror controls.
