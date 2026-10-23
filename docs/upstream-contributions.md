@@ -3,15 +3,19 @@
 This index tracks outgoing PRs. Incoming source reviews, imports, adaptations and
 exclusions are tracked in the [source integration ledger](source-integration-ledger.md).
 
-Latest status review (**2026-10-23**, upstream `a8d9d5a5`): **11 open,
-3 merged, 10 closed**. No new merged wysie PR. Open #34/#37/#44 are mergeable;
-#29/#32/#47/#50/#51/#52/#53/#54 conflict with current main. All eleven submitted
-heads have passing GitHub builds; that does not establish compatibility with the
-new base. Newly observed closures: #30/#36/#45/#46/#48/#49. #36's core idea was
-reimplemented in #67; other closures explain upstream layout, gesture, font and
-theme choices. Upstream's new alpha-update switch overlaps #51, which needs a
-scope review before refresh. No PR heads, descriptions or comments changed.
-See [current findings, maintainer comments and recommendations](source-review-20261023.md).
+Latest status review and authorized refresh (**2026-10-23**, upstream
+`91a4282e`): **11 open, 3 merged, 10 closed**. Refreshed #29/#32/#47/#50–#54
+with non-forced merge updates; kept #34/#37/#44 and all closed/merged heads
+unchanged. #51 now consolidates upstream's beta/alpha switches into one channel
+selector and preserves effective alpha opt-ins. All eleven open PRs are now mergeable and have passing GitHub builds. No new PR or comment.
+
+All eight final refreshed heads pass independent JVM suites and debug/test/release
+builds. Combined upstream-only validation passes 1,293 JVM tests and 24 native
+checks, with zero new full-debug lint error fingerprints against current upstream.
+See [completed recommendations and exact heads](recommendations-completed-20261023.md).
+The [initial review](source-review-20261023.md) retains the conflict/closure snapshot
+and maintainer explanations before this refresh. Runtime Companion imports are
+recorded separately in the source ledger.
 
 ## Previous status review — 2026-10-20
 
