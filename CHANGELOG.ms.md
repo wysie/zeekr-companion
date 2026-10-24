@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Bezakan tindakan perkongsian diagnostik: Simpan & hantar ke telefon dan Hantar laporan terakhir disimpan.
+
 - Ringkaskan nama kamera khusus kepada Kamera hadapan dan Kamera belakang, dengan label bahasa Inggeris dan Cina yang sepadan.
 
 ## [3.0.0-alpha.2] - 2026-10-24

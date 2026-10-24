@@ -15,6 +15,7 @@
     <string name="ui_browser_unavailable">没有可用的浏览器</string>
     <string name="ui_copy_link">复制链接</string>
     <string name="ui_last_export">上次保存的诊断：\n%1$s</string>
-    <string name="ui_send_saved_report">发送已保存的报告</string>
+    <string name="ui_send_saved_report">发送上次保存的报告</string>
     <string name="ui_copy_file_location">复制文件位置</string>
+    <string name="diag_btn_save_send">保存并发送到手机</string>
 </resources>

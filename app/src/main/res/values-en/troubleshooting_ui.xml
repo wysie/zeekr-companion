@@ -15,6 +15,7 @@
     <string name="ui_browser_unavailable">No browser available</string>
     <string name="ui_copy_link">Copy link</string>
     <string name="ui_last_export">Last saved diagnostics:\n%1$s</string>
-    <string name="ui_send_saved_report">Send saved report</string>
+    <string name="ui_send_saved_report">Send last saved report</string>
     <string name="ui_copy_file_location">Copy file location</string>
+    <string name="diag_btn_save_send">Save &amp; send to phone</string>
 </resources>
