@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Replace the inactive recording-pipeline picker with read-only MediaCodec status and correct Diagnostics help paths.
+
+- Add Diagnostics, Camera status and Permissions under Developer troubleshooting; share one USB logging session page across menus and clarify picture/research headings.
+
 - Clarify diagnostics sharing actions as Save & send to phone and Send last saved report.
 
 - Shorten the dedicated camera labels to Front camera and Rear camera, with matching Malay and Chinese translations.

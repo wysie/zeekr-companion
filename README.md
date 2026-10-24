@@ -46,7 +46,7 @@ replacement for factory safety equipment.
 
 ## Documentation
 
-[User guide](docs/user-guide.md) · [Diagnostics & troubleshooting](docs/user-guide.md#troubleshooting) · [Changelog](CHANGELOG.md) · [Technical docs](docs/README.md) · [Build and fork workflow](FORK_WORKFLOW.md)
+[User guide](docs/user-guide.md) · [Settings map](docs/settings-menu.md) · [Diagnostics & troubleshooting](docs/user-guide.md#troubleshooting) · [Changelog](CHANGELOG.md) · [Technical docs](docs/README.md) · [Build and fork workflow](FORK_WORKFLOW.md)
 
 Created by [wysie](https://github.com/wysie). A fork of
 [Zeekr Shortcut by dts88](https://github.com/dts88/zeekr-shortcut-car), built on

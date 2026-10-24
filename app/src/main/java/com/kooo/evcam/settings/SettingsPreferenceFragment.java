@@ -232,15 +232,10 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
     };
     private void refreshDriveLogging() {
         if (!isAdded() || appConfig == null) return;
-        Preference toggle = findPreference("pref_drive_logging");
-        if (toggle != null) {
-            boolean running = com.kooo.evcam.telemetry.DriveLogService.isEnabled();
-            toggle.setTitle(running ? R.string.ui_stop_logging : R.string.ui_start_logging);
-            toggle.setEnabled(!com.kooo.evcam.telemetry.DriveLogService.isStopping());
-            toggle.setSummary(com.kooo.evcam.telemetry.DriveLogService.status(requireContext()));
+        for (String key : new String[]{"pref_usb_session", "pref_dev_usb_session"}) {
+            Preference session = findPreference(key);
+            if (session != null) session.setSummary(com.kooo.evcam.telemetry.DriveLogService.status(requireContext()));
         }
-        Preference status = findPreference("pref_drive_logging_status");
-        if (status != null) status.setSummary(com.kooo.evcam.telemetry.DriveLogService.status(requireContext()));
         SwitchPreferenceCompat scan = findPreference("pref_signal_scan");
         if (scan != null) scan.setChecked(appConfig.isSignalScanEnabled());
     }
@@ -1658,14 +1653,11 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
                 ((SettingsShellFragment) getParentFragment()).developerModeChanged();
             }
         });
-        // 诊断信息放在系统里：它是给所有人导出报告用的
-        onClick("pref_usb_session", pref -> openFragment(new UsbLogSessionFragment(),R.string.ui_usb_session));
+        // Ordinary troubleshooting remains available without Developer mode.
+        bindTroubleshooting("pref_camera_status", "pref_diagnostics", "pref_usb_session");
         onClick("pref_camera_research", pref -> startActivity(new Intent(requireContext(),com.kooo.evcam.developer.CameraDisplayToolsActivity.class)));
         Preference research=findPreference("pref_camera_research");if(research!=null)research.setVisible(DeveloperMode.isUnlocked());
         Preference researchHelp=findPreference("pref_research_help");if(researchHelp!=null)researchHelp.setVisible(!DeveloperMode.isUnlocked());
-        onClick("pref_camera_status", pref -> startActivity(new Intent(requireContext(), com.kooo.evcam.ui.CameraStatusActivity.class)));
-        onClick("pref_diagnostics", pref ->
-                startActivity(new Intent(getContext(), DiagnosticsActivity.class)));
         // 导出、导入设置（项目所有者 2026-10-19）：和诊断报告同一个文件夹；导入后应用退出，重新打开时照新设置起来
         Preference restoreStatus = findPreference("pref_settings_restore_status");
         if (restoreStatus != null) {
@@ -1711,9 +1703,6 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
             StorageHelper.clearCache();
             com.kooo.evcam.storage.StorageState.refresh(requireContext(), "usb-fallback-setting");
         });
-        bindEnum("pref_recording_mode", SettingsRegistry.RECORDING_MODE,
-                appConfig.getRecordingMode(), value -> appConfig.setRecordingMode(value),
-                this::showRecordingModeSummary);
 
         // 熄屏录制 = 熄屏持续录制 + 唤醒锁（规格 §3.1）。整块只在开发者选项里出现，不用再单独锁
         bindSwitch("pref_screen_off_recording", appConfig.isScreenOffRecordingEnabled(),
@@ -1727,14 +1716,6 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
 
     }
 
-    /** 摘要除了选中项，还写明这一项现在不起作用：录制固定走 MediaCodec。 */
-    private void showRecordingModeSummary() {
-        ListPreference pref = findPreference("pref_recording_mode");
-        if (pref != null && getContext() != null) {
-            pref.setSummary(getString(R.string.set_recording_mode_summary, pref.getEntry()));
-        }
-    }
-
     private void updateCameraMappingSummary() {
         Preference pref = findPreference("pref_camera_mapping");
         if (pref == null) {
@@ -1742,6 +1723,13 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         }
         pref.setSummary(getString(appConfig.hasCameraOverride()
                 ? R.string.info_mapping_manual : R.string.info_mapping_auto));
+    }
+
+    /** Both menu locations use the same tools; opening a destination starts no logging. */
+    private void bindTroubleshooting(String statusKey, String diagnosticsKey, String usbKey) {
+        onClick(statusKey, pref -> startActivity(new Intent(requireContext(), com.kooo.evcam.ui.CameraStatusActivity.class)));
+        onClick(diagnosticsKey, pref -> startActivity(new Intent(requireContext(), DiagnosticsActivity.class)));
+        onClick(usbKey, pref -> openFragment(new UsbLogSessionFragment(), R.string.ui_usb_session));
     }
 
     // ------------------------------------------------------------------ 开发者选项
@@ -1753,6 +1741,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
      * 「这里有东西但你用不了」，而这些本来就不该出现在普通用户的设置里。</p>
      */
     private void bindDeveloper() {
+        bindTroubleshooting("pref_dev_camera_status", "pref_dev_diagnostics", "pref_dev_usb_session");
         onClick("pref_camera_display_tools", pref -> startActivity(new android.content.Intent(
                 requireContext(), com.kooo.evcam.developer.CameraDisplayToolsActivity.class)));
         // 这里原来先找一个 key 为 cat_developer 的分类，找不到就整个返回 ——
@@ -1764,11 +1753,6 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         bindSwitch("pref_raw_frame_dump", appConfig.isRawFrameDumpEnabled(),
                 appConfig::setRawFrameDumpEnabled);
 
-        onClick("pref_drive_logging", pref -> {
-            if(com.kooo.evcam.telemetry.DriveLogService.isEnabled())com.kooo.evcam.telemetry.DriveLogService.stop(requireContext());
-            else com.kooo.evcam.telemetry.DriveLogService.start(requireContext());
-            refreshDriveLogging();
-        });
         refreshDriveLogging();
 
         // 信号普查：开就挂全部功能号记变化，关就停；到点自己停时开关也关（见 SignalScanControl）
@@ -2145,7 +2129,7 @@ public class SettingsPreferenceFragment extends PreferenceFragmentCompat {
         if (pref == null) {
             return;
         }
-        if (key.contains("reset") || java.util.Arrays.asList("pref_check_update", "pref_archive", "pref_repair_mp4", "pref_drive_logging").contains(key))
+        if (key.contains("reset") || java.util.Arrays.asList("pref_check_update", "pref_archive", "pref_repair_mp4").contains(key))
             PreferenceRows.markAction(pref);
         pref.setOnPreferenceClickListener(preference -> {
             action.run(preference);

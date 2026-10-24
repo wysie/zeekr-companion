@@ -56,4 +56,38 @@ import static org.junit.Assert.*;import static org.junit.Assume.assumeTrue;impor
    }
   }finally{file.delete();}
  }
+ @Test public void developerAndSystemShortcutsOpenTheSameToolsWithoutStartingLogging(){
+  android.app.Instrumentation instrumentation=InstrumentationRegistry.getInstrumentation();
+  android.app.Instrumentation.ActivityMonitor diagnostics=instrumentation.addMonitor(DiagnosticsActivity.class.getName(),null,true);
+  android.app.Instrumentation.ActivityMonitor status=instrumentation.addMonitor(com.kooo.evcam.ui.CameraStatusActivity.class.getName(),null,true);
+  DeveloperMode.setEnabled(target,true);
+  try(ActivityScenario<MainActivity> scenario=ActivityScenario.launch(MainActivity.class)){
+   scenario.onActivity(a->{
+    SettingsShellFragment shell=install(a,"screen_developer");
+    assertEquals("group_dev_troubleshooting",page(shell).getPreferenceScreen().getPreference(0).getKey());
+    assertEquals("group_dev_troubleshooting",page(shell).findPreference("pref_permissions").getParent().getKey());
+    assertFalse(page(shell).findPreference("pref_recording_mode").isSelectable());
+    assertEquals(a.getString(R.string.dev_recording_pipeline_status),page(shell).findPreference("pref_recording_mode").getSummary());
+    assertNull(page(shell).findPreference("pref_drive_logging"));
+    assertNull(page(shell).findPreference("pref_drive_logging_status"));
+    page(shell).findPreference("pref_dev_diagnostics").performClick();assertEquals(1,diagnostics.getHits());
+    page(shell).findPreference("pref_dev_camera_status").performClick();assertEquals(1,status.getHits());
+    assertFalse(DriveLogService.isEnabled());
+    page(shell).findPreference("pref_dev_usb_session").performClick();shell.getChildFragmentManager().executePendingTransactions();
+    assertTrue(shell.getChildFragmentManager().findFragmentById(R.id.settings_detail) instanceof UsbLogSessionFragment);
+    UsbLogSessionFragment usb=(UsbLogSessionFragment)shell.getChildFragmentManager().findFragmentById(R.id.settings_detail);
+    assertTrue(usb.findPreference("usb_session_action").isEnabled());assertFalse(DriveLogService.isEnabled());
+    assertFalse(com.kooo.evcam.camera.CameraNeeds.current().developerProbe());
+    shell.getChildFragmentManager().popBackStackImmediate();assertNotNull(page(shell).findPreference("pref_dev_diagnostics"));
+    shell.showSection("screen_system");shell.getChildFragmentManager().executePendingTransactions();
+    shell.openDetail(SettingsPreferenceFragment.forSection("sub_troubleshooting"),a.getString(R.string.ui_troubleshooting));shell.getChildFragmentManager().executePendingTransactions();
+    page(shell).findPreference("pref_diagnostics").performClick();assertEquals(2,diagnostics.getHits());
+    page(shell).findPreference("pref_camera_status").performClick();assertEquals(2,status.getHits());
+    page(shell).findPreference("pref_usb_session").performClick();shell.getChildFragmentManager().executePendingTransactions();
+    assertTrue(shell.getChildFragmentManager().findFragmentById(R.id.settings_detail) instanceof UsbLogSessionFragment);
+    assertFalse(DriveLogService.isEnabled());
+   });
+  }finally{instrumentation.removeMonitor(diagnostics);instrumentation.removeMonitor(status);}
+ }
+
 }

@@ -672,16 +672,28 @@
         android:key="screen_developer"
         android:title="@string/set_section_developer">
         <PreferenceCategory
+            android:key="group_dev_troubleshooting"
+            android:title="@string/ui_troubleshooting">
+            <Preference android:key="pref_dev_camera_status" android:title="@string/camera_status_title" android:summary="@string/camera_status_summary" />
+            <Preference android:key="pref_dev_diagnostics" android:title="@string/set_diagnostics_title" android:summary="@string/set_diagnostics_summary" />
+            <Preference android:key="pref_dev_usb_session" android:title="@string/ui_usb_session" android:summary="@string/ui_usb_session_summary" />
+            <Preference
+                android:key="pref_permissions"
+                android:title="@string/dev_permissions_title"
+                android:summary="@string/dev_permissions_summary" />
+        </PreferenceCategory>
+        <PreferenceCategory
             android:key="group_dev_recording"
             android:title="@string/menu_recording_internals">
             <SwitchPreferenceCompat
                 android:key="pref_usb_internal_fallback"
                 android:title="@string/dev_usb_internal_fallback_title"
                 android:summary="@string/dev_usb_internal_fallback_summary" />
-            <ListPreference
+            <Preference
                 android:key="pref_recording_mode"
                 android:title="@string/set_recording_mode_title"
-                android:summary="%s" />
+                android:summary="@string/dev_recording_pipeline_status"
+                android:selectable="false" />
             <SwitchPreferenceCompat
                 android:key="pref_force_h264"
                 android:title="@string/set_force_h264_title"
@@ -710,14 +722,6 @@
                 android:key="pref_raw_frame_dump"
                 android:title="@string/dev_raw_frame_title"
                 android:summary="@string/dev_raw_frame_summary" />
-            <Preference
-                android:key="pref_drive_logging"
-                android:title="@string/drive_log_title"
-                android:summary="@string/drive_log_summary" />
-            <Preference
-                android:key="pref_drive_logging_status"
-                android:title="@string/drive_log_status_title"
-                android:selectable="false" />
             <SwitchPreferenceCompat
                 android:key="pref_signal_scan"
                 android:title="@string/dev_signal_scan_title"
@@ -726,10 +730,6 @@
                 android:key="pref_camera_holder_suspects"
                 android:title="@string/dev_camera_suspects_title"
                 android:summary="@string/dev_camera_suspects_summary" />
-            <Preference
-                android:key="pref_permissions"
-                android:title="@string/dev_permissions_title"
-                android:summary="@string/dev_permissions_summary" />
         </PreferenceCategory>
         <PreferenceCategory
             android:key="group_dev_maintenance"
