@@ -1227,8 +1227,8 @@
     <string name="set_009_camera_mapping_summary">Off by default. Maps camera 3 to Surround and 2 to Driver camera. Leaves the second additional slot unmapped unless manually assigned; exterior road cameras 0/1 are not cabins. Based on one 009 export; Tap Apply changes afterwards.</string>
     <string name="msg_009_mapping_restart">Tap Apply changes to use the saved camera mapping.</string>
     <string name="slot_driver_camera">Driver camera</string>
-    <string name="slot_road_front">Forward road camera</string>
-    <string name="slot_road_rear">Rearward road camera</string>
+    <string name="slot_road_front">Front camera</string>
+    <string name="slot_road_rear">Rear camera</string>
     <string name="slot_additional_camera">Additional camera (manual mapping)</string>
 <string name="msg_select_first">Select something first</string>
 <string name="action_deselect_all">Deselect all</string>

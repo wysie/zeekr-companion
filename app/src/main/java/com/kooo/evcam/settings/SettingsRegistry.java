@@ -35,8 +35,8 @@ public final class SettingsRegistry {
             entry("selected", "跟随录制来源", R.string.record_preview_selected),
             entry("surround", "环视", R.string.record_group_surround),
             entry("roads", "前后道路", R.string.record_group_roads),
-            entry("roadfront", "前方道路", R.string.slot_road_front),
-            entry("roadrear", "后方道路", R.string.slot_road_rear),
+            entry("roadfront", "前方相机", R.string.slot_road_front),
+            entry("roadrear", "后方相机", R.string.slot_road_rear),
             entry("cabin", "驾驶员 / 前座舱", R.string.record_preview_cabin),
             entry("surround_roads", "环视 + 前后道路", R.string.record_preview_surround_roads));
 

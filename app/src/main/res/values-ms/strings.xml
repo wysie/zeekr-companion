@@ -1203,8 +1203,8 @@
     <string name="set_009_camera_mapping_summary">Mati secara lalai. Kamera 3 ialah Sekeliling dan 2 ialah Kamera pemandu. Slot tambahan kedua tidak dipetakan kecuali ditetapkan secara manual; kamera jalan 0/1 bukan kamera kabin. Berdasarkan satu eksport 009; ketik Gunakan perubahan selepas menukar.</string>
     <string name="msg_009_mapping_restart">Ketik Gunakan perubahan untuk menggunakan pemetaan kamera tersimpan.</string>
     <string name="slot_driver_camera">Kamera pemandu</string>
-    <string name="slot_road_front">Kamera jalan hadapan</string>
-    <string name="slot_road_rear">Kamera jalan belakang</string>
+    <string name="slot_road_front">Kamera hadapan</string>
+    <string name="slot_road_rear">Kamera belakang</string>
     <string name="slot_additional_camera">Kamera tambahan (pemetaan manual)</string>
 <string name="msg_select_first">Pilih sesuatu dahulu</string>
 <string name="action_deselect_all">Nyahpilih semua</string>

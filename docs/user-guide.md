@@ -6,8 +6,9 @@
 
 Under **Settings → Recording & photos**, check the vehicle model, camera sources,
 then recording sources and quality. Surround, Front + Rear, Cabin and Manual
-mapping are separate source groups. The dedicated road feeds are different from
-the front/rear crops in Surround. Availability depends on the head unit.
+mapping are separate source groups. **Front camera** and **Rear camera** name the
+dedicated road feeds, separate from the front/rear crops in Surround. Availability
+depends on the head unit.
 
 **Preview** on the main screen chooses what you see, independently of what you
 record. Selected recording sources follows the recording selection; other presets

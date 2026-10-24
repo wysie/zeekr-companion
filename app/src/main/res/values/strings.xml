@@ -1212,8 +1212,8 @@
     <string name="set_009_camera_mapping_summary">默认关闭。相机 3 为环视，2 为驾驶员相机；第二个附加槽位保持未映射，除非手动指定。车外道路相机 0/1 不是座舱相机。仅依据一台 009 导出；更改后请点击「应用更改」。</string>
     <string name="msg_009_mapping_restart">请点击「应用更改」以使用已保存的相机映射。</string>
     <string name="slot_driver_camera">驾驶员相机</string>
-    <string name="slot_road_front">前方道路相机</string>
-    <string name="slot_road_rear">后方道路相机</string>
+    <string name="slot_road_front">前方相机</string>
+    <string name="slot_road_rear">后方相机</string>
     <string name="slot_additional_camera">附加相机（手动映射）</string>
 <string name="msg_select_first">请先选择</string>
 <string name="action_deselect_all">全不选</string>
