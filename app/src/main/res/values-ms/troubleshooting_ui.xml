@@ -15,6 +15,7 @@
     <string name="ui_browser_unavailable">Tiada pelayar tersedia</string>
     <string name="ui_copy_link">Salin pautan</string>
     <string name="ui_last_export">Diagnostik terakhir disimpan:\n%1$s</string>
-    <string name="ui_send_saved_report">Hantar laporan tersimpan</string>
+    <string name="ui_send_saved_report">Hantar laporan terakhir disimpan</string>
     <string name="ui_copy_file_location">Salin lokasi fail</string>
+    <string name="diag_btn_save_send">Simpan &amp; hantar ke telefon</string>
 </resources>

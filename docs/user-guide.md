@@ -164,6 +164,10 @@ stamps is included. [Backup scope and recovery](settings-backup.md).
 
 Export a report through **Settings → System → Diagnostics** and
 [open a Companion issue](https://github.com/wysie/zeekr-companion/issues).
+**Save & send to phone** saves the current report to a new file and opens its QR
+download. **Send last saved report** opens the existing saved file without
+regenerating it; the saved path identifies that file.
+
 Reports can contain location, VIN/device identifiers, paths, vehicle state and
 saved settings. Review them before sharing. USB logging and camera/display probes
 are explicit Developer tools; merely opening troubleshooting does not start them.
