@@ -8,7 +8,7 @@ or browse the [screenshots](screenshots/gallery.md).
 - [Camera sources](recording-source-groups.md) and [Apply changes](apply-camera-changes.md)
 - [Blind-side camera](blind-spot-side-view.md), [picture comparison](blind-quality-comparison.md) and [009 HUD](009-hud-live-video.md)
 - [Experimental 360° view](diy-360-view.md), [009 image fit](009-image-fit.md) and [GPU 360° rendering](gpu-360-renderer.md)
-- [GPU processing](unified-gpu-rendering.md)
+- [GPU processing](unified-gpu-rendering.md) and [rendering/recorder review](review-20261023.md)
 - [Storage folders](app-storage-folders.md), [manual recording locks](manual-recording-lock.md) and [settings backup](settings-backup.md)
 - [Floating-button gestures](floating-button-gestures.md) and [settings map](settings-menu.md)
 
