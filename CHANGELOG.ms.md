@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Ringkaskan nama kamera khusus kepada Kamera hadapan dan Kamera belakang, dengan label bahasa Inggeris dan Cina yang sepadan.
+
 ## [3.0.0-alpha.2] - 2026-10-24
 
 - Guna semula geometri pembetulan Canvas yang tidak berubah dan langkau input pratonton GPU berulang tanpa menurunkan resolusi sumber atau mengubah pembingkaian.

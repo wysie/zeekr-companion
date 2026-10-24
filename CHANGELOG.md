@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Shorten the dedicated camera labels to Front camera and Rear camera, with matching Malay and Chinese translations.
+
 ## [3.0.0-alpha.2] - 2026-10-24
 
 - Reuse unchanged Canvas correction geometry and skip duplicate GPU preview inputs without lowering source resolution or changing framing.
