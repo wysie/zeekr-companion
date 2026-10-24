@@ -42,7 +42,7 @@ public class DeveloperSettingsTest {
 
     static {
         ROWS.put("pref_usb_internal_fallback", Arrays.asList("usb_internal_fallback"));
-        ROWS.put("pref_recording_mode", Arrays.asList("recording_mode"));
+        ROWS.put("pref_recording_mode", NONE); // Read-only MediaCodec status; legacy preferences remain stored.
         ROWS.put("pref_force_h264", Arrays.asList("force_h264_encoding"));
         ROWS.put("pref_screen_off_recording", Arrays.asList("screen_off_recording"));
         ROWS.put("pref_screen_off_wake_hours", Arrays.asList("screen_off_wake_min"));
@@ -52,8 +52,9 @@ public class DeveloperSettingsTest {
         ROWS.put("pref_camera_display_tools", NONE);
         ROWS.put("pref_raw_frame_dump", Arrays.asList("raw_frame_dump"));
         // Session actions/status; no persisted enable flag. DeveloperMode stops the service explicitly.
-        ROWS.put("pref_drive_logging", NONE);
-        ROWS.put("pref_drive_logging_status", NONE);
+        ROWS.put("pref_dev_camera_status", NONE);
+        ROWS.put("pref_dev_diagnostics", NONE);
+        ROWS.put("pref_dev_usb_session", NONE);
         ROWS.put("pref_signal_scan", Arrays.asList("signal_scan"));
         ROWS.put("pref_camera_holder_suspects", Arrays.asList("camera_holder_suspects"));
         ROWS.put("pref_repair_mp4", NONE);

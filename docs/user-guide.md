@@ -107,7 +107,7 @@ The side-picture comparison export can help distinguish source limitations from
 rendering loss. [GPU settings](unified-gpu-rendering.md) · [Quality comparison](blind-quality-comparison.md).
 
 Correction and preview layout leave recorded pixels unchanged. In contrast,
-**Interface → Preview & playback → Image adjustment** changes supported camera
+**Interface → Picture & correction → Image adjustment** changes supported camera
 exposure, white balance and other camera controls across active channels,
 **including recordings**. Unsupported controls are not shown.
 
@@ -162,15 +162,18 @@ stamps is included. [Backup scope and recovery](settings-backup.md).
 - **App Lab disappears after a head-unit reboot:** this has been reported; the
   cause is unresolved. Export diagnostics before rebooting if possible.
 
-Export a report through **Settings → System → Diagnostics** and
-[open a Companion issue](https://github.com/wysie/zeekr-companion/issues).
+Export a report from **System → Troubleshooting → Diagnostics** in Settings, or
+from **Developer options → Troubleshooting** when enabled, and attach it to a
+[Companion issue](https://github.com/wysie/zeekr-companion/issues).
 **Save & send to phone** saves the current report to a new file and opens its QR
 download. **Send last saved report** opens the existing saved file without
 regenerating it; the saved path identifies that file.
 
 Reports can contain location, VIN/device identifiers, paths, vehicle state and
-saved settings. Review them before sharing. USB logging and camera/display probes
-are explicit Developer tools; merely opening troubleshooting does not start them.
+saved settings. Review them before sharing. USB logging opens the same session
+page from either menu. Starting a session requires an explicit Start action.
+Camera/display probes are explicit Developer tools; merely opening
+troubleshooting does not start them.
 
 This personal fork has limited on-car validation. Do not operate it while driving
 or use its imagery to judge obstacles, distance or manoeuvres. It does not replace

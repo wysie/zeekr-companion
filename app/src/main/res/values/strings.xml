@@ -380,7 +380,7 @@
     <string name="guide_1">试验性非官方应用，未经任何车辆功能安全认证，不能替代原厂行车记录仪、倒车影像或盲区监测。行驶中请勿操作本应用，也不要依据其画面判断路况。</string>
     <string name="guide_2">录像和照片仅保存到 U 盘，未插入 U 盘时不会开始录制，也无法拍照。行车记录需要持续写入，而内置存储的写入寿命有限，且通常无法更换。U 盘上的录像和照片未加密，取下后可在其他设备上直接读取。</string>
     <string name="guide_3">菜单键固定在左上角。操作按钮可在「设置 → 界面 → 操作按钮位置」中放到驾驶座一侧。超级后视镜默认关闭，可在菜单或「设置 → 超级后视镜」中开启；开启后拖动窗口两侧可移动，双指可缩放，在窗口中间上下滑动调整取景、左右滑动切换摄像头。</string>
-    <string name="guide_4">遇到问题请先重启应用。如仍未恢复，请在「设置 → 系统 → 诊断信息」中导出诊断报告，并附在 issue 中提交。</string>
+    <string name="guide_4">遇到问题请先重启应用。如仍未恢复，请在「设置 → 系统 → 故障排查 → 诊断信息」中导出诊断报告，并附在 issue 中提交。</string>
     <string name="action_got_it_guide">知道了</string>
 
     <!-- 主界面 / 通知 / 回放 -->
@@ -1168,10 +1168,10 @@
     <string name="menu_calibration">标定</string>
     <string name="menu_actions">操作</string>
     <string name="menu_appearance">外观</string>
-    <string name="menu_preview_playback">预览与回放校正</string>
+    <string name="menu_preview_playback">画面与校正</string>
     <string name="menu_recording_internals">录制内部选项</string>
     <string name="menu_image_rendering">画面与渲染</string>
-    <string name="menu_camera_research">相机研究与诊断</string>
+    <string name="menu_camera_research">相机与车辆研究</string>
     <string name="menu_maintenance">维护</string>
     <string name="dev_usb_internal_fallback_title">允许回退到内置存储</string>
     <string name="dev_usb_internal_fallback_summary">默认关闭：等待 U 盘。开启后，开始录制先等 10 秒才允许内置回退；录制中 U 盘失效也允许回退。不搬移正在写入的文件。直接选择内置存储和中转写入为独立选项。</string>
@@ -1368,4 +1368,5 @@
     <string name="side_upscaling_sharp">双三次清晰</string>
     <string name="side_sharpening_title">锐化 (%)</string>
     <string name="side_upscaling_help">用于盲区弹窗、HUD、超级后视镜侧视和此预览。需要在系统 → GPU 图像处理中启用盲区侧视相机或全部。该路径启用时实时生效。双三次需要更多 GPU 运算；噪点明显时请降低锐化。不改变取景、录像或相机分辨率。</string>
+    <string name="dev_recording_pipeline_status">MediaCodec（固定）</string>
 </resources>

@@ -122,8 +122,8 @@ public class DriveLogAndroidTest {
             activity.onActivity(a->{
                 SettingsShellFragment shell=(SettingsShellFragment)a.getSupportFragmentManager().findFragmentById(R.id.fragment_container);
                 SettingsPreferenceFragment page=(SettingsPreferenceFragment)shell.getChildFragmentManager().findFragmentById(R.id.settings_detail);
-                androidx.preference.Preference toggle=page.findPreference("pref_drive_logging");assertEquals(context.getString(R.string.ui_start_logging),toggle.getTitle());
-                assertTrue(page.findPreference("pref_drive_logging_status").getSummary().toString().contains(context.getString(R.string.drive_log_no_usb)));
+                androidx.preference.Preference session=page.findPreference("pref_dev_usb_session");assertEquals(context.getString(R.string.ui_usb_session),session.getTitle());
+                assertTrue(session.getSummary().toString().contains(context.getString(R.string.drive_log_no_usb)));
             });
         }
     }
