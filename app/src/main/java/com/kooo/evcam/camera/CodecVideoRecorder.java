@@ -1131,26 +1131,9 @@ public class CodecVideoRecorder {
             finishStopNow(stopDeadlineMs);
         }
 
-        // EGL 渲染器、编码器、占位输出：排到编码线程上拆，等它拆完（见 releaseOnEncoderThread）。
-        // 拆完之后不会再有帧去画，下面收信息条位图才不会跟 drawFrame 撞上
+        // A timeout only ends the wait. Every resource used by an in-flight frame
+        // remains owned by the queued encoder teardown until that frame returns.
         releaseOnEncoderThread();
-        if (infoBar != null) {
-            infoBar.recycle();
-            infoBar = null;
-        }
-
-        // 释放录像输出（必须在 SurfaceTexture 之前释放）
-        Surface output = recordSurface;
-        recordSurface = null;
-        if (output != null) {
-            output.release();
-        }
-
-        // 释放 SurfaceTexture
-        if (inputSurfaceTexture != null) {
-            inputSurfaceTexture.release();
-            inputSurfaceTexture = null;
-        }
 
         // 写入线程：排着的做完（还开着的文件也在这里收 —— 停录都收好了的话没有），退出
         stopWriter();
@@ -1211,7 +1194,8 @@ public class CodecVideoRecorder {
     private void releaseOnEncoderThread() {
         Handler handler = encoderHandler;
         if (handler == null) {
-            return;  // 编码线程没建起来：编码器、EGL 渲染器都在它建起来之后才建，也就没有可拆的
+            releaseFrameResources(); // No encoder task was ever started (e.g. release before prepare).
+            return;
         }
         final CountDownLatch done = new CountDownLatch(1);
         handler.post(() -> {
@@ -1224,12 +1208,29 @@ public class CodecVideoRecorder {
                 releaseEncoder();
                 releasePlaceholder();
             } finally {
-                done.countDown();
+                try { releaseFrameResources(); }
+                finally { done.countDown(); }
             }
         });
         if (!awaitUntil(done, SystemClock.uptimeMillis() + GL_TEARDOWN_WAIT_MS)) {
             AppLog.w(TAG, "Camera " + cameraId + " encoder thread busy for " + GL_TEARDOWN_WAIT_MS
                     + "ms, GL and encoder teardown stays queued on it");
+        }
+    }
+
+    /** Encoder-thread ownership includes CPU overlays and the producer texture, even after timeout. */
+    private void releaseFrameResources() {
+        com.kooo.evcam.telemetry.InfoBarRenderer bar = infoBar;
+        infoBar = null;
+        Surface output = recordSurface;
+        recordSurface = null;
+        SurfaceTexture input = inputSurfaceTexture;
+        inputSurfaceTexture = null;
+        try {
+            if (bar != null) bar.recycle();
+        } finally {
+            try { if (output != null) output.release(); }
+            finally { if (input != null) input.release(); }
         }
     }
 

@@ -12,6 +12,26 @@ import org.junit.Test;
  * 格子之间错开了」，在车上很难说清是哪一步的问题，所以钉在这里。</p>
  */
 public class FisheyeMeshTest {
+    @Test public void revisionedMapReusesGridAndInvalidatesForAimLaneSizeAndModeChanges() {
+        FisheyeMesh mesh = new FisheyeMesh();
+        int[] calls = {0}; float[] offset = {0};
+        FisheyeMesh.SourceMap map = (u,v,out) -> { calls[0]++; out[0]=u+offset[0]; out[1]=v; };
+        mesh.prepare(10, 0, 100, 100, 100, map, 1);
+        assertEquals(121, calls[0]);
+        mesh.prepare(10, 0, 100, 100, 100, map, 1);
+        assertEquals("No per-frame projection math",121,calls[0]);
+        offset[0]=.1f;
+        mesh.prepare(10, 0, 100, 100, 100, map, 2);
+        assertEquals(242,calls[0]); assertEquals(10,mesh.sourceX(0,0),.001f);
+        mesh.prepare(10, 0, 200, 200, 100, map, 2);
+        assertEquals(363,calls[0]); assertEquals(20,mesh.sourceX(0,0),.001f);
+        mesh.prepare(10, 0, 200, 200, 100, 0,0,1,1);
+        mesh.prepare(10, 0, 200, 200, 100, map, 2);
+        assertEquals("Switching back from mirror projection rebuilds side map",484,calls[0]);
+        mesh.prepare(10, 0, 200, 200, 100, map);
+        mesh.prepare(10, 0, 200, 200, 100, map);
+        assertEquals("Unversioned mutable maps retain recomputation",726,calls[0]);
+    }
 
     private static final float TOLERANCE = 0.01f;
 

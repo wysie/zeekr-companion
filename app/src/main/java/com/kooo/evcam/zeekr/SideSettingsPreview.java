@@ -323,6 +323,7 @@ public final class SideSettingsPreview extends LinearLayout {
         private final Paint paint = new Paint(Paint.ANTI_ALIAS_FLAG | Paint.FILTER_BITMAP_FLAG);
         private final FisheyeMesh mesh = new FisheyeMesh();
         private final SideViewFraming framing = new SideViewFraming();
+        private final FisheyeMesh.SourceMap sourceMap = framing::sourcePoint;
         private final Matrix transform = new Matrix();
         private final RectF source = new RectF(), target = new RectF();
         private final CameraLabel label = new CameraLabel(getContext(), true);
@@ -376,7 +377,7 @@ public final class SideSettingsPreview extends LinearLayout {
                         (float) width / height, rotation, config.isSidePopupAutoFit());
                 RearViewGeometry.ShaderRects rect = RearViewGeometry.toShaderRects(plan, lane, RearViewGeometry.Viewport.full());
                 mesh.prepare(SideViewFraming.meshDivisions(width, height), rect.laneOffsetX * width,
-                        rect.laneOffsetY * height, rect.laneScaleX * width, rect.laneScaleY * height, framing::sourcePoint);
+                        rect.laneOffsetY * height, rect.laneScaleX * width, rect.laneScaleY * height, sourceMap, framing.revision());
                 target.set(0, 0, width, height);
                 FisheyeMesh.Painter draw = c -> c.drawBitmap(sample, null, target, paint);
                 if (config.isSidePopupAutoFit()) mesh.draw(canvas, 0, 0, width, height, draw);

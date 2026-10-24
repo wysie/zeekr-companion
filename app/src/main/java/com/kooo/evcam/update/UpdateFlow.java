@@ -32,7 +32,7 @@ import java.util.Locale;
  *
  * <p>APK 下到<b>应用缓存目录</b>。系统装包必须从一个真实文件读，没法从内存直接装，
  * 所以「不落盘」做不到；能做到的是不落到用户的存储里，并且<b>每次下载前先把上一次
- * 下的安装包删掉</b>（{@link #clear}）。装完不删：交给系统安装界面之后，应用这边不知道它什么时候装完。
+ * 下的安装包删掉</b>（保留仍在下载的任务文件）。装完不删：交给系统安装界面之后，应用这边不知道它什么时候装完。
  * 缓存目录也在系统的回收范围内，空间紧张时会被自动清理。</p>
  *
  * <h3>这是本应用唯一一次主动出网</h3>
@@ -43,6 +43,7 @@ public final class UpdateFlow {
 
     private static final String TAG = "UpdateFlow";
     private static final String CACHE_DIR = "update";
+    private static final UpdateDownloads DOWNLOADS = new UpdateDownloads();
 
     private UpdateFlow() {
     }
@@ -100,8 +101,15 @@ public final class UpdateFlow {
 
     private static void download(Activity activity, GithubReleases.Release release) {
         File dir = new File(activity.getCacheDir(), CACHE_DIR);
-        clear(dir);
-        File target = new File(dir, release.apkName);
+        final UpdateDownloads.Job job;
+        try {
+            job = DOWNLOADS.begin(dir);
+        } catch (java.io.IOException failure) {
+            toast(activity, failureText(activity, failure,
+                    R.string.upd_download_failed, R.string.upd_cannot_download));
+            return;
+        }
+        File target = job.staging;
 
         ProgressBar bar = new ProgressBar(activity, null, android.R.attr.progressBarStyleHorizontal);
         bar.setMax(100);
@@ -136,30 +144,45 @@ public final class UpdateFlow {
         new Thread(() -> {
             String error = null;
             try {
-                GithubReleases.download(release, target, (done, total) -> post(activity, () -> {
-                    if (total > 0) {
-                        int percent = (int) (done * 100 / total);
-                        bar.setIndeterminate(false);
-                        bar.setProgress(percent);
-                        label.setText(activity.getString(R.string.upd_downloading_pct,
-                                percent,
-                                String.format(Locale.US, "%.1f", done / 1024f / 1024f),
-                                String.format(Locale.US, "%.1f", total / 1024f / 1024f)));
-                    } else {
-                        // 对面没给长度：算不出百分比，但至少让人看见字节在涨
-                        label.setText(activity.getString(R.string.upd_downloading_size,
-                                String.format(Locale.US, "%.1f", done / 1024f / 1024f)));
-                    }
-                }));
+                GithubReleases.download(release, target, (done, total) -> {
+                    if (activity.isFinishing() || activity.isDestroyed()) DOWNLOADS.cancel(job);
+                    if (!DOWNLOADS.isCurrent(job)) throw new java.util.concurrent.CancellationException("Update superseded or activity closed");
+                    post(activity, () -> {
+                        if (!DOWNLOADS.isCurrent(job)) return;
+                        if (total > 0) {
+                            int percent = (int) (done * 100 / total);
+                            bar.setIndeterminate(false);
+                            bar.setProgress(percent);
+                            label.setText(activity.getString(R.string.upd_downloading_pct,
+                                    percent,
+                                    String.format(Locale.US, "%.1f", done / 1024f / 1024f),
+                                    String.format(Locale.US, "%.1f", total / 1024f / 1024f)));
+                        } else {
+                            // 对面没给长度：算不出百分比，但至少让人看见字节在涨
+                            label.setText(activity.getString(R.string.upd_downloading_size,
+                                    String.format(Locale.US, "%.1f", done / 1024f / 1024f)));
+                        }
+                    });
+                });
+                if (!DOWNLOADS.publish(job, release.apkDigest, release.apkBytes)) {
+                    DOWNLOADS.discard(job);
+                    activity.runOnUiThread(() -> dismiss(dialog));
+                    return;
+                }
             } catch (Exception e) {
                 AppLog.e(TAG, "下载失败", e);
                 error = failureText(activity, e,
                         R.string.upd_download_failed, R.string.upd_cannot_download);
             }
             final String failure = error;
-            post(activity, () -> {
+            activity.runOnUiThread(() -> {
                 dismiss(dialog);
+                if (!DOWNLOADS.isCurrent(job) || activity.isFinishing() || activity.isDestroyed()) {
+                    DOWNLOADS.discard(job);
+                    return;
+                }
                 if (failure != null) {
+                    DOWNLOADS.discard(job);
                     // 用对话框而不是 toast：下载失败是需要看清原因的，
                     // 一闪而过的提示等于「点了没反应」
                     com.kooo.evcam.ui.CamDialogs.show(new MaterialAlertDialogBuilder(activity, R.style.Theme_Cam_MaterialAlertDialog)
@@ -167,7 +190,8 @@ public final class UpdateFlow {
                             .setMessage(failure)
                             .setPositiveButton(R.string.action_got_it, null));
                 } else {
-                    install(activity, target);
+                    DOWNLOADS.retainForInstaller(job);
+                    install(activity, job.apk);
                 }
             });
         }, "update-download").start();
@@ -238,19 +262,6 @@ public final class UpdateFlow {
     }
 
     // ------------------------------------------------------------------ 小工具
-
-    /** 上一次下的东西不留 —— 缓存目录里躺一个旧 APK 没有任何用处。 */
-    private static void clear(File dir) {
-        File[] files = dir.listFiles();
-        if (files == null) {
-            return;
-        }
-        for (File file : files) {
-            if (!file.delete()) {
-                AppLog.w(TAG, "旧的安装包删不掉: " + file);
-            }
-        }
-    }
 
     /**
      * 失败时界面上那一句：能说清原因就是「X 失败：原因」，说不清就用不带原因的那句。

@@ -191,6 +191,9 @@ public final class FisheyeGlPipe {
     private final int[] size = new int[2];
     private FloatBuffer quad;
     private long frames;
+    private long acquiredTimestamp;
+    private volatile long duplicateInputs;
+    private volatile long acquireMaxNs, renderMaxNs;
     private long startedAtMs;
     /** Normal strip/video output keeps source detail regardless of TextureView layout size. */
     private volatile Size normalOutputSize;
@@ -409,7 +412,10 @@ public final class FisheyeGlPipe {
         return "input=" + inputWidth + "x" + inputHeight + " normal=" + target
                 + " rendered=" + renderedWidth + "x" + renderedHeight + " mode=" + renderedMode
                 + " presentation=" + (presentationActive ? "active" : "suspended")
-                + " swaps=" + presentedFrames;
+                + " swaps=" + presentedFrames + " uniqueInputs=" + frames
+                + " duplicateInputs=" + duplicateInputs
+                + " acquireMaxMs=" + acquireMaxNs / 1_000_000
+                + " renderSwapMaxMs=" + renderMaxNs / 1_000_000;
     }
 
     /** 收掉。任何线程都能调；在别的线程上调会等它收完（最多 1 秒），免得新管线接不上同一块输出。 */
@@ -519,6 +525,7 @@ public final class FisheyeGlPipe {
         if (released || input == null) {
             return;
         }
+        long began = System.nanoTime();
         try {
             // 不管画不画，这一帧都要取走 —— 不然生产者会被堵住
             input.updateTexImage();
@@ -528,12 +535,22 @@ public final class FisheyeGlPipe {
             AppLog.w(TAG, name + " 取帧失败: " + e);
             return;
         }
+        acquireMaxNs = Math.max(acquireMaxNs, System.nanoTime() - began);
+        long stamp = input.getTimestamp();
+        // SurfaceTexture callbacks may coalesce: several callbacks can acquire the same
+        // latest buffer. Drain every callback, but submit those pixels only once.
+        // Explicit settings/tap/resume redraws still call drawLatest directly.
+        if (stamp > 0 && stamp == acquiredTimestamp) { duplicateInputs++; return; }
+        acquiredTimestamp = stamp;
         frames++;
         if (frames == 1) {
             AppLog.i(TAG, name + " 第一帧，距准备好 "
                     + (SystemClock.elapsedRealtime() - startedAtMs) + "ms");
         }
+        began = System.nanoTime();
         drawLatest();
+        // Includes settings tap, driver submission and buffer-swap waits; not GPU time.
+        renderMaxNs = Math.max(renderMaxNs, System.nanoTime() - began);
     }
 
     /** 把最近取到的那一帧画出去。设置变了（比如暂停中拨了开关）也叫它，不用等下一帧。 */

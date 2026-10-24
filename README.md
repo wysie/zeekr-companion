@@ -18,7 +18,7 @@ Actual app UI with **simulated camera scenes**. [All screens and settings](docs/
 ## What it does
 
 - **Record and photograph** selected surround, road and cabin cameras, with per-camera quality and USB storage limits.
-- **Choose your preview** independently of recording: camera sources, pane layout and fisheye correction.
+- **Choose your preview** independently of recording, with camera layouts and fisheye correction for live views and playback.
 - **Open camera windows:** Super mirror, turn-signal side views and an experimental stitched 360° view. HUD output depends on the vehicle.
 - **Browse and protect footage:** photo/video galleries, clip locks, exports and local phone sharing.
 - **Make it yours:** light/dark themes, English/Malay/Chinese, floating-button actions and settings backup.

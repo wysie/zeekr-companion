@@ -97,6 +97,10 @@ Apply camera-route changes when prompted; playback uses the selection next time
 it opens. Off still uses Android drawing paths and does not mean all drawing is
 CPU-only. No renderer is guaranteed to be faster on every head unit.
 
+Unchanged Canvas correction geometry is reused and repeated GPU inputs are skipped
+to avoid redundant rendering. Source resolution and framing stay the same; an
+on-car smoothness improvement has not yet been measured.
+
 Bilinear/bicubic sampling and sharpening cannot create missing camera detail.
 The side-picture comparison export can help distinguish source limitations from
 rendering loss. [GPU settings](unified-gpu-rendering.md) · [Quality comparison](blind-quality-comparison.md).

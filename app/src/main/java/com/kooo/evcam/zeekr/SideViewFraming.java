@@ -18,6 +18,9 @@ public final class SideViewFraming {
     private boolean autoFit;
     private double rollCos, rollSin;
     private double fittedTangent;
+    private long revision;
+
+    public long revision() { return revision; }
 
     /** Returns true only when the configuration changes; fitting is cached between frames. */
     public boolean configure(float fov, float back, float up, int lane, float aspect) {
@@ -47,6 +50,7 @@ public final class SideViewFraming {
         this.aspect = aspect;
         this.roll = roll;
         this.autoFit = autoFit;
+        revision++;
         rollCos = Math.cos(Math.toRadians(roll));
         rollSin = Math.sin(Math.toRadians(roll));
         rays = new SideViewProjection.Rays(back, up, lane);

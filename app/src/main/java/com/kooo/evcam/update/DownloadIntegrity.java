@@ -1,6 +1,8 @@
 package com.kooo.evcam.update;
 
 import java.io.IOException;
+import java.io.File;
+import java.io.FileInputStream;
 import java.net.URL;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
@@ -51,6 +53,20 @@ final class DownloadIntegrity {
             // 每个 Java / 安卓运行环境都必须有 SHA-256
             throw new IllegalStateException(impossible);
         }
+    }
+
+    static void verifyFile(String digest, File file, long expectedSize) throws IOException {
+        MessageDigest hash = sha256();
+        long size = 0;
+        byte[] buffer = new byte[64 * 1024];
+        try (FileInputStream input = new FileInputStream(file)) {
+            int count;
+            while ((count = input.read(buffer)) != -1) {
+                hash.update(buffer, 0, count);
+                size += count;
+            }
+        }
+        verify(expected(digest), hash.digest(), expectedSize, size);
     }
 
     /** 收完之后对一遍：大小和 GitHub 说的一样、算出来的 sha256 和它给的一样；有一样不对抛 IOException。 */

@@ -21,6 +21,28 @@ import static org.junit.Assert.*;
 /** Real EGL external-camera-texture path, using synthetic frames on a disposable emulator. */
 @RunWith(AndroidJUnit4.class)
 public class BirdEyeGpuAndroidTest {
+    @Test public void repeatedAcquisitionSkipsSwapButSettingsAndResumeStillRedraw() throws Exception {
+        try (Fixture f = new Fixture()) {
+            for (int i=0;i<4;i++) { f.frame(); SystemClock.sleep(65); }
+            f.onGl(()->{});
+            java.lang.reflect.Field count=FisheyeGlPipe.class.getDeclaredField("presentedFrames");count.setAccessible(true);
+            java.lang.reflect.Method callback=FisheyeGlPipe.class.getDeclaredMethod("drawFrame");callback.setAccessible(true);
+            f.onGl(()->{
+                try {
+                    long before=count.getLong(f.pipe);
+                    for(int i=0;i<5;i++)callback.invoke(f.pipe);
+                    assertEquals("Repeated latest pixels must not be resubmitted",before,count.getLong(f.pipe));
+                } catch(ReflectiveOperationException error) { throw new AssertionError(error); }
+            });
+            f.pipe.setCorrection(true,110,FisheyeProjection.PROJECTION_RECTILINEAR);
+            f.onGl(()->{});
+            long corrected=count.getLong(f.pipe);
+            f.pipe.setPresentationActive(false);f.onGl(()->{});
+            f.pipe.setPresentationActive(true);f.onGl(()->{});
+            assertTrue("Resume explicitly redraws existing pixels",count.getLong(f.pipe)>corrected);
+            assertTrue(f.pipe.describeOutput(),f.pipe.describeOutput().contains("duplicateInputs=5"));
+        }
+    }
     private void main(Runnable work) { InstrumentationRegistry.getInstrumentation().runOnMainSync(work); }
     private void await(String message, BooleanSupplier done) {
         long until = SystemClock.uptimeMillis() + 5000;

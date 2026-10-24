@@ -59,8 +59,20 @@ public final class FisheyeMesh {
     private final float[] point = new float[2];
     private final float[] source = new float[8];
     private final float[] dest = new float[8];
-    /** 第一次画的时候才建：算网格的那部分要能在没有 Android 的 JVM 上跑。 */
-    private Matrix matrix;
+    /** Built lazily while drawing: projection-grid math remains JVM-testable. */
+    private Matrix[] tileTransforms;
+    private boolean[] tileValid;
+    private boolean transformsDirty = true;
+    private boolean gridReady;
+    private SourceMap cachedMap;
+    private long cachedRevision;
+    private float cachedFov, cachedWindowLeft, cachedWindowTop, cachedWindowWidth, cachedWindowHeight;
+    private String cachedProjection;
+
+    private boolean sameLane(int n, float left, float top, float width, float height) {
+        return gridReady && divisions == Math.max(1, n) && laneLeft == left && laneTop == top
+                && laneWidth == width && laneHeight == height;
+    }
 
     /** 校正用哪种投影、多大视野。含义和 {@link FisheyeProjection#sourcePoint} 一样。 */
     public void setCorrection(float fovDegrees, String projection) {
@@ -92,6 +104,14 @@ public final class FisheyeMesh {
     public void prepare(int divisions,
                         float laneLeft, float laneTop, float laneWidth, float laneHeight,
                         float windowLeft, float windowTop, float windowWidth, float windowHeight) {
+        if (sameLane(divisions, laneLeft, laneTop, laneWidth, laneHeight) && cachedMap == null
+                && cachedProjection != null && cachedProjection.equals(projection) && cachedFov == fovDegrees
+                && cachedWindowLeft == windowLeft && cachedWindowTop == windowTop
+                && cachedWindowWidth == windowWidth && cachedWindowHeight == windowHeight) return;
+        gridReady = true; transformsDirty = true; cachedMap = null;
+        cachedProjection = projection; cachedFov = fovDegrees;
+        cachedWindowLeft = windowLeft; cachedWindowTop = windowTop;
+        cachedWindowWidth = windowWidth; cachedWindowHeight = windowHeight;
         this.laneLeft = laneLeft; this.laneTop = laneTop;
         this.laneWidth = laneWidth; this.laneHeight = laneHeight;
         this.divisions = Math.max(1, divisions);
@@ -123,6 +143,23 @@ public final class FisheyeMesh {
      */
     public void prepare(int divisions, float laneLeft, float laneTop, float laneWidth, float laneHeight,
                         SourceMap map) {
+        // Unknown maps may be mutable; retain their original recompute-on-call contract.
+        prepareMap(divisions, laneLeft, laneTop, laneWidth, laneHeight, map);
+        cachedMap = null;
+    }
+
+    /** Revision belongs to the map owner and advances whenever its projection changes. */
+    public void prepare(int divisions, float laneLeft, float laneTop, float laneWidth, float laneHeight,
+                        SourceMap map, long revision) {
+        if (sameLane(divisions, laneLeft, laneTop, laneWidth, laneHeight)
+                && cachedMap == map && cachedRevision == revision) return;
+        prepareMap(divisions, laneLeft, laneTop, laneWidth, laneHeight, map);
+        cachedMap = map; cachedRevision = revision;
+    }
+
+    private void prepareMap(int divisions, float laneLeft, float laneTop, float laneWidth, float laneHeight,
+                            SourceMap map) {
+        gridReady = true; transformsDirty = true; cachedProjection = null;
         this.laneLeft = laneLeft; this.laneTop = laneTop;
         this.laneWidth = laneWidth; this.laneHeight = laneHeight;
         this.divisions = Math.max(1, divisions);
@@ -185,8 +222,20 @@ public final class FisheyeMesh {
 
     private int draw(Canvas canvas, float targetLeft, float targetTop,
                      float targetWidth, float targetHeight, Painter painter, boolean clipToLane) {
-        if (matrix == null) {
-            matrix = new Matrix();
+        // Keep expensive homographies between frames. Target rectangles can change
+        // independently of the source grid (for example during window resize).
+        boolean sameTarget = !transformsDirty && tileTransforms != null && targetLeft == lastTargetLeft
+                && targetTop == lastTargetTop && targetWidth == lastTargetWidth && targetHeight == lastTargetHeight;
+        if (!sameTarget) {
+            int count = divisions * divisions;
+            if (tileTransforms == null || tileTransforms.length != count) {
+                tileTransforms = tileTransforms == null ? new Matrix[count]
+                        : java.util.Arrays.copyOf(tileTransforms, count);
+                tileValid = new boolean[count];
+            }
+            lastTargetLeft = targetLeft; lastTargetTop = targetTop;
+            lastTargetWidth = targetWidth; lastTargetHeight = targetHeight;
+            transformsDirty = false;
         }
         int drawn = 0;
         for (int row = 0; row < divisions; row++) {
@@ -206,13 +255,17 @@ public final class FisheyeMesh {
                 source[4] = sourceX(row + 1, column + 1); source[5] = sourceY(row + 1, column + 1);
                 source[6] = sourceX(row + 1, column);     source[7] = sourceY(row + 1, column);
 
-                matrix.reset();
-                if (!matrix.setPolyToPoly(source, 0, dest, 0, 4)) {
-                    continue;
+                int index = row * divisions + column;
+                Matrix transform = tileTransforms[index];
+                if (!sameTarget) {
+                    if (transform == null) tileTransforms[index] = transform = new Matrix();
+                    transform.reset();
+                    tileValid[index] = transform.setPolyToPoly(source, 0, dest, 0, 4);
                 }
+                if (!tileValid[index]) continue;
                 int save = canvas.save();
                 canvas.clipRect(left, top, right, bottom);
-                canvas.concat(matrix);
+                canvas.concat(transform);
                 if (clipToLane) {
                     // Half-pixel-or-more guard for the supported >=512-pixel camera lanes.
                     // Keep bilinear sampling away from neighbouring composite channels.
@@ -226,4 +279,6 @@ public final class FisheyeMesh {
         }
         return drawn;
     }
+
+    private float lastTargetLeft, lastTargetTop, lastTargetWidth, lastTargetHeight;
 }
