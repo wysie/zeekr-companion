@@ -32,23 +32,23 @@ implemented behavior.
 
 ## Reviewed source snapshot
 
-**Scoped follow-up, 2026-10-25:** inspected App Lab-related paths/history at
-dts88 `ed6f64195f3414b25aa139f2c8d15c95cf1ed8bf` against Companion
-`ab43b65e` and published `v3.0.0-alpha.2`. No runtime imports; the general review
-boundaries below remain unchanged. New playback/storage/menu work outside this
-investigation is unassessed. [Findings](app-lab-investigation-20261025.md).
+Last checked **2026-10-29**, Companion base `1cc2ed11` after
+`v3.0.0-beta.1`. The new upstream range was triaged and selected camera, parking,
+storage and playback changes compared with the fork. All 24 outgoing PR states
+and the eleven open heads' mergeability/checks were refreshed. No runtime imports
+or PR changes. [Current review](source-review-20261029.md).
 
-Last checked **2026-10-23**, Companion review base `29a280d5`; authorized lifecycle integration `3d0d8e3a`. Both main refs and
-the status of all 24 outgoing PRs reviewed; see [current review](source-review-20261023.md).
-This pass inventories the new ranges and compares selected lifecycle fixes;
-substantial audio/UI additions remain unassessed beyond scope triage. The authorized follow-up selectively adapts #65/#66; see
-[completed recommendations](recommendations-completed-20261023.md). Source-mirror
-branches were not advanced; fetched source refs are not app integration evidence.
-
-| Repository | Reviewed main head | Relationship to this fork |
+| Repository | Reviewed head / availability | Relationship to this fork |
 | --- | --- | --- |
-| [dts88/zeekr-shortcut-car](https://github.com/dts88/zeekr-shortcut-car) | [91a4282e](https://github.com/dts88/zeekr-shortcut-car/commit/91a4282e75b39364685389a2ce5e73e43301832f), 2.24.0-alpha | New range `eb7d5732..91a4282e` triaged, including #96 System-settings follow-up. Selected #65 surface/mirror lifecycle and #66 lane-specific recovery adapted via `062c3ea2` / main `3d0d8e3a`; included by [v2.11.62-alpha.1](https://github.com/wysie/zeekr-companion/releases/tag/v2.11.62-alpha.1). #63/#64 now merged upstream; our #64 adaptation remains. Audio, cabin policy and settings candidates deferred. Local `upstream-main` remains `151040e4`. |
-| [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER) | [2dce2510](https://github.com/FerixzTanz/CAMCORDER/commit/2dce2510c373d43cd850d8dc040d701311b63bb6), 2.14.3 | Both commits since `130e7f9a` reviewed. Streaming/free-report and ten-second side-yield fix addresses gates not present in our scheduler/bind paths; no direct import. Local `ferix-main` remains `3f9c7e40`. |
+| [dts88/zeekr-shortcut-car](https://github.com/dts88/zeekr-shortcut-car) | [2ddbef0c](https://github.com/dts88/zeekr-shortcut-car/commit/2ddbef0cac65daac7abc9d7ba379c0a2b72fc32f), source version 2.31.0-alpha (not a published 2.31 release in the checked release list) | Range `91a4282e..2ddbef0c` triaged; no import. Open #117 at `93eae8e5d1b29359f014a01dd82bf9bc64cc8f56` is a priority camera-close adaptation candidate, absent from main. Merged #115/#116 parking policy and #110 selected-drive return/visibility need fork-specific adaptation; #109 playback drawer is a UX candidate. Audio/player/hazard/style decisions and audit limits are in the review. Previously adapted #65/#66 remain included via `3d0d8e3a` / v2.11.62-alpha.1 and successors. Local `upstream-main` remains `151040e4`. |
+| [FerixzTanz/CAMCORDER](https://github.com/FerixzTanz/CAMCORDER) | Current fetch/API unavailable (repository not found / authenticated 404). Last verified head [2dce2510](https://github.com/FerixzTanz/CAMCORDER/commit/2dce2510c373d43cd850d8dc040d701311b63bb6), 2.14.3 | Cannot verify newer commits or infer deletion/private status. Last October 23 review decisions remain; no new source import. Ferix's visible Veil project at `179b94b18e8d64de730e31d24323b468fcfb1a3e` is a separate AirPlay/dimmer app, not a confirmed successor or audited integration. Local `ferix-main` remains `3f9c7e40`. |
+
+Previous [October 23 review](source-review-20261023.md) and
+[authorized lifecycle adaptations](recommendations-completed-20261023.md) retain
+historical scope and validation. The [October 25 App Lab investigation](app-lab-investigation-20261025.md)
+was scoped through `ed6f6419`; it did not assess the intervening playback/storage
+work. Source-mirror branches were not advanced in either follow-up. Fetching a
+source ref is not app integration or release inclusion.
 
 Previously verified inclusion evidence: [v2.11.46-alpha.1](https://github.com/wysie/zeekr-companion/releases/tag/v2.11.46-alpha.1)
 at [588d334b](https://github.com/wysie/zeekr-companion/commit/588d334be95e59659329ee7de5cede20e11ddd22).
@@ -139,6 +139,7 @@ remains. See [009 test notes](009-test-notes.md).
 
 | Review date | Source boundaries | Outcome |
 | --- | --- | --- |
+| 2026-10-29, source/PR review | dts88 `2ddbef0cac65daac7abc9d7ba379c0a2b72fc32f`, range since `91a4282e`; open #117 `93eae8e5d1b29359f014a01dd82bf9bc64cc8f56`; Ferix fetch/API unavailable, last verified `2dce2510`; Companion `1cc2ed11` | Triaged 98 upstream commits; selected camera-close, parking/recording, USB return/visibility and playback drawer comparisons. #117 is a priority adaptation candidate with no confirmed App Lab cure; #115/#116 policy needs 009/fork review. Audio/ExoPlayer/hazard scopes deferred. Veil identified as a separate project, not a CAMCORDER successor. Our PR totals unchanged: 11 open / 3 merged / 10 closed; seven mergeable, #29/#34/#37/#54 conflicting, all open head builds green. No runtime import, PR mutation, source-mirror advance or release. Documentation checked; no app build or new vehicle test. [Full scope, decisions and limits](source-review-20261029.md). |
 | 2026-10-29, Companion beta publication | No new source refresh/import; scoped App Lab follow-up remains dts88 `ed6f6419`, general review boundaries dts88 `91a4282e` and Ferix `2dce2510`. Tag `v3.0.0-beta.1` at `d99a07814eb99e21349b794fdb3091b581c88825` | Owner explicitly requested Beta. Published Pre-release with Latest off; tag includes alpha.2 plus shorter camera labels `ed8296bb`, diagnostics sharing labels `8bb0f5ca`, menu review `34a00313` and App Lab investigation `079217bc`. 1,571 JVM tests, five packaging checks, debug/release builds and zero-error debug lint pass; affected menu work previously passed 16 native Android checks. Tag CI [40867045332](https://github.com/wysie/zeekr-companion/actions/runs/40867045332) passes. Downloaded draft APK verified: code 350, 23,364,662 bytes, SHA-256/GitHub digest `7b62e7aaf806241d7bad9aadbca8c326f8d517c6d528754acd2e7782daf31adb`, unchanged package/signer, Front camera / Rear camera resources and trilingual release notes. App Lab disappearance remains unresolved; no new car test or runtime remedy claimed. Website publication link updated only after the release became public. |
 | 2026-10-25, scoped App Lab investigation | dts88 `ed6f64195f3414b25aa139f2c8d15c95cf1ed8bf`; Companion `ab43b65e896de745cfe34a8f0ed5c1ea37e54429`; published tag `v3.0.0-alpha.2` at `55af026f2c1cac3c91cf5216ab735384fa405f3e`; Ferix not refreshed | Traced issue #12, current warning and shared startup/keep-alive/camera/exit/installer/storage paths. Historical ordered-close fix `6d504cae` already included by the release; no duplicate import. Persistent recovery backoff and host/guest attribution are follow-up candidates, not implemented fixes. No direct host-uninstall/data-wipe mechanism identified; incident cause remains unproven. Old owner logs predate incident. Unrelated new upstream playback/storage/menu changes remain unassessed; source mirrors and PR heads unchanged. Documentation checked; no app build, vehicle reproduction or release. [Evidence and limits](app-lab-investigation-20261025.md). |
 | 2026-10-23, Companion 3.0 alpha publication | No new external source review/import; last reviewed heads remain dts88 `91a4282e`, Ferix `2dce2510`. Tag `v3.0.0-alpha.1` at `1ee321431748723ca642da216ce13324d1769a2a` | Verified ancestry contains the earlier lifecycle integration `3d0d8e3a`, GPU policy fix `edde5d57` and numbering/2.11-backup compatibility `cc03ccd1`. Companion now uses its own 3.0 series. Pre-release published with Latest off after 1,566 JVM tests, 21 native backup/inherited UI checks plus four final affected reruns, zero lint errors, five packaging checks and signed builds. Tag CI [39931968564](https://github.com/wysie/zeekr-companion/actions/runs/39931968564) passes. Downloaded draft/public APK and notes verified: code 348, 23,359,902 bytes, SHA-256/GitHub digest `aad9aa15d133a4d367cdd2b5950e76e35217d1c38275b3d836ea734ef048aad1`, application/signing identity retained. [Backup compatibility/limits](settings-backup.md#companion-30-numbering-transition--23-october-2026). No new PR/source or vehicle-performance claim. |

@@ -5,6 +5,13 @@ App Lab while using Companion. A guest-process crash, an unavailable App Lab
 launcher, loss of its virtual-app catalogue, and actual host-package removal are
 different failures. The incident has not yet been classified between them.
 
+**October 29 follow-up:** upstream's open [PR #117](https://github.com/dts88/zeekr-shortcut-car/pull/117)
+at `93eae8e5d1b29359f014a01dd82bf9bc64cc8f56` addresses reopening while a
+previous close is still outstanding. Companion retains the capped wait described
+below, so this is a concrete new adaptation candidate. It is unmerged, not
+car-tested by its author, and does not establish the App Lab root cause. See the
+[current source comparison](source-review-20261029.md).
+
 Reviewed Companion `ab43b65e896de745cfe34a8f0ed5c1ea37e54429` and the relevant
 runtime paths in published `v3.0.0-alpha.2`
 (`55af026f2c1cac3c91cf5216ab735384fa405f3e`). Compared selected shared code and
