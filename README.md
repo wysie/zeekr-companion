@@ -30,7 +30,7 @@ Actual app UI with **simulated camera scenes**. [All screens and settings](docs/
 1. Download `ZeekrCompanion-<version>.apk` from [Releases](https://github.com/wysie/zeekr-companion/releases) and sideload through App Lab. **After installation, press Back, then launch the app separately.** Using the installer's Open button can leave it stuck.
 2. While parked, check **Settings → Recording & photos**, choose your cameras and select a USB drive under **Storage**. Tap **Apply changes** if shown.
 3. Record a short clip manually, then open **Videos** and check playback. Recording on launch and driver arrival are **off by default**.
-4. For alpha updates, select **Settings → Updates → Update channel → Alpha**. Fresh installs default to Stable, including when the installed APK is an alpha.
+4. For beta updates, select **Settings → Updates → Update channel → Beta**; choose **Alpha** to include alpha builds too. Fresh installs default to Stable, even when installing a beta or alpha APK.
 
 Existing Companion installations retain their package, signing identity and settings.
 The signing key is public for compatibility: install only trusted releases.

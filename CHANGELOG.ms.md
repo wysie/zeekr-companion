@@ -2,13 +2,14 @@
 
 ## [Unreleased]
 
-- Gantikan pemilih saluran rakaman yang tidak berfungsi dengan status MediaCodec baca sahaja dan betulkan laluan bantuan Diagnostik.
+## [3.0.0-beta.1] - 2026-10-29
 
-- Tambah Diagnostik, Status kamera dan Kebenaran dalam penyelesaian masalah Pembangun; gunakan satu halaman sesi log USB untuk kedua-dua menu dan jelaskan tajuk gambar/penyelidikan.
+- Ringkaskan nama kamera kepada **Kamera hadapan** dan **Kamera belakang**, dengan label bahasa Inggeris dan Cina yang sepadan.
+- Jelaskan perkongsian diagnostik: **Simpan & hantar ke telefon** menghasilkan laporan baharu; **Hantar laporan terakhir disimpan** menghantar fail sedia ada.
+- Tambah **Diagnostik**, **Status kamera** dan **Kebenaran** dalam penyelesaian masalah Pembangun. Kedua-dua menu kini membuka halaman sesi log USB yang sama.
+- Paparkan saluran rakaman tetap **MediaCodec** sebagai status, buang pemilih yang tidak berfungsi dan jelaskan tajuk tetapan serta pautan bantuan.
 
-- Bezakan tindakan perkongsian diagnostik: Simpan & hantar ke telefon dan Hantar laporan terakhir disimpan.
-
-- Ringkaskan nama kamera khusus kepada Kamera hadapan dan Kamera belakang, dengan label bahasa Inggeris dan Cina yang sepadan.
+Kehilangan App Lab selepas unit utama dimulakan semula masih dalam siasatan.
 
 ## [3.0.0-alpha.2] - 2026-10-24
 

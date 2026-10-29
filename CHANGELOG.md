@@ -9,13 +9,14 @@ commit message, not here.
 
 ## [Unreleased]
 
-- Replace the inactive recording-pipeline picker with read-only MediaCodec status and correct Diagnostics help paths.
+## [3.0.0-beta.1] - 2026-10-29
 
-- Add Diagnostics, Camera status and Permissions under Developer troubleshooting; share one USB logging session page across menus and clarify picture/research headings.
+- Rename the dedicated camera labels to **Front camera** and **Rear camera** in English, with matching Malay and Chinese labels.
+- Make diagnostics sharing clearer: **Save & send to phone** creates a fresh report; **Send last saved report** sends the existing file.
+- Add **Diagnostics**, **Camera status** and **Permissions** to Developer troubleshooting. Both menus now open the same USB logging session page.
+- Show the fixed **MediaCodec** recording pipeline as status, remove the inactive selector and clarify settings headings and help links.
 
-- Clarify diagnostics sharing actions as Save & send to phone and Send last saved report.
-
-- Shorten the dedicated camera labels to Front camera and Rear camera, with matching Malay and Chinese translations.
+App Lab disappearing after a head-unit restart remains under investigation.
 
 ## [3.0.0-alpha.2] - 2026-10-24
 
