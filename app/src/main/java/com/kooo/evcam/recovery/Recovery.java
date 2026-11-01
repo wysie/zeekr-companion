@@ -131,14 +131,15 @@ public final class Recovery {
      * 熄屏不拉主界面，没有例外）。</p>
      *
      * @param where 谁要录的（ASCII，进黑匣子：RecordingCoordinator.Why）
+     * @return a foreground launch was requested; Android can still refuse to display it
      */
-    public static void bringUpMainForRecording(Context context, String where) {
+    public static boolean bringUpMainForRecording(Context context, String where) {
         if (UserExit.isExited(context) || factoryCameraActive()) {
-            return;
+            return false;
         }
         long now = SystemClock.elapsedRealtime();
         if (broughtUpAtMs != 0 && now - broughtUpAtMs < BRING_UP_DEDUPE_MS) {
-            return;
+            return false;
         }
         broughtUpAtMs = now;
         try {
@@ -151,10 +152,11 @@ public final class Recovery {
             }
         } catch (RuntimeException e) {
             AppLog.w(TAG, "bringUpMainForRecording failed: " + e);
-            return;
+            return false;
         }
-        BlackBox.noteImportant("要录像（" + where + "）：现在用不了相机（主界面不在前、前台服务是后台起的），"
+        BlackBox.noteImportant("要录像（" + where + "）：需要恢复前台相机访问（后台资格不足或相机访问被策略拒绝），"
                 + "先拉起主界面，录像等它起来再开相机");
+        return true;
     }
 
     /** 静默拉起主界面：不是人点开的（这一趟的录像选择不清），起来闪一下就退后台。还活着就挪到前面。 */

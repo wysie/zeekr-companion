@@ -219,6 +219,7 @@ public final class RecordingCoordinator {
      * 清掉它，查完回来就不开。
      */
     private Why pending;
+    private final CameraAccessRecovery cameraAccessRecovery = new CameraAccessRecovery();
     private RecordingStops.Reason lastStopReason;
     private long startedAtMs;
     /** 这一次开录落到了内置存储（用户选了 U 盘但没插）：开录落定时随开录的提示一起告诉界面。 */
@@ -593,6 +594,7 @@ public final class RecordingCoordinator {
         for (Listener listener : new ArrayList<>(listeners)) {
             listener.onRecordingViewChanged();
         }
+        recoverDeniedCameraAccess();
     }
 
     /**
@@ -1117,6 +1119,7 @@ public final class RecordingCoordinator {
     /** {@link #resumeIfWanted} 本身（屏幕已经知道黑没黑）：亮屏、车机黑着醒了直接走这里。 */
     private void resume(String where, Why why) {
         onAutomaticSettingsChanged();
+        recoverDeniedCameraAccess();
         if (isRecording() || pending != null || !RecordingIntent.current().recordingWanted()) {
             return;
         }
@@ -1315,9 +1318,25 @@ public final class RecordingCoordinator {
      * 黑着时开起来的录像用不了相机就「等待摄像头」，亮屏时这里再判。</p>
      */
     private void bringUpMainIfCamerasUnusable(Why why) {
+        if (recoverDeniedCameraAccess()) return;
         if (!ScreenState.dark() && !MultiCameraManager.cameraUsableNow()) {
             Recovery.bringUpMainForRecording(context, why.name());
         }
+    }
+
+    /** The pipeline can be logically recording while every camera is blocked by a real policy denial. */
+    private boolean recoverDeniedCameraAccess() {
+        MultiCameraManager manager = cameraManager;
+        if (manager == null) return false;
+        long denied = manager.channelScheduler().cameraAccessDeniedSince();
+        if (!cameraAccessRecovery.due(denied, isRecording() && view() == View.WAITING,
+                RecordingIntent.current().recordingWanted(), ScreenState.dark(),
+                com.kooo.evcam.camera.StallWatch.isForeground())) return false;
+        if (Recovery.bringUpMainForRecording(context, "camera-access-denied")) {
+            cameraAccessRecovery.accepted(denied);
+            return true;
+        }
+        return false;
     }
 
     /**
