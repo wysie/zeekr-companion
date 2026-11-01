@@ -46,6 +46,10 @@ final class SideGpuPicture {
         float amount=Math.max(0,Math.min(100,percent))/100f;
         return selected==sampling && amount==sharpening ? this : new SideGpuPicture(this,selected,amount);
     }
+    /** Framing may change continuously; changing the camera lane starts a new presentation history. */
+    boolean sameSource(SideGpuPicture other) {
+        return other != null && Arrays.equals(lane, other.lane);
+    }
     @Override public boolean equals(Object other) {
         if (!(other instanceof SideGpuPicture)) return false;
         SideGpuPicture p = (SideGpuPicture) other;

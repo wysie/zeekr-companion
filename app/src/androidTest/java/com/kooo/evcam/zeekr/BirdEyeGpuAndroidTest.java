@@ -21,6 +21,32 @@ import static org.junit.Assert.*;
 /** Real EGL external-camera-texture path, using synthetic frames on a disposable emulator. */
 @RunWith(AndroidJUnit4.class)
 public class BirdEyeGpuAndroidTest {
+    @Test public void changingSideFramingKeepsAcquiredPictureLiveWhileReplacementRenders() throws Exception {
+        try (Fixture f = new Fixture()) {
+            CompositeStreamGeometry.Plan plan = CompositeStreamGeometry.analyse("gpu-test", f.sw, f.sh);
+            SideGpuOutput output = new SideGpuOutput(false);
+            SideGpuPicture initial = new SideGpuPicture(plan, LaneCycle.LEFT,
+                    RearViewGeometry.Viewport.full(), 0, 90, 0, 0, 0, false, f.ow, f.oh);
+            main(() -> assertTrue(output.prepare(f.view, f.pipe, initial, f.ow, f.oh, true)));
+            for (int i=0; i<4; i++) { f.patternFrame(); SystemClock.sleep(55); }
+            boolean[] live = {false};
+            main(() -> live[0] = output.fresh(f.view));
+            assertTrue("Real shader output starts live", live[0]);
+            // One UI callback: replacement buffers cannot be acquired between these edits.
+            main(() -> {
+                for (int i=1; i<=12; i++) {
+                    SideGpuPicture moved = new SideGpuPicture(plan, LaneCycle.LEFT,
+                            new RearViewGeometry.Viewport(0, i * .005f, 1, .8f),
+                            0, 90, 0, 0, 0, false, f.ow, f.oh);
+                    assertTrue(output.prepare(f.view, f.pipe, moved, f.ow+i, f.oh, true));
+                    assertTrue("Crop/resize must not black out a fresh buffer", output.fresh(f.view));
+                }
+            });
+            SystemClock.sleep(600);
+            main(() -> assertFalse("A stopped source still becomes stale", output.fresh(f.view)));
+            main(output::release);
+        }
+    }
     @Test public void repeatedAcquisitionSkipsSwapButSettingsAndResumeStillRedraw() throws Exception {
         try (Fixture f = new Fixture()) {
             for (int i=0;i<4;i++) { f.frame(); SystemClock.sleep(65); }

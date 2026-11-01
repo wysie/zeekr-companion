@@ -1857,6 +1857,11 @@ public final class ChannelScheduler {
         return condition(key) == ChannelRules.Condition.STREAMING;
     }
 
+    /** Actual access denial, distinct from the foreground service's cached eligibility. Main thread. */
+    public long cameraAccessDeniedSince() {
+        return w.unusableSince;
+    }
+
     /**
      * 这一路关着、而此刻用不了相机（主界面不在前、前台服务是后台起的，或者开相机报过「现在用不了」）：主界面回到前台之前
      * 不会开它。{@link #condition} 照旧说它在起来；录像读这一句，不把它算作在起来（RecordingLanes.Facts#cannotOpen）。

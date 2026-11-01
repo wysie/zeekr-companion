@@ -13,6 +13,8 @@ import com.kooo.evcam.R;
 public final class LocalizedGuidePage extends ScrollView {
     private final TextView title;
     private final TextView body;
+    private final LinearLayout content;
+    private MirrorGuideDiagram diagram;
 
     public LocalizedGuidePage(Context context) {
         this(context, null);
@@ -27,7 +29,7 @@ public final class LocalizedGuidePage extends ScrollView {
         background.setCornerRadius(dp(16));
         setBackground(background);
         setClipToOutline(true);
-        LinearLayout content = new LinearLayout(context);
+        content = new LinearLayout(context);
         content.setOrientation(LinearLayout.VERTICAL);
         content.setPadding(dp(28), dp(24), dp(28), dp(24));
         title = new TextView(context);
@@ -50,6 +52,14 @@ public final class LocalizedGuidePage extends ScrollView {
         title.setText(titleRes);
         body.setText(bodyRes);
         scrollTo(0, 0);
+    }
+
+    public void showMirrorDiagram(int page) {
+        if (diagram != null) content.removeView(diagram);
+        diagram = new MirrorGuideDiagram(getContext(), page);
+        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, dp(240));
+        params.topMargin = dp(12);
+        content.addView(diagram, 1, params);
     }
 
     private int dp(int value) {

@@ -2218,6 +2218,7 @@ public class ChannelSchedulerTest {
     /** 开的时候报「用不了相机」：不计次数，记下来，等主界面回到前台。 */
     @Test
     public void anOpenFailingAsUnusableWaitsForTheMainScreen() {
+        assertEquals(0, s.cameraAccessDeniedSince());
         host.mainForeground = false;
         host.startedWhileVisible = true;
         claim(Holder.PHOTO);
@@ -2229,12 +2230,16 @@ public class ChannelSchedulerTest {
         s.onOpenFailed("2", CameraTaken.Reason.ofDeviceError(CameraDevice.StateCallback.ERROR_CAMERA_DISABLED));
         at(100 + ChannelRules.JUDGE_DELAY_MS);
         assertEquals(1, lines("judged front UNUSABLE OPEN").size());
+        long denied = s.cameraAccessDeniedSince();
+        assertTrue("Real denial is visible despite cached service eligibility", denied > 0);
         at(60_000);
+        assertEquals(denied, s.cameraAccessDeniedSince());
         assertEquals("不重开、不计次数", 1, surround.actions.size());
         host.mainForeground = true;
         s.wake();
         settle();
         assertEquals(2, surround.actions.size());
+        assertEquals(0, s.cameraAccessDeniedSince());
     }
 
     /**
