@@ -24,6 +24,12 @@ import static org.junit.Assert.*;
 
 /** Actual translated About/help views, resource selection, readable scrolling and install consent. */
 public class LocalizedHelpAndroidTest extends MainPageControlsAndroidTest {
+    private boolean hasDiagram(View view) {
+        if (view instanceof com.kooo.evcam.ui.MirrorGuideDiagram) return true;
+        if (view instanceof ViewGroup) for (int i=0; i<((ViewGroup)view).getChildCount(); i++)
+            if (hasDiagram(((ViewGroup)view).getChildAt(i))) return true;
+        return false;
+    }
     private String text(View view) {
         StringBuilder result = new StringBuilder();
         if (view instanceof TextView) result.append(((TextView) view).getText()).append('\n');
@@ -33,6 +39,7 @@ public class LocalizedHelpAndroidTest extends MainPageControlsAndroidTest {
     }
     private void capture(String name) throws Exception {
         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
+        SystemClock.sleep(350); // Capture the settled dialog, not its entrance fade.
         Bitmap image = InstrumentationRegistry.getInstrumentation().getUiAutomation().takeScreenshot();
         File target = new File(InstrumentationRegistry.getInstrumentation().getTargetContext()
                 .getExternalFilesDir(null), "localization-" + name + ".png");
@@ -77,6 +84,8 @@ public class LocalizedHelpAndroidTest extends MainPageControlsAndroidTest {
                                 RecyclerView list = shown[0].findViewById(R.id.guide_pages);
                                 assertNotNull(list.findViewHolderForAdapterPosition(position));
                                 assertTrue(list.findViewHolderForAdapterPosition(position).itemView instanceof ScrollView);
+                                assertTrue("Every localized mirror page has a gesture diagram",
+                                        hasDiagram(list.findViewHolderForAdapterPosition(position).itemView));
                             });
                             if (page == 0) capture(language + "-mirror-" + night);
                         }

@@ -74,8 +74,8 @@ public final class RearViewGuide {
 
         // Bound the page so the paging hint and final action remain visible.
         DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
-        int pageWidth = Math.round(Math.min(metrics.widthPixels * 0.8f,
-                metrics.heightPixels * 0.72f * ASPECT));
+        int pageWidth = Math.round(Math.min(dp(activity, 1080), Math.min(metrics.widthPixels * 0.8f,
+                metrics.heightPixels * 0.72f * ASPECT)));
         int pageHeight = Math.round(pageWidth / ASPECT);
 
         RecyclerView pages = dialog.findViewById(R.id.guide_pages);
@@ -171,6 +171,7 @@ public final class RearViewGuide {
         public void onBindViewHolder(@NonNull Holder holder, int position) {
             LocalizedGuidePage page = (LocalizedGuidePage) holder.itemView;
             page.bind(PAGES[position][0], PAGES[position][1]);
+            page.showMirrorDiagram(position);
         }
 
         @Override
