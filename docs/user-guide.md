@@ -65,6 +65,10 @@ orientations use the surround composite, including front and rear; they do not
 switch to the dedicated road streams. Pinch to resize, swipe to change cameras,
 and use Picture settings to tune framing.
 
+Its usage guide includes diagrams with English, Malay or Chinese instructions.
+GPU framing and resize edits retain a fresh picture while the next projection is
+rendered; an actual stopped camera is still covered after the freshness timeout.
+
 **Blind spot camera** opens a side view when the turn signal is on. Its Behavior,
 Picture, Window and HUD tabs control output and framing. It can use a separate
 popup or temporarily replace Super mirror; the mirror relationship setting controls
@@ -154,6 +158,10 @@ stamps is included. [Backup scope and recovery](settings-backup.md).
 - **No picture or a stalled window:** open **Camera status** from the main screen
   or System to distinguish factory contention, recovery and missing sources. It
   reports status without forcing retries. Check for unapplied camera changes.
+  When recording is wanted and every camera is waiting after a policy denial,
+  the app can request its existing foreground recovery once per denial episode.
+  It respects screen-off, manual stop/quit and factory-camera priority; the head
+  unit can still refuse that request. Opening the app manually remains a fallback.
 - **Poor preview detail:** compare another view and export a side-picture comparison
   if relevant. Record the GPU policy, source and whether recordings are affected.
 - **USB recording stalls:** try a per-camera 10 fps cap, then a lower bitrate.

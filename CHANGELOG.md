@@ -9,6 +9,10 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Recover wanted recordings after an actual camera-access denial even when the foreground service still reports earlier camera eligibility; retain screen-off, factory-camera and user-stop guards.
+- Keep fresh GPU camera pictures visible during Super mirror framing and resize edits, while retaining stale-frame protection and resetting on source/output changes.
+- Restore diagrams to all five Super mirror help pages alongside localized text, with a bounded landscape layout.
+
 ## [3.0.0-beta.1] - 2026-10-29
 
 - Rename the dedicated camera labels to **Front camera** and **Rear camera** in English, with matching Malay and Chinese labels.
