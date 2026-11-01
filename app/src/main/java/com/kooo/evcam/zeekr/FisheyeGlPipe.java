@@ -651,7 +651,7 @@ public final class FisheyeGlPipe {
                 request.publish(new BirdEyeGlRequest.Frame(marker, sourceFreshness.changedAt(), SystemClock.elapsedRealtime() - began));
         } else if (projectedSide) {
             hasProjected=true;sideWasProjected=true;
-            if(side==sideRequest && !side.frames.cancelled)side.frames.publish(new BirdEyeGlRequest.Frame(marker,sourceFreshness.changedAt(),SystemClock.elapsedRealtime()-began));
+            if(side==sideRequest && !side.frames.cancelled)side.publish(new BirdEyeGlRequest.Frame(marker,sourceFreshness.changedAt(),SystemClock.elapsedRealtime()-began));
         } else { rawOutputs.set(nextRawOutput++ & 7, marker); }
     }
 
@@ -695,7 +695,7 @@ public final class FisheyeGlPipe {
             long marker=System.nanoTime();
             if(!EGLExt.eglPresentationTimeANDROID(display,tap.surface,marker)||!EGL14.eglSwapBuffers(display,tap.surface))throw new IllegalStateException("Settings swap failed");
             if(tap==sideTap && request==tap.request && !request.frames.cancelled)
-                request.frames.publish(new BirdEyeGlRequest.Frame(marker,sourceFreshness.changedAt(),0));
+                request.publish(new BirdEyeGlRequest.Frame(marker,sourceFreshness.changedAt(),0));
         } catch(RuntimeException | OutOfMemoryError error){request.frames.failure=error.toString();request.frames.frame=null;AppLog.w(TAG,name+" settings GPU failed: "+error);}
         finally {EGL14.eglMakeCurrent(display,surface,surface,context);}
     }
