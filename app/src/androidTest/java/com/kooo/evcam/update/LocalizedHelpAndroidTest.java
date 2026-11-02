@@ -25,9 +25,12 @@ import static org.junit.Assert.*;
 /** Actual translated About/help views, resource selection, readable scrolling and install consent. */
 public class LocalizedHelpAndroidTest extends MainPageControlsAndroidTest {
     private boolean hasDiagram(View view) {
-        if (view instanceof com.kooo.evcam.ui.MirrorGuideDiagram) return true;
+        return hasDiagram(view, com.kooo.evcam.ui.MirrorGuideDiagram.class);
+    }
+    private boolean hasDiagram(View view, Class<?> kind) {
+        if (kind.isInstance(view)) return true;
         if (view instanceof ViewGroup) for (int i=0; i<((ViewGroup)view).getChildCount(); i++)
-            if (hasDiagram(((ViewGroup)view).getChildAt(i))) return true;
+            if (hasDiagram(((ViewGroup)view).getChildAt(i), kind)) return true;
         return false;
     }
     private String text(View view) {
@@ -97,6 +100,8 @@ public class LocalizedHelpAndroidTest extends MainPageControlsAndroidTest {
                         InstrumentationRegistry.getInstrumentation().waitForIdleSync();
                         scenario.onActivity(a -> {
                             assertTrue(text(shown[0].getWindow().getDecorView()).contains(a.getString(R.string.guide_install_body)));
+                            assertTrue("Installer help retains its Back/Open illustration",
+                                    hasDiagram(shown[0].getWindow().getDecorView(), com.kooo.evcam.ui.InstallGuideDiagram.class));
                             assertButtonFits(shown[0]);
                             shown[0].cancel();
                         });

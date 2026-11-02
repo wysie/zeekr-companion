@@ -132,6 +132,10 @@ Download APKs from [Companion releases](https://github.com/wysie/zeekr-companion
 After App Lab installation, press **Back** and launch the app separately; the
 installer's Open button can leave it stuck.
 
+The pre-download reminder includes a localized illustration of Back at the top
+left and a crossed-out Open button. Its confirmation action starts the download;
+pressing Back cancels without downloading.
+
 **Updates → Update channel** filters manual checks: Stable includes stable releases,
 Beta includes beta and stable, Alpha includes all three. Fresh installs start on
 Stable; upgrades preserve existing choices. Installing an alpha does not opt into

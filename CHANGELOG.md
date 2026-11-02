@@ -9,6 +9,8 @@ commit message, not here.
 
 ## [Unreleased]
 
+- Restore the illustrated update-install reminder with localized Back/Open labels and Companion branding; retain explicit download confirmation and Back-to-cancel.
+
 - Recover wanted recordings after an actual camera-access denial even when the foreground service still reports earlier camera eligibility; retain screen-off, factory-camera and user-stop guards.
 - Keep fresh GPU camera pictures visible during Super mirror framing and resize edits, while retaining stale-frame protection and resetting on source/output changes.
 - Restore diagrams to all five Super mirror help pages alongside localized text, with a bounded landscape layout.

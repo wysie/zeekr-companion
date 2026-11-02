@@ -5,6 +5,7 @@ import android.graphics.drawable.GradientDrawable;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.view.View;
 import androidx.core.content.ContextCompat;
 import androidx.core.view.ViewCompat;
 import com.kooo.evcam.R;
@@ -14,7 +15,7 @@ public final class LocalizedGuidePage extends ScrollView {
     private final TextView title;
     private final TextView body;
     private final LinearLayout content;
-    private MirrorGuideDiagram diagram;
+    private View diagram;
 
     public LocalizedGuidePage(Context context) {
         this(context, null);
@@ -55,8 +56,16 @@ public final class LocalizedGuidePage extends ScrollView {
     }
 
     public void showMirrorDiagram(int page) {
+        showDiagram(new MirrorGuideDiagram(getContext(), page));
+    }
+
+    public void showInstallerDiagram() {
+        showDiagram(new InstallGuideDiagram(getContext()));
+    }
+
+    private void showDiagram(View next) {
         if (diagram != null) content.removeView(diagram);
-        diagram = new MirrorGuideDiagram(getContext(), page);
+        diagram = next;
         LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(-1, dp(240));
         params.topMargin = dp(12);
         content.addView(diagram, 1, params);

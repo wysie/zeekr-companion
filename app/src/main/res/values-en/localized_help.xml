@@ -11,6 +11,7 @@
     <string name="guide_resize_title">Resize without stretching</string>
     <string name="guide_resize_body">Spread two fingers to enlarge the window; pinch to make it smaller. Its shape stays the same. Move both fingers together to reposition it while resizing.\n\nTo change the shape, adjust width and height separately in Settings. A flatter window crops the picture instead of stretching it.</string>
     <string name="guide_install_title">After installing, tap Back</string>
+    <string name="guide_install_open">Open</string>
     <string name="guide_install_body">Follow the system installer prompts. When installation finishes, tap Back at the top left instead of Open in the middle.\n\nOn affected head units, tapping Open can leave the installer stuck and interfere with the next update. Return to the launcher and open Zeekr Companion there.\n\nDownloading starts only after you confirm below. Press Back now to cancel.</string>
     <string name="upd_notes_original_language">Older release notes are available in English.</string>
     <string name="upd_notes_heading">What changed</string>

@@ -11,6 +11,7 @@
     <string name="guide_resize_title">缩放窗口而不拉伸画面</string>
     <string name="guide_resize_body">双指张开放大窗口，捏合缩小窗口，窗口比例保持不变。缩放时同时移动两根手指，可一起调整位置。\n\n如需改变窗口比例，请在设置中分别调整宽度和高度。较扁的窗口会裁切画面，而不会拉伸图像。</string>
     <string name="guide_install_title">安装完成后，请点击返回</string>
+    <string name="guide_install_open">打开</string>
     <string name="guide_install_body">按照系统安装程序的提示操作。安装完成后，请点击左上角的“返回”，不要点击中央的“打开”。\n\n部分车机点击“打开”后，安装程序可能卡住并影响下一次更新。请返回桌面，再从桌面打开 Zeekr Companion。\n\n点击下方确认按钮后才开始下载。现在按返回键可取消。</string>
     <string name="upd_notes_original_language">旧版本的更新说明仅提供英文。</string>
     <string name="upd_notes_heading">更新内容</string>
