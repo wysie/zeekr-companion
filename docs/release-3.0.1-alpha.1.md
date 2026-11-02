@@ -36,5 +36,21 @@ Local staged APK: `ZeekrCompanion-3.0.1-alpha.1.apk`, 23,370,742 bytes.
 Local SHA-256: `5e489e2b2d35554f19cf43d5e359a0a44455313824a9a5475de6e943d4714e4e`.
 APK v2 signature verified; certificate SHA-256 remains
 `a40da80a59d170caa950cf15c18c454d47a39b26989d8b640ecd745ba71bf5dc`.
-Public CI asset checksum must be checked separately after publication; a local
-build checksum does not establish the contents of a remote asset.
+The local and CI APKs have different byte hashes; each was independently checked.
+
+## Publication verified
+
+Published November 2 at 16:20 Singapore time as
+[v3.0.1-alpha.1](https://github.com/wysie/zeekr-companion/releases/tag/v3.0.1-alpha.1),
+Pre-release on, draft off, Latest off. Tag target
+`c90699916d04fb2de07cda99fea2a25bca09c061` contains all four corrections above;
+ancestry checked. [Tag build and draft publication](https://github.com/wysie/zeekr-companion/actions/runs/41411979476)
+passed.
+
+The CI-generated APK and checksum were downloaded and compared before publication.
+APK versionCode 351 / versionName 3.0.1-alpha.1, package ID and existing signing
+certificate were independently verified. Unauthenticated public APK and checksum
+downloads were also compared and match:
+`24e5369e27565bf72e868d859ff01179a881446fe768af893b38ba9821d1c053`.
+Public APK size is 23,370,742 bytes. Website release labels and links are updated
+only after the release became public.
