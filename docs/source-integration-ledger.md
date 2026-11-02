@@ -32,6 +32,18 @@ implemented behavior.
 
 ## Reviewed source snapshot
 
+**General triage and selected source comparison, 2026-11-02:** dts88 main remains
+`4d68857a882e3bf9d67b3ff52cd0d61802df6638` (2.93.4-alpha in source). Inventoried
+the 82-commit range since October 29 and inspected selected lifecycle, editor,
+recovery, storage and guide code. Camera rounds/shared scheduling are the priority
+adaptation candidate; former #117 is now closed unmerged and superseded as a
+recommendation. No runtime imports. Our PRs remain 11 open / 3 merged / 10 closed;
+six open heads now conflict, including #52/#53. Ferix CAMCORDER again returns 404.
+New contribution candidates are denial-episode recovery and localized illustrated
+guides. Exact scopes, changed decisions, local evidence and validation limits:
+[November 2 review](source-review-20261102.md). This is not an exhaustive audit or
+a tested integration; the older table below retains historical review decisions.
+
 **Scoped follow-up, 2026-11-02:** checked Super mirror and update-install guide code/assets at dts88
 `4d68857a882e3bf9d67b3ff52cd0d61802df6638`. Image-based guide confirmed; no source
 art or runtime import. New camera/mirror corrections are fork fixes supported by
