@@ -9,11 +9,16 @@ commit message, not here.
 
 ## [Unreleased]
 
-- Restore the illustrated update-install reminder with localized Back/Open labels and Companion branding; retain explicit download confirmation and Back-to-cancel.
+Nothing yet.
 
+## [3.0.1-alpha.1] - 2026-11-02
+
+- Restore the illustrated update-install reminder with localized Back/Open labels and Companion branding; retain explicit download confirmation and Back-to-cancel.
 - Recover wanted recordings after an actual camera-access denial even when the foreground service still reports earlier camera eligibility; retain screen-off, factory-camera and user-stop guards.
 - Keep fresh GPU camera pictures visible during Super mirror framing and resize edits, while retaining stale-frame protection and resetting on source/output changes.
 - Restore diagrams to all five Super mirror help pages alongside localized text, with a bounded landscape layout.
+
+USB recording stalls and App Lab disappearance remain under investigation.
 
 ## [3.0.0-beta.1] - 2026-10-29
 
