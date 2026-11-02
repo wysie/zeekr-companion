@@ -11,6 +11,7 @@
     <string name="guide_resize_title">Ubah saiz tanpa meregangkan imej</string>
     <string name="guide_resize_body">Jarakkan dua jari untuk membesarkan tetingkap; rapatkan untuk mengecilkannya. Bentuknya kekal sama. Gerakkan kedua-dua jari bersama untuk mengalihkan tetingkap sambil mengubah saiz.\n\nUntuk menukar bentuk, laraskan lebar dan tinggi secara berasingan dalam Tetapan. Tetingkap yang lebih rendah memangkas imej dan bukannya meregangkannya.</string>
     <string name="guide_install_title">Selepas pemasangan, ketik Kembali</string>
+    <string name="guide_install_open">Buka</string>
     <string name="guide_install_body">Ikut arahan pemasang sistem. Setelah pemasangan selesai, ketik Kembali di penjuru kiri atas dan bukannya Buka di tengah.\n\nPada unit utama yang terjejas, mengetik Buka boleh menyebabkan pemasang tersekat dan mengganggu kemas kini seterusnya. Kembali ke pelancar dan buka Zeekr Companion dari sana.\n\nMuat turun hanya bermula selepas anda mengesahkan di bawah. Tekan Kembali sekarang untuk membatalkan.</string>
     <string name="upd_notes_original_language">Nota keluaran lama tersedia dalam bahasa Inggeris.</string>
     <string name="upd_notes_heading">Perubahan</string>

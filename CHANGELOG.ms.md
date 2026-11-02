@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+- Kembalikan ilustrasi peringatan pemasangan kemas kini dengan label Kembali/Buka setempat dan penjenamaan Companion; kekalkan pengesahan muat turun serta Kembali untuk membatalkan.
+
 - Pulihkan rakaman yang masih dikehendaki selepas akses kamera ditolak walaupun perkhidmatan latar depan masih melaporkan kelayakan lama; kekalkan perlindungan skrin padam, kamera kilang dan arahan berhenti pengguna.
 - Kekalkan gambar kamera GPU yang masih segar semasa mengubah pembingkaian atau saiz Cermin super, dengan perlindungan bingkai terhenti dan tetapan semula apabila sumber atau output berubah.
 - Kembalikan rajah pada kelima-lima halaman panduan Cermin super bersama teks setempat, dengan susun atur landskap yang terhad.

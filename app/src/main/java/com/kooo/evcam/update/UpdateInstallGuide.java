@@ -43,13 +43,14 @@ final class UpdateInstallGuide {
 
         // Keep the confirmation action outside the scrollable content.
         DisplayMetrics metrics = activity.getResources().getDisplayMetrics();
-        int width = Math.round(Math.min(metrics.widthPixels * 0.8f,
-                metrics.heightPixels * 0.72f * ASPECT));
+        int width = Math.round(Math.min(1080 * metrics.density, Math.min(metrics.widthPixels * 0.8f,
+                metrics.heightPixels * 0.72f * ASPECT)));
         int height = Math.round(width / ASPECT);
 
         com.kooo.evcam.ui.LocalizedGuidePage page = dialog.findViewById(R.id.guide_image);
         page.setLayoutParams(new LinearLayout.LayoutParams(width, height));
         page.bind(R.string.guide_install_title, R.string.guide_install_body);
+        page.showInstallerDiagram();
 
         dialog.findViewById(R.id.guide_done).setOnClickListener(v -> {
             dialog.dismiss();
